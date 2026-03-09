@@ -1,0 +1,5 @@
+.claude/settings.local.json
+/RunReplays/bin
+/RunReplays/obj
+/.idea
+RunReplays.sln.DotSettings.user
