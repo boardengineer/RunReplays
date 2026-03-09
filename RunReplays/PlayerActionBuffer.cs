@@ -98,6 +98,20 @@ public static class PlayerActionBuffer
         return new List<string>(_minimalEntries);
     }
 
+    /// <summary>
+    /// Restores both queues from previously-saved log files (used when a run is continued).
+    /// Called after the buffer has already been cleared by the ActionExecutor constructor patch.
+    /// </summary>
+    public static void Restore(
+        IReadOnlyList<(string Timestamp, string Action)> verboseEntries,
+        IReadOnlyList<string> minimalEntries)
+    {
+        foreach (var entry in verboseEntries)
+            _verboseEntries.Enqueue(entry);
+        foreach (var entry in minimalEntries)
+            _minimalEntries.Enqueue(entry);
+    }
+
     // Reflected once; null until the field is found.
     private static readonly FieldInfo? _instanceField =
         typeof(NDevConsole).GetField("_instance", BindingFlags.NonPublic | BindingFlags.Static);
