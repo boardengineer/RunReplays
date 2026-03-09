@@ -5,7 +5,6 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
-using MegaCrit.Sts2.Core.Saves.Runs;
 
 namespace RunReplays;
 
@@ -56,29 +55,18 @@ public static class RunSaveLogger
         string fileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.log";
         string filePath = Path.Combine(logsDir, fileName);
 
+        var actions = PlayerActionBuffer.Snapshot();
+
         var sb = new StringBuilder();
-        sb.AppendLine("=== Run Replays – Save Snapshot ===");
+        sb.AppendLine($"=== Run Replays – Action Log ===");
         sb.AppendLine($"Seed:        {seed}");
         sb.AppendLine($"Saved at:    {saveTime:yyyy-MM-dd HH:mm:ss}");
-        sb.AppendLine($"Run started: {startTime:yyyy-MM-dd HH:mm:ss}");
-        sb.AppendLine($"Ascension:   {run.Ascension}");
-        sb.AppendLine($"Act:         {run.CurrentActIndex + 1}");
         sb.AppendLine($"Floor:       {totalFloor + 1}");
+        sb.AppendLine($"Actions:     {actions.Count}");
+        sb.AppendLine();
 
-        var player = run.Players is { Count: > 0 } ? run.Players[0] : null;
-        if (player != null)
-        {
-            sb.AppendLine($"Character:   {player.CharacterId}");
-            sb.AppendLine($"HP:          {player.CurrentHp} / {player.MaxHp}");
-            sb.AppendLine($"Gold:        {player.Gold}");
-            sb.AppendLine($"Deck size:   {player.Deck?.Count ?? 0}");
-            sb.AppendLine($"Relics:      {player.Relics?.Count ?? 0}");
-        }
-
-        if (run.Modifiers is { Count: > 0 })
-        {
-            sb.AppendLine($"Modifiers:   {string.Join(", ", run.Modifiers.ConvertAll(m => m.ToString()))}");
-        }
+        foreach (string entry in actions)
+            sb.AppendLine(entry);
 
         File.WriteAllText(filePath, sb.ToString());
         GD.Print($"[RunReplays] Wrote save log: {filePath}");
