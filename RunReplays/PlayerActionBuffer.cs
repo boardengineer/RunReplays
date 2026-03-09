@@ -24,15 +24,18 @@ namespace RunReplays;
 [HarmonyPatch(typeof(ActionExecutor), MethodType.Constructor, new[] { typeof(ActionQueueSet) })]
 public static class PlayerActionBuffer
 {
-    // Stores (timestamp, action text) so callers can choose which parts to use.
+    // Separate queues allow verbose and minimal to hold entirely different
+    // content for the same event (e.g. a multi-line block vs a single summary).
     // Thread-safe: AfterActionExecuted fires from async action execution.
-    private static readonly ConcurrentQueue<(string Timestamp, string Action)> _entries = new();
+    private static readonly ConcurrentQueue<(string Timestamp, string Action)> _verboseEntries = new();
+    private static readonly ConcurrentQueue<string> _minimalEntries = new();
 
     [HarmonyPostfix]
     public static void Postfix(ActionExecutor __instance)
     {
-        // Clear the previous run's actions whenever a new executor is created.
-        while (_entries.TryDequeue(out _)) { }
+        // Clear both queues whenever a new executor is created (new run start).
+        while (_verboseEntries.TryDequeue(out _)) { }
+        while (_minimalEntries.TryDequeue(out _)) { }
 
         __instance.AfterActionExecuted += action =>
         {
@@ -41,9 +44,42 @@ public static class PlayerActionBuffer
 
             string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
             string actionText = action.ToString()!;
-            _entries.Enqueue((timestamp, actionText));
+            _verboseEntries.Enqueue((timestamp, actionText));
+            _minimalEntries.Enqueue(actionText);
             LogToDevConsole($"[{timestamp}] {actionText}");
         };
+    }
+
+    /// <summary>
+    /// Records the same text into both verbose and minimal (for non-GameAction
+    /// events where the two formats share content).
+    /// </summary>
+    public static void Record(string text)
+    {
+        string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
+        _verboseEntries.Enqueue((timestamp, text));
+        _minimalEntries.Enqueue(text);
+        LogToDevConsole($"[{timestamp}] {text}");
+    }
+
+    /// <summary>
+    /// Records only into the verbose log (e.g. decorative separators or
+    /// per-option lines that the minimal log replaces with a summary).
+    /// </summary>
+    public static void RecordVerboseOnly(string text)
+    {
+        string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
+        _verboseEntries.Enqueue((timestamp, text));
+        LogToDevConsole($"[{timestamp}] {text}");
+    }
+
+    /// <summary>
+    /// Records only into the minimal log (e.g. a compact summary line that
+    /// replaces a multi-line verbose block).
+    /// </summary>
+    public static void RecordMinimalOnly(string text)
+    {
+        _minimalEntries.Enqueue(text);
     }
 
     /// <summary>
@@ -51,7 +87,7 @@ public static class PlayerActionBuffer
     /// </summary>
     public static IReadOnlyList<string> Snapshot()
     {
-        return new List<string>(_entries.Select(e => $"[{e.Timestamp}] {e.Action}"));
+        return new List<string>(_verboseEntries.Select(e => $"[{e.Timestamp}] {e.Action}"));
     }
 
     /// <summary>
@@ -59,7 +95,7 @@ public static class PlayerActionBuffer
     /// </summary>
     public static IReadOnlyList<string> SnapshotMinimal()
     {
-        return new List<string>(_entries.Select(e => e.Action));
+        return new List<string>(_minimalEntries);
     }
 
     // Reflected once; null until the field is found.
