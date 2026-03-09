@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Godot;
 using HarmonyLib;
@@ -23,8 +24,9 @@ namespace RunReplays;
 [HarmonyPatch(typeof(ActionExecutor), MethodType.Constructor, new[] { typeof(ActionQueueSet) })]
 public static class PlayerActionBuffer
 {
+    // Stores (timestamp, action text) so callers can choose which parts to use.
     // Thread-safe: AfterActionExecuted fires from async action execution.
-    private static readonly ConcurrentQueue<string> _entries = new();
+    private static readonly ConcurrentQueue<(string Timestamp, string Action)> _entries = new();
 
     [HarmonyPostfix]
     public static void Postfix(ActionExecutor __instance)
@@ -34,23 +36,30 @@ public static class PlayerActionBuffer
 
         __instance.AfterActionExecuted += action =>
         {
-            if (!action.RecordableToReplay)
+            if (!action.RecordableToReplay || action is VoteForMapCoordAction)
                 return;
 
             string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
-            string entry = $"[{timestamp}] {action}";
-            _entries.Enqueue(entry);
-            LogToDevConsole(entry);
+            string actionText = action.ToString()!;
+            _entries.Enqueue((timestamp, actionText));
+            LogToDevConsole($"[{timestamp}] {actionText}");
         };
     }
 
     /// <summary>
-    /// Returns a point-in-time copy of all recorded entries without clearing
-    /// the buffer, so subsequent saves still include the full history.
+    /// Verbose snapshot: each entry prefixed with its timestamp.
     /// </summary>
     public static IReadOnlyList<string> Snapshot()
     {
-        return new List<string>(_entries);
+        return new List<string>(_entries.Select(e => $"[{e.Timestamp}] {e.Action}"));
+    }
+
+    /// <summary>
+    /// Minimal snapshot: action text only, no timestamps.
+    /// </summary>
+    public static IReadOnlyList<string> SnapshotMinimal()
+    {
+        return new List<string>(_entries.Select(e => e.Action));
     }
 
     // Reflected once; null until the field is found.

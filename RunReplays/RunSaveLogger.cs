@@ -14,8 +14,9 @@ namespace RunReplays;
 ///
 /// ToSave() is synchronous and returns the complete SerializableRun, so we
 /// can access all run data without re-reading from disk.
-/// Log files are written to:
-///   {UserDataDir}/RunReplays/logs/{seed}/floor_{floor}/{datetime}.log
+/// Two files are written per save:
+///   {UserDataDir}/RunReplays/logs/{seed}/floor_{floor}/{datetime}.verbose.log
+///   {UserDataDir}/RunReplays/logs/{seed}/floor_{floor}/{datetime}.minimal.log
 /// </summary>
 [HarmonyPatch(typeof(RunManager), nameof(RunManager.ToSave))]
 public static class RunSaveLogger
@@ -52,24 +53,41 @@ public static class RunSaveLogger
         string logsDir  = Path.Combine(OS.GetUserDataDir(), "RunReplays", "logs", seedDir, floorDir);
         Directory.CreateDirectory(logsDir);
 
-        string fileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.log";
-        string filePath = Path.Combine(logsDir, fileName);
+        string baseName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}";
 
-        var actions = PlayerActionBuffer.Snapshot();
+        var verboseActions = PlayerActionBuffer.Snapshot();
+        var minimalActions = PlayerActionBuffer.SnapshotMinimal();
 
+        WriteVerbose(Path.Combine(logsDir, $"{baseName}.verbose.log"),
+            seed, saveTime, totalFloor, verboseActions);
+
+        WriteMinimal(Path.Combine(logsDir, $"{baseName}.minimal.log"),
+            minimalActions);
+
+        GD.Print($"[RunReplays] Wrote save logs to: {logsDir}");
+    }
+
+    private static void WriteVerbose(string filePath, string seed, DateTime saveTime,
+        int totalFloor, IReadOnlyList<string> actions)
+    {
         var sb = new StringBuilder();
-        sb.AppendLine($"=== Run Replays – Action Log ===");
+        sb.AppendLine("=== Run Replays – Action Log (Verbose) ===");
         sb.AppendLine($"Seed:        {seed}");
         sb.AppendLine($"Saved at:    {saveTime:yyyy-MM-dd HH:mm:ss}");
         sb.AppendLine($"Floor:       {totalFloor + 1}");
         sb.AppendLine($"Actions:     {actions.Count}");
         sb.AppendLine();
-
         foreach (string entry in actions)
             sb.AppendLine(entry);
-
         File.WriteAllText(filePath, sb.ToString());
-        GD.Print($"[RunReplays] Wrote save log: {filePath}");
+    }
+
+    private static void WriteMinimal(string filePath, IReadOnlyList<string> actions)
+    {
+        var sb = new StringBuilder();
+        foreach (string entry in actions)
+            sb.AppendLine(entry);
+        File.WriteAllText(filePath, sb.ToString());
     }
 
     private static string SanitizeForFileName(string value)
