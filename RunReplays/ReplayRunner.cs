@@ -78,6 +78,18 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Potion rewards ────────────────────────────────────────────────────────
+
+    public static bool ExecutePotionReward(out string potionTitle)
+    {
+        if (!ReplayEngine.ConsumePotionReward(out potionTitle))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take potion reward '{potionTitle}'");
+        LogNext();
+        return true;
+    }
+
     // ── Gold rewards ──────────────────────────────────────────────────────────
 
     public static bool ExecuteGoldReward(out int goldAmount)
