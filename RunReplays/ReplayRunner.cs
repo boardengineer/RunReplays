@@ -78,6 +78,18 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Gold rewards ──────────────────────────────────────────────────────────
+
+    public static bool ExecuteGoldReward(out int goldAmount)
+    {
+        if (!ReplayEngine.ConsumeGoldReward(out goldAmount))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take gold reward {goldAmount}");
+        LogNext();
+        return true;
+    }
+
     // ── Diagnostics ───────────────────────────────────────────────────────────
 
     private static void LogNext(string? context = null)

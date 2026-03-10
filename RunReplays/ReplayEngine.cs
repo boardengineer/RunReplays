@@ -186,4 +186,28 @@ public static class ReplayEngine
         }
         return false;
     }
+
+    // ── Gold rewards ──────────────────────────────────────────────────────────
+
+    private const string GoldRewardPrefix = "TakeGoldReward: ";
+
+    public static bool PeekGoldReward(out int goldAmount)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(GoldRewardPrefix)
+            && int.TryParse(cmd.AsSpan(GoldRewardPrefix.Length), out goldAmount))
+            return true;
+
+        goldAmount = 0;
+        return false;
+    }
+
+    public static bool ConsumeGoldReward(out int goldAmount)
+    {
+        if (PeekGoldReward(out goldAmount))
+        {
+            _pending.Dequeue();
+            return true;
+        }
+        return false;
+    }
 }

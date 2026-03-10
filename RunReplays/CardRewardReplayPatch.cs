@@ -7,9 +7,9 @@ using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 namespace RunReplays;
 
 /// <summary>
-/// Harmony postfix on NSimpleCardSelectScreen.CardsSelected() that, when a
-/// replay is active and the next command is a TakeCardReward entry, defers an
-/// automatic card selection to the next Godot frame.
+/// Harmony postfix on NCardRewardSelectionScreen._Ready that, when a replay is
+/// active and the next command is a TakeCardReward entry, defers an automatic
+/// card selection to the next Godot frame.
 ///
 /// _Ready() is the hook because:
 ///   - It is a plain non-async method that Harmony can patch reliably.
@@ -21,24 +21,20 @@ namespace RunReplays;
 ///     by the time our deferred callback runs (next frame) _completionSource
 ///     is already in place and SelectCard() can complete the Task safely.
 ///
-/// The private _grid field (declared on the base NCardGridSelectionScreen) is
-/// accessed via reflection. Card holders inside the grid expose their CardModel
-/// through NCardHolder.CardModel (a public virtual property), so no reflection
-/// is needed to read the card title. The selection is completed by emitting the
-/// holder's "Pressed" signal, which NSimpleCardSelectScreen connects to its
-/// private SelectCard(NCardHolder) handler during setup.
+/// After the card is selected, BattleRewardsReplayPatch.OnCardRewardHandled()
+/// is called so that any subsequent reward buttons on NRewardsScreen
+/// (e.g. gold that follows a card reward) can be processed.
+///
+/// Card holders are found by searching the screen's full descendant tree for
+/// nodes that expose a CardModel property with the expected title. This avoids
+/// any dependency on private field names (_grid etc.) that differ between
+/// NCardRewardSelectionScreen and other selection screen types.
 /// </summary>
-[HarmonyPatch(typeof(NSimpleCardSelectScreen), "_Ready")]
+[HarmonyPatch(typeof(NCardRewardSelectionScreen), "_Ready")]
 public static class CardRewardReplayPatch
 {
-    // _grid is declared on NCardGridSelectionScreen (the direct base class).
-    private static readonly FieldInfo? GridField =
-        typeof(NSimpleCardSelectScreen).BaseType?.GetField(
-            "_grid",
-            BindingFlags.NonPublic | BindingFlags.Instance);
-
     [HarmonyPostfix]
-    public static void Postfix(NSimpleCardSelectScreen __instance)
+    public static void Postfix(NCardRewardSelectionScreen __instance)
     {
         if (!ReplayEngine.PeekCardReward(out string cardTitle))
             return;
@@ -49,22 +45,16 @@ public static class CardRewardReplayPatch
         Callable.From(() => AutoSelectCard(__instance, cardTitle)).CallDeferred();
     }
 
-    private static void AutoSelectCard(NSimpleCardSelectScreen screen, string expectedTitle)
+    private static void AutoSelectCard(NCardRewardSelectionScreen screen, string expectedTitle)
     {
         // Guard: replay may have been cancelled between scheduling and execution.
         if (!ReplayEngine.IsActive)
             return;
 
-        if (GridField?.GetValue(screen) is not Node grid)
-        {
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: could not access card grid via reflection.");
-            return;
-        }
-
-        // Search direct children first; fall back to recursive search in case
-        // the grid wraps holders inside an additional container node.
-        Node? match = FindHolderByTitle(grid.GetChildren(), expectedTitle)
-                   ?? FindHolderByTitle(grid.FindChildren("*", "", owned: false), expectedTitle);
+        // Search the full descendant tree for a card holder whose CardModel
+        // title matches. No need to scope through a grid field — FindChildren
+        // is recursive and handles any nesting depth.
+        Node? match = FindHolderByTitle(screen.FindChildren("*", "", owned: false), expectedTitle);
 
         if (match == null)
         {
@@ -72,33 +62,30 @@ public static class CardRewardReplayPatch
             return;
         }
 
-        // Consume before emitting: BattleRewardPatch.ObtainedCard fires
-        // synchronously inside SelectCard and will record the action, but the
-        // ReplayEngine queue should already be advanced past this entry.
+        // Consume before emitting: the signal fires synchronously inside
+        // SelectCard, so the queue should already be advanced past this entry.
         ReplayRunner.ExecuteCardReward(out _);
 
-        // Emitting "Pressed" on the holder triggers NSimpleCardSelectScreen's
+        // Emitting "Pressed" on the holder triggers NCardRewardSelectionScreen's
         // SelectCard(NCardHolder) handler, which completes the TaskCompletionSource
         // and causes CardsSelected() to return the chosen card.
         match.EmitSignal("Pressed", match);
         PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: auto-selected card reward '{expectedTitle}'.");
+
+        // Notify the rewards screen patch so it can process any remaining
+        // reward buttons (e.g. a gold reward recorded after the card pick).
+        BattleRewardsReplayPatch.OnCardRewardHandled();
     }
 
     /// <summary>
     /// Returns the first node in <paramref name="nodes"/> whose CardModel title
     /// matches <paramref name="expectedTitle"/>, or null if none is found.
-    /// CardModel is accessed as a public virtual property on NCardHolder without
-    /// reflection; we cast through object to avoid a hard compile-time dependency
-    /// on the NCardHolder type from this namespace.
     /// </summary>
     private static Node? FindHolderByTitle(
         Godot.Collections.Array<Node> nodes, string expectedTitle)
     {
         foreach (Node node in nodes)
         {
-            // CardModel is a public virtual property declared on NCardHolder.
-            // Access it reflectively so this file has no compile-time dependency
-            // on the MegaCrit.Sts2.Core.Nodes.Cards namespace.
             PropertyInfo? prop = node.GetType().GetProperty(
                 "CardModel", BindingFlags.Public | BindingFlags.Instance);
 
