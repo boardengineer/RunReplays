@@ -55,7 +55,7 @@ public static class MainMenuButtonInjector
 
     private static void OnRunReplaysPressed(NMainMenu mainMenu)
     {
-        GD.Print("[RunReplays] Run Replays button pressed!");
-        // TODO: push a replay-viewer submenu onto mainMenu.SubmenuStack
+        var menu = RunReplayMenu.Create(mainMenu);
+        mainMenu.AddChild(menu);
     }
 }
