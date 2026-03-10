@@ -51,19 +51,29 @@ public static class ReplayEngine
     }
 
     // ── Map node choices ──────────────────────────────────────────────────────
+    //
+    // Recorded by PlayerActionBuffer via MoveToMapCoordAction.ToString():
+    //   "MoveToMapCoordAction {playerId} MapCoord ({col}, {row})"
 
-    private const string MapNodePrefix = "ChooseMapNode ";
+    private const string MapNodePrefix   = "MoveToMapCoordAction ";
+    private const string MapCoordMarker  = "MapCoord (";
 
     public static bool PeekMapNode(out int col, out int row)
     {
         if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(MapNodePrefix))
         {
-            ReadOnlySpan<char> rest = cmd.AsSpan(MapNodePrefix.Length);
-            int space = rest.IndexOf(' ');
-            if (space > 0
-                && int.TryParse(rest[..space], out col)
-                && int.TryParse(rest[(space + 1)..], out row))
-                return true;
+            int markerIdx = cmd.IndexOf(MapCoordMarker, StringComparison.Ordinal);
+            if (markerIdx >= 0)
+            {
+                ReadOnlySpan<char> coords = cmd.AsSpan(markerIdx + MapCoordMarker.Length);
+                // coords = "{col}, {row})"
+                int comma = coords.IndexOf(',');
+                int close = coords.IndexOf(')');
+                if (comma > 0 && close > comma
+                    && int.TryParse(coords[..comma].Trim(), out col)
+                    && int.TryParse(coords[(comma + 1)..close].Trim(), out row))
+                    return true;
+            }
         }
         col = -1;
         row = -1;

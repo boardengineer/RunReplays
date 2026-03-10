@@ -71,14 +71,19 @@ public static class ReplayRunner
             int.TryParse(cmd.AsSpan("ChooseStartingBonus ".Length), out int bonusIdx))
             return $"choose starting bonus option {bonusIdx}";
 
-        if (cmd.StartsWith("ChooseMapNode "))
+        if (cmd.StartsWith("MoveToMapCoordAction "))
         {
-            var rest  = cmd.AsSpan("ChooseMapNode ".Length);
-            int space = rest.IndexOf(' ');
-            if (space > 0 &&
-                int.TryParse(rest[..space], out int col) &&
-                int.TryParse(rest[(space + 1)..], out int row))
-                return $"navigate to map node col={col} row={row}";
+            int markerIdx = cmd.IndexOf("MapCoord (", StringComparison.Ordinal);
+            if (markerIdx >= 0)
+            {
+                var coords = cmd.AsSpan(markerIdx + "MapCoord (".Length);
+                int comma = coords.IndexOf(',');
+                int close = coords.IndexOf(')');
+                if (comma > 0 && close > comma &&
+                    int.TryParse(coords[..comma].Trim(), out int col) &&
+                    int.TryParse(coords[(comma + 1)..close].Trim(), out int row))
+                    return $"navigate to map node col={col} row={row}";
+            }
         }
 
         if (cmd.StartsWith("TakeCardReward: "))
