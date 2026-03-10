@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace RunReplays;
@@ -83,6 +84,55 @@ public static class ReplayEngine
     public static bool ConsumeMapNode(out int col, out int row)
     {
         if (PeekMapNode(out col, out row))
+        {
+            _pending.Dequeue();
+            return true;
+        }
+        return false;
+    }
+
+    // ── Card plays ────────────────────────────────────────────────────────────
+    //
+    // Recorded by PlayerActionBuffer via PlayCardAction.ToString():
+    //   "PlayCardAction card: {CardModel} index: {CombatCardIndex} targetid: {TargetId}"
+    // TargetId prints as empty string when null.
+
+    private const string CardPlayPrefix       = "PlayCardAction ";
+    private const string CardPlayIndexMarker  = " index: ";
+    private const string CardPlayTargetMarker = " targetid: ";
+
+    public static bool PeekCardPlay(out uint combatCardIndex, out uint? targetId)
+    {
+        combatCardIndex = 0;
+        targetId = null;
+
+        if (!_pending.TryPeek(out string? cmd) || !cmd.StartsWith(CardPlayPrefix))
+            return false;
+
+        // Parse from the right so card display names containing spaces are safe.
+        int targetIdx = cmd.LastIndexOf(CardPlayTargetMarker, StringComparison.Ordinal);
+        int indexIdx  = cmd.LastIndexOf(CardPlayIndexMarker,  StringComparison.Ordinal);
+
+        if (targetIdx < 0 || indexIdx < 0 || indexIdx >= targetIdx)
+            return false;
+
+        ReadOnlySpan<char> indexStr = cmd.AsSpan(
+            indexIdx + CardPlayIndexMarker.Length,
+            targetIdx - indexIdx - CardPlayIndexMarker.Length).Trim();
+
+        if (!uint.TryParse(indexStr, out combatCardIndex))
+            return false;
+
+        ReadOnlySpan<char> targetStr = cmd.AsSpan(targetIdx + CardPlayTargetMarker.Length).Trim();
+        if (targetStr.Length > 0 && uint.TryParse(targetStr, out uint tid))
+            targetId = tid;
+
+        return true;
+    }
+
+    public static bool ConsumeCardPlay(out uint combatCardIndex, out uint? targetId)
+    {
+        if (PeekCardPlay(out combatCardIndex, out targetId))
         {
             _pending.Dequeue();
             return true;

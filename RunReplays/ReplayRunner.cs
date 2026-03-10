@@ -41,6 +41,19 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Card plays ────────────────────────────────────────────────────────────
+
+    public static bool ExecuteCardPlay(out uint combatCardIndex, out uint? targetId)
+    {
+        if (!ReplayEngine.ConsumeCardPlay(out combatCardIndex, out targetId))
+            return false;
+
+        string target = targetId.HasValue ? $" targeting id={targetId}" : "";
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: play card index={combatCardIndex}{target}");
+        LogNext();
+        return true;
+    }
+
     // ── Card rewards ──────────────────────────────────────────────────────────
 
     public static bool ExecuteCardReward(out string cardTitle)
@@ -83,6 +96,22 @@ public static class ReplayRunner
                     int.TryParse(coords[..comma].Trim(), out int col) &&
                     int.TryParse(coords[(comma + 1)..close].Trim(), out int row))
                     return $"navigate to map node col={col} row={row}";
+            }
+        }
+
+        if (cmd.StartsWith("PlayCardAction "))
+        {
+            int targetIdx = cmd.LastIndexOf(" targetid: ", StringComparison.Ordinal);
+            int indexIdx  = cmd.LastIndexOf(" index: ",    StringComparison.Ordinal);
+            if (indexIdx >= 0 && targetIdx > indexIdx)
+            {
+                var indexSpan  = cmd.AsSpan(indexIdx + " index: ".Length, targetIdx - indexIdx - " index: ".Length).Trim();
+                var targetSpan = cmd.AsSpan(targetIdx + " targetid: ".Length).Trim();
+                if (uint.TryParse(indexSpan, out uint idx))
+                {
+                    string targetStr = targetSpan.Length > 0 ? $" targeting id={targetSpan}" : "";
+                    return $"play card index={idx}{targetStr}";
+                }
             }
         }
 
