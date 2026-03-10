@@ -39,7 +39,9 @@ public static class PlayerActionBuffer
 
         __instance.AfterActionExecuted += action =>
         {
-            if (!action.RecordableToReplay || action is VoteForMapCoordAction)
+            if (!action.RecordableToReplay
+                || action is VoteForMapCoordAction
+                || action is ReadyToBeginEnemyTurnAction)
                 return;
 
             string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
