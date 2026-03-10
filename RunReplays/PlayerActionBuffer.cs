@@ -116,7 +116,7 @@ public static class PlayerActionBuffer
     private static readonly FieldInfo? _instanceField =
         typeof(NDevConsole).GetField("_instance", BindingFlags.NonPublic | BindingFlags.Static);
 
-    private static void LogToDevConsole(string entry)
+    internal static void LogToDevConsole(string entry)
     {
         // Check the backing field directly to avoid the InvalidOperationException
         // that NDevConsole.Instance throws when the console hasn't been created yet.

@@ -246,7 +246,7 @@ public static class RunReplayMenu
         // as the new run reaches each decision point.
         string[] lines   = File.ReadAllLines(entry.MinimalLogPath);
         var      commands = lines.Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
-        ReplayEngine.Load(commands);
+        ReplayRunner.Load(commands);
 
         // Resolve the character model by matching the stored entry string against
         // all registered characters. Fall back to the first available character

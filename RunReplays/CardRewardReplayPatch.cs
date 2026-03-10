@@ -1,4 +1,3 @@
-using System;
 using System.Reflection;
 using Godot;
 using HarmonyLib;
@@ -58,7 +57,7 @@ public static class CardRewardReplayPatch
 
         if (GridField?.GetValue(screen) is not Node grid)
         {
-            GD.PrintErr("[RunReplays] Replay: could not access card grid via reflection.");
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: could not access card grid via reflection.");
             return;
         }
 
@@ -69,20 +68,20 @@ public static class CardRewardReplayPatch
 
         if (match == null)
         {
-            GD.PrintErr($"[RunReplays] Replay: card '{expectedTitle}' not found in reward screen.");
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: card '{expectedTitle}' not found in reward screen.");
             return;
         }
 
         // Consume before emitting: BattleRewardPatch.ObtainedCard fires
         // synchronously inside SelectCard and will record the action, but the
         // ReplayEngine queue should already be advanced past this entry.
-        ReplayEngine.ConsumeCardReward(out _);
+        ReplayRunner.ExecuteCardReward(out _);
 
         // Emitting "Pressed" on the holder triggers NSimpleCardSelectScreen's
         // SelectCard(NCardHolder) handler, which completes the TaskCompletionSource
         // and causes CardsSelected() to return the chosen card.
         match.EmitSignal("Pressed", match);
-        GD.Print($"[RunReplays] Replay: auto-selected card reward '{expectedTitle}'.");
+        PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: auto-selected card reward '{expectedTitle}'.");
     }
 
     /// <summary>
