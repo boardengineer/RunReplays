@@ -39,6 +39,9 @@ public static class PlayerActionBuffer
 
         __instance.AfterActionExecuted += action =>
         {
+            if (ReplayEngine.IsActive)
+                return;
+
             if (!action.RecordableToReplay
                 || action is VoteForMapCoordAction
                 || action is ReadyToBeginEnemyTurnAction)
@@ -58,6 +61,9 @@ public static class PlayerActionBuffer
     /// </summary>
     public static void Record(string text)
     {
+        if (ReplayEngine.IsActive)
+            return;
+
         string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
         _verboseEntries.Enqueue((timestamp, text));
         _minimalEntries.Enqueue(text);
@@ -70,6 +76,9 @@ public static class PlayerActionBuffer
     /// </summary>
     public static void RecordVerboseOnly(string text)
     {
+        if (ReplayEngine.IsActive)
+            return;
+
         string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
         _verboseEntries.Enqueue((timestamp, text));
         LogToDevConsole($"[{timestamp}] {text}");
@@ -81,6 +90,9 @@ public static class PlayerActionBuffer
     /// </summary>
     public static void RecordMinimalOnly(string text)
     {
+        if (ReplayEngine.IsActive)
+            return;
+
         _minimalEntries.Enqueue(text);
     }
 

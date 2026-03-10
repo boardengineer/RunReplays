@@ -25,6 +25,9 @@ public static class RunSaveLogger
     [HarmonyPostfix]
     public static void Postfix(SerializableRun __result)
     {
+        if (ReplayEngine.IsActive)
+            return;
+
         try
         {
             WriteRunLog(__result);
