@@ -4,12 +4,15 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Nodes.Screens;
+using MegaCrit.Sts2.Core.Nodes.Screens.Map;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace RunReplays;
 
 /// <summary>
 /// Harmony postfix on NRewardsScreen._Ready that automatically claims reward
-/// buttons in replay order.
+/// buttons in replay order, then proceeds to the map when the next command is
+/// a MoveToMapCoordAction.
 ///
 /// Gold rewards are fully handled here: the command is consumed from
 /// ReplayEngine and NRewardButton.GetReward() is invoked so that the game's
@@ -18,7 +21,11 @@ namespace RunReplays;
 /// Card rewards are triggered by clicking the card button (also via GetReward),
 /// which opens NCardRewardSelectionScreen. CardRewardReplayPatch then handles
 /// the actual card selection and calls OnCardRewardHandled() when done so that
-/// any subsequent reward buttons can be processed.
+/// any subsequent reward buttons or the map transition can be processed.
+///
+/// When no more reward commands remain and the next command is
+/// MoveToMapCoordAction, ProceedFromTerminalRewardsScreen is called to close
+/// the screen and SetTravelEnabled fires MapChoiceReplayPatch.
 ///
 /// NRewardButton children are located by walking FindChildren and matching the
 /// reward's runtime type name against "GoldReward" or "CardReward" (walking
@@ -30,10 +37,14 @@ namespace RunReplays;
 public static class BattleRewardsReplayPatch
 {
     // NRewardButton base type — used for IsAssignableFrom checks.
-    // Godot generates runtime subclasses, so exact type equality is wrong.
     private static readonly Type? NRewardButtonType =
         typeof(NRewardsScreen).Assembly
             .GetType("MegaCrit.Sts2.Core.Nodes.Rewards.NRewardButton");
+
+    private static readonly MethodInfo? RecalculateTravelabilityMethod =
+        typeof(NMapScreen).GetMethod(
+            "RecalculateTravelability",
+            BindingFlags.NonPublic | BindingFlags.Instance);
 
     // Kept so OnCardRewardHandled() can re-trigger processing after the card
     // selection screen closes.
@@ -45,14 +56,14 @@ public static class BattleRewardsReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        PlayerActionBuffer.LogToDevConsole(
-            $"[RunReplays] BattleRewardsReplayPatch: NRewardsScreen ready, NRewardButtonType={NRewardButtonType?.FullName ?? "null"}");
+        bool hasReward = ReplayEngine.PeekGoldReward(out _) || ReplayEngine.PeekCardReward(out _);
+        bool hasMapNode = ReplayEngine.PeekMapNode(out _, out _);
 
-        if (!ReplayEngine.PeekGoldReward(out _) && !ReplayEngine.PeekCardReward(out _))
+        if (!hasReward && !hasMapNode)
         {
             ReplayEngine.PeekNext(out string? next);
             PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] BattleRewardsReplayPatch: next command is not a reward ('{next ?? "(none)"}'), skipping.");
+                $"[RunReplays] BattleRewardsReplayPatch: next command is not a reward or map node ('{next ?? "(none)"}'), skipping.");
             return;
         }
 
@@ -62,7 +73,7 @@ public static class BattleRewardsReplayPatch
 
     /// <summary>
     /// Called by CardRewardReplayPatch after a card has been auto-selected so
-    /// that any reward buttons remaining after the card pick can be processed.
+    /// that any reward buttons or map transition remaining can be processed.
     /// </summary>
     public static void OnCardRewardHandled()
     {
@@ -93,7 +104,6 @@ public static class BattleRewardsReplayPatch
             InvokeGetReward(goldButton);
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: auto-claimed gold reward ({goldAmount}).");
 
-            // After gold, check whether there is a card reward to trigger next.
             Callable.From(() => ProcessNextReward(screen)).CallDeferred();
             return;
         }
@@ -111,13 +121,26 @@ public static class BattleRewardsReplayPatch
             // once NCardRewardSelectionScreen opens and the card is selected.
             InvokeGetReward(cardButton);
             PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: triggered card reward button.");
+            return;
         }
+
+        if (ReplayEngine.PeekMapNode(out _, out _))
+        {
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: all rewards done, proceeding to map.");
+            if (NMapScreen.Instance != null)
+                RecalculateTravelabilityMethod?.Invoke(NMapScreen.Instance, null);
+            TaskHelper.RunSafely(ProceedToMapAsync());
+        }
+    }
+
+    private static async Task ProceedToMapAsync()
+    {
+        await RunManager.Instance.ProceedFromTerminalRewardsScreen();
+        NMapScreen.Instance?.SetTravelEnabled(enabled: true);
     }
 
     private static void InvokeGetReward(Node button)
     {
-        // Look up GetReward on the actual runtime type so virtual dispatch works
-        // correctly with Godot-generated subclasses.
         MethodInfo? method = button.GetType()
             .GetMethod("GetReward", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -133,12 +156,6 @@ public static class BattleRewardsReplayPatch
             TaskHelper.RunSafely(task);
     }
 
-    /// <summary>
-    /// Finds the first NRewardButton (or subtype) whose Reward is of the given
-    /// base type name, searching the full descendant tree of <paramref name="root"/>.
-    /// Uses IsAssignableFrom for the node type check so Godot-generated runtime
-    /// subclasses (e.g. NRewardButton0MegaCrit) are matched correctly.
-    /// </summary>
     private static Node? FindRewardButton(Node root, string rewardBaseTypeName)
     {
         if (NRewardButtonType == null)
@@ -147,24 +164,15 @@ public static class BattleRewardsReplayPatch
             return null;
         }
 
-        var allChildren = root.FindChildren("*", "", owned: false);
-        PlayerActionBuffer.LogToDevConsole(
-            $"[RunReplays] FindRewardButton({rewardBaseTypeName}): searching {allChildren.Count} descendants.");
-
-        foreach (Node node in allChildren)
+        foreach (Node node in root.FindChildren("*", "", owned: false))
         {
             if (!NRewardButtonType.IsAssignableFrom(node.GetType()))
                 continue;
 
-            // Look up Reward on the actual runtime type.
             PropertyInfo? rewardProp = node.GetType()
                 .GetProperty("Reward", BindingFlags.Public | BindingFlags.Instance);
 
             object? reward = rewardProp?.GetValue(node);
-
-            PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] Found NRewardButton subtype={node.GetType().Name} reward={reward?.GetType().Name ?? "null"}");
-
             if (IsRewardOfType(reward, rewardBaseTypeName))
                 return node;
         }
