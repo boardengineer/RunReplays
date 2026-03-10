@@ -78,8 +78,8 @@ public static class RunContinuePatch
         var entries = new List<(string, string)>();
         string[] lines = File.ReadAllLines(filePath);
 
-        // Header is: === banner, Seed:, Saved at:, Floor:, Actions:, blank line — skip 6 lines.
-        const int headerLines = 6;
+        // Header is: === banner, Seed:, Character:, Saved at:, Floor:, Actions:, blank line — skip 7 lines.
+        const int headerLines = 7;
 
         for (int i = headerLines; i < lines.Length; i++)
         {

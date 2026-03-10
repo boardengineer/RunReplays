@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Godot;
 using HarmonyLib;
@@ -36,7 +37,8 @@ public static class RunSaveLogger
 
     private static void WriteRunLog(SerializableRun run)
     {
-        string seed = run.SerializableRng?.Seed ?? "unknown-seed";
+        string seed      = run.SerializableRng?.Seed ?? "unknown-seed";
+        string character = run.Players?.FirstOrDefault()?.CharacterId?.Entry ?? "unknown-character";
 
         // SaveTime / StartTime are seconds since Unix epoch (ToUnixTimeSeconds).
         var saveTime = DateTimeOffset.FromUnixTimeSeconds(run.SaveTime).LocalDateTime;
@@ -59,7 +61,7 @@ public static class RunSaveLogger
         var minimalActions = PlayerActionBuffer.SnapshotMinimal();
 
         WriteVerbose(Path.Combine(logsDir, $"{baseName}.verbose.log"),
-            seed, saveTime, totalFloor, verboseActions);
+            seed, character, saveTime, totalFloor, verboseActions);
 
         WriteMinimal(Path.Combine(logsDir, $"{baseName}.minimal.log"),
             minimalActions);
@@ -67,12 +69,13 @@ public static class RunSaveLogger
         GD.Print($"[RunReplays] Wrote save logs to: {logsDir}");
     }
 
-    private static void WriteVerbose(string filePath, string seed, DateTime saveTime,
-        int totalFloor, IReadOnlyList<string> actions)
+    private static void WriteVerbose(string filePath, string seed, string character,
+        DateTime saveTime, int totalFloor, IReadOnlyList<string> actions)
     {
         var sb = new StringBuilder();
         sb.AppendLine("=== Run Replays – Action Log (Verbose) ===");
         sb.AppendLine($"Seed:        {seed}");
+        sb.AppendLine($"Character:   {character}");
         sb.AppendLine($"Saved at:    {saveTime:yyyy-MM-dd HH:mm:ss}");
         sb.AppendLine($"Floor:       {totalFloor + 1}");
         sb.AppendLine($"Actions:     {actions.Count}");
