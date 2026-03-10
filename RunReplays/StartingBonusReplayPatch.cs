@@ -1,8 +1,12 @@
+using System.Reflection;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Events;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
+using MegaCrit.Sts2.Core.Nodes.Screens.Map;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace RunReplays;
 
@@ -38,5 +42,28 @@ public static class StartingBonusReplayPatch
             return;
 
         synchronizer.ChooseLocalOption(choiceIndex);
+
+        // ChooseLocalOption fires eventOption.Chosen() as a fire-and-forget Task.
+        // Defer one frame so that async chain has started before we proceed.
+        Callable.From(Proceed).CallDeferred();
+    }
+
+    private static readonly MethodInfo? RecalculateTravelabilityMethod =
+        typeof(NMapScreen).GetMethod(
+            "RecalculateTravelability",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+    private static void Proceed()
+    {
+        if (NMapScreen.Instance != null)
+            RecalculateTravelabilityMethod?.Invoke(NMapScreen.Instance, null);
+
+        TaskHelper.RunSafely(ProceedAsync());
+    }
+
+    private static async System.Threading.Tasks.Task ProceedAsync()
+    {
+        await RunManager.Instance.ProceedFromTerminalRewardsScreen();
+        NMapScreen.Instance?.SetTravelEnabled(enabled: true);
     }
 }
