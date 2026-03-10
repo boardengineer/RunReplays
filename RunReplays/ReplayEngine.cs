@@ -91,6 +91,28 @@ public static class ReplayEngine
         return false;
     }
 
+    // ── End player turn ───────────────────────────────────────────────────────
+    //
+    // Recorded by PlayerActionBuffer via EndPlayerTurnAction.ToString():
+    //   "EndPlayerTurnAction for player {playerId} round {combatRound}"
+
+    private const string EndTurnPrefix = "EndPlayerTurnAction ";
+
+    public static bool PeekEndTurn()
+    {
+        return _pending.TryPeek(out string? cmd) && cmd.StartsWith(EndTurnPrefix);
+    }
+
+    public static bool ConsumeEndTurn()
+    {
+        if (PeekEndTurn())
+        {
+            _pending.Dequeue();
+            return true;
+        }
+        return false;
+    }
+
     // ── Card plays ────────────────────────────────────────────────────────────
     //
     // Recorded by PlayerActionBuffer via PlayCardAction.ToString():

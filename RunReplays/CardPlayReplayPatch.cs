@@ -2,6 +2,8 @@ using System;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Commands;
+using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -10,22 +12,22 @@ using MegaCrit.Sts2.Core.Models;
 namespace RunReplays;
 
 /// <summary>
-/// Drives automatic card play during combat replays.
+/// Drives automatic card play and turn-ending during combat replays.
 ///
-/// Two triggers are used:
+/// Three triggers are used:
 ///
-///   1. CombatManager.TurnStarted — fires at the start of every player turn,
-///      which is when the hand first becomes playable.  Subscribed once per run
-///      from the ActionExecutor constructor patch (same lifecycle hook used by
-///      PlayerActionBuffer).  A static field prevents handler accumulation
-///      across multiple runs.
+///   1. CombatManager.TurnStarted — fires at the start of every player turn.
+///      Plays the first card of the turn (or ends it immediately if the next
+///      command is EndPlayerTurnAction with no cards to play first).
 ///
 ///   2. AfterActionExecuted for PlayCardAction — chains the next card play
-///      immediately after the previous one is fully executed, covering the case
-///      where multiple cards must be played in sequence during a single turn.
+///      after each card executes.  When no more card plays remain, checks
+///      whether the next command is EndPlayerTurnAction and ends the turn.
 ///
-/// Actual play is delegated to CardModel.TryManualPlay(target), which performs
-/// its own CanPlayTargeting check before enqueuing the PlayCardAction.
+///   3. Both paths call TryEndTurn after exhausting card plays.
+///
+/// Subscribed once per run from the ActionExecutor constructor patch.
+/// A static field prevents handler accumulation across multiple runs.
 /// </summary>
 [HarmonyPatch(typeof(ActionExecutor), MethodType.Constructor, new[] { typeof(ActionQueueSet) })]
 public static class CardPlayReplayPatch
@@ -52,10 +54,10 @@ public static class CardPlayReplayPatch
     {
         _currentCombatState = combatState;
 
-        if (!ReplayEngine.PeekCardPlay(out _, out _))
-            return;
-
-        Callable.From(TryPlayNextCard).CallDeferred();
+        if (ReplayEngine.PeekCardPlay(out _, out _))
+            Callable.From(TryPlayNextCard).CallDeferred();
+        else if (ReplayEngine.PeekEndTurn())
+            Callable.From(TryEndTurn).CallDeferred();
     }
 
     // ── Post-card-play chain trigger ──────────────────────────────────────────
@@ -65,10 +67,10 @@ public static class CardPlayReplayPatch
         if (action is not PlayCardAction)
             return;
 
-        if (!ReplayEngine.PeekCardPlay(out _, out _))
-            return;
-
-        Callable.From(TryPlayNextCard).CallDeferred();
+        if (ReplayEngine.PeekCardPlay(out _, out _))
+            Callable.From(TryPlayNextCard).CallDeferred();
+        else if (ReplayEngine.PeekEndTurn())
+            Callable.From(TryEndTurn).CallDeferred();
     }
 
     // ── Execution ─────────────────────────────────────────────────────────────
@@ -97,5 +99,22 @@ public static class CardPlayReplayPatch
         if (!card.TryManualPlay(target))
             PlayerActionBuffer.LogToDevConsole(
                 $"[RunReplays] CardPlay: TryManualPlay failed for card index {combatCardIndex}.");
+    }
+
+    // ── End-turn execution ────────────────────────────────────────────────────
+
+    private static void TryEndTurn()
+    {
+        if (!ReplayRunner.ExecuteEndTurn())
+            return;
+
+        var player = LocalContext.GetMe(_currentCombatState);
+        if (player == null)
+        {
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] EndTurn: could not resolve local player.");
+            return;
+        }
+
+        PlayerCmd.EndTurn(player, canBackOut: false);
     }
 }

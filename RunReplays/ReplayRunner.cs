@@ -41,6 +41,18 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── End player turn ───────────────────────────────────────────────────────
+
+    public static bool ExecuteEndTurn()
+    {
+        if (!ReplayEngine.ConsumeEndTurn())
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: end player turn");
+        LogNext();
+        return true;
+    }
+
     // ── Card plays ────────────────────────────────────────────────────────────
 
     public static bool ExecuteCardPlay(out uint combatCardIndex, out uint? targetId)
@@ -98,6 +110,9 @@ public static class ReplayRunner
                     return $"navigate to map node col={col} row={row}";
             }
         }
+
+        if (cmd.StartsWith("EndPlayerTurnAction "))
+            return "end player turn";
 
         if (cmd.StartsWith("PlayCardAction "))
         {
