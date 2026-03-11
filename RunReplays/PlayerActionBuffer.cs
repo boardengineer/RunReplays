@@ -24,6 +24,9 @@ namespace RunReplays;
 [HarmonyPatch(typeof(ActionExecutor), MethodType.Constructor, new[] { typeof(ActionQueueSet) })]
 public static class PlayerActionBuffer
 {
+    /// <summary>Fired (on the calling thread) each time a line is added to the buffer.</summary>
+    internal static event Action<string>? EntryRecorded;
+
     // Separate queues allow verbose and minimal to hold entirely different
     // content for the same event (e.g. a multi-line block vs a single summary).
     // Thread-safe: AfterActionExecuted fires from async action execution.
@@ -36,6 +39,8 @@ public static class PlayerActionBuffer
         // Clear both queues whenever a new executor is created (new run start).
         while (_verboseEntries.TryDequeue(out _)) { }
         while (_minimalEntries.TryDequeue(out _)) { }
+
+        RunOverlay.InitForRun();
 
         __instance.AfterActionExecuted += action =>
         {
@@ -52,6 +57,7 @@ public static class PlayerActionBuffer
             _verboseEntries.Enqueue((timestamp, actionText));
             _minimalEntries.Enqueue(actionText);
             LogToDevConsole($"[{timestamp}] {actionText}");
+            EntryRecorded?.Invoke(actionText);
 
             // Hand-card selections (e.g. Touch of Insanity) fire SyncLocalChoice
             // mid-action, before AfterActionExecuted.  Flush the buffered command
@@ -74,6 +80,7 @@ public static class PlayerActionBuffer
         _verboseEntries.Enqueue((timestamp, text));
         _minimalEntries.Enqueue(text);
         LogToDevConsole($"[{timestamp}] {text}");
+        EntryRecorded?.Invoke(text);
     }
 
     /// <summary>
@@ -88,6 +95,7 @@ public static class PlayerActionBuffer
         string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
         _verboseEntries.Enqueue((timestamp, text));
         LogToDevConsole($"[{timestamp}] {text}");
+        EntryRecorded?.Invoke(text);
     }
 
     /// <summary>

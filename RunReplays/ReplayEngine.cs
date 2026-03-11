@@ -13,17 +13,64 @@ public static class ReplayEngine
 {
     private static readonly Queue<string> _pending = new();
 
+    // ── Overlay context ───────────────────────────────────────────────────────
+
+    /// <summary>Fired on the calling thread each time a command is consumed.</summary>
+    internal static event Action? ContextChanged;
+
+    private static readonly List<string> _recentConsumed = new(2);
+
+    /// <summary>
+    /// Dequeues one command, records it in the recent-history buffer, and
+    /// fires ContextChanged so the overlay can refresh.
+    /// </summary>
+    private static string SignalConsumed(string cmd)
+    {
+        if (_recentConsumed.Count >= 2)
+            _recentConsumed.RemoveAt(0);
+        _recentConsumed.Add(cmd);
+        ContextChanged?.Invoke();
+        return cmd;
+    }
+
+    /// <summary>
+    /// Returns up to 2 recently consumed commands (prev), the current front of
+    /// the queue (current), and up to 2 commands ahead of it (next).
+    /// </summary>
+    internal static void GetReplayContext(
+        out IReadOnlyList<string> prev,
+        out string? current,
+        out IReadOnlyList<string> next)
+    {
+        prev = _recentConsumed;
+
+        string[] arr = _pending.ToArray();
+        current = arr.Length > 0 ? arr[0] : null;
+
+        var nextList = new List<string>(2);
+        for (int i = 1; i < Math.Min(arr.Length, 3); i++)
+            nextList.Add(arr[i]);
+        next = nextList;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+
     public static bool IsActive => _pending.Count > 0;
 
     public static void Load(IReadOnlyList<string> commands)
     {
         _pending.Clear();
+        _recentConsumed.Clear();
         foreach (string cmd in commands)
             if (!string.IsNullOrWhiteSpace(cmd))
                 _pending.Enqueue(cmd);
     }
 
-    public static void Clear() => _pending.Clear();
+    public static void Clear()
+    {
+        _pending.Clear();
+        _recentConsumed.Clear();
+    }
 
     /// <summary>Returns the next queued command without consuming it.</summary>
     public static bool PeekNext(out string? cmd) => _pending.TryPeek(out cmd);
@@ -46,7 +93,7 @@ public static class ReplayEngine
     {
         if (PeekStartingBonus(out choiceIndex))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -86,7 +133,7 @@ public static class ReplayEngine
     {
         if (PeekMapNode(out col, out row))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -108,7 +155,7 @@ public static class ReplayEngine
     {
         if (PeekEndTurn())
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -139,7 +186,7 @@ public static class ReplayEngine
     {
         if (PeekNetDiscardPotion(out slotIndex))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -199,7 +246,7 @@ public static class ReplayEngine
     {
         if (PeekUsePotion(out potionIndex, out targetId, out inCombat))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -248,7 +295,7 @@ public static class ReplayEngine
     {
         if (PeekCardPlay(out combatCardIndex, out targetId))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -273,7 +320,7 @@ public static class ReplayEngine
     {
         if (PeekCardReward(out cardTitle))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -298,7 +345,7 @@ public static class ReplayEngine
     {
         if (PeekRelicReward(out relicTitle))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -323,7 +370,7 @@ public static class ReplayEngine
     {
         if (PeekPotionReward(out potionTitle))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -351,7 +398,7 @@ public static class ReplayEngine
     {
         if (PeekEventOption(out textKey))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -378,7 +425,7 @@ public static class ReplayEngine
     {
         if (PeekUpgradeCard(out deckIndex))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -490,7 +537,7 @@ public static class ReplayEngine
     {
         if (PeekRestSiteOption(out optionId))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -515,7 +562,7 @@ public static class ReplayEngine
     {
         if (PeekTakeChestRelic(out relicTitle))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -542,7 +589,7 @@ public static class ReplayEngine
     {
         if (PeekNetPickRelicAction(out relicIndex))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -566,7 +613,7 @@ public static class ReplayEngine
     {
         if (PeekGoldReward(out goldAmount))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
@@ -609,7 +656,7 @@ public static class ReplayEngine
     {
         if (PeekSelectHandCards(out cardIds))
         {
-            _pending.Dequeue();
+            SignalConsumed(_pending.Dequeue());
             return true;
         }
         return false;
