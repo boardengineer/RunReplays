@@ -10,6 +10,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Merchant;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
+using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 
 namespace RunReplays;
 
@@ -98,6 +99,14 @@ public static class ShopOpenedReplayPatch
         if (TryBuyCardRemoval(room, entries)) return;
 
         PlayerActionBuffer.LogToDevConsole("[ShopReplayPatch] No more shop purchase commands pending.");
+
+        // All purchases done — if a map move is next, open the map directly.
+        if (!ReplayEngine.PeekMapNode(out _, out _))
+            return;
+
+        PlayerActionBuffer.LogToDevConsole("[ShopReplayPatch] Map move next — opening map.");
+        NMapScreen.Instance?.Open();
+        NMapScreen.Instance?.SetTravelEnabled(true);
     }
 
     private static async Task RetryAfterDelay(NMerchantRoom room, int retriesLeft)
