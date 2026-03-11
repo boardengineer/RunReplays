@@ -187,6 +187,31 @@ public static class ReplayEngine
         return false;
     }
 
+    // ── Relic rewards ─────────────────────────────────────────────────────────
+
+    private const string RelicRewardPrefix = "TakeRelicReward: ";
+
+    public static bool PeekRelicReward(out string relicTitle)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(RelicRewardPrefix))
+        {
+            relicTitle = cmd.Substring(RelicRewardPrefix.Length);
+            return true;
+        }
+        relicTitle = string.Empty;
+        return false;
+    }
+
+    public static bool ConsumeRelicReward(out string relicTitle)
+    {
+        if (PeekRelicReward(out relicTitle))
+        {
+            _pending.Dequeue();
+            return true;
+        }
+        return false;
+    }
+
     // ── Potion rewards ────────────────────────────────────────────────────────
 
     private const string PotionRewardPrefix = "TakePotionReward: ";

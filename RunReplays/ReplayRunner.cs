@@ -78,6 +78,18 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Relic rewards ─────────────────────────────────────────────────────────
+
+    public static bool ExecuteRelicReward(out string relicTitle)
+    {
+        if (!ReplayEngine.ConsumeRelicReward(out relicTitle))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take relic reward '{relicTitle}'");
+        LogNext();
+        return true;
+    }
+
     // ── Potion rewards ────────────────────────────────────────────────────────
 
     public static bool ExecutePotionReward(out string potionTitle)

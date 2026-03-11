@@ -58,6 +58,7 @@ public static class BattleRewardsReplayPatch
 
         bool hasReward = ReplayEngine.PeekGoldReward(out _)
                       || ReplayEngine.PeekCardReward(out _)
+                      || ReplayEngine.PeekRelicReward(out _)
                       || ReplayEngine.PeekPotionReward(out _);
         bool hasMapNode = ReplayEngine.PeekMapNode(out _, out _);
 
@@ -123,6 +124,23 @@ public static class BattleRewardsReplayPatch
             // once NCardRewardSelectionScreen opens and the card is selected.
             InvokeGetReward(cardButton);
             PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: triggered card reward button.");
+            return;
+        }
+
+        if (ReplayEngine.PeekRelicReward(out string relicTitle))
+        {
+            Node? relicButton = FindRewardButton(screen, "RelicReward");
+            if (relicButton == null)
+            {
+                PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: could not find relic reward button.");
+                return;
+            }
+
+            ReplayRunner.ExecuteRelicReward(out _);
+            InvokeGetReward(relicButton);
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: auto-claimed relic reward '{relicTitle}'.");
+
+            Callable.From(() => ProcessNextReward(screen)).CallDeferred();
             return;
         }
 
