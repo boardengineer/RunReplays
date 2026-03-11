@@ -267,6 +267,90 @@ public static class ReplayEngine
         return false;
     }
 
+    // ── Shop commands ─────────────────────────────────────────────────────────
+    //
+    // Recorded by ShopRecordPatch:
+    //   "OpenShop"
+    //   "BuyCard {title}"
+    //   "BuyRelic {title}"
+    //   "BuyPotion {title}"
+    //   "BuyCardRemoval"
+
+    private const string OpenShopCmd        = "OpenShop";
+    private const string BuyCardPrefix      = "BuyCard ";
+    private const string BuyRelicPrefix     = "BuyRelic ";
+    private const string BuyPotionPrefix    = "BuyPotion ";
+    private const string BuyCardRemovalCmd  = "BuyCardRemoval";
+
+    public static bool PeekOpenShop()
+        => _pending.TryPeek(out string? cmd) && cmd == OpenShopCmd;
+
+    public static bool ConsumeOpenShop()
+    {
+        if (PeekOpenShop()) { _pending.Dequeue(); return true; }
+        return false;
+    }
+
+    public static bool PeekBuyCard(out string cardTitle)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(BuyCardPrefix))
+        {
+            cardTitle = cmd.Substring(BuyCardPrefix.Length);
+            return true;
+        }
+        cardTitle = string.Empty;
+        return false;
+    }
+
+    public static bool ConsumeBuyCard(out string cardTitle)
+    {
+        if (PeekBuyCard(out cardTitle)) { _pending.Dequeue(); return true; }
+        return false;
+    }
+
+    public static bool PeekBuyRelic(out string relicTitle)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(BuyRelicPrefix))
+        {
+            relicTitle = cmd.Substring(BuyRelicPrefix.Length);
+            return true;
+        }
+        relicTitle = string.Empty;
+        return false;
+    }
+
+    public static bool ConsumeBuyRelic(out string relicTitle)
+    {
+        if (PeekBuyRelic(out relicTitle)) { _pending.Dequeue(); return true; }
+        return false;
+    }
+
+    public static bool PeekBuyPotion(out string potionTitle)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(BuyPotionPrefix))
+        {
+            potionTitle = cmd.Substring(BuyPotionPrefix.Length);
+            return true;
+        }
+        potionTitle = string.Empty;
+        return false;
+    }
+
+    public static bool ConsumeBuyPotion(out string potionTitle)
+    {
+        if (PeekBuyPotion(out potionTitle)) { _pending.Dequeue(); return true; }
+        return false;
+    }
+
+    public static bool PeekBuyCardRemoval()
+        => _pending.TryPeek(out string? cmd) && cmd == BuyCardRemovalCmd;
+
+    public static bool ConsumeBuyCardRemoval()
+    {
+        if (PeekBuyCardRemoval()) { _pending.Dequeue(); return true; }
+        return false;
+    }
+
     // ── Gold rewards ──────────────────────────────────────────────────────────
 
     private const string GoldRewardPrefix = "TakeGoldReward: ";

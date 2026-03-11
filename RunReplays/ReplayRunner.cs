@@ -114,6 +114,58 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Shop commands ─────────────────────────────────────────────────────────
+
+    public static bool ExecuteOpenShop()
+    {
+        if (!ReplayEngine.ConsumeOpenShop())
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: open shop");
+        LogNext();
+        return true;
+    }
+
+    public static bool ExecuteBuyCard(out string cardTitle)
+    {
+        if (!ReplayEngine.ConsumeBuyCard(out cardTitle))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: buy card '{cardTitle}'");
+        LogNext();
+        return true;
+    }
+
+    public static bool ExecuteBuyRelic(out string relicTitle)
+    {
+        if (!ReplayEngine.ConsumeBuyRelic(out relicTitle))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: buy relic '{relicTitle}'");
+        LogNext();
+        return true;
+    }
+
+    public static bool ExecuteBuyPotion(out string potionTitle)
+    {
+        if (!ReplayEngine.ConsumeBuyPotion(out potionTitle))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: buy potion '{potionTitle}'");
+        LogNext();
+        return true;
+    }
+
+    public static bool ExecuteBuyCardRemoval()
+    {
+        if (!ReplayEngine.ConsumeBuyCardRemoval())
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: buy card removal");
+        LogNext();
+        return true;
+    }
+
     // ── Gold rewards ──────────────────────────────────────────────────────────
 
     public static bool ExecuteGoldReward(out int goldAmount)
@@ -193,6 +245,21 @@ public static class ReplayRunner
 
         if (cmd.StartsWith("TakeGoldReward: "))
             return $"take gold reward {cmd["TakeGoldReward: ".Length..]}";
+
+        if (cmd == "OpenShop")
+            return "open shop";
+
+        if (cmd.StartsWith("BuyCard "))
+            return $"buy card '{cmd["BuyCard ".Length..]}'";
+
+        if (cmd.StartsWith("BuyRelic "))
+            return $"buy relic '{cmd["BuyRelic ".Length..]}'";
+
+        if (cmd.StartsWith("BuyPotion "))
+            return $"buy potion '{cmd["BuyPotion ".Length..]}'";
+
+        if (cmd == "BuyCardRemoval")
+            return "buy card removal";
 
         if (cmd.StartsWith("ChooseEventOption "))
             return $"choose event option '{cmd["ChooseEventOption ".Length..]}'";
