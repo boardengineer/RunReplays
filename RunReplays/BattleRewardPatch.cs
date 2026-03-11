@@ -23,6 +23,7 @@ public static class BattleRewardPatch
     [HarmonyPatch(nameof(RewardSynchronizer.SyncLocalObtainedCard))]
     public static void ObtainedCard(CardModel card)
     {
+        if (ShopPurchaseState.IsPurchasing) return;
         PlayerActionBuffer.Record($"TakeCardReward: {card.Title}");
     }
 
@@ -30,6 +31,7 @@ public static class BattleRewardPatch
     [HarmonyPatch(nameof(RewardSynchronizer.SyncLocalObtainedRelic))]
     public static void ObtainedRelic(RelicModel relic)
     {
+        if (ShopPurchaseState.IsPurchasing) return;
         PlayerActionBuffer.Record($"TakeRelicReward: {relic.Title.GetFormattedText()}");
     }
 
@@ -37,6 +39,7 @@ public static class BattleRewardPatch
     [HarmonyPatch(nameof(RewardSynchronizer.SyncLocalObtainedPotion))]
     public static void ObtainedPotion(PotionModel potion)
     {
+        if (ShopPurchaseState.IsPurchasing) return;
         PlayerActionBuffer.Record($"TakePotionReward: {potion.Title.GetFormattedText()}");
     }
 
@@ -44,6 +47,7 @@ public static class BattleRewardPatch
     [HarmonyPatch(nameof(RewardSynchronizer.SyncLocalObtainedGold))]
     public static void ObtainedGold(int goldAmount)
     {
+        if (ShopPurchaseState.IsPurchasing) return;
         PlayerActionBuffer.Record($"TakeGoldReward: {goldAmount}");
     }
 }
