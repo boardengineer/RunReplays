@@ -55,5 +55,8 @@ public static class EventSelectionPatch
 
         // Minimal: compact single-line summary.
         PlayerActionBuffer.RecordMinimalOnly($"ChooseEventOption {index}");
+
+        string chosenTitle = options[index].Title.GetFormattedText();
+        PlayerActionBuffer.LogToDevConsole($"[EventSelectionPatch] Event '{eventTitle}' — chose option {index}: '{chosenTitle}'.");
     }
 }
