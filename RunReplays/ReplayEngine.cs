@@ -212,6 +212,34 @@ public static class ReplayEngine
         return false;
     }
 
+    // ── Event option choices ──────────────────────────────────────────────────
+    //
+    // Recorded by EventOptionChosenLogPatch via EventOption.Chosen():
+    //   "ChooseEventOption {textKey}"
+
+    private const string EventOptionPrefix = "ChooseEventOption ";
+
+    public static bool PeekEventOption(out string textKey)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(EventOptionPrefix))
+        {
+            textKey = cmd.Substring(EventOptionPrefix.Length);
+            return true;
+        }
+        textKey = string.Empty;
+        return false;
+    }
+
+    public static bool ConsumeEventOption(out string textKey)
+    {
+        if (PeekEventOption(out textKey))
+        {
+            _pending.Dequeue();
+            return true;
+        }
+        return false;
+    }
+
     // ── Gold rewards ──────────────────────────────────────────────────────────
 
     private const string GoldRewardPrefix = "TakeGoldReward: ";

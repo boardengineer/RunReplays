@@ -90,6 +90,18 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Event option choices ──────────────────────────────────────────────────
+
+    public static bool ExecuteEventOption(out string textKey)
+    {
+        if (!ReplayEngine.ConsumeEventOption(out textKey))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: choose event option '{textKey}'");
+        LogNext();
+        return true;
+    }
+
     // ── Gold rewards ──────────────────────────────────────────────────────────
 
     public static bool ExecuteGoldReward(out int goldAmount)
@@ -166,9 +178,9 @@ public static class ReplayRunner
         if (cmd.StartsWith("TakeGoldReward: "))
             return $"take gold reward {cmd["TakeGoldReward: ".Length..]}";
 
-        if (cmd.StartsWith("ChooseEventOption ") &&
-            int.TryParse(cmd.AsSpan("ChooseEventOption ".Length), out int optIdx))
-            return $"choose event option {optIdx}";
+        if (cmd.StartsWith("ChooseEventOption "))
+            return $"choose event option '{cmd["ChooseEventOption ".Length..]}'";
+
 
         return $"(unknown) {cmd}";
     }
