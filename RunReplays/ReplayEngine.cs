@@ -619,6 +619,35 @@ public static class ReplayEngine
         return false;
     }
 
+    // ── Deck card selections (Wood Carvings and similar events) ──────────────
+    //
+    // Recorded by WoodCarvingsCardSelectPatch via NCardGridSelectionScreen.CardsSelected
+    // when FromDeckGeneric or FromDeckForEnchantment is active:
+    //   "SelectDeckCard {deckIndex}"
+    // deckIndex is the 0-based position in the card list shown to the player.
+
+    private const string SelectDeckCardPrefix = "SelectDeckCard ";
+
+    public static bool PeekSelectDeckCard(out int deckIndex)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(SelectDeckCardPrefix)
+            && int.TryParse(cmd.AsSpan(SelectDeckCardPrefix.Length), out deckIndex))
+            return true;
+
+        deckIndex = -1;
+        return false;
+    }
+
+    public static bool ConsumeSelectDeckCard(out int deckIndex)
+    {
+        if (PeekSelectDeckCard(out deckIndex))
+        {
+            SignalConsumed(_pending.Dequeue());
+            return true;
+        }
+        return false;
+    }
+
     // ── Hand card selections ───────────────────────────────────────────────────
     //
     // Recorded by HandCardSelectPatch via PlayerChoiceSynchronizer.SyncLocalChoice

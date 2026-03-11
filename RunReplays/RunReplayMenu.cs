@@ -121,47 +121,93 @@ public static class RunReplayMenu
             return;
         }
 
-        foreach (ReplayEntry entry in entries)
+        // Group by seed; within each group order floors highest-first.
+        // Groups themselves are ordered by the most recent save in each group.
+        var groups = entries
+            .GroupBy(e => e.Seed)
+            .Select(g => (Seed: g.Key, Entries: g.OrderByDescending(e => e.Floor).ToList()))
+            .OrderByDescending(g => g.Entries.Max(e => e.SavedAt))
+            .ToList();
+
+        foreach (var (seed, seedEntries) in groups)
         {
-            var row = new HBoxContainer();
-            row.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-            row.AddThemeConstantOverride("separation", 4);
-            list.AddChild(row);
+            string character = seedEntries.First().CharacterId;
+            DateTime latest  = seedEntries.Max(e => e.SavedAt);
+            string latestStr = latest != DateTime.MinValue
+                ? latest.ToString("yyyy-MM-dd  HH:mm:ss")
+                : "unknown date";
 
-            var replayBtn = new Button();
-            replayBtn.Text = FormatEntry(entry);
-            replayBtn.Alignment = HorizontalAlignment.Left;
-            replayBtn.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-            row.AddChild(replayBtn);
+            // ── Seed header (toggle button) ────────────────────────────────
+            var headerBtn = new Button();
+            headerBtn.Text = $"▶  Seed: {seed}    {character}    {seedEntries.Count} save(s)    {latestStr}";
+            headerBtn.Alignment = HorizontalAlignment.Left;
+            headerBtn.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+            list.AddChild(headerBtn);
 
-            var captured = entry;
-            replayBtn.Pressed += () =>
+            // Floor rows container — collapsed by default.
+            var floorContainer = new VBoxContainer();
+            floorContainer.AddThemeConstantOverride("separation", 2);
+            floorContainer.Visible = false;
+            list.AddChild(floorContainer);
+
+            bool expanded = false;
+            var capturedBtn       = headerBtn;
+            var capturedContainer = floorContainer;
+            headerBtn.Pressed += () =>
             {
-                root.QueueFree();
-                StartReplay(captured);
+                expanded = !expanded;
+                capturedContainer.Visible = expanded;
+                capturedBtn.Text = (expanded ? "▼" : "▶") + capturedBtn.Text[1..];
             };
 
-            if (entry.SavePath != null)
+            // ── Floor rows ─────────────────────────────────────────────────
+            foreach (ReplayEntry entry in seedEntries)
             {
-                var loadSaveBtn = new Button();
-                loadSaveBtn.Text = "Load Save";
-                row.AddChild(loadSaveBtn);
-                loadSaveBtn.Pressed += () =>
+                var row = new HBoxContainer();
+                row.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+                row.AddThemeConstantOverride("separation", 4);
+                floorContainer.AddChild(row);
+
+                // Visual indent.
+                var indent = new Label();
+                indent.Text = "    ";
+                row.AddChild(indent);
+
+                var replayBtn = new Button();
+                replayBtn.Text = FormatFloorEntry(entry);
+                replayBtn.Alignment = HorizontalAlignment.Left;
+                replayBtn.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+                row.AddChild(replayBtn);
+
+                var captured = entry;
+                replayBtn.Pressed += () =>
                 {
                     root.QueueFree();
-                    LoadSave(captured);
+                    StartReplay(captured);
                 };
+
+                if (entry.SavePath != null)
+                {
+                    var loadSaveBtn = new Button();
+                    loadSaveBtn.Text = "Load Save";
+                    row.AddChild(loadSaveBtn);
+                    loadSaveBtn.Pressed += () =>
+                    {
+                        root.QueueFree();
+                        LoadSave(captured);
+                    };
+                }
             }
         }
     }
 
-    private static string FormatEntry(ReplayEntry entry)
+    private static string FormatFloorEntry(ReplayEntry entry)
     {
         string date = entry.SavedAt != DateTime.MinValue
             ? entry.SavedAt.ToString("yyyy-MM-dd  HH:mm:ss")
             : "unknown date";
 
-        return $"Seed: {entry.Seed}    {entry.CharacterId}    Floor {entry.Floor}    {date}";
+        return $"Floor {entry.Floor}    {date}";
     }
 
     // ── File system scan ──────────────────────────────────────────────────────
