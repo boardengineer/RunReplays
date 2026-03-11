@@ -1,9 +1,12 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Events;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
+using MegaCrit.Sts2.Core.Nodes.Rooms;
 
 namespace RunReplays;
 
@@ -42,11 +45,13 @@ public static class EventOptionReplayPatch
         Callable.From(() => AutoSelect(__instance)).CallDeferred();
     }
 
-    private static void AutoSelect(EventSynchronizer synchronizer)
+    private const int MaxRetries = 10;
+
+    private static void AutoSelect(EventSynchronizer synchronizer, int retriesLeft = MaxRetries)
     {
         int eventCount = synchronizer.Events.Count;
         PlayerActionBuffer.LogToDevConsole(
-            $"[EventOptionReplayPatch] AutoSelect — Events.Count={eventCount}");
+            $"[EventOptionReplayPatch] AutoSelect — Events.Count={eventCount} retriesLeft={retriesLeft}");
 
         if (eventCount == 0)
             return;
@@ -57,13 +62,23 @@ public static class EventOptionReplayPatch
         PlayerActionBuffer.LogToDevConsole(
             $"[EventOptionReplayPatch] AutoSelect — event='{eventModel.Title.GetFormattedText()}' isFinished={isFinished} options={options.Count}");
 
-        if (isFinished)
-            return;
-
         if (!ReplayEngine.PeekEventOption(out string textKey))
         {
             PlayerActionBuffer.LogToDevConsole(
                 "[EventOptionReplayPatch] AutoSelect — no ChooseEventOption in queue.");
+            return;
+        }
+
+        // When the event is finished, NEventRoom.SetOptions creates a UI-level PROCEED
+        // button that calls EventOption.Chosen() directly, bypassing ChooseLocalOption.
+        // CurrentOptions is always empty at this point so a normal lookup would always
+        // fail. Consume the pending command and call NEventRoom.Proceed() directly.
+        if (isFinished)
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[EventOptionReplayPatch] Event finished — consuming '{textKey}' and calling NEventRoom.Proceed().");
+            ReplayRunner.ExecuteEventOption(out _);
+            TaskHelper.RunSafely(NEventRoom.Proceed());
             return;
         }
 
@@ -82,8 +97,21 @@ public static class EventOptionReplayPatch
 
         if (index < 0)
         {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[EventOptionReplayPatch] No option with textKey='{textKey}' found — aborting.");
+            string available = options.Count > 0
+                ? string.Join(", ", options.Select(o => $"'{o.TextKey}'"))
+                : "(none)";
+
+            if (retriesLeft > 0)
+            {
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[EventOptionReplayPatch] Option '{textKey}' not yet available (have: [{available}]) — retrying in 100 ms ({retriesLeft} left).");
+                TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft - 1));
+            }
+            else
+            {
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[EventOptionReplayPatch] Option '{textKey}' not found after {MaxRetries} retries (have: [{available}]) — aborting.");
+            }
             return;
         }
 
@@ -93,6 +121,12 @@ public static class EventOptionReplayPatch
         synchronizer.ChooseLocalOption(index);
 
         Callable.From(() => ContinueIfNeeded(synchronizer)).CallDeferred();
+    }
+
+    private static async Task RetryAfterDelay(EventSynchronizer synchronizer, int retriesLeft)
+    {
+        await Task.Delay(100);
+        Callable.From(() => AutoSelect(synchronizer, retriesLeft)).CallDeferred();
     }
 
     private static void ContinueIfNeeded(EventSynchronizer synchronizer)
@@ -108,10 +142,7 @@ public static class EventOptionReplayPatch
 
         if (eventCount == 0)
             return;
-
-        if (finished)
-            return;
-
+        
         AutoSelect(synchronizer);
     }
 }

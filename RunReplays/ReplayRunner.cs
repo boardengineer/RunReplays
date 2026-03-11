@@ -102,6 +102,18 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Card upgrades ─────────────────────────────────────────────────────────
+
+    public static bool ExecuteUpgradeCard(out int deckIndex)
+    {
+        if (!ReplayEngine.ConsumeUpgradeCard(out deckIndex))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: upgrade card at deck index {deckIndex}");
+        LogNext();
+        return true;
+    }
+
     // ── Gold rewards ──────────────────────────────────────────────────────────
 
     public static bool ExecuteGoldReward(out int goldAmount)
@@ -165,6 +177,10 @@ public static class ReplayRunner
                 }
             }
         }
+
+        if (cmd.StartsWith("UpgradeCard ") &&
+            int.TryParse(cmd.AsSpan("UpgradeCard ".Length), out int upgradeIdx))
+            return $"upgrade card at deck index {upgradeIdx}";
 
         if (cmd.StartsWith("TakeCardReward: "))
             return $"take card reward '{cmd["TakeCardReward: ".Length..]}'";

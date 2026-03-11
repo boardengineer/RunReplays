@@ -240,6 +240,33 @@ public static class ReplayEngine
         return false;
     }
 
+    // ── Card upgrades ─────────────────────────────────────────────────────────
+    //
+    // Recorded by NDeckUpgradeSelectScreenLogPatch:
+    //   "UpgradeCard {deckIndex}"
+
+    private const string UpgradeCardPrefix = "UpgradeCard ";
+
+    public static bool PeekUpgradeCard(out int deckIndex)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(UpgradeCardPrefix)
+            && int.TryParse(cmd.AsSpan(UpgradeCardPrefix.Length), out deckIndex))
+            return true;
+
+        deckIndex = -1;
+        return false;
+    }
+
+    public static bool ConsumeUpgradeCard(out int deckIndex)
+    {
+        if (PeekUpgradeCard(out deckIndex))
+        {
+            _pending.Dequeue();
+            return true;
+        }
+        return false;
+    }
+
     // ── Gold rewards ──────────────────────────────────────────────────────────
 
     private const string GoldRewardPrefix = "TakeGoldReward: ";
