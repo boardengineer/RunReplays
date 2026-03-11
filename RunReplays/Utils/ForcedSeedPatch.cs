@@ -1,7 +1,7 @@
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Runs;
 
-namespace RunReplays;
+namespace RunReplays.Utils;
 
 /// <summary>
 /// Harmony prefix on RunState.CreateForNewRun that replaces the seed with a

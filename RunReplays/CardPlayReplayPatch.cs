@@ -64,6 +64,11 @@ public static class CardPlayReplayPatch
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] TurnStarted: next command is NetDiscardPotion slot={discardSlot}, scheduling TryDiscardPotion.");
             Callable.From(TryDiscardPotion).CallDeferred();
         }
+        else if (ReplayEngine.PeekUsePotion(out uint potionIdx, out _, out _))
+        {
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TurnStarted: next command is UsePotion index={potionIdx}, scheduling TryUsePotion.");
+            Callable.From(TryUsePotion).CallDeferred();
+        }
         else if (ReplayEngine.PeekCardPlay(out uint idx, out _))
         {
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] TurnStarted: next command is CardPlay index={idx}, scheduling TryPlayNextCard.");
@@ -95,6 +100,11 @@ public static class CardPlayReplayPatch
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: DiscardPotionGameAction completed ({discardPotion}).");
             ScheduleNextCombatAction();
         }
+        else if (action is UsePotionAction usePotion)
+        {
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: UsePotionAction completed ({usePotion}).");
+            ScheduleNextCombatAction();
+        }
     }
 
     private static void ScheduleNextCombatAction()
@@ -103,6 +113,11 @@ public static class CardPlayReplayPatch
         {
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] ScheduleNext: NetDiscardPotion slot={discardSlot}, scheduling TryDiscardPotion.");
             Callable.From(TryDiscardPotion).CallDeferred();
+        }
+        else if (ReplayEngine.PeekUsePotion(out uint potionIdx, out _, out _))
+        {
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] ScheduleNext: UsePotion index={potionIdx}, scheduling TryUsePotion.");
+            Callable.From(TryUsePotion).CallDeferred();
         }
         else if (ReplayEngine.PeekCardPlay(out uint idx, out _))
         {
@@ -221,6 +236,59 @@ public static class CardPlayReplayPatch
         {
             PlayerActionBuffer.LogToDevConsole(
                 $"[RunReplays] TryDiscardPotion: RequestEnqueue threw {ex.GetType().Name}: {ex.Message}");
+        }
+    }
+
+    // ── Potion-use execution ──────────────────────────────────────────────────
+
+    private static void TryUsePotion()
+    {
+        if (!ReplayRunner.ExecuteUsePotion(out uint potionIndex, out uint? targetId, out bool inCombat))
+        {
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] TryUsePotion: ExecuteUsePotion returned false.");
+            return;
+        }
+
+        Player? player;
+        try
+        {
+            player = LocalContext.GetMe(_currentCombatState);
+        }
+        catch (Exception ex)
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[RunReplays] TryUsePotion: LocalContext.GetMe threw {ex.GetType().Name}: {ex.Message}");
+            player = null;
+        }
+
+        player ??= _currentCombatState?.Players.FirstOrDefault();
+
+        if (player == null)
+        {
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] TryUsePotion: could not resolve local player.");
+            return;
+        }
+
+        Creature? target = null;
+        if (targetId.HasValue)
+        {
+            target = _currentCombatState?.GetCreature(targetId);
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryUsePotion: resolved target id={targetId} → {(target == null ? "null" : target.ToString())}.");
+        }
+
+        // For out-of-combat self-targeting, pass the player's own NetId.
+        ulong? targetPlayerId = (!inCombat && target == null) ? player.NetId : (ulong?)null;
+
+        try
+        {
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryUsePotion: enqueuing UsePotionAction index={potionIndex} for player '{player}'.");
+            RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(
+                new UsePotionAction(player, potionIndex, targetId, targetPlayerId, inCombat));
+        }
+        catch (Exception ex)
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[RunReplays] TryUsePotion: RequestEnqueue threw {ex.GetType().Name}: {ex.Message}");
         }
     }
 

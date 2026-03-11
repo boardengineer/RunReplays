@@ -144,6 +144,66 @@ public static class ReplayEngine
         return false;
     }
 
+    // ── Potion use ────────────────────────────────────────────────────────────
+    //
+    // Recorded by PlayerActionBuffer via UsePotionAction.ToString():
+    //   "UsePotionAction {netId} {potionName} index: {potionIndex} target: {targetId} ({creatureName}) combat: {bool}"
+    // targetId is empty when null; combat is True for in-combat use.
+
+    private const string UsePotionPrefix       = "UsePotionAction ";
+    private const string UsePotionIndexMarker  = " index: ";
+    private const string UsePotionTargetMarker = " target: ";
+    private const string UsePotionCombatMarker = " combat: ";
+
+    public static bool PeekUsePotion(out uint potionIndex, out uint? targetId, out bool inCombat)
+    {
+        potionIndex = 0;
+        targetId    = null;
+        inCombat    = false;
+
+        if (!_pending.TryPeek(out string? cmd) || !cmd.StartsWith(UsePotionPrefix))
+            return false;
+
+        int combatIdx = cmd.LastIndexOf(UsePotionCombatMarker, StringComparison.Ordinal);
+        if (combatIdx < 0) return false;
+
+        int targetIdx = cmd.LastIndexOf(UsePotionTargetMarker, combatIdx, StringComparison.Ordinal);
+        if (targetIdx < 0) return false;
+
+        int indexIdx = cmd.LastIndexOf(UsePotionIndexMarker, targetIdx, StringComparison.Ordinal);
+        if (indexIdx < 0) return false;
+
+        ReadOnlySpan<char> indexSpan = cmd.AsSpan(
+            indexIdx + UsePotionIndexMarker.Length,
+            targetIdx - indexIdx - UsePotionIndexMarker.Length).Trim();
+        if (!uint.TryParse(indexSpan, out potionIndex)) return false;
+
+        // targetId sits between " target: " and the " (" that precedes the creature name.
+        int openParenIdx = cmd.IndexOf(" (", targetIdx + UsePotionTargetMarker.Length, StringComparison.Ordinal);
+        if (openParenIdx < 0) return false;
+
+        ReadOnlySpan<char> targetSpan = cmd.AsSpan(
+            targetIdx + UsePotionTargetMarker.Length,
+            openParenIdx - targetIdx - UsePotionTargetMarker.Length).Trim();
+        if (targetSpan.Length > 0 && uint.TryParse(targetSpan, out uint tid))
+            targetId = tid;
+
+        ReadOnlySpan<char> combatSpan = cmd.AsSpan(combatIdx + UsePotionCombatMarker.Length).Trim();
+        inCombat = combatSpan.Equals("True", StringComparison.OrdinalIgnoreCase);
+
+        return true;
+    }
+
+    public static bool ConsumeUsePotion(out uint potionIndex, out uint? targetId, out bool inCombat)
+    {
+        if (PeekUsePotion(out potionIndex, out targetId, out inCombat))
+        {
+            _pending.Dequeue();
+            return true;
+        }
+        return false;
+    }
+
     // ── Card plays ────────────────────────────────────────────────────────────
     //
     // Recorded by PlayerActionBuffer via PlayCardAction.ToString():

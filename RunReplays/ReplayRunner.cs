@@ -65,6 +65,19 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Potion use ────────────────────────────────────────────────────────────
+
+    public static bool ExecuteUsePotion(out uint potionIndex, out uint? targetId, out bool inCombat)
+    {
+        if (!ReplayEngine.ConsumeUsePotion(out potionIndex, out targetId, out inCombat))
+            return false;
+
+        string target = targetId.HasValue ? $" targeting id={targetId}" : "";
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: use potion index={potionIndex}{target} combat={inCombat}");
+        LogNext();
+        return true;
+    }
+
     // ── Card plays ────────────────────────────────────────────────────────────
 
     public static bool ExecuteCardPlay(out uint combatCardIndex, out uint? targetId)
@@ -278,6 +291,12 @@ public static class ReplayRunner
             return slotIdx >= 0
                 ? $"discard potion slot {cmd[(slotIdx + " potion slot: ".Length)..]}"
                 : "discard potion";
+        }
+
+        if (cmd.StartsWith("UsePotionAction ") && ReplayEngine.PeekUsePotion(out uint pIdx, out uint? pTarget, out _))
+        {
+            string tStr = pTarget.HasValue ? $" targeting id={pTarget}" : "";
+            return $"use potion index={pIdx}{tStr}";
         }
 
         if (cmd.StartsWith("PlayCardAction "))
