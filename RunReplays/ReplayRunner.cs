@@ -166,6 +166,18 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Rest site option choices ──────────────────────────────────────────────
+
+    public static bool ExecuteRestSiteOption(out string optionId)
+    {
+        if (!ReplayEngine.ConsumeRestSiteOption(out optionId))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: choose rest site option '{optionId}'");
+        LogNext();
+        return true;
+    }
+
     // ── Gold rewards ──────────────────────────────────────────────────────────
 
     public static bool ExecuteGoldReward(out int goldAmount)
@@ -245,6 +257,9 @@ public static class ReplayRunner
 
         if (cmd.StartsWith("TakeGoldReward: "))
             return $"take gold reward {cmd["TakeGoldReward: ".Length..]}";
+
+        if (cmd.StartsWith("ChooseRestSiteOption "))
+            return $"choose rest site option '{cmd["ChooseRestSiteOption ".Length..]}'";
 
         if (cmd == "OpenShop")
             return "open shop";

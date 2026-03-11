@@ -351,6 +351,34 @@ public static class ReplayEngine
         return false;
     }
 
+    // ── Rest site option choices ──────────────────────────────────────────────
+    //
+    // Recorded by RestSiteRecordPatch via RestSiteSynchronizer.ChooseLocalOption:
+    //   "ChooseRestSiteOption {optionId}"  (e.g. "HEAL", "SMITH")
+
+    private const string RestSiteOptionPrefix = "ChooseRestSiteOption ";
+
+    public static bool PeekRestSiteOption(out string optionId)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(RestSiteOptionPrefix))
+        {
+            optionId = cmd.Substring(RestSiteOptionPrefix.Length);
+            return true;
+        }
+        optionId = string.Empty;
+        return false;
+    }
+
+    public static bool ConsumeRestSiteOption(out string optionId)
+    {
+        if (PeekRestSiteOption(out optionId))
+        {
+            _pending.Dequeue();
+            return true;
+        }
+        return false;
+    }
+
     // ── Gold rewards ──────────────────────────────────────────────────────────
 
     private const string GoldRewardPrefix = "TakeGoldReward: ";
