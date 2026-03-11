@@ -293,6 +293,12 @@ public static class ReplayRunner
                 : "discard potion";
         }
 
+        if (cmd.StartsWith("SelectHandCards ") && ReplayEngine.PeekSelectHandCards(out uint[] hIds))
+        {
+            string cards = hIds.Length > 0 ? string.Join(",", hIds) : "(none)";
+            return $"select hand cards [{cards}]";
+        }
+
         if (cmd.StartsWith("UsePotionAction ") && ReplayEngine.PeekUsePotion(out uint pIdx, out uint? pTarget, out _))
         {
             string tStr = pTarget.HasValue ? $" targeting id={pTarget}" : "";

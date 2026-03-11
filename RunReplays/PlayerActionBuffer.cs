@@ -52,6 +52,12 @@ public static class PlayerActionBuffer
             _verboseEntries.Enqueue((timestamp, actionText));
             _minimalEntries.Enqueue(actionText);
             LogToDevConsole($"[{timestamp}] {actionText}");
+
+            // Hand-card selections (e.g. Touch of Insanity) fire SyncLocalChoice
+            // mid-action, before AfterActionExecuted.  Flush the buffered command
+            // now so it follows the potion entry in the log.
+            if (action is UsePotionAction)
+                HandCardSelectRecordPatch.FlushIfPending();
         };
     }
 

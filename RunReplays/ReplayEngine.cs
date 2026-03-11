@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RunReplays;
 
@@ -564,6 +565,49 @@ public static class ReplayEngine
     public static bool ConsumeGoldReward(out int goldAmount)
     {
         if (PeekGoldReward(out goldAmount))
+        {
+            _pending.Dequeue();
+            return true;
+        }
+        return false;
+    }
+
+    // ── Hand card selections ───────────────────────────────────────────────────
+    //
+    // Recorded by HandCardSelectPatch via PlayerChoiceSynchronizer.SyncLocalChoice
+    // when a CombatCard choice is made (e.g. Touch of Insanity, other hand-targeting potions):
+    //   "SelectHandCards {combatId1} {combatId2} ..."
+    // IDs are space-separated NetCombatCardDb combat indices. Empty when no cards chosen.
+
+    private const string SelectHandCardsPrefix = "SelectHandCards ";
+
+    public static bool PeekSelectHandCards(out uint[] cardIds)
+    {
+        if (!_pending.TryPeek(out string? cmd) || !cmd.StartsWith(SelectHandCardsPrefix))
+        {
+            cardIds = Array.Empty<uint>();
+            return false;
+        }
+
+        string idsPart = cmd.Substring(SelectHandCardsPrefix.Length).Trim();
+        if (idsPart.Length == 0)
+        {
+            cardIds = Array.Empty<uint>();
+        }
+        else
+        {
+            cardIds = idsPart.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => uint.TryParse(s, out uint id) ? (uint?)id : null)
+                .Where(id => id.HasValue)
+                .Select(id => id!.Value)
+                .ToArray();
+        }
+        return true;
+    }
+
+    public static bool ConsumeSelectHandCards(out uint[] cardIds)
+    {
+        if (PeekSelectHandCards(out cardIds))
         {
             _pending.Dequeue();
             return true;
