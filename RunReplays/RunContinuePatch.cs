@@ -66,6 +66,7 @@ public static class RunContinuePatch
         var minimalEntries = ParseMinimalLog(latestMinimal);
 
         PlayerActionBuffer.Restore(verboseEntries, minimalEntries);
+        RunOverlay.RestoreRecentEntries(minimalEntries);
         GD.Print($"[RunReplays] Restored {verboseEntries.Count} verbose / {minimalEntries.Count} minimal entries from: {logsDir}");
     }
 

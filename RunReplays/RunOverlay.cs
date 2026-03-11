@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using MegaCrit.Sts2.Core.Nodes;
@@ -30,6 +31,21 @@ internal static class RunOverlay
     private static readonly Queue<string> _recentEntries = new();
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Called after a continued run restores the action buffer so the overlay
+    /// immediately shows the last entries instead of appearing empty.
+    /// </summary>
+    internal static void RestoreRecentEntries(IReadOnlyList<string> allEntries)
+    {
+        _recentEntries.Clear();
+        int start = Math.Max(0, allEntries.Count - LineCount);
+        for (int i = start; i < allEntries.Count; i++)
+            _recentEntries.Enqueue(allEntries[i]);
+
+        if (_canvas != null && GodotObject.IsInstanceValid(_canvas))
+            Callable.From(RefreshDisplay).CallDeferred();
+    }
 
     internal static void InitForRun()
     {
