@@ -90,6 +90,28 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Treasure chest relic ──────────────────────────────────────────────────
+
+    public static bool ExecuteTakeChestRelic(out string relicTitle)
+    {
+        if (!ReplayEngine.ConsumeTakeChestRelic(out relicTitle))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: open chest (relic '{relicTitle}')");
+        LogNext();
+        return true;
+    }
+
+    public static bool ExecuteNetPickRelicAction(out int relicIndex)
+    {
+        if (!ReplayEngine.ConsumeNetPickRelicAction(out relicIndex))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: NetPickRelicAction index {relicIndex}");
+        LogNext();
+        return true;
+    }
+
     // ── Potion rewards ────────────────────────────────────────────────────────
 
     public static bool ExecutePotionReward(out string potionTitle)
@@ -269,6 +291,12 @@ public static class ReplayRunner
 
         if (cmd.StartsWith("TakeGoldReward: "))
             return $"take gold reward {cmd["TakeGoldReward: ".Length..]}";
+
+        if (cmd.StartsWith("TakeChestRelic "))
+            return $"open chest (relic '{cmd["TakeChestRelic ".Length..]}')";
+
+        if (cmd.StartsWith("NetPickRelicAction for player "))
+            return $"pick chest relic ({cmd})";
 
         if (cmd.StartsWith("ChooseRestSiteOption "))
             return $"choose rest site option '{cmd["ChooseRestSiteOption ".Length..]}'";
