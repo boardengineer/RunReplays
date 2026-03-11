@@ -31,21 +31,6 @@ public static class FromDeckForRemovalPatch
 }
 
 /// <summary>
-/// Sets PendingRemoval when CardSelectCmd.FromDeckForUpgrade is entered so that
-/// the next RemoveFromDeck call can be attributed to a card upgrade removal.
-/// </summary>
-[HarmonyPatch(typeof(CardSelectCmd), nameof(CardSelectCmd.FromDeckForUpgrade))]
-public static class FromDeckForUpgradePatch
-{
-    [HarmonyPrefix]
-    public static void Prefix()
-    {
-        DeckRemovalState.PendingRemoval = true;
-        PlayerActionBuffer.LogToDevConsole("[DeckRemovalRecordPatch] FromDeckForUpgrade entered — awaiting RemoveFromDeck.");
-    }
-}
-
-/// <summary>
 /// Records the removed card when CardPileCmd.RemoveFromDeck fires while
 /// PendingRemoval is set.
 /// </summary>

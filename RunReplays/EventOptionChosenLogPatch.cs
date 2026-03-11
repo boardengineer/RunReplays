@@ -13,7 +13,13 @@ public static class EventOptionChosenLogPatch
     [HarmonyPrefix]
     public static void Prefix(EventOption __instance)
     {
+        string title = __instance.Title.GetFormattedText();
+        string textKey = __instance.TextKey;
+
         PlayerActionBuffer.LogToDevConsole(
-            $"[EventOption] Chosen — title='{__instance.Title.GetFormattedText()}' textKey='{__instance.TextKey}'");
+            $"[EventOption] Chosen — title='{title}' textKey='{textKey}'");
+
+        PlayerActionBuffer.RecordVerboseOnly($"[EventOption] Chosen — title='{title}' textKey='{textKey}'");
+        PlayerActionBuffer.RecordMinimalOnly($"ChooseEventOption {textKey}");
     }
 }

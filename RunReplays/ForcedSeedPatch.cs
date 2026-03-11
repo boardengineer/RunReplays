@@ -16,6 +16,6 @@ public static class ForcedSeedPatch
     public static void Prefix(ref string seed)
     {
         // Comment and uncomment this file to force a seed
-        // seed = ForcedSeed;
+        seed = ForcedSeed;
     }
 }
