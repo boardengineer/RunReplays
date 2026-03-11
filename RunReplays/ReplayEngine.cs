@@ -113,6 +113,37 @@ public static class ReplayEngine
         return false;
     }
 
+    // ── Potion discard ────────────────────────────────────────────────────────
+    //
+    // Recorded by PlayerActionBuffer via DiscardPotionGameAction.ToString():
+    //   "NetDiscardPotionGameAction for player {netId} potion slot: {slotIndex}"
+
+    private const string NetDiscardPotionPrefix     = "NetDiscardPotionGameAction for player ";
+    private const string NetDiscardPotionSlotMarker = " potion slot: ";
+
+    public static bool PeekNetDiscardPotion(out int slotIndex)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(NetDiscardPotionPrefix))
+        {
+            int markerPos = cmd.LastIndexOf(NetDiscardPotionSlotMarker);
+            if (markerPos >= 0 && int.TryParse(
+                    cmd.AsSpan(markerPos + NetDiscardPotionSlotMarker.Length), out slotIndex))
+                return true;
+        }
+        slotIndex = -1;
+        return false;
+    }
+
+    public static bool ConsumeNetDiscardPotion(out int slotIndex)
+    {
+        if (PeekNetDiscardPotion(out slotIndex))
+        {
+            _pending.Dequeue();
+            return true;
+        }
+        return false;
+    }
+
     // ── Card plays ────────────────────────────────────────────────────────────
     //
     // Recorded by PlayerActionBuffer via PlayCardAction.ToString():

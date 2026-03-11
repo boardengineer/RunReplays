@@ -1,13 +1,16 @@
 using System;
+using System.Linq;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Creatures;
+using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace RunReplays;
 
@@ -56,7 +59,12 @@ public static class CardPlayReplayPatch
         _currentCombatState = combatState;
         _retryCount = 0;
 
-        if (ReplayEngine.PeekCardPlay(out uint idx, out _))
+        if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
+        {
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TurnStarted: next command is NetDiscardPotion slot={discardSlot}, scheduling TryDiscardPotion.");
+            Callable.From(TryDiscardPotion).CallDeferred();
+        }
+        else if (ReplayEngine.PeekCardPlay(out uint idx, out _))
         {
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] TurnStarted: next command is CardPlay index={idx}, scheduling TryPlayNextCard.");
             Callable.From(TryPlayNextCard).CallDeferred();
@@ -77,26 +85,40 @@ public static class CardPlayReplayPatch
 
     private static void OnAfterActionExecuted(GameAction action)
     {
-        if (action is not PlayCardAction)
-            return;
-
-        var playCard = (PlayCardAction)action;
-        PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: PlayCardAction completed ({playCard}).");
-
-        if (ReplayEngine.PeekCardPlay(out uint idx, out _))
+        if (action is PlayCardAction playCard)
         {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: next command is CardPlay index={idx}, scheduling TryPlayNextCard.");
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: PlayCardAction completed ({playCard}).");
+            ScheduleNextCombatAction();
+        }
+        else if (action is DiscardPotionGameAction discardPotion)
+        {
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: DiscardPotionGameAction completed ({discardPotion}).");
+            ScheduleNextCombatAction();
+        }
+    }
+
+    private static void ScheduleNextCombatAction()
+    {
+        if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
+        {
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] ScheduleNext: NetDiscardPotion slot={discardSlot}, scheduling TryDiscardPotion.");
+            Callable.From(TryDiscardPotion).CallDeferred();
+        }
+        else if (ReplayEngine.PeekCardPlay(out uint idx, out _))
+        {
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] ScheduleNext: CardPlay index={idx}, scheduling TryPlayNextCard.");
             Callable.From(TryPlayNextCard).CallDeferred();
         }
         else if (ReplayEngine.PeekEndTurn())
         {
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] AfterActionExecuted: next command is EndTurn, scheduling TryEndTurn.");
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] ScheduleNext: EndTurn, scheduling TryEndTurn.");
             Callable.From(TryEndTurn).CallDeferred();
         }
         else
         {
             ReplayEngine.PeekNext(out string? next);
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: no more card plays or end turn — '{next ?? "(none)"}'.");
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] ScheduleNext: no more combat actions — '{next ?? "(none)"}'. Checking for active rewards screen.");
+            BattleRewardsReplayPatch.TryResumeRewardsProcessing();
         }
     }
 
@@ -156,6 +178,50 @@ public static class CardPlayReplayPatch
         // Success: consume the command and log it.
         _retryCount = 0;
         ReplayRunner.ExecuteCardPlay(out _, out _);
+    }
+
+    // ── Potion-discard execution ──────────────────────────────────────────────
+
+    internal static void TryDiscardPotion()
+    {
+        if (!ReplayRunner.ExecuteNetDiscardPotion(out int slotIndex))
+        {
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] TryDiscardPotion: ExecuteNetDiscardPotion returned false.");
+            return;
+        }
+
+        Player? player;
+        try
+        {
+            player = LocalContext.GetMe(_currentCombatState);
+        }
+        catch (Exception ex)
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[RunReplays] TryDiscardPotion: LocalContext.GetMe threw {ex.GetType().Name}: {ex.Message}");
+            player = null;
+        }
+
+        // Fallback: in single-player there is exactly one player in the combat state.
+        player ??= _currentCombatState?.Players.FirstOrDefault();
+
+        if (player == null)
+        {
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] TryDiscardPotion: could not resolve local player.");
+            return;
+        }
+
+        try
+        {
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryDiscardPotion: enqueuing DiscardPotionGameAction slot={slotIndex} for player '{player}'.");
+            RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(
+                new DiscardPotionGameAction(player, (uint)slotIndex));
+        }
+        catch (Exception ex)
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[RunReplays] TryDiscardPotion: RequestEnqueue threw {ex.GetType().Name}: {ex.Message}");
+        }
     }
 
     // ── End-turn execution ────────────────────────────────────────────────────

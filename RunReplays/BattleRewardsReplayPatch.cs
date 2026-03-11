@@ -59,7 +59,8 @@ public static class BattleRewardsReplayPatch
         bool hasReward = ReplayEngine.PeekGoldReward(out _)
                       || ReplayEngine.PeekCardReward(out _)
                       || ReplayEngine.PeekRelicReward(out _)
-                      || ReplayEngine.PeekPotionReward(out _);
+                      || ReplayEngine.PeekPotionReward(out _)
+                      || ReplayEngine.PeekNetDiscardPotion(out _);
         bool hasMapNode = ReplayEngine.PeekMapNode(out _, out _);
 
         if (!hasReward && !hasMapNode)
@@ -77,6 +78,8 @@ public static class BattleRewardsReplayPatch
     /// <summary>
     /// Called by CardRewardReplayPatch after a card has been auto-selected so
     /// that any reward buttons or map transition remaining can be processed.
+    /// Also called by CardPlayReplayPatch after a potion discard that occurred
+    /// during the rewards screen completes.
     /// </summary>
     public static void OnCardRewardHandled()
     {
@@ -85,6 +88,21 @@ public static class BattleRewardsReplayPatch
 
         NRewardsScreen screen = _activeScreen;
         Callable.From(() => ProcessNextReward(screen)).CallDeferred();
+    }
+
+    /// <summary>
+    /// Called from CardPlayReplayPatch after a DiscardPotionGameAction completes
+    /// with no subsequent combat action pending, so rewards processing can continue.
+    /// </summary>
+    public static bool TryResumeRewardsProcessing()
+    {
+        if (_activeScreen == null || !_activeScreen.IsInsideTree())
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole("[RunReplays] BattleRewardsReplayPatch: resuming rewards processing after potion discard.");
+        NRewardsScreen screen = _activeScreen;
+        Callable.From(() => ProcessNextReward(screen)).CallDeferred();
+        return true;
     }
 
     // ── Internal ──────────────────────────────────────────────────────────────
@@ -158,6 +176,16 @@ public static class BattleRewardsReplayPatch
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: auto-claimed potion reward '{potionTitle}'.");
 
             Callable.From(() => ProcessNextReward(screen)).CallDeferred();
+            return;
+        }
+
+        if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
+        {
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: potion discard slot={discardSlot} during rewards screen — handing off to CardPlayReplayPatch.");
+            // TryDiscardPotion consumes the command, enqueues DiscardPotionGameAction,
+            // and AfterActionExecuted → ScheduleNextCombatAction → TryResumeRewardsProcessing
+            // will resume ProcessNextReward once the action completes.
+            CardPlayReplayPatch.TryDiscardPotion();
             return;
         }
 

@@ -53,6 +53,18 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Potion discard ────────────────────────────────────────────────────────
+
+    public static bool ExecuteNetDiscardPotion(out int slotIndex)
+    {
+        if (!ReplayEngine.ConsumeNetDiscardPotion(out slotIndex))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: discard potion slot={slotIndex}");
+        LogNext();
+        return true;
+    }
+
     // ── Card plays ────────────────────────────────────────────────────────────
 
     public static bool ExecuteCardPlay(out uint combatCardIndex, out uint? targetId)
@@ -259,6 +271,14 @@ public static class ReplayRunner
 
         if (cmd.StartsWith("EndPlayerTurnAction "))
             return "end player turn";
+
+        if (cmd.StartsWith("NetDiscardPotionGameAction for player "))
+        {
+            int slotIdx = cmd.LastIndexOf(" potion slot: ", StringComparison.Ordinal);
+            return slotIdx >= 0
+                ? $"discard potion slot {cmd[(slotIdx + " potion slot: ".Length)..]}"
+                : "discard potion";
+        }
 
         if (cmd.StartsWith("PlayCardAction "))
         {
