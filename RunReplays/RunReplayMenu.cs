@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Godot;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Multiplayer;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Screens.MainMenu;
+using MegaCrit.Sts2.Core.Runs;
+using MegaCrit.Sts2.Core.Saves;
+using MegaCrit.Sts2.Core.Saves.Managers;
 
 namespace RunReplays;
 
@@ -36,7 +41,8 @@ public static class RunReplayMenu
         string CharacterId,
         int Floor,
         DateTime SavedAt,
-        string MinimalLogPath);
+        string MinimalLogPath,
+        string? SavePath);
 
     public static Control Create(NMainMenu mainMenu)
     {
@@ -117,19 +123,35 @@ public static class RunReplayMenu
 
         foreach (ReplayEntry entry in entries)
         {
-            var row = new Button();
-            row.Text = FormatEntry(entry);
-            row.Alignment = HorizontalAlignment.Left;
+            var row = new HBoxContainer();
             row.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+            row.AddThemeConstantOverride("separation", 4);
+            list.AddChild(row);
+
+            var replayBtn = new Button();
+            replayBtn.Text = FormatEntry(entry);
+            replayBtn.Alignment = HorizontalAlignment.Left;
+            replayBtn.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+            row.AddChild(replayBtn);
 
             var captured = entry;
-            row.Pressed += () =>
+            replayBtn.Pressed += () =>
             {
                 root.QueueFree();
                 StartReplay(captured);
             };
 
-            list.AddChild(row);
+            if (entry.SavePath != null)
+            {
+                var loadSaveBtn = new Button();
+                loadSaveBtn.Text = "Load Save";
+                row.AddChild(loadSaveBtn);
+                loadSaveBtn.Pressed += () =>
+                {
+                    root.QueueFree();
+                    LoadSave(captured);
+                };
+            }
         }
     }
 
@@ -182,7 +204,11 @@ public static class RunReplayMenu
                 // Parse the verbose header for seed, character, and date.
                 var (seed, characterId, savedAt) = ReadVerboseHeader(latestVerbose);
 
-                entries.Add(new ReplayEntry(seed, characterId, floor, savedAt, latestMinimal));
+                // The backup save shares the same timestamp basename as the verbose log.
+                string expectedSavePath = latestVerbose[..^".verbose.log".Length] + ".save";
+                string? savePath = File.Exists(expectedSavePath) ? expectedSavePath : null;
+
+                entries.Add(new ReplayEntry(seed, characterId, floor, savedAt, latestMinimal, savePath));
             }
         }
 
@@ -236,6 +262,56 @@ public static class RunReplayMenu
         }
 
         return (seed, characterId, savedAt);
+    }
+
+    // ── Save load ─────────────────────────────────────────────────────────────
+
+    private static void LoadSave(ReplayEntry entry)
+    {
+        TaskHelper.RunSafely(LoadSaveAsync(entry));
+    }
+
+    private static async Task LoadSaveAsync(ReplayEntry entry)
+    {
+        // Copy the backup save file over the game's live save slot.
+        try
+        {
+            int profileId = SaveManager.Instance.CurrentProfileId;
+            string godotPath = UserDataPathProvider.GetProfileScopedPath(
+                profileId, "saves/" + RunSaveManager.runSaveFileName);
+            string destPath = ProjectSettings.GlobalizePath(godotPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(destPath)!);
+            File.Copy(entry.SavePath!, destPath, overwrite: true);
+            GD.Print($"[RunReplays] Copied backup save to: {destPath}");
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[RunReplays] Failed to copy backup save: {ex}");
+            return;
+        }
+
+        // Load and continue the run, mirroring OnContinueButtonPressedAsync.
+        ReadSaveResult<SerializableRun> result = SaveManager.Instance.LoadRunSave();
+        if (!result.Success || result.SaveData == null)
+        {
+            GD.PrintErr("[RunReplays] Failed to load copied save.");
+            return;
+        }
+
+        if (NGame.Instance == null)
+        {
+            GD.PrintErr("[RunReplays] NGame.Instance is null — cannot continue run.");
+            return;
+        }
+
+        SerializableRun serializableRun = result.SaveData;
+        RunState runState = RunState.FromSerializable(serializableRun);
+        RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
+
+        await NGame.Instance.Transition.FadeOut();
+        NGame.Instance.ReactionContainer.InitializeNetworking(new NetSingleplayerGameService());
+        await NGame.Instance.LoadRun(runState, serializableRun.PreFinishedRoom);
+        await NGame.Instance.Transition.FadeIn();
     }
 
     // ── Run start ─────────────────────────────────────────────────────────────

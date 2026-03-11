@@ -6,6 +6,7 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
+using MegaCrit.Sts2.Core.Saves.Managers;
 
 namespace RunReplays;
 
@@ -69,6 +70,8 @@ public static class RunSaveLogger
         WriteMinimal(Path.Combine(logsDir, $"{baseName}.minimal.log"),
             minimalActions);
 
+        CopySaveBackup(logsDir, baseName);
+
         GD.Print($"[RunReplays] Wrote save logs to: {logsDir}");
     }
 
@@ -94,6 +97,30 @@ public static class RunSaveLogger
         foreach (string entry in actions)
             sb.AppendLine(entry);
         File.WriteAllText(filePath, sb.ToString());
+    }
+
+    private static void CopySaveBackup(string logsDir, string baseName)
+    {
+        try
+        {
+            int profileId = SaveManager.Instance.CurrentProfileId;
+            string godotPath = UserDataPathProvider.GetProfileScopedPath(
+                profileId, "saves/" + RunSaveManager.runSaveFileName);
+            string physicalPath = ProjectSettings.GlobalizePath(godotPath);
+
+            if (!File.Exists(physicalPath))
+            {
+                GD.PrintErr($"[RunReplays] Save backup: source not found at '{physicalPath}'");
+                return;
+            }
+
+            string dest = Path.Combine(logsDir, $"{baseName}.save");
+            File.Copy(physicalPath, dest, overwrite: true);
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[RunReplays] Save backup failed: {ex}");
+        }
     }
 
     private static string SanitizeForFileName(string value)
