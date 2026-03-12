@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace RunReplays;
@@ -54,6 +55,14 @@ public static class CardPlayReplayPatch
 
     // ── Turn-start trigger ────────────────────────────────────────────────────
 
+    /// <summary>
+    /// True while we are actively dispatching commands for the current turn.
+    /// Prevents OnTurnStarted from starting a second dispatch chain when the
+    /// previous turn's chain (quiet-frame wait → DispatchNextCombatAction)
+    /// already handles the transition.
+    /// </summary>
+    private static bool _dispatching;
+
     private static void OnTurnStarted(CombatState combatState)
     {
         if (!ReplayEngine.IsActive)
@@ -62,83 +71,178 @@ public static class CardPlayReplayPatch
         _currentCombatState = combatState;
         _retryCount = 0;
 
+        if (_waitingForEffects || _dispatching)
+        {
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] TurnStarted: dispatch chain already active, skipping.");
+            return;
+        }
+
+        _turnStartRetries = 0;
+        ScheduleNextFromQueue("TurnStarted");
+    }
+
+    private static int _turnStartRetries;
+    private const int MaxTurnStartRetries = 100;
+
+    private static void ScheduleNextFromQueue(string caller)
+    {
+        _dispatching = true;
+
         if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
         {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TurnStarted: next command is NetDiscardPotion slot={discardSlot}, scheduling TryDiscardPotion.");
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] {caller}: next command is NetDiscardPotion slot={discardSlot}, scheduling TryDiscardPotion.");
             Callable.From(TryDiscardPotion).CallDeferred();
         }
         else if (ReplayEngine.PeekUsePotion(out uint potionIdx, out _, out _))
         {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TurnStarted: next command is UsePotion index={potionIdx}, scheduling TryUsePotion.");
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] {caller}: next command is UsePotion index={potionIdx}, scheduling TryUsePotion.");
             Callable.From(TryUsePotion).CallDeferred();
         }
         else if (ReplayEngine.PeekCardPlay(out uint idx, out _))
         {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TurnStarted: next command is CardPlay index={idx}, scheduling TryPlayNextCard.");
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] {caller}: next command is CardPlay index={idx}, scheduling TryPlayNextCard.");
             Callable.From(TryPlayNextCard).CallDeferred();
         }
         else if (ReplayEngine.PeekEndTurn())
         {
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] TurnStarted: next command is EndTurn, scheduling TryEndTurn.");
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] {caller}: next command is EndTurn, scheduling TryEndTurn.");
             Callable.From(TryEndTurn).CallDeferred();
         }
         else
         {
             ReplayEngine.PeekNext(out string? next);
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TurnStarted: next command is not a card play or end turn — '{next ?? "(none)"}'.");
+
+            if (_turnStartRetries < MaxTurnStartRetries)
+            {
+                _turnStartRetries++;
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[RunReplays] {caller}: no combat action yet — '{next ?? "(none)"}', retry {_turnStartRetries}/{MaxTurnStartRetries}.");
+                NGame.Instance.GetTree().CreateTimer(0.25).Connect(
+                    "timeout", Callable.From(() => ScheduleNextFromQueue(caller)));
+            }
+            else
+            {
+                _dispatching = false;
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[RunReplays] {caller}: gave up after {MaxTurnStartRetries} retries — '{next ?? "(none)"}'.");
+            }
         }
     }
 
-    // ── Post-card-play chain trigger ──────────────────────────────────────────
+    // ── Post-action chain trigger (waits for sub-effects to settle) ─────────
+
+    /// <summary>
+    /// True while we're waiting for all sub-effects of a card/potion action
+    /// to finish before dispatching the next replay command.  While waiting,
+    /// every AfterActionExecuted resets a quiet-frame flag.  Once a full
+    /// frame passes with no AfterActionExecuted, effects have settled.
+    /// </summary>
+    private static bool _waitingForEffects;
+    private static bool _actionFiredThisFrame;
+    private static int  _quietFrameCount;
+
+    /// <summary>
+    /// Number of consecutive quiet frames (no AfterActionExecuted) required
+    /// before dispatching the next command.  Extra frames allow enemy
+    /// animations (damage numbers, status effects, deaths) to finish.
+    /// </summary>
+    private const int QuietFramesRequired = 3;
 
     private static void OnAfterActionExecuted(GameAction action)
     {
         if (!ReplayEngine.IsActive)
             return;
 
+        if (_waitingForEffects)
+        {
+            // A sub-effect just finished — mark this frame as active.
+            _actionFiredThisFrame = true;
+            return;
+        }
+
         if (action is PlayCardAction playCard)
         {
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: PlayCardAction completed ({playCard}).");
-            ScheduleNextCombatAction();
+            WaitForEffectsThenDispatch();
         }
         else if (action is DiscardPotionGameAction discardPotion)
         {
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: DiscardPotionGameAction completed ({discardPotion}).");
-            ScheduleNextCombatAction();
+            WaitForEffectsThenDispatch();
         }
         else if (action is UsePotionAction usePotion)
         {
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: UsePotionAction completed ({usePotion}).");
-            ScheduleNextCombatAction();
+            WaitForEffectsThenDispatch();
         }
     }
 
-    private static void ScheduleNextCombatAction()
+    private static void WaitForEffectsThenDispatch()
+    {
+        _waitingForEffects = true;
+        _actionFiredThisFrame = false;
+        _quietFrameCount = 0;
+        Callable.From(CheckEffectsSettled).CallDeferred();
+    }
+
+    private static void CheckEffectsSettled()
+    {
+        if (!ReplayEngine.IsActive)
+        {
+            _waitingForEffects = false;
+            return;
+        }
+
+        if (_actionFiredThisFrame)
+        {
+            // At least one sub-effect fired this frame — reset quiet counter.
+            _actionFiredThisFrame = false;
+            _quietFrameCount = 0;
+            Callable.From(CheckEffectsSettled).CallDeferred();
+            return;
+        }
+
+        _quietFrameCount++;
+
+        if (_quietFrameCount < QuietFramesRequired)
+        {
+            // Keep waiting for more quiet frames so enemy animations can finish.
+            Callable.From(CheckEffectsSettled).CallDeferred();
+            return;
+        }
+
+        // Enough consecutive quiet frames — effects and animations settled.
+        _waitingForEffects = false;
+        DispatchNextCombatAction();
+    }
+
+    private static void DispatchNextCombatAction()
     {
         if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
         {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] ScheduleNext: NetDiscardPotion slot={discardSlot}, scheduling TryDiscardPotion.");
-            Callable.From(TryDiscardPotion).CallDeferred();
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Dispatch: NetDiscardPotion slot={discardSlot}.");
+            TryDiscardPotion();
         }
         else if (ReplayEngine.PeekUsePotion(out uint potionIdx, out _, out _))
         {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] ScheduleNext: UsePotion index={potionIdx}, scheduling TryUsePotion.");
-            Callable.From(TryUsePotion).CallDeferred();
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Dispatch: UsePotion index={potionIdx}.");
+            TryUsePotion();
         }
         else if (ReplayEngine.PeekCardPlay(out uint idx, out _))
         {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] ScheduleNext: CardPlay index={idx}, scheduling TryPlayNextCard.");
-            Callable.From(TryPlayNextCard).CallDeferred();
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Dispatch: CardPlay index={idx}.");
+            TryPlayNextCard();
         }
         else if (ReplayEngine.PeekEndTurn())
         {
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] ScheduleNext: EndTurn, scheduling TryEndTurn.");
-            Callable.From(TryEndTurn).CallDeferred();
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] Dispatch: EndTurn.");
+            TryEndTurn();
         }
         else
         {
+            _dispatching = false;
             ReplayEngine.PeekNext(out string? next);
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] ScheduleNext: no more combat actions — '{next ?? "(none)"}'. Checking for active rewards screen.");
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Dispatch: no more combat actions — '{next ?? "(none)"}'. Checking for active rewards screen.");
             BattleRewardsReplayPatch.TryResumeRewardsProcessing();
         }
     }
@@ -192,7 +296,8 @@ public static class CardPlayReplayPatch
             }
 
             _retryCount++;
-            Callable.From(TryPlayNextCard).CallDeferred();
+            NGame.Instance.GetTree().CreateTimer(0.25).Connect(
+                "timeout", Callable.From(TryPlayNextCard));
             return;
         }
 
@@ -302,6 +407,13 @@ public static class CardPlayReplayPatch
 
     private static void TryEndTurn()
     {
+        if (_waitingForEffects)
+        {
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] TryEndTurn: effects still in progress, deferring.");
+            Callable.From(TryEndTurn).CallDeferred();
+            return;
+        }
+
         PlayerActionBuffer.LogToDevConsole("[RunReplays] TryEndTurn: attempting to end player turn.");
 
         if (!ReplayRunner.ExecuteEndTurn())
@@ -316,6 +428,9 @@ public static class CardPlayReplayPatch
             PlayerActionBuffer.LogToDevConsole("[RunReplays] TryEndTurn: could not resolve local player.");
             return;
         }
+
+        // Turn is ending — clear dispatching so the next OnTurnStarted can start fresh.
+        _dispatching = false;
 
         PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryEndTurn: calling PlayerCmd.EndTurn for player '{player}'.");
         PlayerCmd.EndTurn(player, canBackOut: false);
