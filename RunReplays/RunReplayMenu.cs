@@ -399,6 +399,10 @@ public static class RunReplayMenu
         var      commands = lines.Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
         ReplayRunner.Load(commands);
 
+        // Load verbose log for battle state validation during replay.
+        string verboseLogPath = entry.MinimalLogPath.Replace(".minimal.log", ".verbose.log");
+        ReplayEngine.LoadExpectedStates(verboseLogPath);
+
         // Resolve the character model by matching the stored entry string against
         // all registered characters. Fall back to the first available character
         // for old logs that predate the Character header line.
@@ -454,6 +458,11 @@ public static class RunReplayMenu
 
         var remainingCommands = allCommands.Skip(skipCount).ToList();
         ReplayRunner.Load(remainingCommands);
+
+        // Load verbose log for battle state validation, skipping entries for
+        // commands that were already executed before the starting floor's save.
+        string verboseLogPath = target.MinimalLogPath.Replace(".minimal.log", ".verbose.log");
+        ReplayEngine.LoadExpectedStates(verboseLogPath, skipCount);
 
         GD.Print($"[RunReplays] Starting replay from floor {startFrom.Floor}: " +
                  $"skipping {skipCount} commands, replaying {remainingCommands.Count} remaining");

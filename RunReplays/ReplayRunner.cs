@@ -14,6 +14,7 @@ public static class ReplayRunner
     public static void Load(IReadOnlyList<string> commands)
     {
         ReplayEngine.Load(commands);
+        BattleStateValidator.EnsureSubscribed();
         LogNext("Loaded replay");
     }
 
