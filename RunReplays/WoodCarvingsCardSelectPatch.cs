@@ -36,6 +36,38 @@ internal static class DeckCardSelectContext
     internal static bool Pending;
 }
 
+/// <summary>
+/// Buffers "SelectDeckCard {n}" commands that arise from deck card selections
+/// triggered by card effects during combat (e.g. Seeker Strike).
+///
+/// The buffer is necessary because NCardGridSelectionScreen.CardsSelected resolves
+/// (and RecordAsync fires) while the parent PlayCardAction is still executing, so
+/// recording immediately would place SelectDeckCard before PlayCardAction in the
+/// minimal log.  Instead the command is held here and flushed by PlayerActionBuffer
+/// once AfterActionExecuted fires for the PlayCardAction.
+///
+/// For event-triggered selections (Wood Carvings) there is no PlayCardAction, so
+/// EventOptionChosenLogPatch flushes the buffer before recording the next event
+/// option, preserving the correct ordering there as well.
+/// </summary>
+internal static class CardEffectDeckSelectContext
+{
+    private static readonly List<string> _buffered = new();
+
+    internal static void Buffer(string cmd) => _buffered.Add(cmd);
+
+    internal static void FlushIfPending()
+    {
+        if (_buffered.Count == 0)
+            return;
+
+        foreach (string cmd in _buffered)
+            PlayerActionBuffer.RecordMinimalOnly(cmd);
+
+        _buffered.Clear();
+    }
+}
+
 // ── FromDeckGeneric ────────────────────────────────────────────────────────────
 
 [HarmonyPatch(typeof(CardSelectCmd), nameof(CardSelectCmd.FromDeckGeneric))]
@@ -51,7 +83,10 @@ public static class FromDeckGenericPatch
 
         if (ReplayEngine.IsActive)
         {
-            if (ReplayEngine.PeekSelectDeckCard(out _))
+            // SkipToSelectDeckCard drains any interleaved auto-processed commands
+            // (e.g. status effects from a combat card play) that sit before the
+            // SelectDeckCard command, then confirms it is at the queue front.
+            if (ReplayEngine.SkipToSelectDeckCard())
             {
                 _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
                 PlayerActionBuffer.LogToDevConsole(
@@ -81,7 +116,7 @@ public static class FromDeckForEnchantmentPatch
 
         if (ReplayEngine.IsActive)
         {
-            if (ReplayEngine.PeekSelectDeckCard(out _))
+            if (ReplayEngine.SkipToSelectDeckCard())
             {
                 _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
                 PlayerActionBuffer.LogToDevConsole(
@@ -139,9 +174,16 @@ public static class DeckCardSelectRecordPatch
         foreach (CardModel card in cardList)
         {
             int index = deckList == null ? -1 : deckList.ToList().IndexOf(card);
-            PlayerActionBuffer.RecordMinimalOnly($"SelectDeckCard {index}");
+
+            // Buffer the minimal-log command rather than recording it immediately.
+            // If this selection was triggered by a PlayCardAction (combat card effect,
+            // e.g. Seeker Strike), the buffer is flushed by PlayerActionBuffer after
+            // AfterActionExecuted fires for that action, ensuring correct log order.
+            // If triggered by an event option (Wood Carvings), EventOptionChosenLogPatch
+            // flushes the buffer before recording the next ChooseEventOption.
+            CardEffectDeckSelectContext.Buffer($"SelectDeckCard {index}");
             PlayerActionBuffer.LogToDevConsole(
-                $"[DeckCardSelectPatch] Recorded SelectDeckCard {index} ('{card.Title}').");
+                $"[DeckCardSelectPatch] Buffered SelectDeckCard {index} ('{card.Title}').");
         }
     }
 }

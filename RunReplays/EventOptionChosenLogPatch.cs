@@ -19,6 +19,12 @@ public static class EventOptionChosenLogPatch
         PlayerActionBuffer.LogToDevConsole(
             $"[EventOption] Chosen — title='{title}' textKey='{textKey}'");
 
+        // Flush any pending deck card selection that was triggered by the previous
+        // event option (e.g. Wood Carvings).  This ensures SelectDeckCard appears
+        // before the next ChooseEventOption in the minimal log, since there is no
+        // PlayCardAction to flush it in the event context.
+        CardEffectDeckSelectContext.FlushIfPending();
+
         PlayerActionBuffer.RecordVerboseOnly($"[EventOption] Chosen — title='{title}' textKey='{textKey}'");
         PlayerActionBuffer.RecordMinimalOnly($"ChooseEventOption {textKey}");
     }

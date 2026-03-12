@@ -65,13 +65,15 @@ public static class PlayerActionBuffer
             LogToDevConsole($"[{timestamp}] {actionText}");
             EntryRecorded?.Invoke(actionText);
 
-            // Hand-card and card-choice-screen selections fire SyncLocalChoice
-            // mid-action, before AfterActionExecuted.  Flush both buffered commands
-            // now so they follow the triggering action in the log.
+            // Hand-card, card-choice-screen, and deck-card selections may buffer their
+            // commands until the triggering action is logged.  Flush them now so they
+            // follow the triggering action in the minimal log.
             if (action is UsePotionAction || action is PlayCardAction)
             {
                 HandCardSelectRecordPatch.FlushIfPending();
                 CardChoiceScreenSyncPatch.FlushIfPending();
+                CardEffectDeckSelectContext.FlushIfPending();
+                SimpleGridSyncPatch.FlushIfPending();
             }
         };
     }
