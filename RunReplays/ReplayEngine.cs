@@ -848,4 +848,37 @@ public static class ReplayEngine
         }
         return false;
     }
+
+    /// <summary>
+    /// Scans the pending queue for a SelectHandCards command and consumes
+    /// any interleaved game-action commands that precede it.  During hand-card
+    /// selection (e.g. Touch of Insanity), the game may fire recordable actions
+    /// between the triggering action and SelectHandCards; these are replayed
+    /// automatically and must be drained so the selector finds the command
+    /// at the front of the queue.
+    /// Returns true if SelectHandCards is now at the front.
+    /// </summary>
+    public static bool SkipToSelectHandCards()
+    {
+        if (PeekSelectHandCards(out _))
+            return true;
+
+        bool found = false;
+        foreach (string cmd in _pending)
+        {
+            if (cmd.StartsWith(SelectHandCardsPrefix))
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+            return false;
+
+        while (_pending.Count > 0 && !PeekSelectHandCards(out _))
+            SignalConsumed(_pending.Dequeue());
+
+        return PeekSelectHandCards(out _);
+    }
 }

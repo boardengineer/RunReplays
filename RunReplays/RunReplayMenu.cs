@@ -161,6 +161,13 @@ public static class RunReplayMenu
             };
 
             // ── Floor rows ─────────────────────────────────────────────────
+
+            // Collect earlier floors with saves as potential starting points.
+            var floorsWithSaves = seedEntries
+                .Where(e => e.SavePath != null)
+                .OrderBy(e => e.Floor)
+                .ToList();
+
             foreach (ReplayEntry entry in seedEntries)
             {
                 var row = new HBoxContainer();
@@ -179,11 +186,33 @@ public static class RunReplayMenu
                 replayBtn.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
                 row.AddChild(replayBtn);
 
+                // "Start from" dropdown — lists earlier floors that have saves.
+                var startOptions = floorsWithSaves
+                    .Where(e => e.Floor < entry.Floor)
+                    .ToList();
+
+                OptionButton? dropdown = null;
+                if (startOptions.Count > 0)
+                {
+                    dropdown = new OptionButton();
+                    dropdown.AddItem("From start", 0);
+                    for (int i = 0; i < startOptions.Count; i++)
+                        dropdown.AddItem($"From Floor {startOptions[i].Floor}", i + 1);
+                    dropdown.Selected = 0;
+                    row.AddChild(dropdown);
+                }
+
                 var captured = entry;
+                var capturedOptions = startOptions;
+                var capturedDropdown = dropdown;
                 replayBtn.Pressed += () =>
                 {
+                    int sel = capturedDropdown?.Selected ?? 0;
                     root.QueueFree();
-                    StartReplay(captured);
+                    if (sel == 0 || capturedOptions.Count == 0)
+                        StartReplay(captured);
+                    else
+                        StartReplayFromFloor(captured, capturedOptions[sel - 1]);
                 };
 
                 if (entry.SavePath != null)
@@ -392,5 +421,83 @@ public static class RunReplayMenu
                 ActModel.GetDefaultList(),
                 [],
                 entry.Seed));
+    }
+
+    /// <summary>
+    /// Starts a replay from an intermediate floor by loading the starting
+    /// floor's save and replaying only the commands that follow it.
+    /// </summary>
+    private static void StartReplayFromFloor(ReplayEntry target, ReplayEntry startFrom)
+    {
+        if (startFrom.SavePath == null)
+        {
+            GD.PrintErr("[RunReplays] Starting floor has no save — falling back to full replay.");
+            StartReplay(target);
+            return;
+        }
+
+        // The starting floor's log contains all commands up to that point.
+        // The target's log contains all commands up to the target floor.
+        // The difference is the commands we need to replay.
+        string[] startLines  = File.ReadAllLines(startFrom.MinimalLogPath);
+        int      skipCount   = startLines.Count(l => !string.IsNullOrWhiteSpace(l));
+
+        string[] targetLines = File.ReadAllLines(target.MinimalLogPath);
+        var      allCommands = targetLines.Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
+
+        if (skipCount >= allCommands.Count)
+        {
+            GD.PrintErr($"[RunReplays] Starting floor has {skipCount} commands but target only has {allCommands.Count} — loading save directly.");
+            LoadSave(startFrom);
+            return;
+        }
+
+        var remainingCommands = allCommands.Skip(skipCount).ToList();
+        ReplayRunner.Load(remainingCommands);
+
+        GD.Print($"[RunReplays] Starting replay from floor {startFrom.Floor}: " +
+                 $"skipping {skipCount} commands, replaying {remainingCommands.Count} remaining");
+
+        TaskHelper.RunSafely(LoadSaveAndReplayAsync(startFrom));
+    }
+
+    private static async Task LoadSaveAndReplayAsync(ReplayEntry startFrom)
+    {
+        try
+        {
+            int profileId = SaveManager.Instance.CurrentProfileId;
+            string godotPath = UserDataPathProvider.GetProfileScopedPath(
+                profileId, "saves/" + RunSaveManager.runSaveFileName);
+            string destPath = ProjectSettings.GlobalizePath(godotPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(destPath)!);
+            File.Copy(startFrom.SavePath!, destPath, overwrite: true);
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[RunReplays] Failed to copy save for mid-floor replay: {ex}");
+            return;
+        }
+
+        ReadSaveResult<SerializableRun> result = SaveManager.Instance.LoadRunSave();
+        if (!result.Success || result.SaveData == null)
+        {
+            GD.PrintErr("[RunReplays] Failed to load save for mid-floor replay.");
+            return;
+        }
+
+        if (NGame.Instance == null)
+        {
+            GD.PrintErr("[RunReplays] NGame.Instance is null — cannot continue run.");
+            return;
+        }
+
+        SerializableRun serializableRun = result.SaveData;
+        RunState runState = RunState.FromSerializable(serializableRun);
+        RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
+
+        await NGame.Instance.Transition.FadeOut();
+        NGame.Instance.ReactionContainer.InitializeNetworking(new NetSingleplayerGameService());
+        await NGame.Instance.LoadRun(runState, serializableRun.PreFinishedRoom);
+        await NGame.Instance.Transition.FadeIn();
     }
 }

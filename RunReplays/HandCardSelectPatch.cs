@@ -107,7 +107,9 @@ public static class HandCardSelectReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        if (!ReplayEngine.PeekSelectHandCards(out _))
+        // Skip interleaved game-action commands (e.g. gold changes) that may
+        // sit between the triggering action and SelectHandCards in the queue.
+        if (!ReplayEngine.SkipToSelectHandCards())
             return;
 
         var selector = new ReplayHandCardSelector();
