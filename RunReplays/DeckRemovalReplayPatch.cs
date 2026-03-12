@@ -58,27 +58,36 @@ internal sealed class ReplayRemoveCardSelector : ICardSelector
         scope?.Dispose();
 
         var optionList = options.ToList();
+        var matched = new List<CardModel>();
 
-        if (!ReplayEngine.ConsumeRemoveCardFromDeck(out int deckIndex))
+        // Consume up to maxSelect RemoveCardFromDeck commands (handles multi-card
+        // removal like Precarious Shears).
+        while (matched.Count < maxSelect && ReplayEngine.ConsumeRemoveCardFromDeck(out int deckIndex))
         {
-            PlayerActionBuffer.LogToDevConsole(
-                "[ReplayRemoveCardSelector] No RemoveCardFromDeck command — returning first card.");
-            return Task.FromResult<IEnumerable<CardModel>>(
-                optionList.Take(Math.Max(1, minSelect)).ToList());
+            if (deckIndex >= 0 && deckIndex < optionList.Count)
+            {
+                var card = optionList[deckIndex];
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[ReplayRemoveCardSelector] Selected '{card.Title}' at index {deckIndex} for removal.");
+                matched.Add(card);
+            }
+            else
+            {
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[ReplayRemoveCardSelector] Index {deckIndex} out of range (count={optionList.Count}) — skipping.");
+            }
         }
 
-        if (deckIndex >= 0 && deckIndex < optionList.Count)
+        if (matched.Count == 0)
         {
-            var match = optionList[deckIndex];
             PlayerActionBuffer.LogToDevConsole(
-                $"[ReplayRemoveCardSelector] Selected '{match.Title}' at index {deckIndex} for removal.");
-            return Task.FromResult<IEnumerable<CardModel>>(new[] { match });
+                "[ReplayRemoveCardSelector] No RemoveCardFromDeck commands — returning first card(s).");
+            matched.AddRange(optionList.Take(Math.Max(1, minSelect)));
         }
 
         PlayerActionBuffer.LogToDevConsole(
-            $"[ReplayRemoveCardSelector] Index {deckIndex} out of range (count={optionList.Count}) — falling back to first available.");
-        return Task.FromResult<IEnumerable<CardModel>>(
-            optionList.Take(Math.Max(1, minSelect)).ToList());
+            $"[ReplayRemoveCardSelector] Returning {matched.Count} card(s) for removal.");
+        return Task.FromResult<IEnumerable<CardModel>>(matched);
     }
 
     public CardModel? GetSelectedCardReward(

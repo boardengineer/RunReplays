@@ -31,6 +31,7 @@ public static class FromDeckForRemovalPatch
     public static void Prefix()
     {
         DeckRemovalState.PendingRemoval = true;
+        DeckRemovalState.PendingOptions = null;
         PlayerActionBuffer.LogToDevConsole("[DeckRemovalRecordPatch] FromDeckForRemoval entered — awaiting RemoveFromDeck.");
     }
 }
@@ -77,10 +78,12 @@ public static class RemoveFromDeckRecordPatch
             return;
         }
 
-        DeckRemovalState.PendingRemoval = false;
+        // Don't clear PendingRemoval or PendingOptions here — multi-card removal
+        // (e.g. Precarious Shears) calls RemoveFromDeck once per card, and all
+        // calls must be recorded.  State is reset when FromDeckForRemoval is
+        // entered again for the next removal flow.
 
         var options = DeckRemovalState.PendingOptions;
-        DeckRemovalState.PendingOptions = null;
 
         int index = -1;
         if (options != null)
