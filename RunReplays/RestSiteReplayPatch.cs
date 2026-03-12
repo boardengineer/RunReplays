@@ -109,7 +109,25 @@ public static class RestSiteReplayPatch
         bool success = await sync.ChooseLocalOption(index);
         PlayerActionBuffer.LogToDevConsole(
             $"[RestSiteReplayPatch] ChooseLocalOption returned {success} — notifying room.");
-        if (success)
+        if (!success)
+            return;
+
+        // Check for another pending rest site option (e.g. Miniature Tent grants
+        // two rest site choices).  If found, select it before notifying the room,
+        // so the proceed button only appears after all options are consumed.
+        if (ReplayEngine.PeekRestSiteOption(out string nextOptionId))
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[RestSiteReplayPatch] Another rest site option pending: '{nextOptionId}' — continuing chain.");
+            Callable.From(() =>
+            {
+                NRestSiteRoom.Instance?.AfterSelectingOption(option);
+                TaskHelper.RunSafely(WaitForRoomThenSelect(sync, nextOptionId));
+            }).CallDeferred();
+        }
+        else
+        {
             Callable.From(() => NRestSiteRoom.Instance?.AfterSelectingOption(option)).CallDeferred();
+        }
     }
 }
