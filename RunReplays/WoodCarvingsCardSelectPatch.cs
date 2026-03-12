@@ -130,6 +130,36 @@ public static class FromDeckForEnchantmentPatch
     }
 }
 
+// ── FromDeckForEnchantment (with filter) ──────────────────────────────────────
+
+[HarmonyPatch(typeof(CardSelectCmd), nameof(CardSelectCmd.FromDeckForEnchantment),
+    new[] { typeof(Player), typeof(EnchantmentModel), typeof(int), typeof(Func<CardModel, bool>), typeof(CardSelectorPrefs) })]
+public static class FromDeckForEnchantmentWithFilterPatch
+{
+    internal static IDisposable? _pendingScope;
+
+    [HarmonyPrefix]
+    public static void Prefix()
+    {
+        _pendingScope?.Dispose();
+        _pendingScope = null;
+
+        if (ReplayEngine.IsActive)
+        {
+            if (ReplayEngine.SkipToSelectDeckCard())
+            {
+                _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
+                PlayerActionBuffer.LogToDevConsole(
+                    "[SelfHelpBookPatch] Pushed ReplayDeckCardSelector for FromDeckForEnchantment (with filter).");
+            }
+        }
+        else
+        {
+            DeckCardSelectContext.Pending = true;
+        }
+    }
+}
+
 // ── Recording: NCardGridSelectionScreen.CardsSelected ─────────────────────────
 
 /// <summary>
@@ -200,9 +230,12 @@ internal sealed class ReplayDeckCardSelector : ICardSelector
         IEnumerable<CardModel> options, int minSelect, int maxSelect)
     {
         // Consume the scope that was pushed by whichever patch created us.
-        var scope = FromDeckGenericPatch._pendingScope ?? FromDeckForEnchantmentPatch._pendingScope;
-        FromDeckGenericPatch._pendingScope       = null;
-        FromDeckForEnchantmentPatch._pendingScope = null;
+        var scope = FromDeckGenericPatch._pendingScope
+            ?? FromDeckForEnchantmentPatch._pendingScope
+            ?? FromDeckForEnchantmentWithFilterPatch._pendingScope;
+        FromDeckGenericPatch._pendingScope                = null;
+        FromDeckForEnchantmentPatch._pendingScope         = null;
+        FromDeckForEnchantmentWithFilterPatch._pendingScope = null;
         scope?.Dispose();
 
         var optionList = options.ToList();
