@@ -3,8 +3,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Context;
+using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Nodes.Debug;
@@ -33,14 +37,29 @@ public static class PlayerActionBuffer
     private static readonly ConcurrentQueue<(string Timestamp, string Action)> _verboseEntries = new();
     private static readonly ConcurrentQueue<string> _minimalEntries = new();
 
+    private const string StateSeparator = " || ";
+
+    /// <summary>
+    /// Holds the battle state captured after the previous recordable action
+    /// (= the state before the next action).  Set at TurnStarted for the
+    /// first action of a turn, then updated after each recordable action.
+    /// </summary>
+    private static string? _pendingPreState;
+
     [HarmonyPostfix]
     public static void Postfix(ActionExecutor __instance)
     {
         // Clear both queues whenever a new executor is created (new run start).
         while (_verboseEntries.TryDequeue(out _)) { }
         while (_minimalEntries.TryDequeue(out _)) { }
+        _pendingPreState = null;
 
         RunOverlay.InitForRun();
+
+        // Capture initial combat state at the start of each player turn so the
+        // first action of the turn has a pre-state.
+        CombatManager.Instance.TurnStarted -= OnTurnStarted;
+        CombatManager.Instance.TurnStarted += OnTurnStarted;
 
         // When the replay finishes, restore the replayed commands into the
         // buffer so that new recordings append after them rather than starting
@@ -60,8 +79,19 @@ public static class PlayerActionBuffer
 
             string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
             string actionText = action.ToString()!;
+
+            // Grab the pre-state (captured after the previous action or at
+            // turn start) and update it for the next action.
+            string? preState = _pendingPreState;
+            _pendingPreState = GetBattleStateSummary();
+
+            // Append pre-action state to minimal entry for replay validation.
+            string minimalEntry = preState != null
+                ? actionText + StateSeparator + preState
+                : actionText;
+
             _verboseEntries.Enqueue((timestamp, actionText));
-            _minimalEntries.Enqueue(actionText);
+            _minimalEntries.Enqueue(minimalEntry);
             LogToDevConsole($"[{timestamp}] {actionText}");
             EntryRecorded?.Invoke(actionText);
 
@@ -76,6 +106,56 @@ public static class PlayerActionBuffer
                 SimpleGridSyncPatch.FlushIfPending();
             }
         };
+    }
+
+    private static void OnTurnStarted(CombatState _)
+    {
+        if (!ReplayEngine.IsActive)
+            _pendingPreState = GetBattleStateSummary();
+    }
+
+    /// <summary>
+    /// Returns a compact summary of the current battle state:
+    ///   Hand: [card1, card2] Enemies: [Monster 42/44, ...]
+    /// Returns null when not in combat.
+    /// </summary>
+    internal static string? GetBattleStateSummary()
+    {
+        if (!CombatManager.Instance.IsInProgress)
+            return null;
+
+        var state = CombatManager.Instance.DebugOnlyGetState();
+        if (state == null)
+            return null;
+
+        Player? me;
+        try { me = LocalContext.GetMe(state); }
+        catch { me = state.Players.FirstOrDefault(); }
+        if (me == null)
+            return null;
+
+        var sb = new StringBuilder();
+        sb.Append("Hand: [");
+        var hand = me.PlayerCombatState?.Hand?.Cards;
+        if (hand != null)
+        {
+            for (int i = 0; i < hand.Count; i++)
+            {
+                if (i > 0) sb.Append(", ");
+                sb.Append(hand[i].Title);
+            }
+        }
+        sb.Append("] Enemies: [");
+        bool first = true;
+        foreach (var enemy in state.Enemies)
+        {
+            if (!first) sb.Append(", ");
+            first = false;
+            sb.Append(enemy.Name).Append(' ')
+              .Append(enemy.CurrentHp).Append('/').Append(enemy.MaxHp);
+        }
+        sb.Append(']');
+        return sb.ToString();
     }
 
     /// <summary>
@@ -131,7 +211,15 @@ public static class PlayerActionBuffer
     {
         var verboseEntries = commands.Select(c => ("REPLAY", c)).ToList();
         Restore(verboseEntries, commands);
-        RunOverlay.RestoreRecentEntries(commands);
+
+        // Strip " || state" suffix for overlay display.
+        var displayEntries = commands.Select(c =>
+        {
+            int sep = c.IndexOf(StateSeparator, StringComparison.Ordinal);
+            return sep >= 0 ? c[..sep] : c;
+        }).ToList();
+        RunOverlay.RestoreRecentEntries(displayEntries);
+
         LogToDevConsole(
             $"[PlayerActionBuffer] Replay completed — restored {commands.Count} command(s) to buffer.");
     }

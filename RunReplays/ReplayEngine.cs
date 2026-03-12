@@ -97,14 +97,28 @@ public static class ReplayEngine
     /// </summary>
     public static bool IsActive => _pending.Count > 0 || _replayActive;
 
+    /// <summary>State suffix separator embedded in minimal log entries.</summary>
+    private const string StateSeparator = " || ";
+
     public static void Load(IReadOnlyList<string> commands)
     {
         _pending.Clear();
         _recentConsumed.Clear();
-        _loadedCommands = commands.Where(c => !string.IsNullOrWhiteSpace(c)).ToList();
-        _replayActive   = _loadedCommands.Count > 0;
-        foreach (string cmd in _loadedCommands)
+
+        _loadedCommands = new List<string>();
+        foreach (string raw in commands)
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+                continue;
+
+            // Strip the " || state" suffix so the command text parses cleanly.
+            int sepIdx = raw.IndexOf(StateSeparator, StringComparison.Ordinal);
+            string cmd = sepIdx >= 0 ? raw[..sepIdx] : raw;
+            _loadedCommands.Add(cmd);
             _pending.Enqueue(cmd);
+        }
+
+        _replayActive = _loadedCommands.Count > 0;
     }
 
     public static void Clear()
