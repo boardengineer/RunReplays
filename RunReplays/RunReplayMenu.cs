@@ -40,6 +40,7 @@ public static class RunReplayMenu
         string Seed,
         string CharacterId,
         int Floor,
+        int Ascension,
         DateTime SavedAt,
         string MinimalLogPath,
         string? SavePath);
@@ -290,7 +291,9 @@ public static class RunReplayMenu
                 string expectedSavePath = latestVerbose[..^".verbose.log".Length] + ".save";
                 string? savePath = File.Exists(expectedSavePath) ? expectedSavePath : null;
 
-                entries.Add(new ReplayEntry(seed, characterId, floor, savedAt, latestMinimal, savePath));
+                int ascension = ReadMinimalHeaderAscension(latestMinimal);
+
+                entries.Add(new ReplayEntry(seed, characterId, floor, ascension, savedAt, latestMinimal, savePath));
             }
         }
 
@@ -344,6 +347,28 @@ public static class RunReplayMenu
         }
 
         return (seed, characterId, savedAt);
+    }
+
+    /// <summary>
+    /// Reads the "# Ascension: N" line from a minimal log header.
+    /// Returns 0 if the header is missing or malformed.
+    /// </summary>
+    private static int ReadMinimalHeaderAscension(string filePath)
+    {
+        const string prefix = "# Ascension: ";
+        try
+        {
+            foreach (string line in File.ReadLines(filePath))
+            {
+                if (!line.StartsWith('#'))
+                    break; // Past the header.
+                if (line.StartsWith(prefix) && int.TryParse(line[prefix.Length..].Trim(), out int asc))
+                    return asc;
+            }
+        }
+        catch { /* malformed log */ }
+
+        return 0;
     }
 
     // ── Save load ─────────────────────────────────────────────────────────────
@@ -419,7 +444,7 @@ public static class RunReplayMenu
             return;
         }
 
-        GD.Print($"[RunReplays] Starting replay: seed={entry.Seed} character={character.Id} floor={entry.Floor} ({commands.Count} commands)");
+        GD.Print($"[RunReplays] Starting replay: seed={entry.Seed} character={character.Id} floor={entry.Floor} ascension={entry.Ascension} ({commands.Count} commands)");
 
         TaskHelper.RunSafely(
             NGame.Instance.StartNewSingleplayerRun(
@@ -427,7 +452,9 @@ public static class RunReplayMenu
                 shouldSave: true,
                 ActModel.GetDefaultList(),
                 [],
-                entry.Seed));
+                entry.Seed,
+                entry.Ascension,
+                null));
     }
 
     /// <summary>
