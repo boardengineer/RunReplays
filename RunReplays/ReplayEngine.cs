@@ -446,6 +446,66 @@ public static class ReplayEngine
         return false;
     }
 
+    /// <summary>
+    /// Searches the queue for a ChooseEventOption command, drains any interleaved
+    /// commands that precede it (they are orphaned — already processed by the game
+    /// during ChooseLocalOption), then consumes the event option itself.
+    /// Used for the finished-event PROCEED case so orphaned commands don't linger
+    /// and block subsequent queue consumers (e.g. map navigation).
+    /// Returns true if the event option was found and consumed.
+    /// </summary>
+    public static bool SkipToEventOption(out string textKey)
+    {
+        // Fast path: already at front.
+        if (PeekEventOption(out textKey))
+        {
+            SignalConsumed(_pending.Dequeue());
+            return true;
+        }
+
+        // Verify a ChooseEventOption exists before draining anything.
+        bool found = false;
+        foreach (string cmd in _pending)
+        {
+            if (cmd.StartsWith(EventOptionPrefix))
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            textKey = string.Empty;
+            return false;
+        }
+
+        // Drain interleaved commands until ChooseEventOption is at the front.
+        while (_pending.Count > 0 && !PeekEventOption(out _))
+            SignalConsumed(_pending.Dequeue());
+
+        if (!PeekEventOption(out textKey))
+        {
+            textKey = string.Empty;
+            return false;
+        }
+
+        SignalConsumed(_pending.Dequeue());
+        return true;
+    }
+
+    /// <summary>
+    /// Returns true if any ChooseEventOption command exists anywhere in the queue,
+    /// regardless of position.
+    /// </summary>
+    public static bool HasPendingEventOption()
+    {
+        foreach (string cmd in _pending)
+            if (cmd.StartsWith(EventOptionPrefix))
+                return true;
+        return false;
+    }
+
     // ── Card upgrades ─────────────────────────────────────────────────────────
     //
     // Recorded by NDeckUpgradeSelectScreenLogPatch:

@@ -62,23 +62,27 @@ public static class EventOptionReplayPatch
         PlayerActionBuffer.LogToDevConsole(
             $"[EventOptionReplayPatch] AutoSelect — event='{eventModel.Title.GetFormattedText()}' isFinished={isFinished} options={options.Count}");
 
-        if (!ReplayEngine.PeekEventOption(out string textKey))
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                "[EventOptionReplayPatch] AutoSelect — no ChooseEventOption in queue.");
-            return;
-        }
-
         // When the event is finished, NEventRoom.SetOptions creates a UI-level PROCEED
         // button that calls EventOption.Chosen() directly, bypassing ChooseLocalOption.
         // CurrentOptions is always empty at this point so a normal lookup would always
-        // fail. Consume the pending command and call NEventRoom.Proceed() directly.
+        // fail.  Use SkipToEventOption to drain any orphaned interleaved commands
+        // (auto-processed during ChooseLocalOption) and consume the ChooseEventOption,
+        // then call NEventRoom.Proceed() directly.  We call Proceed() regardless of
+        // whether a ChooseEventOption was found — some events may not log one.
         if (isFinished)
         {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[EventOptionReplayPatch] Event finished — consuming '{textKey}' and calling NEventRoom.Proceed().");
-            ReplayRunner.ExecuteEventOption(out _);
+            ReplayEngine.SkipToEventOption(out string finishedKey);
+            PlayerActionBuffer.LogToDevConsole(finishedKey.Length > 0
+                ? $"[EventOptionReplayPatch] Event finished — consumed '{finishedKey}' and calling NEventRoom.Proceed()."
+                : "[EventOptionReplayPatch] Event finished — no ChooseEventOption in queue; calling NEventRoom.Proceed() directly.");
             TaskHelper.RunSafely(NEventRoom.Proceed());
+            return;
+        }
+
+        if (!ReplayEngine.PeekEventOption(out string textKey))
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                "[EventOptionReplayPatch] AutoSelect — no ChooseEventOption at front of queue.");
             return;
         }
 
@@ -129,7 +133,7 @@ public static class EventOptionReplayPatch
         Callable.From(() => AutoSelect(synchronizer, retriesLeft)).CallDeferred();
     }
 
-    private static void ContinueIfNeeded(EventSynchronizer synchronizer)
+    private static void ContinueIfNeeded(EventSynchronizer synchronizer, int retriesLeft = MaxRetries)
     {
         ReplayEngine.PeekNext(out string? nextCmd);
         int eventCount = synchronizer.Events.Count;
@@ -137,12 +141,36 @@ public static class EventOptionReplayPatch
         PlayerActionBuffer.LogToDevConsole(
             $"[EventOptionReplayPatch] ContinueIfNeeded — Events.Count={eventCount} finished={finished} nextCmd='{nextCmd}'");
 
-        if (!ReplayEngine.PeekEventOption(out _))
-            return;
-
         if (eventCount == 0)
             return;
-        
-        AutoSelect(synchronizer);
+
+        // If finished, AutoSelect handles PROCEED (drains orphaned commands + Proceed()).
+        if (finished)
+        {
+            AutoSelect(synchronizer);
+            return;
+        }
+
+        if (ReplayEngine.PeekEventOption(out _))
+        {
+            AutoSelect(synchronizer);
+            return;
+        }
+
+        // No event option at front of queue.  If one exists deeper (behind orphaned
+        // interleaved commands), retry — either the event will finish asynchronously
+        // (making finished=true next time) or another patch will consume the blocker.
+        if (retriesLeft > 0 && ReplayEngine.HasPendingEventOption())
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[EventOptionReplayPatch] ContinueIfNeeded — pending event option behind interleaved commands; retrying ({retriesLeft} left).");
+            TaskHelper.RunSafely(RetryContinueAfterDelay(synchronizer, retriesLeft - 1));
+        }
+    }
+
+    private static async Task RetryContinueAfterDelay(EventSynchronizer synchronizer, int retriesLeft)
+    {
+        await Task.Delay(100);
+        Callable.From(() => ContinueIfNeeded(synchronizer, retriesLeft)).CallDeferred();
     }
 }
