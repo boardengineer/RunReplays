@@ -64,12 +64,9 @@ public static class ReplayEngine
         _recentConsumed.Add(cmd);
         ContextChanged?.Invoke();
 
-        // Deferred battle state validation: validate the *previous* command's
-        // expected state now (the game has had time to process it since the last
-        // consume), then stash the current command's expected state for next time.
-        if (_hasPendingValidation)
-            CommandConsumedWithState?.Invoke(_prevCommand!, _prevExpectedState);
-
+        // Stash the expected state for this command.  Validation is deferred
+        // until AfterActionExecuted fires (via FlushPendingValidation), at which
+        // point the game state matches what was recorded in the verbose log.
         _prevCommand = cmd;
         _prevExpectedState = _consumeIndex < _expectedStates.Count
             ? _expectedStates[_consumeIndex]
@@ -79,24 +76,15 @@ public static class ReplayEngine
 
         if (_replayActive && _pending.Count == 0)
         {
-            // Flush the last pending validation — the deferred Godot frame gives
-            // the game time to process the final action before we read state.
-            var pendingCmd = _hasPendingValidation ? _prevCommand : null;
-            var pendingState = _hasPendingValidation ? _prevExpectedState : null;
-            bool hadPending = _hasPendingValidation;
-            _hasPendingValidation = false;
-
             // Defer the replay→record transition to the next Godot frame.
             // This keeps IsActive = true long enough for the last replayed action's
             // AfterActionExecuted to fire (and be suppressed), preventing it from
             // being double-recorded into the new log alongside the restored buffer.
+            // AfterActionExecuted will call FlushPendingValidation for the final
+            // command before this deferred callback runs.
             var commands = _loadedCommands;
             Callable.From(() =>
             {
-                // Validate the final command now that the game has processed it.
-                if (hadPending)
-                    CommandConsumedWithState?.Invoke(pendingCmd!, pendingState);
-
                 // If Clear() was called before this fires, _replayActive is already
                 // false — bail out so ReplayCompleted is not fired spuriously.
                 if (!_replayActive) return;
@@ -241,6 +229,20 @@ public static class ReplayEngine
         PlayerActionBuffer.LogToDevConsole(
             $"[ReplayEngine] Loaded {_expectedStates.Count} expected states " +
             $"({statesWithData} with battle data) from verbose log.");
+    }
+
+    /// <summary>
+    /// Called from AfterActionExecuted during replay, after the game has
+    /// processed the action.  Fires CommandConsumedWithState so the validator
+    /// can compare the expected state against the now-current game state.
+    /// </summary>
+    internal static void FlushPendingValidation()
+    {
+        if (!_hasPendingValidation)
+            return;
+
+        _hasPendingValidation = false;
+        CommandConsumedWithState?.Invoke(_prevCommand!, _prevExpectedState);
     }
 
     /// <summary>Returns the next queued command without consuming it.</summary>
