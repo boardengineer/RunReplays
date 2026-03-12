@@ -25,7 +25,6 @@ internal static class RunOverlay
 
     private static CanvasLayer? _canvas;
     private static Label?       _titleLabel;
-    private static Label?       _validationIndicator;
     private static Label[]      _lineLabels = new Label[LineCount];
 
     // Rolling buffer of the last LineCount recorded entries (recording mode).
@@ -102,18 +101,9 @@ internal static class RunOverlay
         vbox.AddThemeConstantOverride("separation", 1);
         panel.AddChild(vbox);
 
-        var titleRow = new HBoxContainer();
-        titleRow.AddThemeConstantOverride("separation", 8);
-        vbox.AddChild(titleRow);
-
         _titleLabel = new Label();
         _titleLabel.AddThemeFontSizeOverride("font_size", FontSize + 1);
-        titleRow.AddChild(_titleLabel);
-
-        _validationIndicator = new Label();
-        _validationIndicator.AddThemeFontSizeOverride("font_size", FontSize + 1);
-        _validationIndicator.Text = string.Empty;
-        titleRow.AddChild(_validationIndicator);
+        vbox.AddChild(_titleLabel);
 
         vbox.AddChild(new HSeparator());
 
@@ -167,7 +157,6 @@ internal static class RunOverlay
     {
         if (_titleLabel != null)
             _titleLabel.Text = "● REC";
-        ApplyValidationState(ValidationState.None);
 
         string[] entries = _recentEntries.ToArray();
         for (int i = 0; i < LineCount; i++)
@@ -215,49 +204,6 @@ internal static class RunOverlay
             lbl.Modulate = i == 2  // current command
                 ? Colors.White
                 : new Color(1f, 1f, 1f, 0.45f);
-        }
-    }
-
-    // ── Validation indicator ──────────────────────────────────────────────────
-
-    internal enum ValidationState { None, Valid, Invalid, Unknown }
-
-    /// <summary>
-    /// Updates the color indicator next to the replay title.
-    /// Must be called from any thread — defers to the Godot main thread.
-    /// </summary>
-    internal static void SetValidationState(ValidationState state)
-    {
-        if (_canvas == null || !GodotObject.IsInstanceValid(_canvas))
-            return;
-
-        Callable.From(() => ApplyValidationState(state)).CallDeferred();
-    }
-
-    private static void ApplyValidationState(ValidationState state)
-    {
-        if (_validationIndicator == null || !GodotObject.IsInstanceValid(_validationIndicator))
-            return;
-
-        switch (state)
-        {
-            case ValidationState.Valid:
-                _validationIndicator.Text = "●";
-                _validationIndicator.Modulate = new Color(0.2f, 1f, 0.2f); // green
-                break;
-            case ValidationState.Invalid:
-                _validationIndicator.Text = "●";
-                _validationIndicator.Modulate = new Color(1f, 0.2f, 0.2f); // red
-                break;
-            case ValidationState.Unknown:
-                _validationIndicator.Text = "●";
-                _validationIndicator.Modulate = new Color(1f, 1f, 0.2f); // yellow
-                break;
-            case ValidationState.None:
-            default:
-                _validationIndicator.Text = string.Empty;
-                _validationIndicator.Modulate = Colors.White;
-                break;
         }
     }
 

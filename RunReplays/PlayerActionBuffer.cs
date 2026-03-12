@@ -56,12 +56,7 @@ public static class PlayerActionBuffer
         __instance.AfterActionExecuted += action =>
         {
             if (ReplayEngine.IsActive)
-            {
-                // During replay, fire pending validation now that the action has
-                // resolved and the game state matches what was recorded.
-                ReplayEngine.FlushPendingValidation();
                 return;
-            }
 
             if (!action.RecordableToReplay
                 || action is VoteForMapCoordAction
