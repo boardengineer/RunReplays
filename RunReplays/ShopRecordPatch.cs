@@ -41,9 +41,15 @@ internal static class ShopPurchaseState
 public static class ShopOpenRecordPatch
 {
     [HarmonyPrefix]
-    public static void Prefix()
+    public static void Prefix(NMerchantRoom __instance)
     {
-        PlayerActionBuffer.Record("OpenShop");
+        // Only record when the inventory is actually about to open.
+        // OpenInventory() is guarded by `if (!Inventory.IsOpen)` in the game,
+        // so any call while already open is a no-op.  Without this check a
+        // second call (e.g. from a UI refresh) would record a duplicate OpenShop
+        // that later stalls ProcessNextPurchase during replay.
+        if (__instance.Inventory?.IsOpen == false)
+            PlayerActionBuffer.Record("OpenShop");
     }
 }
 
@@ -75,7 +81,12 @@ public static class ShopCardRemovalPurchaseStartPatch
     [HarmonyPrefix]
     public static void Prefix()
     {
-        ShopPurchaseState.PendingLabel = "BuyCardRemoval";
+        // Record immediately so BuyCardRemoval precedes RemoveCardFromDeck in the
+        // log — the card-removal UI fires CardPileCmd.RemoveFromDeck before
+        // InvokePurchaseCompleted, so recording at completion would invert the order.
+        // PendingLabel is left null so ShopPurchaseCompletedPatch skips re-recording.
+        PlayerActionBuffer.Record("BuyCardRemoval");
+        ShopPurchaseState.PendingLabel = null;
         ShopPurchaseState.IsPurchasing = true;
     }
 }

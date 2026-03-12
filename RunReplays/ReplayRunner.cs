@@ -91,6 +91,18 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Proceed to next act ───────────────────────────────────────────────────
+
+    public static bool ExecuteProceedToNextAct()
+    {
+        if (!ReplayEngine.ConsumeProceedToNextAct())
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: proceed to next act");
+        LogNext();
+        return true;
+    }
+
     // ── Card rewards ──────────────────────────────────────────────────────────
 
     public static bool ExecuteCardReward(out string cardTitle)
@@ -291,6 +303,14 @@ public static class ReplayRunner
             return slotIdx >= 0
                 ? $"discard potion slot {cmd[(slotIdx + " potion slot: ".Length)..]}"
                 : "discard potion";
+        }
+
+        if (cmd.StartsWith("VoteForMapCoordAction "))
+            return "proceed to next act";
+
+        if (cmd.StartsWith("SelectCardFromScreen ") && ReplayEngine.PeekSelectCardFromScreen(out int screenIdx))
+        {
+            return screenIdx >= 0 ? $"select card from screen index={screenIdx}" : "skip card selection screen";
         }
 
         if (cmd.StartsWith("SelectHandCards ") && ReplayEngine.PeekSelectHandCards(out uint[] hIds))

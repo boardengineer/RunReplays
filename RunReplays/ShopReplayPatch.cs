@@ -51,6 +51,36 @@ public static class ShopRoomReadyPatch
     }
 }
 
+// ── Resume shop loop after card-removal async flow completes ─────────────────
+//
+// TryBuyCardRemoval skips the immediate deferred ProcessNextPurchase call
+// because the card-selection UI runs asynchronously; the loop must resume only
+// after InvokePurchaseCompleted fires at the very end of the purchase.
+
+[HarmonyPatch(typeof(MerchantEntry), nameof(MerchantEntry.InvokePurchaseCompleted))]
+public static class ShopCardRemovalCompletedReplayPatch
+{
+    [HarmonyPostfix]
+    public static void Postfix()
+    {
+        if (!ShopOpenedReplayPatch.CardRemovalInProgress)
+            return;
+
+        ShopOpenedReplayPatch.CardRemovalInProgress = false;
+
+        if (!ReplayEngine.IsActive)
+            return;
+
+        NMerchantRoom? room = ShopOpenedReplayPatch.ActiveRoom;
+        if (room == null || !room.IsInsideTree())
+            return;
+
+        PlayerActionBuffer.LogToDevConsole(
+            "[ShopReplayPatch] Card removal purchase completed — resuming shop loop.");
+        Callable.From(() => ShopOpenedReplayPatch.ProcessNextPurchase(room)).CallDeferred();
+    }
+}
+
 // ── Handle purchases once the shop UI is open ─────────────────────────────────
 
 [HarmonyPatch(typeof(NMerchantRoom), nameof(NMerchantRoom.OpenInventory))]
@@ -63,8 +93,19 @@ public static class ShopOpenedReplayPatch
             return;
 
         ReplayRunner.ExecuteOpenShop();
+        IsShopReplayActive = true;
         Callable.From(() => ShopOpenedReplayPatch.ProcessNextPurchase(__instance)).CallDeferred();
     }
+
+    // Accessed by ShopCardRemovalCompletedReplayPatch after InvokePurchaseCompleted.
+    internal static NMerchantRoom? ActiveRoom;
+    internal static bool           CardRemovalInProgress;
+
+    // True from when OpenShop is consumed until ProcessNextPurchase opens the map
+    // or determines there is nothing more to do.  Used by ProceedButtonReplayPatch
+    // to avoid a race where NProceedButton._Ready fires mid-loop and consumes the
+    // MoveToMapCoordAction before ProcessNextPurchase reaches it.
+    internal static bool IsShopReplayActive;
 
     // ── Purchase loop ─────────────────────────────────────────────────────────
 
@@ -102,8 +143,23 @@ public static class ShopOpenedReplayPatch
 
         // All purchases done — if a map move is next, open the map directly.
         if (!ReplayEngine.PeekMapNode(out _, out _))
-            return;
+        {
+            // A stray OpenShop (recorded when OpenInventory was called while the
+            // inventory was already open) can appear here.  Consume it and retry
+            // so the real map-move or buy commands that follow are processed.
+            if (ReplayEngine.PeekOpenShop())
+            {
+                PlayerActionBuffer.LogToDevConsole("[ShopReplayPatch] Consuming stray OpenShop command — retrying.");
+                ReplayRunner.ExecuteOpenShop();
+                Callable.From(() => ProcessNextPurchase(room)).CallDeferred();
+                return;
+            }
 
+            IsShopReplayActive = false;
+            return;
+        }
+
+        IsShopReplayActive = false;
         PlayerActionBuffer.LogToDevConsole("[ShopReplayPatch] Map move next — opening map.");
         NMapScreen.Instance?.Open();
         NMapScreen.Instance?.SetTravelEnabled(true);
@@ -195,9 +251,14 @@ public static class ShopOpenedReplayPatch
         }
 
         ReplayRunner.ExecuteBuyCardRemoval();
+
+        // Card removal triggers an async FromDeckForRemoval UI; ProcessNextPurchase
+        // must not be deferred here — it runs after InvokePurchaseCompleted fires
+        // (handled by ShopCardRemovalCompletedReplayPatch).
+        ActiveRoom             = room;
+        CardRemovalInProgress  = true;
         InvokePurchase(entry);
-        PlayerActionBuffer.LogToDevConsole("[ShopReplayPatch] Triggered card removal purchase.");
-        Callable.From(() => ProcessNextPurchase(room)).CallDeferred();
+        PlayerActionBuffer.LogToDevConsole("[ShopReplayPatch] Triggered card removal purchase — waiting for selection.");
         return true;
     }
 

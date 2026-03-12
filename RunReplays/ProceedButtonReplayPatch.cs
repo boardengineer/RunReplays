@@ -23,6 +23,9 @@ public static class ProceedButtonReplayPatch
     [HarmonyPostfix]
     public static void Postfix(NProceedButton __instance)
     {
+        if (ShopOpenedReplayPatch.IsShopReplayActive)
+            return;
+
         if (!ReplayEngine.PeekMapNode(out _, out _))
             return;
 

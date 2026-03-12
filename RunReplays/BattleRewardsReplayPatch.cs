@@ -61,13 +61,14 @@ public static class BattleRewardsReplayPatch
                       || ReplayEngine.PeekRelicReward(out _)
                       || ReplayEngine.PeekPotionReward(out _)
                       || ReplayEngine.PeekNetDiscardPotion(out _);
-        bool hasMapNode = ReplayEngine.PeekMapNode(out _, out _);
+        bool hasMapNode         = ReplayEngine.PeekMapNode(out _, out _);
+        bool hasProceedToNextAct = ReplayEngine.PeekProceedToNextAct();
 
-        if (!hasReward && !hasMapNode)
+        if (!hasReward && !hasMapNode && !hasProceedToNextAct)
         {
             ReplayEngine.PeekNext(out string? next);
             PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] BattleRewardsReplayPatch: next command is not a reward or map node ('{next ?? "(none)"}'), skipping.");
+                $"[RunReplays] BattleRewardsReplayPatch: next command is not a reward, map node, or act proceed ('{next ?? "(none)"}'), skipping.");
             return;
         }
 
@@ -195,6 +196,14 @@ public static class BattleRewardsReplayPatch
             if (NMapScreen.Instance != null)
                 RecalculateTravelabilityMethod?.Invoke(NMapScreen.Instance, null);
             TaskHelper.RunSafely(ProceedToMapAsync());
+            return;
+        }
+
+        if (ReplayEngine.PeekProceedToNextAct())
+        {
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: all rewards done, proceeding to next act.");
+            ReplayRunner.ExecuteProceedToNextAct();
+            RunManager.Instance.ActChangeSynchronizer.SetLocalPlayerReady();
         }
     }
 

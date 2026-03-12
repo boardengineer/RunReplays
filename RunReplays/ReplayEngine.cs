@@ -661,6 +661,29 @@ public static class ReplayEngine
         return false;
     }
 
+    // ── Proceed to next act ───────────────────────────────────────────────────
+    //
+    // Recorded automatically by PlayerActionBuffer via VoteToMoveToNextActAction.
+    // The game's ToString() override uses the wrong literal, so the recorded string is:
+    //   "VoteForMapCoordAction {playerId}"
+    //
+    // Replay: consume this command and call ActChangeSynchronizer.SetLocalPlayerReady().
+
+    private const string ProceedToNextActPrefix = "VoteForMapCoordAction ";
+
+    public static bool PeekProceedToNextAct()
+        => _pending.TryPeek(out string? cmd) && cmd.StartsWith(ProceedToNextActPrefix);
+
+    public static bool ConsumeProceedToNextAct()
+    {
+        if (PeekProceedToNextAct())
+        {
+            SignalConsumed(_pending.Dequeue());
+            return true;
+        }
+        return false;
+    }
+
     // ── Card removal from deck ────────────────────────────────────────────────
     //
     // Recorded by DeckRemovalRecordPatch via CardPileCmd.RemoveFromDeck:
@@ -711,6 +734,35 @@ public static class ReplayEngine
     public static bool ConsumeSelectDeckCard(out int deckIndex)
     {
         if (PeekSelectDeckCard(out deckIndex))
+        {
+            SignalConsumed(_pending.Dequeue());
+            return true;
+        }
+        return false;
+    }
+
+    // ── Card choice screen selections ─────────────────────────────────────────
+    //
+    // Recorded by CardChoiceScreenPatch via PlayerChoiceSynchronizer.SyncLocalChoice
+    // when FromChooseACardScreen is active (e.g. Skill Potion, Power Potion):
+    //   "SelectCardFromScreen {index}"
+    // index is the 0-based position in the offered card list; -1 means skipped.
+
+    private const string SelectCardFromScreenPrefix = "SelectCardFromScreen ";
+
+    public static bool PeekSelectCardFromScreen(out int index)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(SelectCardFromScreenPrefix)
+            && int.TryParse(cmd.AsSpan(SelectCardFromScreenPrefix.Length), out index))
+            return true;
+
+        index = -1;
+        return false;
+    }
+
+    public static bool ConsumeSelectCardFromScreen(out int index)
+    {
+        if (PeekSelectCardFromScreen(out index))
         {
             SignalConsumed(_pending.Dequeue());
             return true;
