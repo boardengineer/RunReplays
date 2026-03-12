@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Debug;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
 using MegaCrit.Sts2.Core.Saves.Managers;
@@ -68,7 +69,7 @@ public static class RunSaveLogger
             seed, character, saveTime, totalFloor, verboseActions);
 
         WriteMinimal(Path.Combine(logsDir, $"{baseName}.minimal.log"),
-            minimalActions);
+            seed, character, run.Ascension, minimalActions);
 
         CopySaveBackup(logsDir, baseName);
 
@@ -91,9 +92,25 @@ public static class RunSaveLogger
         File.WriteAllText(filePath, sb.ToString());
     }
 
-    private static void WriteMinimal(string filePath, IReadOnlyList<string> actions)
+    private static void WriteMinimal(string filePath, string seed, string character,
+        int ascension, IReadOnlyList<string> actions)
     {
+        string gameVersion;
+        try
+        {
+            gameVersion = ReleaseInfoManager.Instance?.ReleaseInfo?.Version ?? "unknown";
+        }
+        catch
+        {
+            gameVersion = "unknown";
+        }
+
         var sb = new StringBuilder();
+        sb.AppendLine($"# Character: {character}");
+        sb.AppendLine($"# Seed: {seed}");
+        sb.AppendLine($"# Ascension: {ascension}");
+        sb.AppendLine($"# Game: {gameVersion}");
+        sb.AppendLine($"# Mod: {ModVersion.Current}");
         foreach (string entry in actions)
             sb.AppendLine(entry);
         File.WriteAllText(filePath, sb.ToString());

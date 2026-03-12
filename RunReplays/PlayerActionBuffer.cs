@@ -77,6 +77,16 @@ public static class PlayerActionBuffer
                 || action is ReadyToBeginEnemyTurnAction)
                 return;
 
+            // For potion/card-play actions the card-choice flush must happen
+            // AFTER recording (the selection is nested inside the action).
+            // For all other actions, flush BEFORE recording so relic-triggered
+            // card choices (e.g. Lead Paperweight) appear in the correct order.
+            bool isActionWithNestedSelection =
+                action is UsePotionAction || action is PlayCardAction;
+
+            if (!isActionWithNestedSelection)
+                CardChoiceScreenSyncPatch.FlushIfPending();
+
             string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
             string actionText = action.ToString()!;
 
@@ -98,7 +108,7 @@ public static class PlayerActionBuffer
             // Hand-card, card-choice-screen, and deck-card selections may buffer their
             // commands until the triggering action is logged.  Flush them now so they
             // follow the triggering action in the minimal log.
-            if (action is UsePotionAction || action is PlayCardAction)
+            if (isActionWithNestedSelection)
             {
                 HandCardSelectRecordPatch.FlushIfPending();
                 CardChoiceScreenSyncPatch.FlushIfPending();

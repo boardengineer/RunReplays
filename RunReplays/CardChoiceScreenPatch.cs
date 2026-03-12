@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.CardRewardAlternatives;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Models;
 using MegaCrit.Sts2.Core.Entities.Players;
-using MegaCrit.Sts2.Core.GameActions;
-using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.TestSupport;
 
@@ -17,24 +16,23 @@ namespace RunReplays;
 
 /// <summary>
 /// Records and replays card selections made via CardSelectCmd.FromChooseACardScreen
-/// (e.g. Skill Potion, Power Potion).
+/// (e.g. Skill Potion, Power Potion, Lead Paperweight relic).
 ///
 /// Command format:  "SelectCardFromScreen {index}"
 /// The index is the 0-based position in the card list offered to the player.
 /// -1 means the player skipped (canSkip = true and no card chosen).
 ///
-/// Recording: a Pending flag is set on entry to FromChooseACardScreen;
-/// a SyncLocalChoice postfix buffers the index-based result when the flag is
-/// set, and PlayerActionBuffer flushes it after the triggering action is logged.
+/// Recording: the Postfix wraps the returned Task so that when the player's
+/// selection completes, the chosen card's index is buffered.  A deferred flush
+/// is also scheduled so that relic-triggered selections (which have no
+/// subsequent action to flush the buffer) are still recorded.  For
+/// potion / card-play actions the normal AfterActionExecuted flush fires first,
+/// making the deferred flush a harmless no-op.
 ///
 /// Replay: a ReplayChooseACardSelector is pushed onto the CardSelectCmd selector
 /// stack before FromChooseACardScreen runs, so the game uses replay data instead
 /// of opening the selection UI.
 /// </summary>
-internal static class CardChoiceScreenContext
-{
-    internal static bool Pending;
-}
 
 // ── Replay / record entry point ───────────────────────────────────────────────
 
@@ -43,15 +41,22 @@ public static class FromChooseACardScreenPatch
 {
     internal static IDisposable? _pendingScope;
 
+    // Captured in Prefix so the Postfix wrapper can compute the selected index.
+    private static List<CardModel>? _recordingCards;
+
     [HarmonyPrefix]
-    public static void Prefix()
+    public static void Prefix(IReadOnlyList<CardModel> cards)
     {
         _pendingScope?.Dispose();
         _pendingScope = null;
 
         if (ReplayEngine.IsActive)
         {
-            if (ReplayEngine.PeekSelectCardFromScreen(out _))
+            // Try front of queue first; if not there, drain interleaved commands
+            // (e.g. relic-triggered card choices where auto-processed actions sit
+            // between TakeRelicReward and SelectCardFromScreen).
+            if (ReplayEngine.PeekSelectCardFromScreen(out _)
+                || ReplayEngine.SkipToSelectCardFromScreen())
             {
                 _pendingScope = CardSelectCmd.PushSelector(new ReplayChooseACardSelector());
                 PlayerActionBuffer.LogToDevConsole(
@@ -60,54 +65,96 @@ public static class FromChooseACardScreenPatch
         }
         else
         {
-            CardChoiceScreenContext.Pending = true;
+            _recordingCards = cards.ToList();
+            PlayerActionBuffer.LogToDevConsole(
+                $"[CardChoiceScreenPatch] Prefix: captured {_recordingCards.Count} card(s) for recording.");
         }
+    }
+
+    /// <summary>
+    /// Wraps the Task returned by FromChooseACardScreen so that when the
+    /// player's selection completes we can compute the index and buffer it.
+    /// </summary>
+    [HarmonyPostfix]
+    public static void Postfix(ref Task<CardModel> __result)
+    {
+        if (ReplayEngine.IsActive || _recordingCards == null)
+            return;
+
+        var cardList = _recordingCards;
+        _recordingCards = null;
+
+        var original = __result;
+        __result = WrapAndRecord(original, cardList);
+    }
+
+    private static async Task<CardModel> WrapAndRecord(Task<CardModel> original, List<CardModel> cardList)
+    {
+        var selected = await original;
+
+        int index = -1;
+
+        if (selected != null)
+        {
+            for (int i = 0; i < cardList.Count; i++)
+            {
+                if (ReferenceEquals(cardList[i], selected))
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            // Fallback: match by title if reference equality fails.
+            if (index < 0)
+            {
+                var title = selected.Title;
+                for (int i = 0; i < cardList.Count; i++)
+                {
+                    if (cardList[i].Title == title)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        CardChoiceScreenSyncPatch.Buffer($"SelectCardFromScreen {index}");
+        PlayerActionBuffer.LogToDevConsole(
+            $"[CardChoiceScreenPatch] Buffered: SelectCardFromScreen {index}");
+
+        // Schedule a deferred flush for relic-triggered selections where no
+        // subsequent game action would flush the buffer.  For potion / card-play
+        // actions the AfterActionExecuted flush fires first, making this a no-op.
+        Callable.From(() => CardChoiceScreenSyncPatch.FlushIfPending()).CallDeferred();
+
+        return selected!;
     }
 }
 
-// ── Recording: intercept SyncLocalChoice for index-based card choices ─────────
+// ── Recording buffer ─────────────────────────────────────────────────────────
 
 /// <summary>
-/// Intercepts PlayerChoiceSynchronizer.SyncLocalChoice when
-/// CardChoiceScreenContext.Pending is set, buffers "SelectCardFromScreen {index}",
-/// and exposes FlushIfPending so PlayerActionBuffer can write it in order.
+/// Holds a pending "SelectCardFromScreen" command until PlayerActionBuffer
+/// flushes it after the triggering action is recorded.
 /// </summary>
-[HarmonyPatch(typeof(PlayerChoiceSynchronizer), nameof(PlayerChoiceSynchronizer.SyncLocalChoice))]
 public static class CardChoiceScreenSyncPatch
 {
     private static string? _pending;
 
-    [HarmonyPostfix]
-    public static void Postfix(Player player, uint choiceId, PlayerChoiceResult result)
+    /// <summary>
+    /// Buffers a command for later flushing.
+    /// Called by FromChooseACardScreenPatch's async wrapper.
+    /// </summary>
+    internal static void Buffer(string command)
     {
-        if (ReplayEngine.IsActive)
-            return;
-
-        if (!CardChoiceScreenContext.Pending)
-            return;
-
-        CardChoiceScreenContext.Pending = false;
-
-        int index;
-        try
-        {
-            index = result.AsIndex();
-        }
-        catch (Exception ex)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[CardChoiceScreenPatch] AsIndex() threw {ex.GetType().Name}: {ex.Message} — defaulting to -1.");
-            index = -1;
-        }
-
-        _pending = $"SelectCardFromScreen {index}";
-        PlayerActionBuffer.LogToDevConsole($"[CardChoiceScreenPatch] Buffered: {_pending}");
+        _pending = command;
     }
 
     /// <summary>
-    /// Called by PlayerActionBuffer after a UsePotionAction or PlayCardAction is
-    /// recorded. Flushes the pending SelectCardFromScreen command so it follows
-    /// the triggering action in the log.
+    /// Called by PlayerActionBuffer after a triggering action is recorded,
+    /// or by a deferred flush scheduled by the async wrapper.
     /// </summary>
     internal static void FlushIfPending()
     {

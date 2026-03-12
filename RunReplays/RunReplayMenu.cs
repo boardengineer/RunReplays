@@ -403,7 +403,7 @@ public static class RunReplayMenu
         // Load the minimal log into the replay engine so auto-execution kicks in
         // as the new run reaches each decision point.
         string[] lines   = File.ReadAllLines(entry.MinimalLogPath);
-        var      commands = lines.Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
+        var      commands = lines.Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith('#')).ToList();
         ReplayRunner.Load(commands);
 
         // Resolve the character model by matching the stored entry string against
@@ -447,10 +447,10 @@ public static class RunReplayMenu
         // The target's log contains all commands up to the target floor.
         // The difference is the commands we need to replay.
         string[] startLines  = File.ReadAllLines(startFrom.MinimalLogPath);
-        int      skipCount   = startLines.Count(l => !string.IsNullOrWhiteSpace(l));
+        int      skipCount   = startLines.Count(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith('#'));
 
         string[] targetLines = File.ReadAllLines(target.MinimalLogPath);
-        var      allCommands = targetLines.Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
+        var      allCommands = targetLines.Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith('#')).ToList();
 
         if (skipCount >= allCommands.Count)
         {

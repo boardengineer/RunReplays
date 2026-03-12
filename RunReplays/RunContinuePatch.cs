@@ -114,7 +114,7 @@ public static class RunContinuePatch
     private static IReadOnlyList<string> ParseMinimalLog(string filePath)
     {
         return File.ReadAllLines(filePath)
-            .Where(l => l.Length > 0)
+            .Where(l => l.Length > 0 && !l.StartsWith('#'))
             .ToList();
     }
 
