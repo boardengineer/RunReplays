@@ -261,6 +261,19 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Crystal Sphere clicks ────────────────────────────────────────────────
+
+    public static bool ExecuteCrystalSphereClick(out int x, out int y, out int tool)
+    {
+        if (!ReplayEngine.ConsumeCrystalSphereClick(out x, out y, out tool))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole(
+            $"[ReplayRunner] Execute: crystal sphere click ({x},{y}) tool={tool}");
+        LogNext();
+        return true;
+    }
+
     // ── Diagnostics ───────────────────────────────────────────────────────────
 
     private static void LogNext(string? context = null)
@@ -384,6 +397,9 @@ public static class ReplayRunner
         if (cmd.StartsWith("ChooseEventOption "))
             return $"choose event option '{cmd["ChooseEventOption ".Length..]}'";
 
+        if (cmd.StartsWith("CrystalSphereClick ") &&
+            ReplayEngine.PeekCrystalSphereClick(out int csX, out int csY, out int csTool))
+            return $"crystal sphere click ({csX},{csY}) tool={csTool}";
 
         return $"(unknown) {cmd}";
     }

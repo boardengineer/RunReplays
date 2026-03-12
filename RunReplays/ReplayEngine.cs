@@ -1094,4 +1094,48 @@ public static class ReplayEngine
             || cmd.StartsWith(RestSiteOptionPrefix)
             || cmd.StartsWith(ProceedToNextActPrefix);
     }
+
+    // ── Crystal Sphere minigame clicks ──────────────────────────────────────
+    //
+    // Recorded by CrystalSphereCellClickedPatch via CrystalSphereMinigame.CellClicked:
+    //   "CrystalSphereClick {x} {y} {tool}"
+    // x/y are cell grid coordinates; tool is the CrystalSphereToolType int value
+    // (0 = None, 1 = Small, 2 = Big).
+
+    private const string CrystalSphereClickPrefix = "CrystalSphereClick ";
+
+    public static bool PeekCrystalSphereClick(out int x, out int y, out int tool)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(CrystalSphereClickPrefix))
+        {
+            ReadOnlySpan<char> rest = cmd.AsSpan(CrystalSphereClickPrefix.Length);
+            // Format: "{x} {y} {tool}"
+            int sp1 = rest.IndexOf(' ');
+            if (sp1 > 0)
+            {
+                int sp2 = rest[(sp1 + 1)..].IndexOf(' ');
+                if (sp2 > 0)
+                {
+                    sp2 += sp1 + 1; // absolute index
+                    if (int.TryParse(rest[..sp1], out x)
+                        && int.TryParse(rest[(sp1 + 1)..sp2], out y)
+                        && int.TryParse(rest[(sp2 + 1)..], out tool))
+                        return true;
+                }
+            }
+        }
+
+        x = y = tool = 0;
+        return false;
+    }
+
+    public static bool ConsumeCrystalSphereClick(out int x, out int y, out int tool)
+    {
+        if (PeekCrystalSphereClick(out x, out y, out tool))
+        {
+            SignalConsumed(_pending.Dequeue());
+            return true;
+        }
+        return false;
+    }
 }

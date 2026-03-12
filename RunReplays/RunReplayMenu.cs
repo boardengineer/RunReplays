@@ -75,11 +75,18 @@ public static class RunReplayMenu
         vbox.AddThemeConstantOverride("separation", 12);
         panel.AddChild(vbox);
 
-        // ── Title ────────────────────────────────────────────────────────────
+        // ── Title row ────────────────────────────────────────────────────────
         var title = new Label();
         title.Text = "Run Replays";
         title.HorizontalAlignment = HorizontalAlignment.Center;
         vbox.AddChild(title);
+
+        // ── Show overlay checkbox ───────────────────────────────────────────
+        var overlayCheck = new CheckBox();
+        overlayCheck.Text = "Show Replay Overlay";
+        overlayCheck.ButtonPressed = RunOverlay.OverlayVisible;
+        overlayCheck.Toggled += on => RunOverlay.OverlayVisible = on;
+        vbox.AddChild(overlayCheck);
 
         vbox.AddChild(new HSeparator());
 

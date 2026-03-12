@@ -27,6 +27,22 @@ internal static class RunOverlay
     private static Label?       _titleLabel;
     private static Label[]      _lineLabels = new Label[LineCount];
 
+    /// <summary>
+    /// Controls whether the overlay is visible. Persists across runs within
+    /// the same session. Toggled from the Run Replays menu.
+    /// </summary>
+    internal static bool OverlayVisible
+    {
+        get => _overlayVisible;
+        set
+        {
+            _overlayVisible = value;
+            if (_canvas != null && GodotObject.IsInstanceValid(_canvas))
+                _canvas.Visible = value;
+        }
+    }
+    private static bool _overlayVisible = true;
+
     // Rolling buffer of the last LineCount recorded entries (recording mode).
     private static readonly Queue<string> _recentEntries = new();
 
@@ -76,6 +92,7 @@ internal static class RunOverlay
         // ── CanvasLayer (always on top) ───────────────────────────────────────
         _canvas = new CanvasLayer();
         _canvas.Layer = 64;
+        _canvas.Visible = _overlayVisible;
         NGame.Instance.AddChild(_canvas);
 
         // Full-rect control so child anchors work relative to the viewport.

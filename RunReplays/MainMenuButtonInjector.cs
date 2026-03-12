@@ -19,6 +19,10 @@ public static class MainMenuButtonInjector
     [HarmonyPostfix]
     public static void Postfix(NMainMenu __instance)
     {
+        // Apply Crystal Sphere patches manually (isolated from PatchAll).
+        // Deferred so the dev console is available for diagnostic logging.
+        Callable.From(CrystalSphereManualPatcher.Apply).CallDeferred();
+
         // The container holding all vertical menu buttons.
         // Uses the Godot unique-name accessor ("%MainMenuTextButtons").
         var buttonContainer = __instance.GetNode<Control>("%MainMenuTextButtons");
