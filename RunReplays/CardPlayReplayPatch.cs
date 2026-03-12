@@ -56,6 +56,9 @@ public static class CardPlayReplayPatch
 
     private static void OnTurnStarted(CombatState combatState)
     {
+        if (!ReplayEngine.IsActive)
+            return;
+
         _currentCombatState = combatState;
         _retryCount = 0;
 
@@ -90,6 +93,9 @@ public static class CardPlayReplayPatch
 
     private static void OnAfterActionExecuted(GameAction action)
     {
+        if (!ReplayEngine.IsActive)
+            return;
+
         if (action is PlayCardAction playCard)
         {
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: PlayCardAction completed ({playCard}).");

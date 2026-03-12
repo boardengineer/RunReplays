@@ -42,6 +42,12 @@ public static class PlayerActionBuffer
 
         RunOverlay.InitForRun();
 
+        // When the replay finishes, restore the replayed commands into the
+        // buffer so that new recordings append after them rather than starting
+        // from an empty log.
+        ReplayEngine.ReplayCompleted -= OnReplayCompleted;
+        ReplayEngine.ReplayCompleted += OnReplayCompleted;
+
         __instance.AfterActionExecuted += action =>
         {
             if (ReplayEngine.IsActive)
@@ -108,6 +114,21 @@ public static class PlayerActionBuffer
             return;
 
         _minimalEntries.Enqueue(text);
+    }
+
+    /// <summary>
+    /// Called when ReplayEngine exhausts its command queue.  Restores the
+    /// replayed commands into both buffer queues so that the next save log
+    /// contains all actions (replayed + new) rather than only the new ones.
+    /// The overlay's recent-entry display is also refreshed.
+    /// </summary>
+    private static void OnReplayCompleted(IReadOnlyList<string> commands)
+    {
+        var verboseEntries = commands.Select(c => ("REPLAY", c)).ToList();
+        Restore(verboseEntries, commands);
+        RunOverlay.RestoreRecentEntries(commands);
+        LogToDevConsole(
+            $"[PlayerActionBuffer] Replay completed — restored {commands.Count} command(s) to buffer.");
     }
 
     /// <summary>

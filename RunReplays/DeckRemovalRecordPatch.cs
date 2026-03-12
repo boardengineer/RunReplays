@@ -1,7 +1,10 @@
+using System.Collections.Generic;
+using System.Reflection;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 
 namespace RunReplays;
 
@@ -13,6 +16,8 @@ namespace RunReplays;
 internal static class DeckRemovalState
 {
     internal static bool PendingRemoval;
+    /// <summary>The ordered card list shown to the player; captured from NCardGridSelectionScreen.</summary>
+    internal static IReadOnlyList<CardModel>? PendingOptions;
 }
 
 /// <summary>
@@ -31,8 +36,33 @@ public static class FromDeckForRemovalPatch
 }
 
 /// <summary>
+/// Captures the card list shown in NCardGridSelectionScreen when a deck removal
+/// is pending, so RemoveFromDeckRecordPatch can record a stable deck index.
+/// </summary>
+[HarmonyPatch(typeof(NCardGridSelectionScreen), nameof(NCardGridSelectionScreen.CardsSelected))]
+public static class DeckRemovalCardSelectPatch
+{
+    private static readonly FieldInfo? CardsField =
+        typeof(NCardGridSelectionScreen).GetField(
+            "_cards", BindingFlags.NonPublic | BindingFlags.Instance);
+
+    [HarmonyPostfix]
+    public static void Postfix(NCardGridSelectionScreen __instance)
+    {
+        if (!DeckRemovalState.PendingRemoval)
+            return;
+
+        DeckRemovalState.PendingOptions =
+            CardsField?.GetValue(__instance) as IReadOnlyList<CardModel>;
+        PlayerActionBuffer.LogToDevConsole(
+            $"[DeckRemovalRecordPatch] Captured {DeckRemovalState.PendingOptions?.Count ?? 0} option(s) from selection screen.");
+    }
+}
+
+/// <summary>
 /// Records the removed card when CardPileCmd.RemoveFromDeck fires while
-/// PendingRemoval is set.
+/// PendingRemoval is set. Uses the captured options list to record the
+/// 0-based index rather than the card title.
 /// </summary>
 [HarmonyPatch(typeof(CardPileCmd), nameof(CardPileCmd.RemoveFromDeck),
     new[] { typeof(CardModel), typeof(bool) })]
@@ -48,7 +78,24 @@ public static class RemoveFromDeckRecordPatch
         }
 
         DeckRemovalState.PendingRemoval = false;
-        PlayerActionBuffer.Record($"RemoveCardFromDeck: {card.Title}");
-        PlayerActionBuffer.LogToDevConsole($"[DeckRemovalRecordPatch] RemoveFromDeck — recorded removal of '{card.Title}'.");
+
+        var options = DeckRemovalState.PendingOptions;
+        DeckRemovalState.PendingOptions = null;
+
+        int index = -1;
+        if (options != null)
+        {
+            for (int i = 0; i < options.Count; i++)
+            {
+                if (ReferenceEquals(options[i], card) || options[i] == card)
+                {
+                    index = i;
+                    break;
+                }
+            }
+        }
+
+        PlayerActionBuffer.Record($"RemoveCardFromDeck: {index}");
+        PlayerActionBuffer.LogToDevConsole($"[DeckRemovalRecordPatch] RemoveFromDeck — recorded removal of '{card.Title}' at index {index}.");
     }
 }

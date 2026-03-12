@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 namespace RunReplays;
 
@@ -23,6 +24,8 @@ public static class ReplayEngine
     /// <summary>
     /// Dequeues one command, records it in the recent-history buffer, and
     /// fires ContextChanged so the overlay can refresh.
+    /// When the queue empties naturally (all commands consumed), also fires
+    /// ReplayCompleted so callers can restore the action buffer.
     /// </summary>
     private static string SignalConsumed(string cmd)
     {
@@ -30,8 +33,39 @@ public static class ReplayEngine
             _recentConsumed.RemoveAt(0);
         _recentConsumed.Add(cmd);
         ContextChanged?.Invoke();
+        if (_replayActive && _pending.Count == 0)
+        {
+            // Defer the replay→record transition to the next Godot frame.
+            // This keeps IsActive = true long enough for the last replayed action's
+            // AfterActionExecuted to fire (and be suppressed), preventing it from
+            // being double-recorded into the new log alongside the restored buffer.
+            var commands = _loadedCommands;
+            Callable.From(() =>
+            {
+                // If Clear() was called before this fires, _replayActive is already
+                // false — bail out so ReplayCompleted is not fired spuriously.
+                if (!_replayActive) return;
+                _replayActive = false;
+                ReplayCompleted?.Invoke(commands);
+            }).CallDeferred();
+        }
         return cmd;
     }
+
+    // ── Replay-completed notification ─────────────────────────────────────────
+
+    /// <summary>
+    /// Fired when the last queued command is consumed (i.e. the replay finishes
+    /// naturally). Carries the full list of commands that were loaded so
+    /// subscribers can restore the action buffer for the record phase.
+    /// Not fired when Clear() is called explicitly.
+    /// </summary>
+    internal static event Action<IReadOnlyList<string>>? ReplayCompleted;
+
+    // True only while commands loaded by Load() are still pending.
+    // Set false by Clear() so ReplayCompleted is not fired on explicit cancels.
+    private static bool _replayActive;
+    private static List<string> _loadedCommands = new();
 
     /// <summary>
     /// Returns up to 2 recently consumed commands (prev), the current front of
@@ -55,21 +89,29 @@ public static class ReplayEngine
 
     // ─────────────────────────────────────────────────────────────────────────
 
-    public static bool IsActive => _pending.Count > 0;
+    /// <summary>
+    /// True while commands are queued OR while the last command was just consumed
+    /// but its AfterActionExecuted callback may not have fired yet.
+    /// The _replayActive flag is cleared one Godot frame after the queue empties
+    /// so that the last replayed action is still suppressed from recording.
+    /// </summary>
+    public static bool IsActive => _pending.Count > 0 || _replayActive;
 
     public static void Load(IReadOnlyList<string> commands)
     {
         _pending.Clear();
         _recentConsumed.Clear();
-        foreach (string cmd in commands)
-            if (!string.IsNullOrWhiteSpace(cmd))
-                _pending.Enqueue(cmd);
+        _loadedCommands = commands.Where(c => !string.IsNullOrWhiteSpace(c)).ToList();
+        _replayActive   = _loadedCommands.Count > 0;
+        foreach (string cmd in _loadedCommands)
+            _pending.Enqueue(cmd);
     }
 
     public static void Clear()
     {
         _pending.Clear();
         _recentConsumed.Clear();
+        _replayActive = false;
     }
 
     /// <summary>Returns the next queued command without consuming it.</summary>
@@ -612,6 +654,34 @@ public static class ReplayEngine
     public static bool ConsumeGoldReward(out int goldAmount)
     {
         if (PeekGoldReward(out goldAmount))
+        {
+            SignalConsumed(_pending.Dequeue());
+            return true;
+        }
+        return false;
+    }
+
+    // ── Card removal from deck ────────────────────────────────────────────────
+    //
+    // Recorded by DeckRemovalRecordPatch via CardPileCmd.RemoveFromDeck:
+    //   "RemoveCardFromDeck: {deckIndex}"
+    // deckIndex is the 0-based position in the card list shown to the player.
+
+    private const string RemoveCardFromDeckPrefix = "RemoveCardFromDeck: ";
+
+    public static bool PeekRemoveCardFromDeck(out int deckIndex)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(RemoveCardFromDeckPrefix)
+            && int.TryParse(cmd.AsSpan(RemoveCardFromDeckPrefix.Length), out deckIndex))
+            return true;
+
+        deckIndex = -1;
+        return false;
+    }
+
+    public static bool ConsumeRemoveCardFromDeck(out int deckIndex)
+    {
+        if (PeekRemoveCardFromDeck(out deckIndex))
         {
             SignalConsumed(_pending.Dequeue());
             return true;
