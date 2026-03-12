@@ -34,7 +34,7 @@ public static class DeckRemovalReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        if (!ReplayEngine.PeekRemoveCardFromDeck(out _)
+        if (!ReplayEngine.SkipToRemoveCardFromDeck()
             && !ShopOpenedReplayPatch.CardRemovalInProgress)
             return;
 

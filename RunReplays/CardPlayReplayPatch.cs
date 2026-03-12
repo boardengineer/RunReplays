@@ -117,7 +117,7 @@ public static class CardPlayReplayPatch
                 _turnStartRetries++;
                 PlayerActionBuffer.LogToDevConsole(
                     $"[RunReplays] {caller}: no combat action yet — '{next ?? "(none)"}', retry {_turnStartRetries}/{MaxTurnStartRetries}.");
-                NGame.Instance.GetTree().CreateTimer(0.25).Connect(
+                NGame.Instance!.GetTree()!.CreateTimer(0.25).Connect(
                     "timeout", Callable.From(() => ScheduleNextFromQueue(caller)));
             }
             else
@@ -296,7 +296,7 @@ public static class CardPlayReplayPatch
             }
 
             _retryCount++;
-            NGame.Instance.GetTree().CreateTimer(0.25).Connect(
+            NGame.Instance!.GetTree()!.CreateTimer(0.25).Connect(
                 "timeout", Callable.From(TryPlayNextCard));
             return;
         }

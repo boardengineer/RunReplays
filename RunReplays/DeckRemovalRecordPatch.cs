@@ -61,16 +61,54 @@ public static class DeckRemovalCardSelectPatch
 }
 
 /// <summary>
-/// Records the removed card when CardPileCmd.RemoveFromDeck fires while
-/// PendingRemoval is set. Uses the captured options list to record the
-/// 0-based index rather than the card title.
+/// Records the removed card when CardPileCmd.RemoveFromDeck(CardModel, bool)
+/// fires while PendingRemoval is set. Sets a flag so the list overload (which
+/// the single-card overload delegates to) does not double-record.
 /// </summary>
 [HarmonyPatch(typeof(CardPileCmd), nameof(CardPileCmd.RemoveFromDeck),
     new[] { typeof(CardModel), typeof(bool) })]
 public static class RemoveFromDeckRecordPatch
 {
+    internal static bool HandledBySingleCard;
+
     [HarmonyPrefix]
     public static void Prefix(CardModel card)
+    {
+        HandledBySingleCard = true;
+        DeckRemovalRecordHelper.RecordCard(card);
+    }
+}
+
+/// <summary>
+/// Records removed cards when CardPileCmd.RemoveFromDeck(IReadOnlyList, bool)
+/// fires while PendingRemoval is set. Skips recording when the call originates
+/// from the single-card overload (which already recorded via its own patch).
+/// Called directly by events like Spirit Grafter.
+/// </summary>
+[HarmonyPatch(typeof(CardPileCmd), nameof(CardPileCmd.RemoveFromDeck),
+    new[] { typeof(IReadOnlyList<CardModel>), typeof(bool) })]
+public static class RemoveFromDeckListRecordPatch
+{
+    [HarmonyPrefix]
+    public static void Prefix(IReadOnlyList<CardModel> cards)
+    {
+        if (RemoveFromDeckRecordPatch.HandledBySingleCard)
+        {
+            RemoveFromDeckRecordPatch.HandledBySingleCard = false;
+            return;
+        }
+
+        foreach (var card in cards)
+            DeckRemovalRecordHelper.RecordCard(card);
+    }
+}
+
+/// <summary>
+/// Shared recording logic for both RemoveFromDeck overloads.
+/// </summary>
+internal static class DeckRemovalRecordHelper
+{
+    internal static void RecordCard(CardModel card)
     {
         if (!DeckRemovalState.PendingRemoval)
         {
