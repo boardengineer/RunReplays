@@ -3,13 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Godot;
 using HarmonyLib;
-using MegaCrit.Sts2.Core.Combat;
-using MegaCrit.Sts2.Core.Context;
-using MegaCrit.Sts2.Core.Entities.Creatures;
-using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Nodes.Debug;
@@ -65,14 +60,8 @@ public static class PlayerActionBuffer
 
             string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
             string actionText = action.ToString()!;
+            _verboseEntries.Enqueue((timestamp, actionText));
             _minimalEntries.Enqueue(actionText);
-
-            string? battleState = GetBattleStateSummary();
-            if (battleState != null)
-                _verboseEntries.Enqueue((timestamp, actionText + " | " + battleState));
-            else
-                _verboseEntries.Enqueue((timestamp, actionText));
-
             LogToDevConsole($"[{timestamp}] {actionText}");
             EntryRecorded?.Invoke(actionText);
 
@@ -175,67 +164,6 @@ public static class PlayerActionBuffer
             _verboseEntries.Enqueue(entry);
         foreach (var entry in minimalEntries)
             _minimalEntries.Enqueue(entry);
-    }
-
-    /// <summary>
-    /// Returns a compact summary of the current battle state (hand contents and
-    /// enemy HP), or null when not in combat.
-    /// </summary>
-    internal static string? GetBattleStateSummary()
-    {
-        try
-        {
-            if (!CombatManager.Instance.IsInProgress)
-                return null;
-
-            CombatState? state = CombatManager.Instance.DebugOnlyGetState();
-            if (state == null)
-                return null;
-
-            var sb = new StringBuilder();
-
-            // Hand contents
-            Player? me = LocalContext.GetMe(state);
-            var hand = me?.PlayerCombatState?.Hand?.Cards;
-            if (hand != null && hand.Count > 0)
-            {
-                sb.Append("Hand: [");
-                for (int i = 0; i < hand.Count; i++)
-                {
-                    if (i > 0) sb.Append(", ");
-                    sb.Append(hand[i].Title);
-                }
-                sb.Append(']');
-            }
-            else
-            {
-                sb.Append("Hand: []");
-            }
-
-            // Enemy HP
-            IReadOnlyList<Creature> enemies = state.Enemies;
-            if (enemies.Count > 0)
-            {
-                sb.Append(" Enemies: [");
-                for (int i = 0; i < enemies.Count; i++)
-                {
-                    if (i > 0) sb.Append(", ");
-                    Creature e = enemies[i];
-                    sb.Append(e.Name);
-                    sb.Append(' ');
-                    sb.Append(e.CurrentHp);
-                    sb.Append('/');
-                    sb.Append(e.MaxHp);
-                }
-                sb.Append(']');
-            }
-
-            return sb.ToString();
-        }
-        catch
-        {
-            return null;
-        }
     }
 
     // Reflected once; null until the field is found.

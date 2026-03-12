@@ -118,36 +118,6 @@ public static class HandCardSelectReplayPatch
     }
 }
 
-/// <summary>
-/// Pushes a ReplayHandCardSelector onto the CardSelectCmd selector stack before
-/// CardSelectCmd.FromHandForUpgrade runs, so the game uses replay data instead
-/// of showing the hand-upgrade-selection UI (e.g. Armaments, non-upgraded).
-///
-/// FromHandForUpgrade bypasses CardSelectCmd.FromHand entirely, going straight to
-/// NCombatRoom.Instance.Ui.Hand.SelectCards, so it needs its own replay patch.
-/// </summary>
-[HarmonyPatch(typeof(CardSelectCmd), nameof(CardSelectCmd.FromHandForUpgrade))]
-public static class HandForUpgradeReplayPatch
-{
-    internal static IDisposable? _pendingScope;
-
-    [HarmonyPrefix]
-    public static void Prefix()
-    {
-        _pendingScope?.Dispose();
-        _pendingScope = null;
-
-        if (!ReplayEngine.IsActive)
-            return;
-
-        if (!ReplayEngine.SkipToSelectHandCards())
-            return;
-
-        _pendingScope = CardSelectCmd.PushSelector(new ReplayHandForUpgradeSelector());
-        PlayerActionBuffer.LogToDevConsole("[HandForUpgradeReplayPatch] Pushed ReplayHandForUpgradeSelector for FromHandForUpgrade.");
-    }
-}
-
 // ── Selector ──────────────────────────────────────────────────────────────────
 
 /// <summary>
@@ -196,60 +166,6 @@ internal sealed class ReplayHandCardSelector : ICardSelector
 
         PlayerActionBuffer.LogToDevConsole(
             $"[ReplayHandCardSelector] Returning {matched.Count} card(s).");
-        return Task.FromResult<IEnumerable<CardModel>>(matched);
-    }
-
-    public CardModel? GetSelectedCardReward(
-        IReadOnlyList<CardCreationResult> options,
-        IReadOnlyList<CardRewardAlternative> alternatives)
-        => null;
-}
-
-/// <summary>
-/// ICardSelector used during replays of CardSelectCmd.FromHandForUpgrade
-/// (e.g. Armaments, non-upgraded).  Consumes the pending SelectHandCards command
-/// and returns the matching card from the options provided by the game.
-/// </summary>
-internal sealed class ReplayHandForUpgradeSelector : ICardSelector
-{
-    public Task<IEnumerable<CardModel>> GetSelectedCards(
-        IEnumerable<CardModel> options, int minSelect, int maxSelect)
-    {
-        var scope = HandForUpgradeReplayPatch._pendingScope;
-        HandForUpgradeReplayPatch._pendingScope = null;
-        scope?.Dispose();
-
-        if (!ReplayEngine.ConsumeSelectHandCards(out uint[] ids))
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                "[ReplayHandForUpgradeSelector] ConsumeSelectHandCards returned false; returning empty.");
-            return Task.FromResult(Enumerable.Empty<CardModel>());
-        }
-
-        PlayerActionBuffer.LogToDevConsole(
-            $"[ReplayHandForUpgradeSelector] Matching {ids.Length} id(s) against options.");
-
-        var optionsList = options.ToList();
-        var matched = new List<CardModel>();
-        foreach (uint id in ids)
-        {
-            if (NetCombatCardDb.Instance.TryGetCard(id, out CardModel? card)
-                && card != null
-                && optionsList.Contains(card))
-            {
-                matched.Add(card);
-            }
-        }
-
-        if (matched.Count == 0 && minSelect > 0)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                "[ReplayHandForUpgradeSelector] No matches found; falling back to first available options.");
-            matched.AddRange(optionsList.Take(minSelect));
-        }
-
-        PlayerActionBuffer.LogToDevConsole(
-            $"[ReplayHandForUpgradeSelector] Returning {matched.Count} card(s).");
         return Task.FromResult<IEnumerable<CardModel>>(matched);
     }
 

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Godot;
 
 namespace RunReplays;
@@ -15,34 +13,6 @@ namespace RunReplays;
 public static class ReplayEngine
 {
     private static readonly Queue<string> _pending = new();
-
-    // ── Battle state validation ──────────────────────────────────────────────
-
-    /// <summary>
-    /// Parallel list of expected battle state strings, indexed by command
-    /// position (same order as the commands passed to Load).  Null entries
-    /// mean no battle state was recorded for that command.
-    /// </summary>
-    private static List<string?> _expectedStates = new();
-    private static int _consumeIndex;
-
-    // Deferred validation: the verbose log records the state *after* each action
-    // resolves, but SignalConsumed fires when a command is dequeued — before the
-    // game processes it.  We stash the previous command's expected state and
-    // validate it on the *next* consume, when the game has caught up.
-    private static string? _prevCommand;
-    private static string? _prevExpectedState;
-    private static bool _hasPendingValidation;
-
-    /// <summary>
-    /// Fired after each command is consumed.  Carries the consumed command
-    /// text and the expected battle state string (null when not in combat).
-    /// The expected state reflects the game state *after* the action resolved
-    /// (as it was recorded), so subscribers should read the current battle
-    /// state at invocation time — validation is deferred by one command so
-    /// that the game has had time to process the previous action.
-    /// </summary>
-    internal static event Action<string, string?>? CommandConsumedWithState;
 
     // ── Overlay context ───────────────────────────────────────────────────────
 
@@ -63,29 +33,8 @@ public static class ReplayEngine
             _recentConsumed.RemoveAt(0);
         _recentConsumed.Add(cmd);
         ContextChanged?.Invoke();
-
-        // Deferred battle state validation: validate the *previous* command's
-        // expected state now (the game has had time to process it since the last
-        // consume), then stash the current command's expected state for next time.
-        if (_hasPendingValidation)
-            CommandConsumedWithState?.Invoke(_prevCommand!, _prevExpectedState);
-
-        _prevCommand = cmd;
-        _prevExpectedState = _consumeIndex < _expectedStates.Count
-            ? _expectedStates[_consumeIndex]
-            : null;
-        _consumeIndex++;
-        _hasPendingValidation = true;
-
         if (_replayActive && _pending.Count == 0)
         {
-            // Flush the last pending validation — the deferred Godot frame gives
-            // the game time to process the final action before we read state.
-            var pendingCmd = _hasPendingValidation ? _prevCommand : null;
-            var pendingState = _hasPendingValidation ? _prevExpectedState : null;
-            bool hadPending = _hasPendingValidation;
-            _hasPendingValidation = false;
-
             // Defer the replay→record transition to the next Godot frame.
             // This keeps IsActive = true long enough for the last replayed action's
             // AfterActionExecuted to fire (and be suppressed), preventing it from
@@ -93,10 +42,6 @@ public static class ReplayEngine
             var commands = _loadedCommands;
             Callable.From(() =>
             {
-                // Validate the final command now that the game has processed it.
-                if (hadPending)
-                    CommandConsumedWithState?.Invoke(pendingCmd!, pendingState);
-
                 // If Clear() was called before this fires, _replayActive is already
                 // false — bail out so ReplayCompleted is not fired spuriously.
                 if (!_replayActive) return;
@@ -156,11 +101,6 @@ public static class ReplayEngine
     {
         _pending.Clear();
         _recentConsumed.Clear();
-        _expectedStates.Clear();
-        _consumeIndex = 0;
-        _hasPendingValidation = false;
-        _prevCommand = null;
-        _prevExpectedState = null;
         _loadedCommands = commands.Where(c => !string.IsNullOrWhiteSpace(c)).ToList();
         _replayActive   = _loadedCommands.Count > 0;
         foreach (string cmd in _loadedCommands)
@@ -171,76 +111,7 @@ public static class ReplayEngine
     {
         _pending.Clear();
         _recentConsumed.Clear();
-        _expectedStates.Clear();
-        _consumeIndex = 0;
-        _hasPendingValidation = false;
-        _prevCommand = null;
-        _prevExpectedState = null;
         _replayActive = false;
-    }
-
-    /// <summary>
-    /// Loads expected battle states from a verbose log file, aligning each
-    /// verbose entry to the corresponding minimal command by index.
-    /// Verbose entries have the format:
-    ///   [HH:mm:ss.fff] actionText
-    ///   [HH:mm:ss.fff] actionText | Hand: [...] Enemies: [...]
-    /// The part after " | " (if present) is the expected battle state.
-    /// The first 7 lines are the header and are skipped.
-    /// </summary>
-    public static void LoadExpectedStates(string verboseLogPath, int skipCommands = 0)
-    {
-        _expectedStates.Clear();
-        _consumeIndex = 0;
-
-        if (!File.Exists(verboseLogPath))
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[ReplayEngine] Verbose log not found: {verboseLogPath}");
-            return;
-        }
-
-        string[] lines = File.ReadAllLines(verboseLogPath);
-
-        // Skip the 7-line header (banner, seed, character, saved at, floor, actions, blank).
-        const int headerLines = 7;
-
-        // Regex to match verbose entry lines: [HH:mm:ss.fff] rest
-        // The timestamp is always 12 chars inside brackets.
-        var entryPattern = new Regex(@"^\[[\d:.]+\]\s+(.+)$");
-
-        var allStates = new List<string?>();
-        for (int i = headerLines; i < lines.Length; i++)
-        {
-            string line = lines[i];
-            if (string.IsNullOrWhiteSpace(line))
-                continue;
-
-            Match m = entryPattern.Match(line);
-            if (!m.Success)
-                continue;
-
-            string body = m.Groups[1].Value;
-
-            // Check for " | Hand: " which marks the battle state separator.
-            int separatorIdx = body.IndexOf(" | Hand: ", StringComparison.Ordinal);
-            if (separatorIdx >= 0)
-                allStates.Add(body.Substring(separatorIdx + 3)); // skip " | "
-            else
-                allStates.Add(null);
-        }
-
-        // When replaying from a mid-floor save, the first `skipCommands` were
-        // already executed — skip their expected states too.
-        if (skipCommands > 0 && skipCommands < allStates.Count)
-            _expectedStates = allStates.Skip(skipCommands).ToList();
-        else
-            _expectedStates = allStates;
-
-        int statesWithData = _expectedStates.Count(s => s != null);
-        PlayerActionBuffer.LogToDevConsole(
-            $"[ReplayEngine] Loaded {_expectedStates.Count} expected states " +
-            $"({statesWithData} with battle data) from verbose log.");
     }
 
     /// <summary>Returns the next queued command without consuming it.</summary>
