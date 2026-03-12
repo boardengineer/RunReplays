@@ -493,7 +493,7 @@ public static class ReplayEngine
 
     public static bool ConsumeOpenShop()
     {
-        if (PeekOpenShop()) { _pending.Dequeue(); return true; }
+        if (PeekOpenShop()) { SignalConsumed(_pending.Dequeue()); return true; }
         return false;
     }
 
@@ -510,7 +510,7 @@ public static class ReplayEngine
 
     public static bool ConsumeBuyCard(out string cardTitle)
     {
-        if (PeekBuyCard(out cardTitle)) { _pending.Dequeue(); return true; }
+        if (PeekBuyCard(out cardTitle)) { SignalConsumed(_pending.Dequeue()); return true; }
         return false;
     }
 
@@ -527,7 +527,7 @@ public static class ReplayEngine
 
     public static bool ConsumeBuyRelic(out string relicTitle)
     {
-        if (PeekBuyRelic(out relicTitle)) { _pending.Dequeue(); return true; }
+        if (PeekBuyRelic(out relicTitle)) { SignalConsumed(_pending.Dequeue()); return true; }
         return false;
     }
 
@@ -544,7 +544,7 @@ public static class ReplayEngine
 
     public static bool ConsumeBuyPotion(out string potionTitle)
     {
-        if (PeekBuyPotion(out potionTitle)) { _pending.Dequeue(); return true; }
+        if (PeekBuyPotion(out potionTitle)) { SignalConsumed(_pending.Dequeue()); return true; }
         return false;
     }
 
@@ -553,7 +553,7 @@ public static class ReplayEngine
 
     public static bool ConsumeBuyCardRemoval()
     {
-        if (PeekBuyCardRemoval()) { _pending.Dequeue(); return true; }
+        if (PeekBuyCardRemoval()) { SignalConsumed(_pending.Dequeue()); return true; }
         return false;
     }
 
@@ -710,6 +710,42 @@ public static class ReplayEngine
             return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Scans the pending queue for a RemoveCardFromDeck command and consumes
+    /// any interleaved game-action commands that precede it.  During shop card
+    /// removal, the game may fire recordable actions (e.g. gold changes) between
+    /// BuyCardRemoval and RemoveCardFromDeck; these are replayed automatically
+    /// by the purchase itself and must be drained so the selector finds the
+    /// removal command at the front of the queue.
+    /// Returns true if RemoveCardFromDeck is now at the front.
+    /// </summary>
+    public static bool SkipToRemoveCardFromDeck()
+    {
+        // First check if it's already at the front.
+        if (PeekRemoveCardFromDeck(out _))
+            return true;
+
+        // Scan ahead to verify RemoveCardFromDeck exists before consuming anything.
+        bool found = false;
+        foreach (string cmd in _pending)
+        {
+            if (cmd.StartsWith(RemoveCardFromDeckPrefix))
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+            return false;
+
+        // Consume interleaved commands until RemoveCardFromDeck is at the front.
+        while (_pending.Count > 0 && !PeekRemoveCardFromDeck(out _))
+            SignalConsumed(_pending.Dequeue());
+
+        return PeekRemoveCardFromDeck(out _);
     }
 
     // ── Deck card selections (Wood Carvings and similar events) ──────────────

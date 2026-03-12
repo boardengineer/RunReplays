@@ -34,7 +34,8 @@ public static class DeckRemovalReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        if (!ReplayEngine.PeekRemoveCardFromDeck(out _))
+        if (!ReplayEngine.PeekRemoveCardFromDeck(out _)
+            && !ShopOpenedReplayPatch.CardRemovalInProgress)
             return;
 
         _pendingScope = CardSelectCmd.PushSelector(new ReplayRemoveCardSelector());

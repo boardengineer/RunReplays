@@ -55,7 +55,7 @@ public static class ShopRoomReadyPatch
 //
 // TryBuyCardRemoval skips the immediate deferred ProcessNextPurchase call
 // because the card-selection UI runs asynchronously; the loop must resume only
-// after InvokePurchaseCompleted fires at the very end of the purchase.
+// after InvokePurchaseCompleted or InvokePurchaseFailed fires.
 
 [HarmonyPatch(typeof(MerchantEntry), nameof(MerchantEntry.InvokePurchaseCompleted))]
 public static class ShopCardRemovalCompletedReplayPatch
@@ -77,6 +77,35 @@ public static class ShopCardRemovalCompletedReplayPatch
 
         PlayerActionBuffer.LogToDevConsole(
             "[ShopReplayPatch] Card removal purchase completed — resuming shop loop.");
+        Callable.From(() => ShopOpenedReplayPatch.ProcessNextPurchase(room)).CallDeferred();
+    }
+}
+
+[HarmonyPatch(typeof(MerchantEntry), nameof(MerchantEntry.InvokePurchaseFailed))]
+public static class ShopCardRemovalFailedReplayPatch
+{
+    [HarmonyPostfix]
+    public static void Postfix()
+    {
+        if (!ShopOpenedReplayPatch.CardRemovalInProgress)
+            return;
+
+        ShopOpenedReplayPatch.CardRemovalInProgress = false;
+
+        if (!ReplayEngine.IsActive)
+            return;
+
+        NMerchantRoom? room = ShopOpenedReplayPatch.ActiveRoom;
+        if (room == null || !room.IsInsideTree())
+            return;
+
+        // Consume the pending RemoveCardFromDeck command that will never
+        // be reached because the purchase failed.
+        if (ReplayEngine.PeekRemoveCardFromDeck(out _))
+            ReplayEngine.ConsumeRemoveCardFromDeck(out _);
+
+        PlayerActionBuffer.LogToDevConsole(
+            "[ShopReplayPatch] Card removal purchase failed — resuming shop loop.");
         Callable.From(() => ShopOpenedReplayPatch.ProcessNextPurchase(room)).CallDeferred();
     }
 }
@@ -252,12 +281,34 @@ public static class ShopOpenedReplayPatch
 
         ReplayRunner.ExecuteBuyCardRemoval();
 
+        // During recording, game actions (e.g. gold changes) may be interleaved
+        // between BuyCardRemoval and RemoveCardFromDeck.  Skip past them so the
+        // DeckRemovalReplayPatch selector finds RemoveCardFromDeck at the front.
+        ReplayEngine.SkipToRemoveCardFromDeck();
+
         // Card removal triggers an async FromDeckForRemoval UI; ProcessNextPurchase
-        // must not be deferred here — it runs after InvokePurchaseCompleted fires
-        // (handled by ShopCardRemovalCompletedReplayPatch).
+        // must not be deferred here — it runs after InvokePurchaseCompleted or
+        // InvokePurchaseFailed fires (handled by the corresponding replay patches).
         ActiveRoom             = room;
         CardRemovalInProgress  = true;
-        InvokePurchase(entry);
+
+        try
+        {
+            InvokePurchase(entry);
+        }
+        catch (Exception ex)
+        {
+            CardRemovalInProgress = false;
+            PlayerActionBuffer.LogToDevConsole(
+                $"[ShopReplayPatch] Card removal purchase threw — {ex.GetType().Name}: {ex.Message}");
+
+            if (ReplayEngine.PeekRemoveCardFromDeck(out _))
+                ReplayEngine.ConsumeRemoveCardFromDeck(out _);
+
+            Callable.From(() => ProcessNextPurchase(room)).CallDeferred();
+            return true;
+        }
+
         PlayerActionBuffer.LogToDevConsole("[ShopReplayPatch] Triggered card removal purchase — waiting for selection.");
         return true;
     }
@@ -350,6 +401,23 @@ public static class ShopOpenedReplayPatch
                     if (item is MerchantEntry e)
                         all.Add(e);
             else if (value is MerchantEntry single)
+                all.Add(single);
+        }
+
+        foreach (PropertyInfo prop in inventory.GetType().GetProperties(bf))
+        {
+            if (prop.GetIndexParameters().Length > 0)
+                continue;
+
+            object? value;
+            try { value = prop.GetValue(inventory); }
+            catch { continue; }
+
+            if (value is IEnumerable enumerable)
+                foreach (object? item in enumerable)
+                    if (item is MerchantEntry e && !all.Contains(e))
+                        all.Add(e);
+            else if (value is MerchantEntry single && !all.Contains(single))
                 all.Add(single);
         }
 
