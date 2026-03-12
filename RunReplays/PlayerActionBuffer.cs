@@ -65,10 +65,10 @@ public static class PlayerActionBuffer
             LogToDevConsole($"[{timestamp}] {actionText}");
             EntryRecorded?.Invoke(actionText);
 
-            // Hand-card selections (e.g. Touch of Insanity) fire SyncLocalChoice
-            // mid-action, before AfterActionExecuted.  Flush the buffered command
-            // now so it follows the potion entry in the log.
-            if (action is UsePotionAction)
+            // Hand-card selections (e.g. Touch of Insanity, Burning Pact) fire
+            // SyncLocalChoice mid-action, before AfterActionExecuted.  Flush the
+            // buffered command now so it follows the triggering action in the log.
+            if (action is UsePotionAction || action is PlayCardAction)
                 HandCardSelectRecordPatch.FlushIfPending();
         };
     }
