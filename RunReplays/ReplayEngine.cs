@@ -1046,4 +1046,52 @@ public static class ReplayEngine
 
         return PeekSelectHandCards(out _);
     }
+
+    /// <summary>
+    /// Like SkipToSelectHandCards but refuses to drain past combat-significant
+    /// commands (card plays, end turns, potions, map moves, events, etc.).
+    /// Returns false when no SelectHandCards is reachable without crossing a
+    /// significant command — this is the expected outcome when the hand was
+    /// empty and no SelectHandCards was recorded (e.g. Brand as last card).
+    /// </summary>
+    public static bool SafeSkipToSelectHandCards()
+    {
+        if (PeekSelectHandCards(out _))
+            return true;
+
+        // Scan forward but stop at any command that represents a distinct
+        // player action — those must not be drained.
+        bool foundBeforeBarrier = false;
+        foreach (string cmd in _pending)
+        {
+            if (cmd.StartsWith(SelectHandCardsPrefix))
+            {
+                foundBeforeBarrier = true;
+                break;
+            }
+
+            if (IsCombatSignificant(cmd))
+                break;
+        }
+
+        if (!foundBeforeBarrier)
+            return false;
+
+        while (_pending.Count > 0 && !PeekSelectHandCards(out _))
+            SignalConsumed(_pending.Dequeue());
+
+        return PeekSelectHandCards(out _);
+    }
+
+    private static bool IsCombatSignificant(string cmd)
+    {
+        return cmd.StartsWith(CardPlayPrefix)
+            || cmd.StartsWith(EndTurnPrefix)
+            || cmd.StartsWith(UsePotionPrefix)
+            || cmd.StartsWith(NetDiscardPotionPrefix)
+            || cmd.StartsWith(MapNodePrefix)
+            || cmd.StartsWith(EventOptionPrefix)
+            || cmd.StartsWith(RestSiteOptionPrefix)
+            || cmd.StartsWith(ProceedToNextActPrefix);
+    }
 }

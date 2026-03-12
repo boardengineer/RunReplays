@@ -107,9 +107,13 @@ public static class HandCardSelectReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        // Skip interleaved game-action commands (e.g. gold changes) that may
-        // sit between the triggering action and SelectHandCards in the queue.
-        if (!ReplayEngine.SkipToSelectHandCards())
+        // Only push a selector if SelectHandCards is at or near the front of
+        // the queue.  SkipToSelectHandCards drains everything before the command
+        // and is dangerous when no SelectHandCards was recorded (e.g. Brand as
+        // the last card in hand — empty hand auto-resolves without a choice).
+        // In that case a distant SelectHandCards from a later turn would cause
+        // the skip to consume card plays and end turns.
+        if (!ReplayEngine.SafeSkipToSelectHandCards())
             return;
 
         var selector = new ReplayHandCardSelector();
