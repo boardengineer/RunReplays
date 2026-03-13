@@ -12,6 +12,10 @@ namespace RunReplays;
 /// is active and the next command is an UpgradeCard entry, defers an automatic
 /// card selection to the next Godot frame.
 ///
+/// NOTE: During replay the SMITH rest-site option goes through CardSelectCmd
+/// (handled by ReplayDeckCardSelector) rather than ShowScreen, so this patch
+/// is a secondary path that covers non-SMITH upgrade screens (if any).
+///
 /// ShowScreen is the right hook because it sets _cards and _prefs on the
 /// instance before returning, and _Ready (which wires up the UI nodes needed
 /// by CheckIfSelectionComplete) is called synchronously by NOverlayStack.Push
@@ -24,6 +28,13 @@ namespace RunReplays;
 [HarmonyPatch(typeof(NDeckUpgradeSelectScreen), "ShowScreen")]
 public static class UpgradeCardReplayPatch
 {
+    // Read _cards from the base NCardGridSelectionScreen — this is the same
+    // field the recording patch uses to compute the index, so it reflects any
+    // sorting/reordering that ShowScreen applies.
+    private static readonly FieldInfo? CardsField =
+        typeof(NCardGridSelectionScreen).GetField(
+            "_cards", BindingFlags.NonPublic | BindingFlags.Instance);
+
     private static readonly FieldInfo? SelectedCardsField =
         typeof(NDeckUpgradeSelectScreen).GetField(
             "_selectedCards", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -40,13 +51,23 @@ public static class UpgradeCardReplayPatch
 
         PlayerActionBuffer.LogToDevConsole(
             $"[UpgradeCardReplayPatch] ShowScreen — deferring auto-select for deck index {deckIndex}.");
-        Callable.From(() => AutoSelect(__result, cards, deckIndex)).CallDeferred();
+        Callable.From(() => AutoSelect(__result, deckIndex)).CallDeferred();
     }
 
-    private static void AutoSelect(NDeckUpgradeSelectScreen screen, IReadOnlyList<CardModel> cards, int deckIndex)
+    private static void AutoSelect(NDeckUpgradeSelectScreen screen, int deckIndex)
     {
         if (!ReplayRunner.ExecuteUpgradeCard(out _))
             return;
+
+        // Use _cards from the screen instance (same list the recording patch indexes
+        // into), not the ShowScreen parameter which may have a different order.
+        var cards = CardsField?.GetValue(screen) as IReadOnlyList<CardModel>;
+        if (cards == null)
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                "[UpgradeCardReplayPatch] Could not access _cards — aborting.");
+            return;
+        }
 
         if (deckIndex < 0 || deckIndex >= cards.Count)
         {

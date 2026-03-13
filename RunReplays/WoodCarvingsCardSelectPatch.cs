@@ -86,7 +86,9 @@ public static class FromDeckGenericPatch
             // SkipToSelectDeckCard drains any interleaved auto-processed commands
             // (e.g. status effects from a combat card play) that sit before the
             // SelectDeckCard command, then confirms it is at the queue front.
-            if (ReplayEngine.SkipToSelectDeckCard())
+            // Also handle UpgradeCard commands: the SMITH rest-site option goes
+            // through CardSelectCmd during replay (not NDeckUpgradeSelectScreen).
+            if (ReplayEngine.SkipToSelectDeckCard() || ReplayEngine.PeekUpgradeCard(out _))
             {
                 _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
                 PlayerActionBuffer.LogToDevConsole(
@@ -116,7 +118,7 @@ public static class FromDeckForEnchantmentPatch
 
         if (ReplayEngine.IsActive)
         {
-            if (ReplayEngine.SkipToSelectDeckCard())
+            if (ReplayEngine.SkipToSelectDeckCard() || ReplayEngine.PeekUpgradeCard(out _))
             {
                 _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
                 PlayerActionBuffer.LogToDevConsole(
@@ -146,7 +148,7 @@ public static class FromDeckForEnchantmentWithFilterPatch
 
         if (ReplayEngine.IsActive)
         {
-            if (ReplayEngine.SkipToSelectDeckCard())
+            if (ReplayEngine.SkipToSelectDeckCard() || ReplayEngine.PeekUpgradeCard(out _))
             {
                 _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
                 PlayerActionBuffer.LogToDevConsole(
@@ -273,10 +275,20 @@ internal sealed class ReplayDeckCardSelector : ICardSelector
 
         if (!ReplayEngine.ConsumeSelectDeckCard(out int index))
         {
-            PlayerActionBuffer.LogToDevConsole(
-                "[ReplayDeckCardSelector] No SelectDeckCard command — returning first available card(s).");
-            return Task.FromResult<IEnumerable<CardModel>>(
-                optionList.Take(Math.Max(1, minSelect)).ToList());
+            // Fallback: SMITH rest-site upgrades record "UpgradeCard {index}" but
+            // during replay the flow goes through CardSelectCmd, not ShowScreen.
+            if (ReplayEngine.ConsumeUpgradeCard(out index))
+            {
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[ReplayDeckCardSelector] Consumed UpgradeCard {index} (SMITH upgrade via CardSelectCmd).");
+            }
+            else
+            {
+                PlayerActionBuffer.LogToDevConsole(
+                    "[ReplayDeckCardSelector] No SelectDeckCard/UpgradeCard command — returning first available card(s).");
+                return Task.FromResult<IEnumerable<CardModel>>(
+                    optionList.Take(Math.Max(1, minSelect)).ToList());
+            }
         }
 
         if (index >= 0 && index < optionList.Count)
