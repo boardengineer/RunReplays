@@ -1,4 +1,5 @@
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Saves;
 using MegaCrit.Sts2.Core.Unlocks;
 
@@ -15,5 +16,35 @@ public static class UnlockAllPatch
     public static void Postfix(ref UnlockState __result)
     {
         __result = UnlockState.all;
+    }
+}
+
+/// <summary>
+/// Forces GetRandomList to use UnlockState.all so that the act pool/order
+/// is deterministic regardless of player progression.
+/// </summary>
+[HarmonyPatch(typeof(ActModel), nameof(ActModel.GetRandomList))]
+public static class GetRandomListUnlockPatch
+{
+    [HarmonyPrefix]
+    public static void Prefix(ref string seed, ref UnlockState unlockState)
+    {
+        if (ForcedSeedPatch.Enabled)
+            seed = ForcedSeedPatch.ForcedSeed;
+        unlockState = UnlockState.all;
+    }
+}
+
+/// <summary>
+/// Forces HasSeenEncounter to always return true so that discovery order
+/// never reorders encounters — making the encounter list fully seed-deterministic.
+/// </summary>
+[HarmonyPatch(typeof(UnlockState), nameof(UnlockState.HasSeenEncounter))]
+public static class HasSeenEncounterPatch
+{
+    [HarmonyPostfix]
+    public static void Postfix(ref bool __result)
+    {
+        __result = true;
     }
 }
