@@ -14,6 +14,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Runs;
+using RunReplays.Utils;
 
 namespace RunReplays;
 
@@ -67,6 +68,7 @@ public static class CardPlayReplayPatch
         __instance.AfterActionExecuted += OnAfterActionExecuted;
 
         LogCardSelectState("ActionExecutor ctor (battle start)");
+        RngCheckpointLogger.Log("CombatStart (ActionExecutor ctor)");
     }
 
     internal static void LogCardSelectState(string context)
@@ -113,6 +115,8 @@ public static class CardPlayReplayPatch
 
     private static void OnTurnStarted(CombatState combatState)
     {
+        RngCheckpointLogger.Log($"TurnStarted (round {combatState.RoundNumber})");
+
         if (!ReplayEngine.IsActive)
             return;
 

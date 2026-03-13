@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Runs;
+using RunReplays.Utils;
 
 namespace RunReplays;
 
@@ -43,6 +44,7 @@ public static class RestSiteReplayPatch
     [HarmonyPostfix]
     public static void Postfix(RestSiteSynchronizer __instance)
     {
+        RngCheckpointLogger.Log("RestSite (BeginRestSite)");
         if (!ReplayEngine.PeekRestSiteOption(out string optionId))
             return;
 

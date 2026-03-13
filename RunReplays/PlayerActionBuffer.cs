@@ -243,6 +243,7 @@ public static class PlayerActionBuffer
             $"[PlayerActionBuffer] Replay completed — restored {commands.Count} command(s) to buffer.");
         CardPlayReplayPatch.LogCardSelectState("ReplayCompleted");
         SelectorStackDebug.Log("=== ReplayCompleted ===");
+        Utils.RngCheckpointLogger.Log("=== ReplayCompleted ===");
     }
 
     /// <summary>

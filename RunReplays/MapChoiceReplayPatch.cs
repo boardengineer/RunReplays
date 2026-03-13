@@ -4,6 +4,7 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Map;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
+using RunReplays.Utils;
 
 namespace RunReplays;
 
@@ -37,6 +38,7 @@ public static class MapChoiceReplayPatch
             return;
 
         PlayerActionBuffer.LogToDevConsole("[RunReplays] Map is now interactive.");
+        RngCheckpointLogger.Log("MapInteractive (SetTravelEnabled)");
 
         if (!ReplayEngine.PeekMapNode(out int col, out int row)) 
         {

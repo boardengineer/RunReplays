@@ -104,6 +104,8 @@ public static class ReplayEngine
     {
         SelectorStackDebug.Clear();
         SelectorStackDebug.Log("=== Replay Load ===");
+        Utils.RngCheckpointLogger.Clear();
+        Utils.RngCheckpointLogger.Log("=== Replay Load ===");
         _pending.Clear();
         _recentConsumed.Clear();
 

@@ -132,6 +132,24 @@ public static class EventOptionReplayPatch
             return;
         }
 
+        // Log event page description and all option details for debugging
+        // card-offering events like Slippery Bridge.
+        try
+        {
+            string eventDesc = eventModel.Description?.GetFormattedText() ?? "(null)";
+            string eventRng = eventModel.Rng != null ? $" eventRng={eventModel.Rng.Counter}" : "";
+            SelectorStackDebug.Log($"[EventAutoSelect] event='{eventModel.Title.GetFormattedText()}'{eventRng}");
+            SelectorStackDebug.Log($"  pageDesc: {eventDesc}");
+            for (int i = 0; i < options.Count; i++)
+            {
+                string optTitle = options[i].Title?.GetFormattedText() ?? "(null)";
+                string optDesc = options[i].Description?.GetFormattedText() ?? "(null)";
+                string optKey = options[i].TextKey ?? "(null)";
+                SelectorStackDebug.Log($"  option[{i}]: title='{optTitle}' key='{optKey}' desc='{optDesc}'");
+            }
+        }
+        catch { /* ignore */ }
+
         PlayerActionBuffer.LogToDevConsole(
             $"[EventOptionReplayPatch] AutoSelect — selecting index={index} (textKey='{textKey}').");
         ReplayRunner.ExecuteEventOption(out _);
@@ -158,15 +176,16 @@ public static class EventOptionReplayPatch
             return;
 
         // If finished, AutoSelect handles PROCEED (drains orphaned commands + Proceed()).
+        // Use a delay so any async page transition has time to complete.
         if (finished)
         {
-            AutoSelect(synchronizer);
+            TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
             return;
         }
 
         if (ReplayEngine.PeekEventOption(out _))
         {
-            AutoSelect(synchronizer);
+            TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
             return;
         }
 

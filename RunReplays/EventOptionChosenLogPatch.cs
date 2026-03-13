@@ -1,5 +1,6 @@
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Events;
+using RunReplays.Utils;
 
 namespace RunReplays;
 
@@ -16,8 +17,33 @@ public static class EventOptionChosenLogPatch
         string title = __instance.Title.GetFormattedText();
         string textKey = __instance.TextKey;
 
+        // Log the event's own Rng counter (used for card generation in events
+        // like Slippery Bridge) alongside the textKey.
+        string eventRngInfo = "";
+        try
+        {
+            var eventModel = typeof(EventOption)
+                .GetField("_eventModel", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                ?.GetValue(__instance);
+            if (eventModel == null)
+            {
+                // Try constructor-stored field or property
+                var prop = typeof(EventOption).GetProperty("EventModel",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+                eventModel = prop?.GetValue(__instance);
+            }
+            if (eventModel is MegaCrit.Sts2.Core.Models.EventModel em && em.Rng != null)
+                eventRngInfo = $" eventRng.Counter={em.Rng.Counter}";
+        }
+        catch { /* ignore */ }
+
+        string desc = "";
+        try { desc = __instance.Description?.GetFormattedText() ?? ""; }
+        catch { /* ignore */ }
+
+        RngCheckpointLogger.Log($"EventOption.Chosen '{textKey}'{eventRngInfo} desc='{desc}'");
         PlayerActionBuffer.LogToDevConsole(
-            $"[EventOption] Chosen — title='{title}' textKey='{textKey}'");
+            $"[EventOption] Chosen — title='{title}' textKey='{textKey}'{eventRngInfo} desc='{desc}'");
 
         // Flush any pending deck card selection that was triggered by the previous
         // event option (e.g. Wood Carvings).  This ensures SelectDeckCard appears
