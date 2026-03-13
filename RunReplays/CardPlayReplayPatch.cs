@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Linq;
+using System.Reflection;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
@@ -49,6 +51,9 @@ public static class CardPlayReplayPatch
     /// </summary>
     private static bool _awaitingEndTurnCompletion;
 
+    private static readonly FieldInfo? SelectorStackField =
+        typeof(CardSelectCmd).GetField("_selectorStack", BindingFlags.NonPublic | BindingFlags.Static);
+
     [HarmonyPostfix]
     public static void Postfix(ActionExecutor __instance)
     {
@@ -60,6 +65,40 @@ public static class CardPlayReplayPatch
         CombatManager.Instance.TurnStarted += _turnStartedHandler;
 
         __instance.AfterActionExecuted += OnAfterActionExecuted;
+
+        LogCardSelectState("ActionExecutor ctor (battle start)");
+    }
+
+    internal static void LogCardSelectState(string context)
+    {
+        var stack = SelectorStackField?.GetValue(null) as ICollection;
+        int stackCount = stack?.Count ?? -1;
+        string stackTypes = "";
+        if (stack != null && stackCount > 0)
+        {
+            var types = new System.Collections.Generic.List<string>();
+            foreach (object? item in stack)
+                types.Add(item?.GetType().Name ?? "null");
+            stackTypes = $" [{string.Join(", ", types)}]";
+        }
+
+        bool deckPending = DeckCardSelectContext.Pending;
+        bool hasGenericScope = FromDeckGenericPatch._pendingScope != null;
+        bool hasEnchantScope = FromDeckForEnchantmentPatch._pendingScope != null;
+        bool hasEnchantFilterScope = FromDeckForEnchantmentWithFilterPatch._pendingScope != null;
+        bool hasTransformScope = FromDeckForTransformationPatch._pendingScope != null;
+        bool hasUpgradeScope = FromDeckForUpgradePatch._pendingScope != null;
+        bool hasChoiceScope = FromChooseACardScreenPatch._pendingScope != null;
+        bool hasRemovalScope = DeckRemovalReplayPatch._pendingScope != null;
+        bool hasHandScope = HandCardSelectReplayPatch._pendingScope != null;
+        bool hasSimpleGridScope = FromSimpleGridPatch._pendingScope != null;
+
+        PlayerActionBuffer.LogToDevConsole(
+            $"[CardSelectState@{context}] selectorStack.Count={stackCount}{stackTypes}" +
+            $" | DeckPending={deckPending}" +
+            $" | Scopes: Generic={hasGenericScope} Enchant={hasEnchantScope} EnchantFilter={hasEnchantFilterScope}" +
+            $" Transform={hasTransformScope} Upgrade={hasUpgradeScope}" +
+            $" Choice={hasChoiceScope} Removal={hasRemovalScope} Hand={hasHandScope} SimpleGrid={hasSimpleGridScope}");
     }
 
     // ── Turn-start trigger ────────────────────────────────────────────────────

@@ -31,6 +31,7 @@ public static class DeckRemovalReplayPatch
         _pendingScope?.Dispose();
         _pendingScope = null;
 
+        SelectorStackDebug.Log("FromDeckForRemoval.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
         if (!ReplayEngine.IsActive)
             return;
 
@@ -39,6 +40,7 @@ public static class DeckRemovalReplayPatch
             return;
 
         _pendingScope = CardSelectCmd.PushSelector(new ReplayRemoveCardSelector());
+        SelectorStackDebug.Log("PUSH FromDeckForRemoval");
         PlayerActionBuffer.LogToDevConsole(
             "[DeckRemovalReplayPatch] Pushed ReplayRemoveCardSelector for FromDeckForRemoval.");
     }

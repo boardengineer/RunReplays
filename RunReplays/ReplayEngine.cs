@@ -102,6 +102,8 @@ public static class ReplayEngine
 
     public static void Load(IReadOnlyList<string> commands)
     {
+        SelectorStackDebug.Clear();
+        SelectorStackDebug.Log("=== Replay Load ===");
         _pending.Clear();
         _recentConsumed.Clear();
 

@@ -49,6 +49,7 @@ public static class FromChooseACardScreenPatch
         _pendingScope?.Dispose();
         _pendingScope = null;
 
+        SelectorStackDebug.Log("FromChooseACardScreen.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
         if (ReplayEngine.IsActive)
         {
             // Try front of queue first; if not there, drain interleaved commands
@@ -58,6 +59,7 @@ public static class FromChooseACardScreenPatch
                 || ReplayEngine.SkipToSelectCardFromScreen())
             {
                 _pendingScope = CardSelectCmd.PushSelector(new ReplayChooseACardSelector());
+                SelectorStackDebug.Log("PUSH FromChooseACardScreen");
                 PlayerActionBuffer.LogToDevConsole(
                     "[CardChoiceScreenPatch] Pushed ReplayChooseACardSelector for FromChooseACardScreen.");
             }

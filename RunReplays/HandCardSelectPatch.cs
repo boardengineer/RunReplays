@@ -104,6 +104,7 @@ public static class HandCardSelectReplayPatch
         _pendingScope?.Dispose();
         _pendingScope = null;
 
+        SelectorStackDebug.Log("FromHand.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
         if (!ReplayEngine.IsActive)
             return;
 
@@ -118,6 +119,7 @@ public static class HandCardSelectReplayPatch
 
         var selector = new ReplayHandCardSelector();
         _pendingScope = CardSelectCmd.PushSelector(selector);
+        SelectorStackDebug.Log("PUSH FromHand");
         PlayerActionBuffer.LogToDevConsole("[HandCardSelectReplayPatch] Pushed ReplayHandCardSelector for FromHand.");
     }
 }

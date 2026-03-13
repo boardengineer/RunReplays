@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -31,6 +32,25 @@ namespace RunReplays;
 /// Replay: a ReplayDeckCardSelector is pushed onto the CardSelectCmd selector
 /// stack before From* runs, so the game uses replay data instead of opening UI.
 /// </summary>
+internal static class SelectorStackDebug
+{
+    private static readonly string LogPath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "SlayTheSpire2", "RunReplays", "selector_stack_debug.log");
+
+    internal static void Log(string message)
+    {
+        try { File.AppendAllText(LogPath, $"[{DateTime.Now:HH:mm:ss.fff}] {message}\n"); }
+        catch { /* ignore */ }
+    }
+
+    internal static void Clear()
+    {
+        try { File.WriteAllText(LogPath, ""); }
+        catch { /* ignore */ }
+    }
+}
+
 internal static class DeckCardSelectContext
 {
     internal static bool Pending;
@@ -81,16 +101,13 @@ public static class FromDeckGenericPatch
         _pendingScope?.Dispose();
         _pendingScope = null;
 
+        SelectorStackDebug.Log("FromDeckGeneric.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
         if (ReplayEngine.IsActive)
         {
-            // SkipToSelectDeckCard drains any interleaved auto-processed commands
-            // (e.g. status effects from a combat card play) that sit before the
-            // SelectDeckCard command, then confirms it is at the queue front.
-            // Also handle UpgradeCard commands: the SMITH rest-site option goes
-            // through CardSelectCmd during replay (not NDeckUpgradeSelectScreen).
-            if (ReplayEngine.SkipToSelectDeckCard() || ReplayEngine.PeekUpgradeCard(out _))
+            if (ReplayEngine.PeekSelectDeckCard(out _))
             {
                 _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
+                SelectorStackDebug.Log("PUSH FromDeckGeneric");
                 PlayerActionBuffer.LogToDevConsole(
                     "[WoodCarvingsPatch] Pushed ReplayDeckCardSelector for FromDeckGeneric.");
             }
@@ -116,11 +133,19 @@ public static class FromDeckForEnchantmentPatch
         _pendingScope?.Dispose();
         _pendingScope = null;
 
+        SelectorStackDebug.Log("FromDeckForEnchantment.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
         if (ReplayEngine.IsActive)
         {
-            if (ReplayEngine.SkipToSelectDeckCard() || ReplayEngine.PeekUpgradeCard(out _))
+            // Skip if the filter overload already pushed a selector (one overload
+            // may delegate to the other, causing both Harmony prefixes to fire).
+            if (FromDeckForEnchantmentWithFilterPatch._pendingScope != null)
+            {
+                SelectorStackDebug.Log("SKIP FromDeckForEnchantment (EnchantFilter already pushed)");
+            }
+            else if (ReplayEngine.PeekSelectDeckCard(out _))
             {
                 _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
+                SelectorStackDebug.Log("PUSH FromDeckForEnchantment");
                 PlayerActionBuffer.LogToDevConsole(
                     "[WoodCarvingsPatch] Pushed ReplayDeckCardSelector for FromDeckForEnchantment.");
             }
@@ -146,11 +171,20 @@ public static class FromDeckForEnchantmentWithFilterPatch
         _pendingScope?.Dispose();
         _pendingScope = null;
 
+        SelectorStackDebug.Log("FromDeckForEnchantmentWithFilter.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
         if (ReplayEngine.IsActive)
         {
-            if (ReplayEngine.SkipToSelectDeckCard() || ReplayEngine.PeekUpgradeCard(out _))
+            // Skip if the no-filter overload already pushed a selector (the game
+            // routes FromDeckForEnchantment → FromDeckForEnchantment(filter), so
+            // both Harmony prefixes fire for a single call).
+            if (FromDeckForEnchantmentPatch._pendingScope != null)
+            {
+                SelectorStackDebug.Log("SKIP FromDeckForEnchantmentWithFilter (Enchant already pushed)");
+            }
+            else if (ReplayEngine.PeekSelectDeckCard(out _))
             {
                 _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
+                SelectorStackDebug.Log("PUSH FromDeckForEnchantmentWithFilter");
                 PlayerActionBuffer.LogToDevConsole(
                     "[SelfHelpBookPatch] Pushed ReplayDeckCardSelector for FromDeckForEnchantment (with filter).");
             }
@@ -175,11 +209,13 @@ public static class FromDeckForTransformationPatch
         _pendingScope?.Dispose();
         _pendingScope = null;
 
+        SelectorStackDebug.Log("FromDeckForTransformation.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
         if (ReplayEngine.IsActive)
         {
-            if (ReplayEngine.SkipToSelectDeckCard())
+            if (ReplayEngine.PeekSelectDeckCard(out _))
             {
                 _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
+                SelectorStackDebug.Log("PUSH FromDeckForTransformation");
                 PlayerActionBuffer.LogToDevConsole(
                     "[DeckTransformPatch] Pushed ReplayDeckCardSelector for FromDeckForTransformation.");
             }
@@ -187,6 +223,33 @@ public static class FromDeckForTransformationPatch
         else
         {
             DeckCardSelectContext.Pending = true;
+        }
+    }
+}
+
+// ── FromDeckForUpgrade (SMITH rest-site option) ──────────────────────────────
+
+[HarmonyPatch(typeof(CardSelectCmd), nameof(CardSelectCmd.FromDeckForUpgrade))]
+public static class FromDeckForUpgradePatch
+{
+    internal static IDisposable? _pendingScope;
+
+    [HarmonyPrefix]
+    public static void Prefix()
+    {
+        _pendingScope?.Dispose();
+        _pendingScope = null;
+
+        SelectorStackDebug.Log("FromDeckForUpgrade.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
+        if (!ReplayEngine.IsActive)
+            return;
+
+        if (ReplayEngine.PeekUpgradeCard(out _))
+        {
+            _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
+            SelectorStackDebug.Log("PUSH FromDeckForUpgrade");
+            PlayerActionBuffer.LogToDevConsole(
+                "[UpgradePatch] Pushed ReplayDeckCardSelector for FromDeckForUpgrade.");
         }
     }
 }
@@ -260,15 +323,28 @@ internal sealed class ReplayDeckCardSelector : ICardSelector
     public Task<IEnumerable<CardModel>> GetSelectedCards(
         IEnumerable<CardModel> options, int minSelect, int maxSelect)
     {
+        string scopeSource = FromDeckGenericPatch._pendingScope != null ? "Generic"
+            : FromDeckForEnchantmentPatch._pendingScope != null ? "Enchant"
+            : FromDeckForEnchantmentWithFilterPatch._pendingScope != null ? "EnchantFilter"
+            : FromDeckForTransformationPatch._pendingScope != null ? "Transform"
+            : FromDeckForUpgradePatch._pendingScope != null ? "Upgrade"
+            : "NONE";
+        SelectorStackDebug.Log($"GetSelectedCards called (scope from: {scopeSource}, minSelect={minSelect}, maxSelect={maxSelect})");
+        PlayerActionBuffer.LogToDevConsole(
+            "[ReplayDeckCardSelector] GetSelectedCards called.");
+
         // Consume the scope that was pushed by whichever patch created us.
         var scope = FromDeckGenericPatch._pendingScope
             ?? FromDeckForEnchantmentPatch._pendingScope
             ?? FromDeckForEnchantmentWithFilterPatch._pendingScope
-            ?? FromDeckForTransformationPatch._pendingScope;
+            ?? FromDeckForTransformationPatch._pendingScope
+            ?? FromDeckForUpgradePatch._pendingScope;
         FromDeckGenericPatch._pendingScope                 = null;
         FromDeckForEnchantmentPatch._pendingScope          = null;
         FromDeckForEnchantmentWithFilterPatch._pendingScope = null;
         FromDeckForTransformationPatch._pendingScope       = null;
+        FromDeckForUpgradePatch._pendingScope              = null;
+        SelectorStackDebug.Log($"Disposing scope (wasNull={scope == null})");
         scope?.Dispose();
 
         var optionList = options.ToList();

@@ -48,11 +48,13 @@ public static class FromSimpleGridPatch
         _pendingScope?.Dispose();
         _pendingScope = null;
 
+        SelectorStackDebug.Log("FromSimpleGrid.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
         if (ReplayEngine.IsActive)
         {
             if (ReplayEngine.SkipToSelectSimpleCard())
             {
                 _pendingScope = CardSelectCmd.PushSelector(new ReplaySimpleCardSelector());
+                SelectorStackDebug.Log("PUSH FromSimpleGrid");
                 PlayerActionBuffer.LogToDevConsole(
                     "[SimpleGridPatch] Pushed ReplaySimpleCardSelector for FromSimpleGrid.");
             }
