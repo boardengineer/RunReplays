@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.CardRewardAlternatives;
@@ -123,11 +122,6 @@ public static class FromChooseACardScreenPatch
         CardChoiceScreenSyncPatch.Buffer($"SelectCardFromScreen {index}");
         PlayerActionBuffer.LogToDevConsole(
             $"[CardChoiceScreenPatch] Buffered: SelectCardFromScreen {index}");
-
-        // Schedule a deferred flush for relic-triggered selections where no
-        // subsequent game action would flush the buffer.  For potion / card-play
-        // actions the AfterActionExecuted flush fires first, making this a no-op.
-        Callable.From(() => CardChoiceScreenSyncPatch.FlushIfPending()).CallDeferred();
 
         return selected!;
     }

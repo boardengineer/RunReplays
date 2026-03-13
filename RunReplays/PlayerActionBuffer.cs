@@ -73,9 +73,18 @@ public static class PlayerActionBuffer
                 return;
 
             if (!action.RecordableToReplay
-                || action is VoteForMapCoordAction
                 || action is ReadyToBeginEnemyTurnAction)
                 return;
+
+            // VoteForMapCoordAction is not recorded, but it is the first action
+            // after the rewards screen closes.  Flush any pending card-choice
+            // commands from relic-triggered selections (e.g. Lead Paperweight)
+            // that were buffered but had no subsequent action to flush them.
+            if (action is VoteForMapCoordAction)
+            {
+                CardChoiceScreenSyncPatch.FlushIfPending();
+                return;
+            }
 
             // For potion/card-play actions the card-choice flush must happen
             // AFTER recording (the selection is nested inside the action).
