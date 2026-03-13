@@ -160,6 +160,35 @@ public static class FromDeckForEnchantmentWithFilterPatch
     }
 }
 
+// ── FromDeckForTransformation (New Leaf relic) ───────────────────────────────
+
+[HarmonyPatch(typeof(CardSelectCmd), nameof(CardSelectCmd.FromDeckForTransformation))]
+public static class FromDeckForTransformationPatch
+{
+    internal static IDisposable? _pendingScope;
+
+    [HarmonyPrefix]
+    public static void Prefix()
+    {
+        _pendingScope?.Dispose();
+        _pendingScope = null;
+
+        if (ReplayEngine.IsActive)
+        {
+            if (ReplayEngine.SkipToSelectDeckCard())
+            {
+                _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
+                PlayerActionBuffer.LogToDevConsole(
+                    "[DeckTransformPatch] Pushed ReplayDeckCardSelector for FromDeckForTransformation.");
+            }
+        }
+        else
+        {
+            DeckCardSelectContext.Pending = true;
+        }
+    }
+}
+
 // ── Recording: NCardGridSelectionScreen.CardsSelected ─────────────────────────
 
 /// <summary>
@@ -232,10 +261,12 @@ internal sealed class ReplayDeckCardSelector : ICardSelector
         // Consume the scope that was pushed by whichever patch created us.
         var scope = FromDeckGenericPatch._pendingScope
             ?? FromDeckForEnchantmentPatch._pendingScope
-            ?? FromDeckForEnchantmentWithFilterPatch._pendingScope;
-        FromDeckGenericPatch._pendingScope                = null;
-        FromDeckForEnchantmentPatch._pendingScope         = null;
+            ?? FromDeckForEnchantmentWithFilterPatch._pendingScope
+            ?? FromDeckForTransformationPatch._pendingScope;
+        FromDeckGenericPatch._pendingScope                 = null;
+        FromDeckForEnchantmentPatch._pendingScope          = null;
         FromDeckForEnchantmentWithFilterPatch._pendingScope = null;
+        FromDeckForTransformationPatch._pendingScope       = null;
         scope?.Dispose();
 
         var optionList = options.ToList();
