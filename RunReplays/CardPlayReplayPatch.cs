@@ -179,6 +179,37 @@ public static class CardPlayReplayPatch
         return player;
     }
 
+    /// <summary>
+    /// Returns true when combat is in progress, a local player exists, and
+    /// the player's hand has been drawn (i.e. cards are available).
+    /// </summary>
+    private static bool IsCombatReady()
+    {
+        try
+        {
+            if (!CombatManager.Instance.IsInProgress)
+                return false;
+
+            var state = CombatManager.Instance.DebugOnlyGetState();
+            if (state == null)
+                return false;
+
+            Player? player;
+            try { player = LocalContext.GetMe(state); }
+            catch { player = state.Players.FirstOrDefault(); }
+
+            if (player == null)
+                return false;
+
+            var hand = player.PlayerCombatState?.Hand?.Cards;
+            return hand != null && hand.Count > 0;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     // ── Turn-start trigger ────────────────────────────────────────────────────
 
     /// <summary>
@@ -450,6 +481,28 @@ public static class CardPlayReplayPatch
         }
 
         PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryPlayNextCard: attempting card index={combatCardIndex} targetId={targetId?.ToString() ?? "none"}.");
+
+        // Check if combat is ready to accept commands — the hand must be
+        // drawn and the player must exist before we resolve cards.
+        if (!IsCombatReady())
+        {
+            const int maxRetries = 50;
+            if (_retryCount >= maxRetries)
+            {
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[RunReplays] TryPlayNextCard: combat not ready after {maxRetries} retries — giving up.");
+                _retryCount = 0;
+                return;
+            }
+
+            _retryCount++;
+            PlayerActionBuffer.LogToDevConsole(
+                $"[RunReplays] TryPlayNextCard: combat not ready, retry #{_retryCount}.");
+            int gen = _battleGeneration;
+            NGame.Instance!.GetTree()!.CreateTimer(0.25).Connect(
+                "timeout", Callable.From(() => { if (_battleGeneration == gen) TryPlayNextCard(); }));
+            return;
+        }
 
         CardModel? card;
         try
