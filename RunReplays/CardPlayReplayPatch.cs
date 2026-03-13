@@ -193,6 +193,15 @@ public static class CardPlayReplayPatch
             return;
         }
 
+        // Potion discards initiated from the rewards screen (not combat dispatch)
+        // need to resume reward processing once they complete.
+        if (!_dispatching && action is DiscardPotionGameAction)
+        {
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] AfterActionExecuted: DiscardPotionGameAction completed outside combat — resuming rewards.");
+            BattleRewardsReplayPatch.TryResumeRewardsProcessing();
+            return;
+        }
+
         // Only chain the next dispatch for actions initiated by our replay.
         // Without this guard, enemy PlayCardActions during the enemy turn
         // trigger DispatchNextCombatAction, which prematurely consumes the

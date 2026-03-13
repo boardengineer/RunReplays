@@ -1,8 +1,11 @@
+using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Helpers;
+using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using MegaCrit.Sts2.Core.Runs;
@@ -131,7 +134,13 @@ public static class BattleRewardsReplayPatch
             return;
         }
 
-        if (ReplayEngine.PeekCardReward(out _) || ReplayEngine.PeekSacrificeCardReward())
+        if (ReplayEngine.PeekSacrificeCardReward())
+        {
+            ExecuteSacrificeDirectly(screen);
+            return;
+        }
+
+        if (ReplayEngine.PeekCardReward(out _))
         {
             Node? cardButton = FindRewardButton(screen, "CardReward");
             if (cardButton == null)
@@ -141,7 +150,7 @@ public static class BattleRewardsReplayPatch
             }
 
             // Do NOT consume the command here — CardRewardReplayPatch does that
-            // once NCardRewardSelectionScreen opens and the card/sacrifice is selected.
+            // once NCardRewardSelectionScreen opens and the card is selected.
             InvokeGetReward(cardButton);
             PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: triggered card reward button.");
             return;
@@ -206,6 +215,57 @@ public static class BattleRewardsReplayPatch
             ReplayRunner.ExecuteProceedToNextAct();
             RunManager.Instance.ActChangeSynchronizer.SetLocalPlayerReady();
         }
+    }
+
+    /// <summary>
+    /// Executes a Pael's Wing sacrifice directly via RewardSynchronizer,
+    /// bypassing the card selection screen UI entirely.
+    /// </summary>
+    private static void ExecuteSacrificeDirectly(NRewardsScreen screen)
+    {
+        ReplayRunner.ExecuteSacrificeCardReward();
+
+        try
+        {
+            var localPlayerProp = RunManager.Instance.RewardSynchronizer.GetType()
+                .GetProperty("LocalPlayer", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            var player = localPlayerProp?.GetValue(RunManager.Instance.RewardSynchronizer);
+            var relicsProp = player?.GetType()
+                .GetProperty("Relics", BindingFlags.Public | BindingFlags.Instance);
+            var relics = relicsProp?.GetValue(player) as System.Collections.IEnumerable;
+            PaelsWing? paelsWing = null;
+            if (relics != null)
+            {
+                foreach (var r in relics)
+                {
+                    var modelProp = r.GetType().GetProperty("Model", BindingFlags.Public | BindingFlags.Instance);
+                    if (modelProp?.GetValue(r) is PaelsWing pw)
+                    {
+                        paelsWing = pw;
+                        break;
+                    }
+                }
+            }
+
+            if (paelsWing == null)
+            {
+                PlayerActionBuffer.LogToDevConsole(
+                    "[RunReplays] Replay: SacrificeCardReward — Pael's Wing relic not found on player.");
+                Callable.From(() => ProcessNextReward(screen)).CallDeferred();
+                return;
+            }
+
+            RunManager.Instance.RewardSynchronizer.SyncLocalPaelsWingSacrifice(paelsWing);
+            PlayerActionBuffer.LogToDevConsole(
+                "[RunReplays] Replay: executed Pael's Wing sacrifice directly.");
+        }
+        catch (Exception ex)
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[RunReplays] Replay: SacrificeCardReward threw {ex.GetType().Name}: {ex.Message}");
+        }
+
+        Callable.From(() => ProcessNextReward(screen)).CallDeferred();
     }
 
     private static async Task ProceedToMapAsync()
