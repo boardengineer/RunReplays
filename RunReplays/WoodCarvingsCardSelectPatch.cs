@@ -369,9 +369,23 @@ internal sealed class ReplayDeckCardSelector : ICardSelector
 
         if (index >= 0 && index < optionList.Count)
         {
+            var selected = new List<CardModel> { optionList[index] };
             PlayerActionBuffer.LogToDevConsole(
                 $"[ReplayDeckCardSelector] Selected '{optionList[index].Title}' at index {index}.");
-            return Task.FromResult<IEnumerable<CardModel>>(new[] { optionList[index] });
+
+            // Some relics (e.g. Yummy Cookie) allow upgrading multiple cards in
+            // a single selection.  Keep consuming UpgradeCard commands while they
+            // match available options.
+            while (ReplayEngine.PeekUpgradeCard(out int nextIdx)
+                   && nextIdx >= 0 && nextIdx < optionList.Count)
+            {
+                ReplayEngine.ConsumeUpgradeCard(out _);
+                selected.Add(optionList[nextIdx]);
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[ReplayDeckCardSelector] Selected additional '{optionList[nextIdx].Title}' at index {nextIdx}.");
+            }
+
+            return Task.FromResult<IEnumerable<CardModel>>(selected);
         }
 
         PlayerActionBuffer.LogToDevConsole(

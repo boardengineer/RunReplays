@@ -83,13 +83,28 @@ public static class UpgradeCardReplayPatch
             return;
         }
 
+        // Add the first card.
         CardModel card = cards[deckIndex];
         selectedCards.Clear();
         selectedCards.Add(card);
-
-        CheckIfCompleteMethod?.Invoke(screen, null);
-
         PlayerActionBuffer.LogToDevConsole(
             $"[UpgradeCardReplayPatch] Auto-selected '{card.Title}' at deck index {deckIndex}.");
+
+        // Some relics (e.g. Yummy Cookie) allow upgrading multiple cards on a
+        // single screen.  Keep consuming UpgradeCard commands until there are
+        // no more pending or we run out of cards.
+        while (ReplayEngine.PeekUpgradeCard(out int nextIndex))
+        {
+            if (nextIndex < 0 || nextIndex >= cards.Count)
+                break;
+
+            ReplayRunner.ExecuteUpgradeCard(out _);
+            CardModel nextCard = cards[nextIndex];
+            selectedCards.Add(nextCard);
+            PlayerActionBuffer.LogToDevConsole(
+                $"[UpgradeCardReplayPatch] Auto-selected additional '{nextCard.Title}' at deck index {nextIndex}.");
+        }
+
+        CheckIfCompleteMethod?.Invoke(screen, null);
     }
 }
