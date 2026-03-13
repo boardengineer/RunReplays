@@ -89,15 +89,19 @@ public static class EventOptionReplayPatch
         PlayerActionBuffer.LogToDevConsole(
             $"[EventOptionReplayPatch] AutoSelect — looking for textKey='{textKey}' recordedIndex={recordedIndex} among {options.Count} options: [{string.Join(", ", options.Select(o => o.TextKey))}]");
 
-        // Prefer the recorded index (new format) when it's valid.
+        // Prefer the recorded index when it's valid AND the textKey matches.
+        // The textKey check guards against stale options from a previous page
+        // that hasn't transitioned yet (e.g. multi-page events like Colossal Flower).
         int index = -1;
-        if (recordedIndex >= 0 && recordedIndex < options.Count)
+        if (recordedIndex >= 0 && recordedIndex < options.Count
+            && options[recordedIndex].TextKey == textKey)
         {
             index = recordedIndex;
         }
         else
         {
-            // Fallback: match by textKey (legacy format or out-of-range index).
+            // Fallback: match by textKey (legacy format, out-of-range index,
+            // or index pointed to a stale option from a previous page).
             for (int i = 0; i < options.Count; i++)
             {
                 if (options[i].TextKey == textKey)
