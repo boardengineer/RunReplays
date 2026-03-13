@@ -6,12 +6,12 @@ using MegaCrit.Sts2.Core.Multiplayer.Game;
 namespace RunReplays;
 
 /// <summary>
-/// Harmony prefix on EventSynchronizer.ChooseLocalOption(int index) that logs
-/// the full set of visible options to the dev console for diagnostic purposes.
+/// Harmony prefix on EventSynchronizer.ChooseLocalOption(int index) that records
+/// the chosen option to the action buffer.
 ///
-/// Recording to the action buffer is handled by EventOptionChosenLogPatch
-/// (on EventOption.Chosen) which captures the stable TextKey rather than
-/// the positional index, making replay more robust.
+/// Format: "ChooseEventOption {index} {textKey}"
+/// The index ensures correct replay even when multiple options share a TextKey
+/// (e.g. "The Future of Potions?" event).
 /// </summary>
 [HarmonyPatch(typeof(EventSynchronizer), nameof(EventSynchronizer.ChooseLocalOption))]
 public static class EventSelectionPatch
@@ -28,9 +28,19 @@ public static class EventSelectionPatch
         if (index < 0 || index >= options.Count)
             return;
 
+        string textKey = options[index].TextKey;
+        string title = options[index].Title.GetFormattedText();
         string eventTitle = eventModel.Title.GetFormattedText();
-        string chosenTitle = options[index].Title.GetFormattedText();
         PlayerActionBuffer.LogToDevConsole(
-            $"[EventSelectionPatch] Event '{eventTitle}' — chose option {index}: '{chosenTitle}'.");
+            $"[EventSelectionPatch] Event '{eventTitle}' — chose option {index}: '{title}' (textKey='{textKey}').");
+
+        // Store the index for EventOptionChosenLogPatch to include in its recording.
+        PendingIndex = index;
     }
+
+    /// <summary>
+    /// The 0-based index of the option being chosen, captured by the Prefix
+    /// and consumed by EventOptionChosenLogPatch.
+    /// </summary>
+    internal static int? PendingIndex;
 }

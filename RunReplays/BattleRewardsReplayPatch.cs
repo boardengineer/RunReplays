@@ -58,6 +58,7 @@ public static class BattleRewardsReplayPatch
 
         bool hasReward = ReplayEngine.PeekGoldReward(out _)
                       || ReplayEngine.PeekCardReward(out _)
+                      || ReplayEngine.PeekSacrificeCardReward()
                       || ReplayEngine.PeekRelicReward(out _)
                       || ReplayEngine.PeekPotionReward(out _)
                       || ReplayEngine.PeekNetDiscardPotion(out _);
@@ -130,7 +131,7 @@ public static class BattleRewardsReplayPatch
             return;
         }
 
-        if (ReplayEngine.PeekCardReward(out _))
+        if (ReplayEngine.PeekCardReward(out _) || ReplayEngine.PeekSacrificeCardReward())
         {
             Node? cardButton = FindRewardButton(screen, "CardReward");
             if (cardButton == null)
@@ -140,7 +141,7 @@ public static class BattleRewardsReplayPatch
             }
 
             // Do NOT consume the command here — CardRewardReplayPatch does that
-            // once NCardRewardSelectionScreen opens and the card is selected.
+            // once NCardRewardSelectionScreen opens and the card/sacrifice is selected.
             InvokeGetReward(cardButton);
             PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: triggered card reward button.");
             return;

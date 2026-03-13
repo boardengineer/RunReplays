@@ -1,6 +1,8 @@
 using System.Reflection;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Entities.CardRewardAlternatives;
+using MegaCrit.Sts2.Core.Entities.Rewards;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 
@@ -8,8 +10,8 @@ namespace RunReplays;
 
 /// <summary>
 /// Harmony postfix on NCardRewardSelectionScreen._Ready that, when a replay is
-/// active and the next command is a TakeCardReward entry, defers an automatic
-/// card selection to the next Godot frame.
+/// active and the next command is a TakeCardReward or SacrificeCardReward entry,
+/// defers an automatic card selection (or sacrifice) to the next Godot frame.
 ///
 /// _Ready() is the hook because:
 ///   - It is a plain non-async method that Harmony can patch reliably.
@@ -33,16 +35,29 @@ namespace RunReplays;
 [HarmonyPatch(typeof(NCardRewardSelectionScreen), "_Ready")]
 public static class CardRewardReplayPatch
 {
+    private static readonly FieldInfo? ExtraOptionsField =
+        typeof(NCardRewardSelectionScreen).GetField(
+            "_extraOptions", BindingFlags.NonPublic | BindingFlags.Instance);
+
     [HarmonyPostfix]
     public static void Postfix(NCardRewardSelectionScreen __instance)
     {
-        if (!ReplayEngine.PeekCardReward(out string cardTitle))
+        if (!ReplayEngine.IsActive)
             return;
 
-        // Defer one frame: _completionSource is set (synchronous), but emitting
-        // the signal now would fire SelectCard before the async continuation
-        // that awaits CardsSelected() has had a chance to attach its handler.
-        Callable.From(() => AutoSelectCard(__instance, cardTitle)).CallDeferred();
+        if (ReplayEngine.PeekSacrificeCardReward())
+        {
+            Callable.From(() => AutoSacrifice(__instance)).CallDeferred();
+            return;
+        }
+
+        if (ReplayEngine.PeekCardReward(out string cardTitle))
+        {
+            // Defer one frame: _completionSource is set (synchronous), but emitting
+            // the signal now would fire SelectCard before the async continuation
+            // that awaits CardsSelected() has had a chance to attach its handler.
+            Callable.From(() => AutoSelectCard(__instance, cardTitle)).CallDeferred();
+        }
     }
 
     private static void AutoSelectCard(NCardRewardSelectionScreen screen, string expectedTitle)
@@ -74,6 +89,58 @@ public static class CardRewardReplayPatch
 
         // Notify the rewards screen patch so it can process any remaining
         // reward buttons (e.g. a gold reward recorded after the card pick).
+        BattleRewardsReplayPatch.OnCardRewardHandled();
+    }
+
+    private static void AutoSacrifice(NCardRewardSelectionScreen screen)
+    {
+        if (!ReplayEngine.IsActive)
+            return;
+
+        // Read _extraOptions to find the sacrifice alternative.
+        var extras = ExtraOptionsField?.GetValue(screen)
+            as System.Collections.Generic.IReadOnlyList<CardRewardAlternative>;
+
+        if (extras == null || extras.Count == 0)
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                "[RunReplays] Replay: SacrificeCardReward — no extra options on screen.");
+            return;
+        }
+
+        // Find the sacrifice alternative (PaelsWing.sacrificeAlternativeKey).
+        // Fall back to the first alternative if only one exists.
+        CardRewardAlternative? sacrifice = null;
+        foreach (var alt in extras)
+        {
+            if (alt.OptionId.Contains("sacrifice", System.StringComparison.OrdinalIgnoreCase)
+                || alt.OptionId.Contains("pael", System.StringComparison.OrdinalIgnoreCase))
+            {
+                sacrifice = alt;
+                break;
+            }
+        }
+        sacrifice ??= extras[0];
+
+        ReplayRunner.ExecuteSacrificeCardReward();
+
+        // Trigger the same path the UI uses: OnAlternateRewardSelected.
+        var method = typeof(NCardRewardSelectionScreen).GetMethod(
+            "OnAlternateRewardSelected",
+            BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+
+        if (method != null)
+        {
+            method.Invoke(screen, new object[] { sacrifice.AfterSelected });
+            PlayerActionBuffer.LogToDevConsole(
+                $"[RunReplays] Replay: auto-sacrificed card reward (OptionId='{sacrifice.OptionId}').");
+        }
+        else
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                "[RunReplays] Replay: SacrificeCardReward — OnAlternateRewardSelected method not found.");
+        }
+
         BattleRewardsReplayPatch.OnCardRewardHandled();
     }
 

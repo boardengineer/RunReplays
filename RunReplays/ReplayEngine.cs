@@ -386,6 +386,25 @@ public static class ReplayEngine
         return false;
     }
 
+    // ── Sacrifice card reward (Pael's Wing) ─────────────────────────────────
+
+    private const string SacrificeCardRewardCmd = "SacrificeCardReward";
+
+    public static bool PeekSacrificeCardReward()
+    {
+        return _pending.TryPeek(out string? cmd) && cmd == SacrificeCardRewardCmd;
+    }
+
+    public static bool ConsumeSacrificeCardReward()
+    {
+        if (PeekSacrificeCardReward())
+        {
+            SignalConsumed(_pending.Dequeue());
+            return true;
+        }
+        return false;
+    }
+
     // ── Relic rewards ─────────────────────────────────────────────────────────
 
     private const string RelicRewardPrefix = "TakeRelicReward: ";
@@ -445,12 +464,32 @@ public static class ReplayEngine
 
     public static bool PeekEventOption(out string textKey)
     {
+        return PeekEventOption(out textKey, out _);
+    }
+
+    public static bool PeekEventOption(out string textKey, out int optionIndex)
+    {
         if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(EventOptionPrefix))
         {
-            textKey = cmd.Substring(EventOptionPrefix.Length);
+            string rest = cmd.Substring(EventOptionPrefix.Length);
+
+            // New format: "ChooseEventOption {index} {textKey}"
+            int space = rest.IndexOf(' ');
+            if (space >= 0 && int.TryParse(rest.AsSpan(0, space), out int idx))
+            {
+                optionIndex = idx;
+                textKey = rest.Substring(space + 1);
+            }
+            else
+            {
+                // Legacy format: "ChooseEventOption {textKey}"
+                optionIndex = -1;
+                textKey = rest;
+            }
             return true;
         }
         textKey = string.Empty;
+        optionIndex = -1;
         return false;
     }
 

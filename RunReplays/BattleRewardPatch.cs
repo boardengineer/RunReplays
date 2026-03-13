@@ -1,5 +1,6 @@
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
 
 namespace RunReplays;
@@ -10,11 +11,12 @@ namespace RunReplays;
 ///
 /// The SyncLocal methods are called immediately after each reward is confirmed
 /// by the player, so they fire:
-///   - Cards:   only when the player picks a card from the selection screen
-///              (not when the screen first opens — satisfying the requirement).
-///   - Relics:  when the relic button is clicked.
-///   - Potions: when the potion button is clicked.
-///   - Gold:    when the gold button is clicked.
+///   - Cards:      only when the player picks a card from the selection screen
+///                 (not when the screen first opens — satisfying the requirement).
+///   - Relics:     when the relic button is clicked.
+///   - Potions:    when the potion button is clicked.
+///   - Gold:       when the gold button is clicked.
+///   - Sacrifice:  when the Pael's Wing sacrifice alternative is chosen.
 /// </summary>
 [HarmonyPatch(typeof(RewardSynchronizer))]
 public static class BattleRewardPatch
@@ -53,5 +55,13 @@ public static class BattleRewardPatch
         if (ShopPurchaseState.IsPurchasing) return;
         CardChoiceScreenSyncPatch.FlushIfPending();
         PlayerActionBuffer.Record($"TakeGoldReward: {goldAmount}");
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(nameof(RewardSynchronizer.SyncLocalPaelsWingSacrifice))]
+    public static void PaelsWingSacrifice(PaelsWing paelsWing)
+    {
+        CardChoiceScreenSyncPatch.FlushIfPending();
+        PlayerActionBuffer.Record("SacrificeCardReward");
     }
 }

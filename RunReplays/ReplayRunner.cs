@@ -115,6 +115,18 @@ public static class ReplayRunner
         return true;
     }
 
+    // ── Sacrifice card reward (Pael's Wing) ─────────────────────────────────
+
+    public static bool ExecuteSacrificeCardReward()
+    {
+        if (!ReplayEngine.ConsumeSacrificeCardReward())
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: sacrifice card reward (Pael's Wing)");
+        LogNext();
+        return true;
+    }
+
     // ── Relic rewards ─────────────────────────────────────────────────────────
 
     public static bool ExecuteRelicReward(out string relicTitle)
@@ -360,6 +372,9 @@ public static class ReplayRunner
 
         if (cmd.StartsWith("TakeCardReward: "))
             return $"take card reward '{cmd["TakeCardReward: ".Length..]}'";
+
+        if (cmd == "SacrificeCardReward")
+            return "sacrifice card reward (Pael's Wing)";
 
         if (cmd.StartsWith("TakeRelicReward: "))
             return $"take relic reward '{cmd["TakeRelicReward: ".Length..]}'";

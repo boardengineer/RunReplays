@@ -25,7 +25,12 @@ public static class EventOptionChosenLogPatch
         // PlayCardAction to flush it in the event context.
         CardEffectDeckSelectContext.FlushIfPending();
 
-        PlayerActionBuffer.RecordVerboseOnly($"[EventOption] Chosen — title='{title}' textKey='{textKey}'");
-        PlayerActionBuffer.RecordMinimalOnly($"ChooseEventOption {textKey}");
+        int? idx = EventSelectionPatch.PendingIndex;
+        EventSelectionPatch.PendingIndex = null;
+
+        PlayerActionBuffer.RecordVerboseOnly($"[EventOption] Chosen — title='{title}' textKey='{textKey}' index={idx}");
+        PlayerActionBuffer.RecordMinimalOnly(idx.HasValue
+            ? $"ChooseEventOption {idx.Value} {textKey}"
+            : $"ChooseEventOption {textKey}");
     }
 }

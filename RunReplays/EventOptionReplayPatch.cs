@@ -79,7 +79,7 @@ public static class EventOptionReplayPatch
             return;
         }
 
-        if (!ReplayEngine.PeekEventOption(out string textKey))
+        if (!ReplayEngine.PeekEventOption(out string textKey, out int recordedIndex))
         {
             PlayerActionBuffer.LogToDevConsole(
                 "[EventOptionReplayPatch] AutoSelect — no ChooseEventOption at front of queue.");
@@ -87,15 +87,24 @@ public static class EventOptionReplayPatch
         }
 
         PlayerActionBuffer.LogToDevConsole(
-            $"[EventOptionReplayPatch] AutoSelect — looking for textKey='{textKey}' among {options.Count} options: [{string.Join(", ", options.Select(o => o.TextKey))}]");
+            $"[EventOptionReplayPatch] AutoSelect — looking for textKey='{textKey}' recordedIndex={recordedIndex} among {options.Count} options: [{string.Join(", ", options.Select(o => o.TextKey))}]");
 
+        // Prefer the recorded index (new format) when it's valid.
         int index = -1;
-        for (int i = 0; i < options.Count; i++)
+        if (recordedIndex >= 0 && recordedIndex < options.Count)
         {
-            if (options[i].TextKey == textKey)
+            index = recordedIndex;
+        }
+        else
+        {
+            // Fallback: match by textKey (legacy format or out-of-range index).
+            for (int i = 0; i < options.Count; i++)
             {
-                index = i;
-                break;
+                if (options[i].TextKey == textKey)
+                {
+                    index = i;
+                    break;
+                }
             }
         }
 
