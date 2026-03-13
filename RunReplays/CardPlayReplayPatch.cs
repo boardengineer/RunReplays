@@ -67,6 +67,18 @@ public static class CardPlayReplayPatch
 
         __instance.AfterActionExecuted += OnAfterActionExecuted;
 
+        // Reset all dispatch state so stale flags from a previous battle
+        // or non-combat context don't block OnTurnStarted.
+        _dispatching = false;
+        _waitingForEffects = false;
+        _actionFiredThisFrame = false;
+        _quietFrameCount = 0;
+        _awaitingEndTurnCompletion = false;
+        _endTurnRetryCount = 0;
+        _endTurnConsumed = false;
+        _retryCount = 0;
+        _turnStartRetries = 0;
+
         LogCardSelectState("ActionExecutor ctor (battle start)");
         RngCheckpointLogger.Log("CombatStart (ActionExecutor ctor)");
     }
