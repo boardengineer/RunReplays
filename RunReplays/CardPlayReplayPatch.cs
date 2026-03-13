@@ -44,6 +44,15 @@ public static class CardPlayReplayPatch
     private static int                  _retryCount;
 
     /// <summary>
+    /// Incremented each time a new battle starts (ActionExecutor ctor).
+    /// Timer callbacks capture the generation at creation time and become
+    /// no-ops if it has changed, preventing stale callbacks from a previous
+    /// battle from corrupting dispatch state.
+    /// </summary>
+    private static int _battleGeneration;
+
+
+    /// <summary>
     /// Set by TryEndTurn after calling PlayerCmd.EndTurn.  While true, ALL
     /// command dispatch is blocked — no new cards, potions, or end-turns
     /// will be issued.  Cleared when AfterActionExecuted sees the
@@ -66,6 +75,9 @@ public static class CardPlayReplayPatch
         CombatManager.Instance.TurnStarted += _turnStartedHandler;
 
         __instance.AfterActionExecuted += OnAfterActionExecuted;
+
+        // Invalidate any pending timer callbacks from the previous battle.
+        _battleGeneration++;
 
         // Reset all dispatch state so stale flags from a previous battle
         // or non-combat context don't block OnTurnStarted.
@@ -144,6 +156,15 @@ public static class CardPlayReplayPatch
             _dispatching = false;
             _endTurnRetryCount = 0;
             _endTurnConsumed = false;
+
+            // Give the game time to fully initialize the new turn (player
+            // entity, hand, energy) before dispatching the next command.
+            _turnStartRetries = 0;
+            int gen = _battleGeneration;
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] TurnStarted: post-EndTurn — delaying 0.5s before dispatch.");
+            NGame.Instance!.GetTree()!.CreateTimer(0.5).Connect(
+                "timeout", Callable.From(() => { if (_battleGeneration == gen) ScheduleNextFromQueue("TurnStarted (post-EndTurn)"); }));
+            return;
         }
         else if (_waitingForEffects || _dispatching)
         {
@@ -186,8 +207,9 @@ public static class CardPlayReplayPatch
         else if (ReplayEngine.PeekEndTurn())
         {
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] {caller}: next command is EndTurn, scheduling TryEndTurn (0.5s delay).");
+            int gen = _battleGeneration;
             NGame.Instance!.GetTree()!.CreateTimer(0.5).Connect(
-                "timeout", Callable.From(TryEndTurn));
+                "timeout", Callable.From(() => { if (_battleGeneration == gen) TryEndTurn(); }));
         }
         else
         {
@@ -198,8 +220,9 @@ public static class CardPlayReplayPatch
                 _turnStartRetries++;
                 PlayerActionBuffer.LogToDevConsole(
                     $"[RunReplays] {caller}: no combat action yet — '{next ?? "(none)"}', retry {_turnStartRetries}/{MaxTurnStartRetries}.");
+                int gen = _battleGeneration;
                 NGame.Instance!.GetTree()!.CreateTimer(0.25).Connect(
-                    "timeout", Callable.From(() => ScheduleNextFromQueue(caller)));
+                    "timeout", Callable.From(() => { if (_battleGeneration == gen) ScheduleNextFromQueue(caller); }));
             }
             else
             {
@@ -411,8 +434,9 @@ public static class CardPlayReplayPatch
             }
 
             _retryCount++;
+            int gen = _battleGeneration;
             NGame.Instance!.GetTree()!.CreateTimer(0.25).Connect(
-                "timeout", Callable.From(TryPlayNextCard));
+                "timeout", Callable.From(() => { if (_battleGeneration == gen) TryPlayNextCard(); }));
             return;
         }
 
@@ -562,7 +586,21 @@ public static class CardPlayReplayPatch
 
         if (player == null)
         {
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] TryEndTurn: could not resolve local player.");
+            const int maxPlayerRetries = 20;
+            if (_endTurnRetryCount < maxPlayerRetries)
+            {
+                _endTurnRetryCount++;
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[RunReplays] TryEndTurn: could not resolve local player — retrying ({_endTurnRetryCount}/{maxPlayerRetries}).");
+                int gen = _battleGeneration;
+                NGame.Instance!.GetTree()!.CreateTimer(0.25).Connect(
+                    "timeout", Callable.From(() => { if (_battleGeneration == gen) TryEndTurn(); }));
+            }
+            else
+            {
+                PlayerActionBuffer.LogToDevConsole("[RunReplays] TryEndTurn: could not resolve local player after retries — aborting.");
+                _dispatching = false;
+            }
             return;
         }
 
@@ -577,8 +615,9 @@ public static class CardPlayReplayPatch
         _endTurnRetryCount++;
         if (_endTurnRetryCount <= maxRetries)
         {
+            int gen = _battleGeneration;
             NGame.Instance!.GetTree()!.CreateTimer(1.0).Connect(
-                "timeout", Callable.From(RetryEndTurnIfStuck));
+                "timeout", Callable.From(() => { if (_battleGeneration == gen) RetryEndTurnIfStuck(); }));
         }
     }
 
