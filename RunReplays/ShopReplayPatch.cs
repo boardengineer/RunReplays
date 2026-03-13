@@ -163,10 +163,11 @@ public static class ShopOpenedReplayPatch
 
         PlayerActionBuffer.LogToDevConsole($"[ShopReplayPatch] ProcessNextPurchase — {entries.Count} entries available.");
 
-        if (TryBuyCard(room, entries))        return;
-        if (TryBuyRelic(room, entries))       return;
-        if (TryBuyPotion(room, entries))      return;
-        if (TryBuyCardRemoval(room, entries)) return;
+        if (TryDiscardPotionInShop(room))        return;
+        if (TryBuyCard(room, entries))           return;
+        if (TryBuyRelic(room, entries))          return;
+        if (TryBuyPotion(room, entries))         return;
+        if (TryBuyCardRemoval(room, entries))    return;
 
         PlayerActionBuffer.LogToDevConsole("[ShopReplayPatch] No more shop purchase commands pending.");
 
@@ -198,6 +199,25 @@ public static class ShopOpenedReplayPatch
     {
         await Task.Delay(100);
         Callable.From(() => ProcessNextPurchase(room, retriesLeft)).CallDeferred();
+    }
+
+    private static bool TryDiscardPotionInShop(NMerchantRoom room)
+    {
+        if (!ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole(
+            $"[ShopReplayPatch] Potion discard slot={discardSlot} during shop — executing.");
+        CardPlayReplayPatch.TryDiscardPotion();
+        // Resume the shop loop after a short delay so the discard action completes.
+        TaskHelper.RunSafely(ResumeShopAfterDelay(room));
+        return true;
+    }
+
+    private static async Task ResumeShopAfterDelay(NMerchantRoom room)
+    {
+        await Task.Delay(200);
+        Callable.From(() => ProcessNextPurchase(room)).CallDeferred();
     }
 
     private static bool TryBuyCard(NMerchantRoom room, List<MerchantEntry> entries)

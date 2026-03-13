@@ -127,6 +127,58 @@ public static class CardPlayReplayPatch
             $" Choice={hasChoiceScope} Removal={hasRemovalScope} Hand={hasHandScope} SimpleGrid={hasSimpleGridScope}");
     }
 
+    // ── Player resolution ──────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Resolves the local player, trying combat state first and falling back
+    /// to RunManager's RewardSynchronizer for out-of-combat contexts (shop,
+    /// events, map).
+    /// </summary>
+    internal static Player? ResolveLocalPlayer()
+    {
+        Player? player = null;
+
+        // 1. Current combat state (set by OnTurnStarted, may persist after combat ends).
+        try { player = LocalContext.GetMe(_currentCombatState); }
+        catch { /* ignore */ }
+
+        player ??= _currentCombatState?.Players.FirstOrDefault();
+
+        // 2. Fresh combat state from CombatManager.
+        if (player == null)
+        {
+            try
+            {
+                var combatState = CombatManager.Instance?.DebugOnlyGetState();
+                if (combatState != null)
+                {
+                    try { player = LocalContext.GetMe(combatState); }
+                    catch { /* ignore */ }
+                    player ??= combatState.Players.FirstOrDefault();
+                }
+            }
+            catch { /* ignore */ }
+        }
+
+        // 3. Out-of-combat fallback: RewardSynchronizer.LocalPlayer via reflection.
+        if (player == null)
+        {
+            try
+            {
+                var rewardSync = RunManager.Instance?.RewardSynchronizer;
+                if (rewardSync != null)
+                {
+                    var prop = rewardSync.GetType().GetProperty("LocalPlayer",
+                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+                    player = prop?.GetValue(rewardSync) as Player;
+                }
+            }
+            catch { /* ignore */ }
+        }
+
+        return player;
+    }
+
     // ── Turn-start trigger ────────────────────────────────────────────────────
 
     /// <summary>
@@ -455,20 +507,7 @@ public static class CardPlayReplayPatch
             return;
         }
 
-        Player? player;
-        try
-        {
-            player = LocalContext.GetMe(_currentCombatState);
-        }
-        catch (Exception ex)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] TryDiscardPotion: LocalContext.GetMe threw {ex.GetType().Name}: {ex.Message}");
-            player = null;
-        }
-
-        // Fallback: in single-player there is exactly one player in the combat state.
-        player ??= _currentCombatState?.Players.FirstOrDefault();
+        Player? player = ResolveLocalPlayer();
 
         if (player == null)
         {
@@ -499,19 +538,7 @@ public static class CardPlayReplayPatch
             return;
         }
 
-        Player? player;
-        try
-        {
-            player = LocalContext.GetMe(_currentCombatState);
-        }
-        catch (Exception ex)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] TryUsePotion: LocalContext.GetMe threw {ex.GetType().Name}: {ex.Message}");
-            player = null;
-        }
-
-        player ??= _currentCombatState?.Players.FirstOrDefault();
+        Player? player = ResolveLocalPlayer();
 
         if (player == null)
         {
@@ -570,19 +597,7 @@ public static class CardPlayReplayPatch
             _endTurnConsumed = true;
         }
 
-        Player? player;
-        try
-        {
-            player = LocalContext.GetMe(_currentCombatState);
-        }
-        catch (Exception ex)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] TryEndTurn: LocalContext.GetMe threw {ex.GetType().Name}: {ex.Message}");
-            player = null;
-        }
-
-        player ??= _currentCombatState?.Players.FirstOrDefault();
+        Player? player = ResolveLocalPlayer();
 
         if (player == null)
         {
