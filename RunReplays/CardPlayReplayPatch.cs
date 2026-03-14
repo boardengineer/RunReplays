@@ -356,10 +356,10 @@ public static class CardPlayReplayPatch
             _currentCombatState = _postEndTurn_savedTurnStartState;
         _postEndTurn_savedTurnStartState = null;
 
-        // Delay before dispatching so the hand is drawn.
+        // Delay before dispatching so the game fully initializes the new turn.
         _turnStartRetries = 0;
         int gen = _battleGeneration;
-        NGame.Instance!.GetTree()!.CreateTimer(0.5).Connect(
+        NGame.Instance!.GetTree()!.CreateTimer(2.0).Connect(
             "timeout", Callable.From(() =>
             {
                 if (_battleGeneration != gen) return;
