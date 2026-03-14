@@ -604,6 +604,7 @@ public static class ReplayEngine
     //   "BuyCardRemoval"
 
     private const string OpenShopCmd        = "OpenShop";
+    private const string OpenFakeShopCmd   = "OpenFakeShop";
     private const string BuyCardPrefix      = "BuyCard ";
     private const string BuyRelicPrefix     = "BuyRelic ";
     private const string BuyPotionPrefix    = "BuyPotion ";
@@ -615,6 +616,15 @@ public static class ReplayEngine
     public static bool ConsumeOpenShop()
     {
         if (PeekOpenShop()) { SignalConsumed(_pending.Dequeue()); return true; }
+        return false;
+    }
+
+    public static bool PeekOpenFakeShop()
+        => _pending.TryPeek(out string? cmd) && cmd == OpenFakeShopCmd;
+
+    public static bool ConsumeOpenFakeShop()
+    {
+        if (PeekOpenFakeShop()) { SignalConsumed(_pending.Dequeue()); return true; }
         return false;
     }
 

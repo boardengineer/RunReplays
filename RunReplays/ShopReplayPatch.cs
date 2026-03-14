@@ -340,7 +340,7 @@ public static class ShopOpenedReplayPatch
     /// filling any extra parameters (e.g. MerchantCardRemovalEntry.cancelable)
     /// with their declared default values.
     /// </summary>
-    private static void InvokePurchase(MerchantEntry entry)
+    internal static void InvokePurchase(MerchantEntry entry)
     {
         // Prefer an override declared on the concrete type; fall back to inherited.
         MethodInfo? method = entry.GetType()

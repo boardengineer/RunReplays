@@ -209,6 +209,16 @@ public static class ReplayRunner
         return true;
     }
 
+    public static bool ExecuteOpenFakeShop()
+    {
+        if (!ReplayEngine.ConsumeOpenFakeShop())
+            return false;
+
+        PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: open fake shop");
+        LogNext();
+        return true;
+    }
+
     public static bool ExecuteBuyCard(out string cardTitle)
     {
         if (!ReplayEngine.ConsumeBuyCard(out cardTitle))
@@ -396,6 +406,9 @@ public static class ReplayRunner
 
         if (cmd == "OpenShop")
             return "open shop";
+
+        if (cmd == "OpenFakeShop")
+            return "open fake merchant shop";
 
         if (cmd.StartsWith("BuyCard "))
             return $"buy card '{cmd["BuyCard ".Length..]}'";

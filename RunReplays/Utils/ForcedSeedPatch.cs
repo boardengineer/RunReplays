@@ -11,7 +11,7 @@ namespace RunReplays.Utils;
 public static class ForcedSeedPatch
 {
     internal const string ForcedSeed = "MU6Y3HQB9P";
-    internal const bool Enabled = true;
+    internal const bool Enabled = false;
 
     [HarmonyPrefix]
     public static void Prefix(ref string seed)
