@@ -67,6 +67,7 @@ public static class MapChoiceReplayPatch
             return;
         }
 
+        CardPlayReplayPatch.InvalidateStaleTimers();
         screen.OnMapPointSelectedLocally(point);
     }
 }

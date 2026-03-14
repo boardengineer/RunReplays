@@ -173,6 +173,22 @@ public static class CardPlayReplayPatch
     // ── Player resolution ──────────────────────────────────────────────────────
 
     /// <summary>
+    /// Bumps _battleGeneration so all pending timer callbacks from the
+    /// previous room's battle become no-ops.  Does not touch any other
+    /// dispatch state.
+    /// </summary>
+    internal static void InvalidateStaleTimers()
+    {
+        PlayerActionBuffer.LogToDevConsole($"[RunReplays] InvalidateStaleTimers: gen {_battleGeneration} → {_battleGeneration + 1}");
+        _battleGeneration++;
+        // Clear flags that block OnTurnStarted from starting a new dispatch.
+        _dispatching = false;
+        _waitingForEffects = false;
+        _cardPlayInFlight = false;
+        _awaitingEndTurnCompletion = false;
+    }
+
+    /// <summary>
     /// Resolves the local player, trying combat state first and falling back
     /// to RunManager's RewardSynchronizer for out-of-combat contexts (shop,
     /// events, map).
