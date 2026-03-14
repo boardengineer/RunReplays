@@ -31,6 +31,16 @@ public static class HandCardSelectRecordPatch
 {
     private static string? _pending;
 
+    /// <summary>
+    /// Set by HandCardSelectForDiscardRecordPatch when it records a
+    /// FromHandForDiscard selection.  Prevents SyncLocalChoice from
+    /// buffering a duplicate for the same selection.
+    /// </summary>
+    internal static bool SuppressNext;
+
+    /// <summary>Sets the pending command from an external recorder.</summary>
+    internal static void SetPending(string command) => _pending = command;
+
     [HarmonyPostfix]
     public static void Postfix(Player player, uint choiceId, PlayerChoiceResult result)
     {
@@ -39,6 +49,13 @@ public static class HandCardSelectRecordPatch
 
         if (result.ChoiceType != PlayerChoiceType.CombatCard)
             return;
+
+        if (SuppressNext)
+        {
+            SuppressNext = false;
+            PlayerActionBuffer.LogToDevConsole("[HandCardSelectRecordPatch] Suppressed — already recorded by FromHandForDiscard.");
+            return;
+        }
 
         IEnumerable<CardModel> cards;
         try
@@ -121,6 +138,123 @@ public static class HandCardSelectReplayPatch
         _pendingScope = CardSelectCmd.PushSelector(selector);
         SelectorStackDebug.Log("PUSH FromHand");
         PlayerActionBuffer.LogToDevConsole("[HandCardSelectReplayPatch] Pushed ReplayHandCardSelector for FromHand.");
+    }
+}
+
+// ── FromHandForDiscard (e.g. Tools of the Trade) ────────────────────────────
+
+/// <summary>
+/// Records hand-card selections that go through CardSelectCmd.FromHandForDiscard
+/// (e.g. Tools of the Trade's start-of-turn discard).  This path does NOT go
+/// through PlayerChoiceSynchronizer.SyncLocalChoice, so HandCardSelectRecordPatch
+/// never captures it.  We await the Task result and record the selected card IDs.
+/// </summary>
+[HarmonyPatch(typeof(CardSelectCmd), nameof(CardSelectCmd.FromHandForDiscard))]
+public static class HandCardSelectForDiscardRecordPatch
+{
+    [HarmonyPostfix]
+    public static void Postfix(Task<IEnumerable<CardModel>> __result, AbstractModel source)
+    {
+        if (ReplayEngine.IsActive)
+            return;
+
+        if (__result == null)
+            return;
+
+        PlayerActionBuffer.LogToDevConsole(
+            $"[HandCardSelectForDiscardRecord] FromHandForDiscard called — source='{source}' ({source?.GetType().Name ?? "null"})");
+
+        // Suppress SyncLocalChoice BEFORE the async await — SyncLocalChoice
+        // fires synchronously when the player picks a card, which is before
+        // RecordAsync's continuation runs.
+        HandCardSelectRecordPatch.SuppressNext = true;
+
+        // Card-triggered discards (e.g. Survivor) should buffer so the
+        // SelectHandCards appears after the PlayCardAction in the log.
+        // Power/turn-start discards (e.g. Tools of the Trade) should record
+        // immediately so they appear before the next card play.
+        bool shouldBuffer = source is CardModel;
+        MegaCrit.Sts2.Core.Helpers.TaskHelper.RunSafely(RecordAsync(__result, shouldBuffer));
+    }
+
+    private static async Task RecordAsync(Task<IEnumerable<CardModel>> task, bool shouldBuffer)
+    {
+        IEnumerable<CardModel> cards;
+        try { cards = await task; }
+        catch { return; }
+
+        var ids = new List<uint>();
+        foreach (CardModel card in cards)
+        {
+            if (NetCombatCardDb.Instance.TryGetCardId(card, out uint id))
+                ids.Add(id);
+        }
+
+        if (ids.Count == 0)
+            return;
+
+        // Check if the discard was auto-resolved (no real choice).
+        // When a card like Survivor is the last in hand, the discard has
+        // only 0-1 options and the game auto-resolves without player input.
+        // Recording it would leave a stale command in the replay queue.
+        try
+        {
+            var combatState = MegaCrit.Sts2.Core.Combat.CombatManager.Instance?.DebugOnlyGetState();
+            if (combatState != null)
+            {
+                var player = combatState.Players.FirstOrDefault();
+                var hand = player?.PlayerCombatState?.Hand?.Cards;
+                if (hand != null && hand.Count <= ids.Count)
+                {
+                    PlayerActionBuffer.LogToDevConsole(
+                        $"[HandCardSelectForDiscardRecord] Skipping — auto-resolved (hand={hand.Count}, discarded={ids.Count}).");
+                    return;
+                }
+            }
+        }
+        catch { /* ignore — record anyway if we can't check */ }
+
+        string command = $"SelectHandCards {string.Join(" ", ids)}";
+        if (shouldBuffer)
+        {
+            // Card-triggered: buffer so it's flushed after the PlayCardAction.
+            PlayerActionBuffer.LogToDevConsole($"[HandCardSelectForDiscardRecord] Buffered: {command}");
+            HandCardSelectRecordPatch.SetPending(command);
+        }
+        else
+        {
+            // Power/turn-start triggered: record immediately.
+            PlayerActionBuffer.LogToDevConsole($"[HandCardSelectForDiscardRecord] Recording: {command}");
+            PlayerActionBuffer.Record(command);
+        }
+    }
+
+}
+
+/// <summary>
+/// Pushes a ReplayHandCardSelector before CardSelectCmd.FromHandForDiscard
+/// during replay, mirroring HandCardSelectReplayPatch for FromHand.
+/// </summary>
+[HarmonyPatch(typeof(CardSelectCmd), nameof(CardSelectCmd.FromHandForDiscard))]
+public static class HandCardSelectForDiscardReplayPatch
+{
+    [HarmonyPrefix]
+    public static void Prefix()
+    {
+        HandCardSelectReplayPatch._pendingScope?.Dispose();
+        HandCardSelectReplayPatch._pendingScope = null;
+
+        SelectorStackDebug.Log("FromHandForDiscard.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
+        if (!ReplayEngine.IsActive)
+            return;
+
+        if (!ReplayEngine.SafeSkipToSelectHandCards())
+            return;
+
+        var selector = new ReplayHandCardSelector();
+        HandCardSelectReplayPatch._pendingScope = CardSelectCmd.PushSelector(selector);
+        SelectorStackDebug.Log("PUSH FromHandForDiscard");
+        PlayerActionBuffer.LogToDevConsole("[HandCardSelectForDiscardReplayPatch] Pushed ReplayHandCardSelector for FromHandForDiscard.");
     }
 }
 

@@ -94,7 +94,10 @@ public static class PlayerActionBuffer
                 action is UsePotionAction || action is PlayCardAction;
 
             if (!isActionWithNestedSelection)
+            {
+                HandCardSelectRecordPatch.FlushIfPending();
                 CardChoiceScreenSyncPatch.FlushIfPending();
+            }
 
             string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
             string actionText = action.ToString()!;
