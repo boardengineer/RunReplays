@@ -10,7 +10,7 @@ namespace RunReplays.Utils;
 [HarmonyPatch(typeof(RunState), nameof(RunState.CreateForNewRun))]
 public static class ForcedSeedPatch
 {
-    internal const string ForcedSeed = "MU6Y3HQB9P";
+    internal const string ForcedSeed = "C59SQWSQP6";
     internal const bool Enabled = false;
 
     [HarmonyPrefix]

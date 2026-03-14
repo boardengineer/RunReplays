@@ -104,21 +104,24 @@ public static class StartRunActOverride
         // Log original acts
         var origIds = new System.Collections.Generic.List<string>();
         foreach (var a in acts) origIds.Add(a.Id.ToString());
-        var origMsg = $"[EncounterTracker] NGame.StartNewSingleplayerRun original — seed='{seed}', acts=[{string.Join(", ", origIds)}]";
+        string mode = ReplayEngine.IsActive ? "REPLAY" : "RECORD";
+        var origMsg = $"[EncounterTracker] NGame.StartNewSingleplayerRun [{mode}] original — seed='{seed}', acts=[{string.Join(", ", origIds)}]";
         PlayerActionBuffer.LogToDevConsole(origMsg);
         RngLog.Write(origMsg);
 
-        if (!ForcedSeedPatch.Enabled) return;
+        // Use the active replay/save seed if available, otherwise the forced seed.
+        string? activeSeed = ReplayEngine.ActiveSeed;
+        if (activeSeed == null && !ForcedSeedPatch.Enabled) return;
 
-        // Override seed
-        seed = ForcedSeedPatch.ForcedSeed;
+        string useSeed = activeSeed ?? ForcedSeedPatch.ForcedSeed;
+        seed = useSeed;
 
         // Override acts with deterministic list
         var newActs = new System.Collections.Generic.List<ActModel>(
-            ActModel.GetRandomList(ForcedSeedPatch.ForcedSeed, UnlockState.all, false));
+            ActModel.GetRandomList(useSeed, UnlockState.all, false));
         acts = newActs;
 
-        var msg = $"[EncounterTracker] NGame.StartNewSingleplayerRun overridden — seed='{seed}', acts=[{string.Join(", ", newActs.ConvertAll(a => a.Id.ToString()))}]";
+        var msg = $"[EncounterTracker] NGame.StartNewSingleplayerRun [{mode}] overridden — seed='{seed}', acts=[{string.Join(", ", newActs.ConvertAll(a => a.Id.ToString()))}]";
         PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
     }
@@ -134,9 +137,10 @@ public static class CreateForNewRunTracker
     public static void Postfix(RunState __result)
     {
         RngLog.Reset();
+        string mode = ReplayEngine.IsActive ? "REPLAY" : "RECORD";
         UpFrontRngTracker.TrackedRng = __result.Rng.UpFront;
         UpFrontRngTracker.Active = true;
-        var msg = $"[RngTracker] CreateForNewRun done — UpFront seed={__result.Rng.UpFront.Seed}, counter={__result.Rng.UpFront.Counter}";
+        var msg = $"[RngTracker] CreateForNewRun done [{mode}] — UpFront seed={__result.Rng.UpFront.Seed}, counter={__result.Rng.UpFront.Counter}";
         PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
     }
@@ -152,7 +156,8 @@ public static class GenerateRoomsTracker
     [HarmonyPrefix]
     public static void Prefix(ActModel __instance, Rng rng, UnlockState unlockState, bool isMultiplayer)
     {
-        var msg = $"[EncounterTracker] GenerateRooms called — RNG seed={rng.Seed}, counter={rng.Counter}, multiplayer={isMultiplayer}";
+        string mode = ReplayEngine.IsActive ? "REPLAY" : "RECORD";
+        var msg = $"[EncounterTracker] GenerateRooms called [{mode}] — RNG seed={rng.Seed}, counter={rng.Counter}, multiplayer={isMultiplayer}";
         PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
 
@@ -197,8 +202,9 @@ public static class PullNextEncounterTracker
     [HarmonyPostfix]
     public static void Postfix(ActModel __instance, RoomType roomType, EncounterModel __result)
     {
+        string mode = ReplayEngine.IsActive ? "REPLAY" : "RECORD";
         string id = __result?.Id.ToString() ?? "(null)";
-        var msg = $"[EncounterTracker] PullNextEncounter({roomType}) => '{id}'";
+        var msg = $"[EncounterTracker] PullNextEncounter [{mode}] ({roomType}) => '{id}'";
         PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
     }
@@ -225,7 +231,8 @@ public static class RollRoomTypeTracker
     [HarmonyPostfix]
     public static void Postfix(MegaCrit.Sts2.Core.Map.MapPointType pointType, RoomType __result)
     {
-        var msg = $"[EncounterTracker] RollRoomTypeFor({pointType}) => {__result}";
+        string mode = ReplayEngine.IsActive ? "REPLAY" : "RECORD";
+        var msg = $"[EncounterTracker] RollRoomTypeFor [{mode}] ({pointType}) => {__result}";
         PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
     }

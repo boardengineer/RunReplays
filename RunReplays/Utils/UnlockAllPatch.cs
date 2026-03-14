@@ -29,7 +29,11 @@ public static class GetRandomListUnlockPatch
     [HarmonyPrefix]
     public static void Prefix(ref string seed, ref UnlockState unlockState)
     {
-        if (ForcedSeedPatch.Enabled)
+        // Prefer the seed from the replay/save being loaded via the menu.
+        // Fall back to the hardcoded forced seed if no active seed is set.
+        if (ReplayEngine.ActiveSeed != null)
+            seed = ReplayEngine.ActiveSeed;
+        else if (ForcedSeedPatch.Enabled)
             seed = ForcedSeedPatch.ForcedSeed;
         unlockState = UnlockState.all;
     }

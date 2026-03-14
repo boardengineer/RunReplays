@@ -375,6 +375,7 @@ public static class RunReplayMenu
 
     private static void LoadSave(ReplayEntry entry)
     {
+        ReplayEngine.ActiveSeed = entry.Seed;
         TaskHelper.RunSafely(LoadSaveAsync(entry));
     }
 
@@ -430,6 +431,7 @@ public static class RunReplayMenu
         string[] lines   = File.ReadAllLines(entry.MinimalLogPath);
         var      commands = lines.Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith('#')).ToList();
         ReplayRunner.Load(commands);
+        ReplayEngine.ActiveSeed = entry.Seed;
 
         // Resolve the character model by matching the stored entry string against
         // all registered characters. Fall back to the first available character
@@ -488,6 +490,7 @@ public static class RunReplayMenu
 
         var remainingCommands = allCommands.Skip(skipCount).ToList();
         ReplayRunner.Load(remainingCommands);
+        ReplayEngine.ActiveSeed = target.Seed;
 
         GD.Print($"[RunReplays] Starting replay from floor {startFrom.Floor}: " +
                  $"skipping {skipCount} commands, replaying {remainingCommands.Count} remaining");

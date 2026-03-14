@@ -97,6 +97,14 @@ public static class ReplayEngine
     /// </summary>
     public static bool IsActive => _pending.Count > 0 || _replayActive;
 
+    /// <summary>
+    /// The seed of the run being replayed or loaded from a save.
+    /// Set by RunReplayMenu before starting the run.  Used by
+    /// GetRandomListUnlockPatch to override the seed deterministically.
+    /// Null when not using the replay menu (falls back to ForcedSeedPatch).
+    /// </summary>
+    public static string? ActiveSeed { get; set; }
+
     /// <summary>State suffix separator embedded in minimal log entries.</summary>
     private const string StateSeparator = " || ";
 
