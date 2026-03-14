@@ -1,0 +1,153 @@
+Combat Signals & Events Reference
+==================================
+Extracted from sts2.dll — MegaCrit.Sts2.Core.Nodes.Combat and MegaCrit.Sts2.Core.Combat namespaces
+
+================================================================================
+GODOT SIGNALS (via SignalName nested class)
+================================================================================
+
+NCardPlay (base: Godot.Node)
+  Signal: Finished
+  Emitter: EmitSignalFinished(bool success)
+  Key methods: TryPlayCard(Creature target), CancelPlayCard(), Start()
+
+NControllerCardPlay (base: NCardPlay)
+  Signals: Confirmed, Canceled
+  Emitters: EmitSignalConfirmed(), EmitSignalCanceled()
+  Key methods: SingleCreatureTargeting(TargetType), MultiCreatureTargeting()
+
+NPeekButton (base: NButton)
+  Signal: Toggled
+  Emitter: EmitSignalToggled(NPeekButton peekButton)
+  Key methods: SetPeeking(bool), Wiggle(), AddTargets(Control[])
+
+NPlayerHand (base: Godot.Control)
+  Signal: ModeChanged
+  Emitter: EmitSignalModeChanged()
+  Key methods: SelectCards(prefs, filter, source, mode), StartCardPlay(holder, startedViaShortcut),
+               CanPlayCards(), AreCardActionsAllowed(), CheckIfSelectionComplete(),
+               CancelAllCardPlay(), ForceRefreshCardIndices(), RefreshLayout()
+
+NTargetManager (base: Godot.Node2D)
+  Signals: CreatureHovered, CreatureUnhovered, NodeHovered, NodeUnhovered, TargetingBegan, TargetingEnded
+  Emitters: EmitSignalCreatureHovered(NCreature), EmitSignalCreatureUnhovered(NCreature),
+            EmitSignalNodeHovered(Node), EmitSignalNodeUnhovered(Node),
+            EmitSignalTargetingBegan(), EmitSignalTargetingEnded()
+  Key methods: StartTargeting(TargetType, Vector2/Control, TargetMode, exitEarlyCondition, nodeFilter),
+               CancelTargeting(), FinishTargeting(bool cancel), SelectionFinished()
+
+================================================================================
+C# EVENTS (System.Action delegates)
+================================================================================
+
+CombatManager
+  Events:
+    CombatSetUp(CombatState)
+    CombatEnded(CombatRoom)
+    CombatWon(CombatRoom)
+    CreaturesChanged(CombatState)
+    TurnStarted(CombatState)
+    TurnEnded(CombatState)
+    PlayerEndedTurn(Player, bool canBackOut)
+    PlayerUnendedTurn(Player)
+    AboutToSwitchToEnemyTurn(CombatState)
+    PlayerActionsDisabledChanged(CombatState)
+  Key methods:
+    DebugOnlyGetState(), SetUpCombat(CombatState), StartCombatInternal(),
+    StartTurn(actionDuringEnemyTurn), SetReadyToEndTurn(player, canBackOut, action),
+    UndoReadyToEndTurn(player), IsPlayerReadyToEndTurn(player),
+    AllPlayersReadyToEndTurn(), LoseCombat(), Pause(), Unpause()
+  Key fields:
+    bool IsInProgress, int baseHandDrawCount
+
+CombatState
+  Events:
+    CreaturesChanged(CombatState)
+  Key fields:
+    List<Creature> _allies, List<Creature> _enemies,
+    EncounterModel _encounter, List<CardModel> _allCards,
+    int RoundNumber
+
+NCombatUi (base: Godot.Control)
+  Events:
+    DebugToggleIntent (System.Action)
+    DebugToggleHpBar (System.Action)
+  Key methods:
+    Activate(CombatState), Deactivate(), OnCombatWon(CombatRoom),
+    ShowRewards(CombatRoom), Enable(), Disable(),
+    AnimIn(), AnimOut(CombatRoom)
+
+================================================================================
+OTHER COMBAT UI NODES (no custom signals, but notable methods/events)
+================================================================================
+
+NEndTurnButton (base: NButton)
+  Key methods:
+    Initialize(CombatState), OnTurnStarted(CombatState),
+    AfterPlayerEndedTurn(Player, canBackOut), AfterPlayerUnendedTurn(Player),
+    OnAboutToSwitchToEnemyTurn(CombatState), HasPlayableCard(),
+    RefreshEnabled(), OnRelease(), SetState(State)
+  Internal enum: State
+
+NCardPlayQueue (base: Godot.Control)
+  Key methods:
+    OnLocalCardPlayed(PlayCardAction, NCardHolder, CardModel),
+    OnActionEnqueued(GameAction),
+    RemoveCardFromQueueForCancellation(PlayCardAction/NCard/int),
+    UpdateCardBeforeExecution(PlayCardAction),
+    RemoveCardFromQueueForExecution(CardModel)
+
+NCreature (base: Godot.Control)
+  Key methods:
+    Create(Creature), UpdateIntent(targets), PerformIntent(),
+    RevealIntents(), RefreshIntents(),
+    AnimDie(shouldRemove, cancelToken), StartDeathAnim(shouldRemove),
+    StartReviveAnim(), AnimShake(), ScaleTo(size, duration),
+    SetAnimationTrigger(trigger), GetCurrentAnimationLength()
+
+NMouseCardPlay (base: NCardPlay)
+  Key methods:
+    Create(NHandCardHolder, cancelShortcut, wasStartedWithShortcut),
+    StartCardDrag(), TargetSelection(TargetMode),
+    SingleCreatureTargeting(TargetMode, TargetType),
+    MultiCreatureTargeting(TargetMode),
+    IsCardInPlayZone(), IsCardInCancelZone()
+
+NEnergyCounter (base: Godot.Control)
+  Key methods:
+    Create(Player), OnEnergyChanged(oldEnergy, newEnergy),
+    RefreshLabel(), AnimIn(), AnimOut()
+
+NHealthBar (base: Godot.Control)
+  Key methods:
+    SetCreature(Creature), RefreshValues(),
+    AnimateInBlock(oldBlock, blockGain), RefreshBlockUi()
+
+NCombatPilesContainer (base: Godot.Control)
+  Key methods:
+    Initialize(Player), AnimIn(), AnimOut(), Enable(), Disable()
+
+NCombatStartBanner (base: Godot.Control)
+  Key methods: Create(), AnimateVfx()
+
+NEnemyTurnBanner (base: Godot.Control)
+  Key methods: Create(roundNumber), Display()
+
+NPlayerTurnBanner (base: Godot.Control)
+  Key methods: Create(roundNumber), Display()
+
+NStarCounter (base: Godot.Control)
+  Key methods:
+    Initialize(Player), OnStarsChanged(oldStars, newStars),
+    RefreshVisibility()
+
+NPower (base: Godot.Control)
+  Key methods:
+    Create(PowerModel), Reload(), RefreshAmount(),
+    FlashPower(), OnPowerRemoved()
+
+NTargetingArrow (base: Godot.Node2D)
+  Key methods:
+    StartDrawingFrom(Vector2/Control, usingController),
+    StopDrawing(), UpdateDrawingTo(Vector2),
+    SetHighlightingOn(isEnemy), SetHighlightingOff()

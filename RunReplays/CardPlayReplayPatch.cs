@@ -40,6 +40,7 @@ namespace RunReplays;
 public static class CardPlayReplayPatch
 {
     private static Action<CombatState>? _turnStartedHandler;
+    private static Action<CombatState>? _turnEndedHandler;
     private static CombatState?         _currentCombatState;
     private static int                  _retryCount;
 
@@ -53,13 +54,38 @@ public static class CardPlayReplayPatch
 
 
     /// <summary>
-    /// Set by TryEndTurn after calling PlayerCmd.EndTurn.  While true, ALL
-    /// command dispatch is blocked — no new cards, potions, or end-turns
-    /// will be issued.  Cleared when AfterActionExecuted sees the
-    /// EndPlayerTurnAction complete (or ReadyToBeginEnemyTurnAction),
-    /// confirming the game has fully processed the end-turn.
+    /// True between TryManualPlay succeeding and AfterActionExecuted firing
+    /// for PlayCardAction.  Blocks all dispatch entry points so no new
+    /// commands are issued while the game is resolving a card play.
+    /// </summary>
+    private static bool _cardPlayInFlight;
+
+    /// <summary>
+    /// True after TryEndTurn issues PlayerCmd.EndTurn.  Blocks all dispatch
+    /// until both TurnEnded and TurnStarted have fired (in any order).
     /// </summary>
     private static bool _awaitingEndTurnCompletion;
+
+    /// <summary>Exposes _awaitingEndTurnCompletion for the overlay UI.</summary>
+    internal static bool IsAwaitingEndTurnCompletion => _awaitingEndTurnCompletion;
+
+    /// <summary>
+    /// Whether TurnEnded has fired since the last TryEndTurn.
+    /// Part of the two-signal gate for EndTurn completion.
+    /// </summary>
+    private static bool _postEndTurn_turnEndedReceived;
+
+    /// <summary>
+    /// Whether TurnStarted has fired since the last TryEndTurn.
+    /// Part of the two-signal gate for EndTurn completion.
+    /// </summary>
+    private static bool _postEndTurn_turnStartedReceived;
+
+    /// <summary>
+    /// The CombatState from TurnStarted, saved so that when TurnEnded fires
+    /// second we can still dispatch with the correct state.
+    /// </summary>
+    private static CombatState? _postEndTurn_savedTurnStartState;
 
     /// <summary>
     /// Set to true by OnTurnStarted, cleared by TryEndTurn after issuing
@@ -77,9 +103,13 @@ public static class CardPlayReplayPatch
         // Unsubscribe any handler from the previous run before subscribing again.
         if (_turnStartedHandler != null)
             CombatManager.Instance.TurnStarted -= _turnStartedHandler;
+        if (_turnEndedHandler != null)
+            CombatManager.Instance.TurnEnded -= _turnEndedHandler;
 
         _turnStartedHandler = OnTurnStarted;
+        _turnEndedHandler = OnTurnEnded;
         CombatManager.Instance.TurnStarted += _turnStartedHandler;
+        CombatManager.Instance.TurnEnded += _turnEndedHandler;
 
         __instance.AfterActionExecuted += OnAfterActionExecuted;
 
@@ -89,6 +119,7 @@ public static class CardPlayReplayPatch
         // Reset all dispatch state so stale flags from a previous battle
         // or non-combat context don't block OnTurnStarted.
         _dispatching = false;
+        _cardPlayInFlight = false;
         _waitingForEffects = false;
         _actionFiredThisFrame = false;
         _quietFrameCount = 0;
@@ -98,6 +129,9 @@ public static class CardPlayReplayPatch
         _retryCount = 0;
         _turnStartRetries = 0;
         _turnStartedSinceLastEndTurn = true;
+        _postEndTurn_turnEndedReceived = false;
+        _postEndTurn_turnStartedReceived = false;
+        _postEndTurn_savedTurnStartState = null;
 
         SelectorStackDebug.Log("\n=== Battle Start (ActionExecutor ctor) ===");
         LogCardSelectState("ActionExecutor ctor (battle start)");
@@ -232,6 +266,10 @@ public static class CardPlayReplayPatch
     private static void OnTurnStarted(CombatState combatState)
     {
         RngCheckpointLogger.Log($"TurnStarted (round {combatState.RoundNumber})");
+        PlayerActionBuffer.LogToDevConsole(
+            $"[RunReplays] >>> TurnStarted round={combatState.RoundNumber}" +
+            $" awaitingEndTurn={_awaitingEndTurnCompletion} dispatching={_dispatching}" +
+            $" turnStartedSinceEndTurn={_turnStartedSinceLastEndTurn}");
 
         if (!ReplayEngine.IsActive)
             return;
@@ -248,32 +286,19 @@ public static class CardPlayReplayPatch
         _retryCount = 0;
         _turnStartedSinceLastEndTurn = true;
 
-        // If we were awaiting end-turn completion, this TurnStarted means
-        // the game has moved on.  Clear all stale state so we can dispatch.
+        // If we're waiting for EndTurn completion, record that TurnStarted
+        // has arrived and check if both signals have now fired.
         if (_awaitingEndTurnCompletion)
         {
-            _awaitingEndTurnCompletion = false;
-            _waitingForEffects = false;
-            _dispatching = false;
-            _endTurnRetryCount = 0;
-            _endTurnConsumed = false;
-
-            // Give the game time to fully initialize the new turn (player
-            // entity, hand, energy) before dispatching the next command.
-            _turnStartRetries = 0;
-            int gen = _battleGeneration;
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] TurnStarted: post-EndTurn — delaying 0.5s before dispatch.");
-            NGame.Instance!.GetTree()!.CreateTimer(0.5).Connect(
-                "timeout", Callable.From(() =>
-                {
-                    if (_battleGeneration != gen) return;
-                    // A duplicate TurnStarted may have already started dispatching.
-                    if (_dispatching || _waitingForEffects) return;
-                    ScheduleNextFromQueue("TurnStarted (post-EndTurn)");
-                }));
+            _postEndTurn_turnStartedReceived = true;
+            _postEndTurn_savedTurnStartState = combatState;
+            PlayerActionBuffer.LogToDevConsole(
+                "[RunReplays] TurnStarted: recorded for EndTurn gate (waiting for TurnEnded too).");
+            TryCompleteEndTurnGate();
             return;
         }
-        else if (_waitingForEffects || _dispatching)
+
+        if (_waitingForEffects || _dispatching)
         {
             PlayerActionBuffer.LogToDevConsole("[RunReplays] TurnStarted: dispatch chain already active, skipping.");
             return;
@@ -281,6 +306,66 @@ public static class CardPlayReplayPatch
 
         _turnStartRetries = 0;
         ScheduleNextFromQueue("TurnStarted");
+    }
+
+    private static void OnTurnEnded(CombatState combatState)
+    {
+        PlayerActionBuffer.LogToDevConsole(
+            $"[RunReplays] >>> TurnEnded round={combatState.RoundNumber}" +
+            $" awaitingEndTurn={_awaitingEndTurnCompletion}");
+
+        if (!ReplayEngine.IsActive)
+            return;
+
+        SelectorStackDebug.Log(
+            $"OnTurnEnded: round={combatState.RoundNumber}" +
+            $" awaitingEndTurn={_awaitingEndTurnCompletion}");
+
+        if (!_awaitingEndTurnCompletion)
+            return;
+
+        _postEndTurn_turnEndedReceived = true;
+        PlayerActionBuffer.LogToDevConsole(
+            "[RunReplays] TurnEnded: recorded for EndTurn gate (waiting for TurnStarted too).");
+        TryCompleteEndTurnGate();
+    }
+
+    /// <summary>
+    /// Called by both OnTurnEnded and OnTurnStarted.  When both signals have
+    /// fired (in any order) after TryEndTurn, clears all end-turn state and
+    /// dispatches the next turn's commands with a 0.5s delay.
+    /// </summary>
+    private static void TryCompleteEndTurnGate()
+    {
+        if (!_postEndTurn_turnEndedReceived || !_postEndTurn_turnStartedReceived)
+            return;
+
+        SelectorStackDebug.Log("TryCompleteEndTurnGate: both signals received — dispatching.");
+        PlayerActionBuffer.LogToDevConsole("[RunReplays] EndTurn gate complete (TurnEnded + TurnStarted) — dispatching.");
+
+        // Clear all end-turn state.
+        _awaitingEndTurnCompletion = false;
+        _dispatching = false;
+        _waitingForEffects = false;
+        _endTurnConsumed = false;
+        _endTurnRetryCount = 0;
+        _postEndTurn_turnEndedReceived = false;
+        _postEndTurn_turnStartedReceived = false;
+
+        if (_postEndTurn_savedTurnStartState != null)
+            _currentCombatState = _postEndTurn_savedTurnStartState;
+        _postEndTurn_savedTurnStartState = null;
+
+        // Delay before dispatching so the hand is drawn.
+        _turnStartRetries = 0;
+        int gen = _battleGeneration;
+        NGame.Instance!.GetTree()!.CreateTimer(0.5).Connect(
+            "timeout", Callable.From(() =>
+            {
+                if (_battleGeneration != gen) return;
+                if (_dispatching || _waitingForEffects) return;
+                ScheduleNextFromQueue("EndTurnGate (post-EndTurn)");
+            }));
     }
 
     private static int _turnStartRetries;
@@ -293,6 +378,12 @@ public static class CardPlayReplayPatch
             $"ScheduleNextFromQueue({caller}): nextCmd='{snqNext ?? "(none)"}'" +
             $" dispatching={_dispatching} awaitingEndTurn={_awaitingEndTurnCompletion}" +
             $" turnStartedSinceEndTurn={_turnStartedSinceLastEndTurn}");
+
+        if (_cardPlayInFlight)
+        {
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] {caller}: blocked — card play in flight.");
+            return;
+        }
 
         if (_awaitingEndTurnCompletion)
         {
@@ -402,7 +493,9 @@ public static class CardPlayReplayPatch
 
         if (action is PlayCardAction playCard)
         {
+            _cardPlayInFlight = false;
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: PlayCardAction completed ({playCard}).");
+            RunOverlay.NotifyCardPlayFinished();
             WaitForEffectsThenDispatch();
         }
         else if (action is DiscardPotionGameAction discardPotion)
@@ -468,6 +561,12 @@ public static class CardPlayReplayPatch
             $"DispatchNextCombatAction: nextCmd='{dncNext ?? "(none)"}'" +
             $" awaitingEndTurn={_awaitingEndTurnCompletion}" +
             $" turnStartedSinceEndTurn={_turnStartedSinceLastEndTurn}");
+
+        if (_cardPlayInFlight)
+        {
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] DispatchNextCombatAction: blocked — card play in flight.");
+            return;
+        }
 
         if (_awaitingEndTurnCompletion)
         {
@@ -591,7 +690,9 @@ public static class CardPlayReplayPatch
 
         // Success: consume the command and log it.
         _retryCount = 0;
+        _cardPlayInFlight = true;
         ReplayRunner.ExecuteCardPlay(out _, out _);
+        RunOverlay.NotifyCardPlayStarted();
         ReplayEngine.PeekNext(out string? afterPlay);
         SelectorStackDebug.Log($"TryPlayNextCard: SUCCESS played '{card}' index={combatCardIndex}, next='{afterPlay ?? "(none)"}'");
     }
@@ -673,6 +774,7 @@ public static class CardPlayReplayPatch
     private static int  _endTurnRetryCount;
     private static bool _endTurnConsumed;
 
+
     private static void TryEndTurn()
     {
         if (_waitingForEffects)
@@ -748,9 +850,12 @@ public static class CardPlayReplayPatch
         // Player was already verified in the readiness check above.
         Player player = ResolveLocalPlayer()!;
 
-        // Block all further dispatch until the next TurnStarted.
+        // Block all further dispatch until both TurnEnded and TurnStarted fire.
         _awaitingEndTurnCompletion = true;
         _turnStartedSinceLastEndTurn = false;
+        _postEndTurn_turnEndedReceived = false;
+        _postEndTurn_turnStartedReceived = false;
+        _postEndTurn_savedTurnStartState = null;
 
         ReplayEngine.PeekNext(out string? endTurnNext);
         SelectorStackDebug.Log(
@@ -758,42 +863,5 @@ public static class CardPlayReplayPatch
             $" retry={_endTurnRetryCount} next='{endTurnNext ?? "(none)"}')");
         PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryEndTurn: calling PlayerCmd.EndTurn for player '{player}'.");
         PlayerCmd.EndTurn(player, canBackOut: false);
-
-        // Safety net: if TurnStarted doesn't fire within a timeout, retry.
-        // Use 3s to give the game enough time to process the enemy turn and
-        // fire TurnStarted (observed to take ~1.1s in some battles).
-        const int maxRetries = 10;
-        _endTurnRetryCount++;
-        if (_endTurnRetryCount <= maxRetries)
-        {
-            int gen = _battleGeneration;
-            NGame.Instance!.GetTree()!.CreateTimer(3.0).Connect(
-                "timeout", Callable.From(() => { if (_battleGeneration == gen) RetryEndTurnIfStuck(); }));
-        }
-    }
-
-    private static void RetryEndTurnIfStuck()
-    {
-        ReplayEngine.PeekNext(out string? retryNext);
-        SelectorStackDebug.Log(
-            $"RetryEndTurnIfStuck: awaitingEndTurn={_awaitingEndTurnCompletion}" +
-            $" endTurnConsumed={_endTurnConsumed} dispatching={_dispatching}" +
-            $" turnStartedSinceEndTurn={_turnStartedSinceLastEndTurn}" +
-            $" nextCmd='{retryNext ?? "(none)"}'");
-
-        // If the flag was already cleared by TurnStarted, the end turn
-        // succeeded — nothing to do.
-        if (!_awaitingEndTurnCompletion)
-        {
-            _endTurnRetryCount = 0;
-            _endTurnConsumed = false;
-            return;
-        }
-
-        PlayerActionBuffer.LogToDevConsole(
-            $"[RunReplays] RetryEndTurnIfStuck: TurnStarted hasn't fired — retrying EndTurn (attempt {_endTurnRetryCount}).");
-        SelectorStackDebug.Log($"RetryEndTurnIfStuck: retrying EndTurn (attempt {_endTurnRetryCount})");
-        _awaitingEndTurnCompletion = false;
-        TryEndTurn();
     }
 }

@@ -46,6 +46,14 @@ internal static class RunOverlay
     // Rolling buffer of the last LineCount recorded entries (recording mode).
     private static readonly Queue<string> _recentEntries = new();
 
+    /// <summary>
+    /// True while a card play command has been consumed but the PlayCardAction
+    /// hasn't completed yet.  Set by NotifyCardPlayStarted, cleared by
+    /// NotifyCardPlayFinished.  Used to show the last consumed command as
+    /// yellow (in progress) instead of green (completed).
+    /// </summary>
+    private static bool _cardPlayInProgress;
+
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     /// <summary>
@@ -139,6 +147,24 @@ internal static class RunOverlay
         RefreshDisplay();
     }
 
+    // ── Card play progress tracking ─────────────────────────────────────────
+
+    /// <summary>Called when a card play command is consumed from the queue.</summary>
+    internal static void NotifyCardPlayStarted()
+    {
+        _cardPlayInProgress = true;
+        if (_canvas != null && GodotObject.IsInstanceValid(_canvas))
+            Callable.From(RefreshDisplay).CallDeferred();
+    }
+
+    /// <summary>Called when AfterActionExecuted fires for PlayCardAction.</summary>
+    internal static void NotifyCardPlayFinished()
+    {
+        _cardPlayInProgress = false;
+        if (_canvas != null && GodotObject.IsInstanceValid(_canvas))
+            Callable.From(RefreshDisplay).CallDeferred();
+    }
+
     // ── Event handlers ────────────────────────────────────────────────────────
 
     private static void OnEntryRecorded(string text)
@@ -217,15 +243,44 @@ internal static class RunOverlay
         slots[3] = next.Count >= 1 ? next[0] : null;
         slots[4] = next.Count >= 2 ? next[1] : null;
 
+        // Detect in-flight commands: the last consumed command may still be
+        // executing (EndTurn awaiting TurnStarted, or card play awaiting
+        // PlayCardAction completion).  Show it as yellow, and demote the
+        // queue front to pending since the replay is blocked until it finishes.
+        bool lastConsumedInProgress = false;
+        if (prev.Count > 0)
+        {
+            if (CardPlayReplayPatch.IsAwaitingEndTurnCompletion
+                && prev[^1].StartsWith("EndPlayerTurnAction "))
+                lastConsumedInProgress = true;
+            else if (_cardPlayInProgress
+                && prev[^1].StartsWith("PlayCardAction "))
+                lastConsumedInProgress = true;
+        }
+
         for (int i = 0; i < LineCount; i++)
         {
             var lbl = _lineLabels[i];
             if (lbl == null) continue;
 
             lbl.Text = slots[i] != null ? Truncate(slots[i]!) : string.Empty;
-            lbl.Modulate = i < 2  ? CompletedColor    // completed (consumed)
-                         : i == 2 ? InProgressColor    // current (in progress)
-                         :          PendingColor;       // pending (upcoming)
+
+            if (i < 2)
+            {
+                // Last consumed slot that is still executing → yellow.
+                bool isInFlight = lastConsumedInProgress
+                    && slots[i] != null
+                    && slots[i] == prev[^1];
+                lbl.Modulate = isInFlight ? InProgressColor : CompletedColor;
+            }
+            else if (i == 2)
+            {
+                // If the last consumed command is still in flight, the queue
+                // front is blocked — show as pending instead of in-progress.
+                lbl.Modulate = lastConsumedInProgress ? PendingColor : InProgressColor;
+            }
+            else
+                lbl.Modulate = PendingColor;
         }
     }
 
