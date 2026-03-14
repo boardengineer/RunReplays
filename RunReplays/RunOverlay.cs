@@ -197,6 +197,11 @@ internal static class RunOverlay
         }
     }
 
+    // Colors for replay overlay status.
+    private static readonly Color CompletedColor  = new(0.4f, 1f, 0.4f, 0.7f);   // green
+    private static readonly Color InProgressColor = new(1f, 1f, 0.3f, 1f);        // yellow
+    private static readonly Color PendingColor    = new(1f, 1f, 1f, 0.45f);       // dimmed white
+
     private static void RefreshReplay()
     {
         if (_titleLabel != null)
@@ -217,10 +222,10 @@ internal static class RunOverlay
             var lbl = _lineLabels[i];
             if (lbl == null) continue;
 
-            lbl.Text     = slots[i] != null ? Truncate(slots[i]!) : string.Empty;
-            lbl.Modulate = i == 2  // current command
-                ? Colors.White
-                : new Color(1f, 1f, 1f, 0.45f);
+            lbl.Text = slots[i] != null ? Truncate(slots[i]!) : string.Empty;
+            lbl.Modulate = i < 2  ? CompletedColor    // completed (consumed)
+                         : i == 2 ? InProgressColor    // current (in progress)
+                         :          PendingColor;       // pending (upcoming)
         }
     }
 
