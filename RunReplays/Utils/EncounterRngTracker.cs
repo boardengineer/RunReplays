@@ -24,7 +24,6 @@ public static class UpFrontRngTracker
         if (!Active || TrackedRng == null) return;
         var stackTrace = new System.Diagnostics.StackTrace(2, true);
         var msg = $"[RngTracker] UpFront.{method} (counter={TrackedRng.Counter})\n{stackTrace}";
-        PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
     }
 }
@@ -84,7 +83,6 @@ public static class GetRandomListTracker
         RngLog.EnsureInitialized();
         bool isAll = ReferenceEquals(unlockState, UnlockState.all);
         var msg = $"[EncounterTracker] GetRandomList called — seed='{seed}', isMultiplayer={isMultiplayer}, unlockState.isAll={isAll}, epochCount={unlockState.EpochUnlockCount()}";
-        PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
     }
 }
@@ -106,7 +104,6 @@ public static class StartRunActOverride
         foreach (var a in acts) origIds.Add(a.Id.ToString());
         string mode = ReplayEngine.IsActive ? "REPLAY" : "RECORD";
         var origMsg = $"[EncounterTracker] NGame.StartNewSingleplayerRun [{mode}] original — seed='{seed}', acts=[{string.Join(", ", origIds)}]";
-        PlayerActionBuffer.LogToDevConsole(origMsg);
         RngLog.Write(origMsg);
 
         // Use the active replay/save seed if available, otherwise the forced seed.
@@ -122,7 +119,6 @@ public static class StartRunActOverride
         acts = newActs;
 
         var msg = $"[EncounterTracker] NGame.StartNewSingleplayerRun [{mode}] overridden — seed='{seed}', acts=[{string.Join(", ", newActs.ConvertAll(a => a.Id.ToString()))}]";
-        PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
     }
 }
@@ -141,7 +137,6 @@ public static class CreateForNewRunTracker
         UpFrontRngTracker.TrackedRng = __result.Rng.UpFront;
         UpFrontRngTracker.Active = true;
         var msg = $"[RngTracker] CreateForNewRun done [{mode}] — UpFront seed={__result.Rng.UpFront.Seed}, counter={__result.Rng.UpFront.Counter}";
-        PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
     }
 }
@@ -158,7 +153,6 @@ public static class GenerateRoomsTracker
     {
         string mode = ReplayEngine.IsActive ? "REPLAY" : "RECORD";
         var msg = $"[EncounterTracker] GenerateRooms called [{mode}] — RNG seed={rng.Seed}, counter={rng.Counter}, multiplayer={isMultiplayer}";
-        PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
 
         // Stop pre-GenerateRooms tracking to avoid noise from the generation itself
@@ -172,25 +166,21 @@ public static class GenerateRoomsTracker
         if (roomsField?.GetValue(__instance) is not RoomSet rooms)
         {
             var msg0 = "[EncounterTracker] GenerateRooms done — could not read _rooms";
-            PlayerActionBuffer.LogToDevConsole(msg0);
             RngLog.Write(msg0);
             return;
         }
 
         var summary = $"[EncounterTracker] GenerateRooms done — {rooms.normalEncounters.Count} normal, {rooms.eliteEncounters.Count} elite encounters";
-        PlayerActionBuffer.LogToDevConsole(summary);
         RngLog.Write(summary);
 
         for (int i = 0; i < rooms.normalEncounters.Count; i++)
         {
             var line = $"[EncounterTracker]   Normal[{i}]: {rooms.normalEncounters[i].Id}";
-            PlayerActionBuffer.LogToDevConsole(line);
             RngLog.Write(line);
         }
         for (int i = 0; i < rooms.eliteEncounters.Count; i++)
         {
             var line = $"[EncounterTracker]   Elite[{i}]: {rooms.eliteEncounters[i].Id}";
-            PlayerActionBuffer.LogToDevConsole(line);
             RngLog.Write(line);
         }
     }
@@ -205,7 +195,6 @@ public static class PullNextEncounterTracker
         string mode = ReplayEngine.IsActive ? "REPLAY" : "RECORD";
         string id = __result?.Id.ToString() ?? "(null)";
         var msg = $"[EncounterTracker] PullNextEncounter [{mode}] ({roomType}) => '{id}'";
-        PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
     }
 }
@@ -217,7 +206,6 @@ public static class DiscoveryOrderTracker
     public static void Prefix()
     {
         var msg = "[EncounterTracker] ApplyDiscoveryOrderModifications called";
-        PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
     }
 }
@@ -233,7 +221,6 @@ public static class RollRoomTypeTracker
     {
         string mode = ReplayEngine.IsActive ? "REPLAY" : "RECORD";
         var msg = $"[EncounterTracker] RollRoomTypeFor [{mode}] ({pointType}) => {__result}";
-        PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
     }
 }
@@ -249,7 +236,6 @@ public static class CreateMapTracker
     {
         var rng = runState.Rng.UpFront;
         var msg = $"[EncounterTracker] CreateMap called — UpFront counter={rng.Counter}";
-        PlayerActionBuffer.LogToDevConsole(msg);
         RngLog.Write(msg);
     }
 }
