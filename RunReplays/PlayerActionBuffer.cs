@@ -95,7 +95,6 @@ public static class PlayerActionBuffer
 
             if (!isActionWithNestedSelection)
             {
-                HandCardSelectRecordPatch.FlushIfPending();
                 CardChoiceScreenSyncPatch.FlushIfPending();
             }
 

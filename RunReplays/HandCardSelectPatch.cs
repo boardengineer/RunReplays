@@ -21,10 +21,7 @@ namespace RunReplays;
 /// where every finalised local choice is announced.
 ///
 /// Only CombatCard-type choices are captured (those created by CardSelectCmd.FromHand).
-///
-/// Recording is deferred: the command is buffered here and flushed by
-/// PlayerActionBuffer immediately after the parent UsePotionAction is written,
-/// so the replay log always reads: UsePotionAction → SelectHandCards.
+/// Commands are recorded immediately when the choice is made.
 /// </summary>
 [HarmonyPatch(typeof(PlayerChoiceSynchronizer), nameof(PlayerChoiceSynchronizer.SyncLocalChoice))]
 public static class HandCardSelectRecordPatch
@@ -34,16 +31,36 @@ public static class HandCardSelectRecordPatch
     /// <summary>
     /// Set by HandCardSelectForDiscardRecordPatch when it records a
     /// FromHandForDiscard selection.  Prevents SyncLocalChoice from
-    /// buffering a duplicate for the same selection.
+    /// recording a duplicate for the same selection.
     /// </summary>
     internal static bool SuppressNext;
 
-    /// <summary>Sets the pending command from an external recorder.</summary>
+    /// <summary>Sets the pending command from an external recorder (card-triggered discards).</summary>
     internal static void SetPending(string command) => _pending = command;
+
+    /// <summary>
+    /// Flushes the pending SelectHandCards command. Called by PlayerActionBuffer
+    /// after a PlayCardAction is recorded so the selection follows the card play.
+    /// </summary>
+    internal static void FlushIfPending()
+    {
+        if (_pending == null)
+            return;
+
+        string command = _pending;
+        _pending = null;
+        PlayerActionBuffer.LogToDevConsole($"[HandCardSelectRecordPatch] Flushing: {command}");
+        PlayerActionBuffer.Record(command);
+    }
 
     [HarmonyPostfix]
     public static void Postfix(Player player, uint choiceId, PlayerChoiceResult result)
     {
+        PlayerActionBuffer.LogToDevConsole(
+            $"[HandCardSelectRecordPatch] SyncLocalChoice fired — " +
+            $"isReplay={ReplayEngine.IsActive} choiceType={result.ChoiceType} " +
+            $"suppressNext={SuppressNext} choiceId={choiceId} player={player}");
+
         if (ReplayEngine.IsActive)
             return;
 
@@ -79,24 +96,11 @@ public static class HandCardSelectRecordPatch
         if (ids.Count == 0)
             return;
 
-        _pending = $"SelectHandCards {string.Join(" ", ids)}";
-        PlayerActionBuffer.LogToDevConsole($"[HandCardSelectRecordPatch] Buffered: {_pending}");
-    }
-
-    /// <summary>
-    /// Called by PlayerActionBuffer after a UsePotionAction is recorded.
-    /// Flushes the pending SelectHandCards command so it follows the potion in the log.
-    /// </summary>
-    internal static void FlushIfPending()
-    {
-        if (_pending == null)
-            return;
-
-        string command = _pending;
-        _pending = null;
-        PlayerActionBuffer.LogToDevConsole($"[HandCardSelectRecordPatch] Flushing: {command}");
+        string command = $"SelectHandCards {string.Join(" ", ids)}";
+        PlayerActionBuffer.LogToDevConsole($"[HandCardSelectRecordPatch] Recording: {command}");
         PlayerActionBuffer.Record(command);
     }
+
 }
 
 // ── Replay ────────────────────────────────────────────────────────────────────
@@ -169,10 +173,9 @@ public static class HandCardSelectForDiscardRecordPatch
         // RecordAsync's continuation runs.
         HandCardSelectRecordPatch.SuppressNext = true;
 
-        // Card-triggered discards (e.g. Survivor) should buffer so the
+        // Card-triggered discards (e.g. Survivor) must buffer so the
         // SelectHandCards appears after the PlayCardAction in the log.
-        // Power/turn-start discards (e.g. Tools of the Trade) should record
-        // immediately so they appear before the next card play.
+        // Power/turn-start discards (e.g. Tools of the Trade) record immediately.
         bool shouldBuffer = source is CardModel;
         MegaCrit.Sts2.Core.Helpers.TaskHelper.RunSafely(RecordAsync(__result, shouldBuffer));
     }
@@ -217,13 +220,11 @@ public static class HandCardSelectForDiscardRecordPatch
         string command = $"SelectHandCards {string.Join(" ", ids)}";
         if (shouldBuffer)
         {
-            // Card-triggered: buffer so it's flushed after the PlayCardAction.
             PlayerActionBuffer.LogToDevConsole($"[HandCardSelectForDiscardRecord] Buffered: {command}");
             HandCardSelectRecordPatch.SetPending(command);
         }
         else
         {
-            // Power/turn-start triggered: record immediately.
             PlayerActionBuffer.LogToDevConsole($"[HandCardSelectForDiscardRecord] Recording: {command}");
             PlayerActionBuffer.Record(command);
         }
