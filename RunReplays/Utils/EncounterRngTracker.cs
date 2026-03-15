@@ -111,6 +111,7 @@ public static class StartRunActOverride
         if (activeSeed == null && !ForcedSeedPatch.Enabled) return;
 
         string useSeed = activeSeed ?? ForcedSeedPatch.ForcedSeed;
+        ReplayEngine.ActiveSeed = null;
         seed = useSeed;
 
         // Override acts with deterministic list
