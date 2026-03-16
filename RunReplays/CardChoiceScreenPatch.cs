@@ -121,9 +121,10 @@ public static class FromChooseACardScreenPatch
             }
         }
 
-        CardChoiceScreenSyncPatch.Buffer($"SelectCardFromScreen {index}");
+        string command = $"SelectCardFromScreen {index}";
         PlayerActionBuffer.LogToDevConsole(
-            $"[CardChoiceScreenPatch] Buffered: SelectCardFromScreen {index}");
+            $"[CardChoiceScreenPatch] Recording: {command}");
+        PlayerActionBuffer.Record(command);
 
         return selected!;
     }

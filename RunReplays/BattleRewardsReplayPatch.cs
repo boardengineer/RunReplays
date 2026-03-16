@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Helpers;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
@@ -140,19 +142,54 @@ public static class BattleRewardsReplayPatch
             return;
         }
 
-        if (ReplayEngine.PeekCardReward(out _))
+        if (ReplayEngine.PeekCardReward(out string cardTitle))
         {
-            Node? cardButton = FindRewardButton(screen, "CardReward");
-            if (cardButton == null)
+            // Scan every reward button for anything that yields a card.
+            // Some rewards (e.g. SpecialCardReward from Thieving Hopper) add the
+            // card directly without opening a selection screen, while the normal
+            // CardReward opens NCardRewardSelectionScreen.  We handle the direct
+            // ones here and only fall through to the screen path when needed.
+            Node? screenButton = null;
+            foreach (var (button, reward) in EnumerateRewardButtons(screen))
             {
-                PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: could not find card reward button.");
+                if (IsRewardOfType(reward, "CardReward"))
+                {
+                    // Regular card reward — opens a selection screen.
+                    // Remember it as a fallback; prefer a direct match first.
+                    screenButton ??= button;
+                    continue;
+                }
+
+                // Any other reward that goes through SyncLocalObtainedCard
+                // (e.g. SpecialCardReward) adds the card immediately with no
+                // selection screen.  We can only verify title for rewards that
+                // expose the card, so accept any non-CardReward card-yielding
+                // button when the title matches or can't be checked.
+                string? rewardCardTitle = GetRewardCardTitle(reward);
+                if (rewardCardTitle != null && rewardCardTitle != cardTitle)
+                    continue;
+
+                ReplayRunner.ExecuteCardReward(out _);
+                InvokeGetReward(button);
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[RunReplays] Replay: auto-claimed direct card reward '{cardTitle}' ({reward.GetType().Name}).");
+
+                Callable.From(() => ProcessNextReward(screen)).CallDeferred();
                 return;
             }
 
-            // Do NOT consume the command here — CardRewardReplayPatch does that
-            // once NCardRewardSelectionScreen opens and the card is selected.
-            InvokeGetReward(cardButton);
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: triggered card reward button.");
+            if (screenButton != null)
+            {
+                // Do NOT consume the command here — CardRewardReplayPatch does
+                // that once NCardRewardSelectionScreen opens and the card is
+                // selected.
+                InvokeGetReward(screenButton);
+                PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: triggered card reward button.");
+                return;
+            }
+
+            PlayerActionBuffer.LogToDevConsole(
+                "[RunReplays] Replay: could not find any card reward button.");
             return;
         }
 
@@ -291,12 +328,15 @@ public static class BattleRewardsReplayPatch
             TaskHelper.RunSafely(task);
     }
 
-    private static Node? FindRewardButton(Node root, string rewardBaseTypeName)
+    /// <summary>
+    /// Yields every (button, reward) pair on the rewards screen.
+    /// </summary>
+    private static IEnumerable<(Node button, object reward)> EnumerateRewardButtons(Node root)
     {
         if (NRewardButtonType == null)
         {
             PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: NRewardButton type not resolved.");
-            return null;
+            yield break;
         }
 
         foreach (Node node in root.FindChildren("*", "", owned: false))
@@ -308,9 +348,36 @@ public static class BattleRewardsReplayPatch
                 .GetProperty("Reward", BindingFlags.Public | BindingFlags.Instance);
 
             object? reward = rewardProp?.GetValue(node);
-            if (IsRewardOfType(reward, rewardBaseTypeName))
-                return node;
+            if (reward != null)
+                yield return (node, reward);
         }
+    }
+
+    private static Node? FindRewardButton(Node root, string rewardBaseTypeName)
+    {
+        foreach (var (button, reward) in EnumerateRewardButtons(root))
+        {
+            if (IsRewardOfType(reward, rewardBaseTypeName))
+                return button;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Tries to extract a card title from a reward that carries a single card
+    /// (e.g. SpecialCardReward).  Returns null when the reward type doesn't
+    /// expose a card or reflection fails — callers treat null as "accept any".
+    /// </summary>
+    private static string? GetRewardCardTitle(object reward)
+    {
+        // Look for a private _card field (SpecialCardReward) or public Card property.
+        var field = reward.GetType().GetField("_card", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (field?.GetValue(reward) is CardModel card)
+            return card.Title;
+
+        var prop = reward.GetType().GetProperty("Card", BindingFlags.Public | BindingFlags.Instance);
+        if (prop?.GetValue(reward) is CardModel card2)
+            return card2.Title;
 
         return null;
     }

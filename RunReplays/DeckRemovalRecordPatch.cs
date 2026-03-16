@@ -4,6 +4,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 
 namespace RunReplays;
@@ -18,6 +19,26 @@ internal static class DeckRemovalState
     internal static bool PendingRemoval;
     /// <summary>The ordered card list shown to the player; captured from NCardGridSelectionScreen.</summary>
     internal static IReadOnlyList<CardModel>? PendingOptions;
+    /// <summary>Set by SwipePower.Steal to suppress recording of Thieving Hopper's card theft.</summary>
+    internal static bool SuppressRecording;
+}
+
+/// <summary>
+/// Suppresses RemoveFromDeck recording for Thieving Hopper's card theft.
+/// SwipePower.Steal calls CardPileCmd.RemoveFromDeck directly (not via
+/// FromDeckForRemoval), but a stale PendingRemoval flag would cause it to
+/// be recorded.  The theft is RNG-driven and replays deterministically, so
+/// no action-log entry is needed.
+/// </summary>
+[HarmonyPatch(typeof(SwipePower), nameof(SwipePower.Steal))]
+public static class SwipePowerStealRecordPatch
+{
+    [HarmonyPrefix]
+    public static void Prefix()
+    {
+        DeckRemovalState.SuppressRecording = true;
+        PlayerActionBuffer.LogToDevConsole("[DeckRemovalRecordPatch] SwipePower.Steal — suppressing RemoveFromDeck recording.");
+    }
 }
 
 /// <summary>
@@ -110,6 +131,13 @@ internal static class DeckRemovalRecordHelper
 {
     internal static void RecordCard(CardModel card)
     {
+        if (DeckRemovalState.SuppressRecording)
+        {
+            DeckRemovalState.SuppressRecording = false;
+            PlayerActionBuffer.LogToDevConsole($"[DeckRemovalRecordPatch] RemoveFromDeck — card='{card.Title}' (suppressed, not recording).");
+            return;
+        }
+
         if (!DeckRemovalState.PendingRemoval)
         {
             PlayerActionBuffer.LogToDevConsole($"[DeckRemovalRecordPatch] RemoveFromDeck — card='{card.Title}' (no pending removal, not recording).");
