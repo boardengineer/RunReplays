@@ -48,12 +48,6 @@ public static class PlayerActionBuffer
     /// </summary>
     private static string? _pendingPreState;
 
-    /// <summary>
-    /// True after a card play was recorded from EnqueueManualPlay.
-    /// Prevents AfterActionExecuted from re-recording the same action.
-    /// </summary>
-    private static bool _cardPlayRecordedEarly;
-
     [HarmonyPostfix]
     public static void Postfix(ActionExecutor __instance)
     {
@@ -61,7 +55,6 @@ public static class PlayerActionBuffer
         while (_verboseEntries.TryDequeue(out _)) { }
         while (_minimalEntries.TryDequeue(out _)) { }
         _pendingPreState = null;
-        _cardPlayRecordedEarly = false;
 
         RunOverlay.InitForRun();
 
@@ -95,11 +88,11 @@ public static class PlayerActionBuffer
                 return;
             }
 
-            // PlayCardAction recorded early from EnqueueManualPlay — skip
-            // re-recording but still update pre-state and flush selections.
-            if (action is PlayCardAction && _cardPlayRecordedEarly)
+            // PlayCardAction is recorded early from EnqueueManualPlay —
+            // skip it here entirely.  Just update pre-state and flush
+            // any buffered selections from the card's effects.
+            if (action is PlayCardAction)
             {
-                _cardPlayRecordedEarly = false;
                 _pendingPreState = GetBattleStateSummary();
                 CardChoiceScreenSyncPatch.FlushIfPending();
                 CardEffectDeckSelectContext.FlushIfPending();
@@ -107,12 +100,11 @@ public static class PlayerActionBuffer
                 return;
             }
 
-            // For potion/card-play actions the card-choice flush must happen
+            // For potion actions the card-choice flush must happen
             // AFTER recording (the selection is nested inside the action).
             // For all other actions, flush BEFORE recording so relic-triggered
             // card choices (e.g. Lead Paperweight) appear in the correct order.
-            bool isActionWithNestedSelection =
-                action is UsePotionAction || action is PlayCardAction;
+            bool isActionWithNestedSelection = action is UsePotionAction;
 
             if (!isActionWithNestedSelection)
             {
@@ -317,7 +309,8 @@ public static class PlayerActionBuffer
 
     /// <summary>
     /// Records a card play action before execution.
-    /// Called from EnqueueManualPlay postfix.
+    /// Consumes the pending pre-state (AfterActionExecuted will capture
+    /// a fresh one after the card's effects resolve).
     /// </summary>
     internal static void RecordCardPlayEarly(string actionText)
     {
@@ -337,8 +330,6 @@ public static class PlayerActionBuffer
         _minimalEntries.Enqueue(minimalEntry);
         LogToDevConsole($"[{timestamp}] {actionText}");
         EntryRecorded?.Invoke(actionText);
-
-        _cardPlayRecordedEarly = true;
     }
 }
 
