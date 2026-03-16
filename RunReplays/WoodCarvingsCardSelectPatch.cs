@@ -196,6 +196,44 @@ public static class FromDeckForEnchantmentWithFilterPatch
     }
 }
 
+// ── FromDeckForEnchantment (with explicit card list — e.g. Sapphire Seed) ────
+
+[HarmonyPatch(typeof(CardSelectCmd), nameof(CardSelectCmd.FromDeckForEnchantment),
+    new[] { typeof(IReadOnlyList<CardModel>), typeof(EnchantmentModel), typeof(int), typeof(CardSelectorPrefs) })]
+public static class FromDeckForEnchantmentWithCardsPatch
+{
+    internal static IDisposable? _pendingScope;
+
+    [HarmonyPrefix]
+    public static void Prefix()
+    {
+        _pendingScope?.Dispose();
+        _pendingScope = null;
+
+        SelectorStackDebug.Log("FromDeckForEnchantmentWithCards.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
+        if (ReplayEngine.IsActive)
+        {
+            // Skip if another enchantment overload already pushed a selector.
+            if (FromDeckForEnchantmentPatch._pendingScope != null
+                || FromDeckForEnchantmentWithFilterPatch._pendingScope != null)
+            {
+                SelectorStackDebug.Log("SKIP FromDeckForEnchantmentWithCards (another enchant already pushed)");
+            }
+            else if (ReplayEngine.PeekSelectDeckCard(out _))
+            {
+                _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
+                SelectorStackDebug.Log("PUSH FromDeckForEnchantmentWithCards");
+                PlayerActionBuffer.LogToDevConsole(
+                    "[SapphireSeedPatch] Pushed ReplayDeckCardSelector for FromDeckForEnchantment (with cards).");
+            }
+        }
+        else
+        {
+            DeckCardSelectContext.Pending = true;
+        }
+    }
+}
+
 // ── FromDeckForTransformation (New Leaf relic) ───────────────────────────────
 
 [HarmonyPatch(typeof(CardSelectCmd), nameof(CardSelectCmd.FromDeckForTransformation))]
@@ -331,6 +369,7 @@ internal sealed class ReplayDeckCardSelector : ICardSelector
         string scopeSource = FromDeckGenericPatch._pendingScope != null ? "Generic"
             : FromDeckForEnchantmentPatch._pendingScope != null ? "Enchant"
             : FromDeckForEnchantmentWithFilterPatch._pendingScope != null ? "EnchantFilter"
+            : FromDeckForEnchantmentWithCardsPatch._pendingScope != null ? "EnchantCards"
             : FromDeckForTransformationPatch._pendingScope != null ? "Transform"
             : FromDeckForUpgradePatch._pendingScope != null ? "Upgrade"
             : "NONE";
@@ -342,11 +381,13 @@ internal sealed class ReplayDeckCardSelector : ICardSelector
         var scope = FromDeckGenericPatch._pendingScope
             ?? FromDeckForEnchantmentPatch._pendingScope
             ?? FromDeckForEnchantmentWithFilterPatch._pendingScope
+            ?? FromDeckForEnchantmentWithCardsPatch._pendingScope
             ?? FromDeckForTransformationPatch._pendingScope
             ?? FromDeckForUpgradePatch._pendingScope;
         FromDeckGenericPatch._pendingScope                 = null;
         FromDeckForEnchantmentPatch._pendingScope          = null;
         FromDeckForEnchantmentWithFilterPatch._pendingScope = null;
+        FromDeckForEnchantmentWithCardsPatch._pendingScope  = null;
         FromDeckForTransformationPatch._pendingScope       = null;
         FromDeckForUpgradePatch._pendingScope              = null;
         SelectorStackDebug.Log($"Disposing scope (wasNull={scope == null})");
