@@ -69,6 +69,15 @@ public static class PlayerActionBuffer
         ReplayEngine.ReplayCompleted -= OnReplayCompleted;
         ReplayEngine.ReplayCompleted += OnReplayCompleted;
 
+        __instance.BeforeActionExecuted += action =>
+        {
+            if (ReplayEngine.IsActive)
+                return;
+
+            if (action is UsePotionAction)
+                RecordCardPlayEarly(action.ToString()!);
+        };
+
         __instance.AfterActionExecuted += action =>
         {
             if (ReplayEngine.IsActive)
@@ -88,10 +97,10 @@ public static class PlayerActionBuffer
                 return;
             }
 
-            // PlayCardAction is recorded early from EnqueueManualPlay —
-            // skip it here entirely.  Just update pre-state and flush
-            // any buffered selections from the card's effects.
-            if (action is PlayCardAction)
+            // PlayCardAction is recorded early from EnqueueManualPlay.
+            // UsePotionAction is recorded early from BeforeActionExecuted.
+            // Skip both here — just update pre-state and flush nested selections.
+            if (action is PlayCardAction or UsePotionAction)
             {
                 _pendingPreState = GetBattleStateSummary();
                 CardChoiceScreenSyncPatch.FlushIfPending();
@@ -100,16 +109,7 @@ public static class PlayerActionBuffer
                 return;
             }
 
-            // For potion actions the card-choice flush must happen
-            // AFTER recording (the selection is nested inside the action).
-            // For all other actions, flush BEFORE recording so relic-triggered
-            // card choices (e.g. Lead Paperweight) appear in the correct order.
-            bool isActionWithNestedSelection = action is UsePotionAction;
-
-            if (!isActionWithNestedSelection)
-            {
-                CardChoiceScreenSyncPatch.FlushIfPending();
-            }
+            CardChoiceScreenSyncPatch.FlushIfPending();
 
             string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
             string actionText = action.ToString()!;
@@ -128,16 +128,6 @@ public static class PlayerActionBuffer
             _minimalEntries.Enqueue(minimalEntry);
             LogToDevConsole($"[{timestamp}] {actionText}");
             EntryRecorded?.Invoke(actionText);
-
-            // Card-choice-screen and deck-card selections may buffer their
-            // commands until the triggering action is logged.  Flush them now so they
-            // follow the triggering action in the minimal log.
-            if (isActionWithNestedSelection)
-            {
-                CardChoiceScreenSyncPatch.FlushIfPending();
-                CardEffectDeckSelectContext.FlushIfPending();
-                SimpleGridSyncPatch.FlushIfPending();
-            }
         };
     }
 
@@ -356,3 +346,4 @@ public static class CardPlayRecordPatch
         PlayerActionBuffer.RecordCardPlayEarly(actionText);
     }
 }
+
