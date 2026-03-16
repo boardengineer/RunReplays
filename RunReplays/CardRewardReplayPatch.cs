@@ -124,21 +124,24 @@ public static class CardRewardReplayPatch
 
         ReplayRunner.ExecuteSacrificeCardReward();
 
-        // Trigger the same path the UI uses: OnAlternateRewardSelected.
+        // The sacrifice logic lives in sacrifice.OnSelect (a Func<Task> that
+        // calls OnSacrificeSynchronized → SyncLocalPaelsWingSacrifice + OnSacrifice).
+        // OnAlternateRewardSelected only handles the post-action (dismiss screen)
+        // and does NOT invoke OnSelect.  We must call OnSelect ourselves, then
+        // invoke OnAlternateRewardSelected to dismiss the screen.
+        var onSelectTask = sacrifice.OnSelect();
+        MegaCrit.Sts2.Core.Helpers.TaskHelper.RunSafely(onSelectTask);
+        PlayerActionBuffer.LogToDevConsole(
+            $"[RunReplays] Replay: invoked sacrifice OnSelect (OptionId='{sacrifice.OptionId}').");
+
         var method = typeof(NCardRewardSelectionScreen).GetMethod(
             "OnAlternateRewardSelected",
             BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-
         if (method != null)
         {
             method.Invoke(screen, new object[] { sacrifice.AfterSelected });
             PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] Replay: auto-sacrificed card reward (OptionId='{sacrifice.OptionId}').");
-        }
-        else
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                "[RunReplays] Replay: SacrificeCardReward — OnAlternateRewardSelected method not found.");
+                "[RunReplays] Replay: invoked OnAlternateRewardSelected to dismiss screen.");
         }
 
         BattleRewardsReplayPatch.OnCardRewardHandled();

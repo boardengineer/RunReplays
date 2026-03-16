@@ -7,7 +7,6 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using MegaCrit.Sts2.Core.Runs;
@@ -136,13 +135,8 @@ public static class BattleRewardsReplayPatch
             return;
         }
 
-        if (ReplayEngine.PeekSacrificeCardReward())
-        {
-            ExecuteSacrificeDirectly(screen);
-            return;
-        }
-
-        if (ReplayEngine.PeekCardReward(out string cardTitle, out int rewardIndex))
+        if (ReplayEngine.PeekCardReward(out string cardTitle, out int rewardIndex)
+            || ReplayEngine.PeekSacrificeCardReward())
         {
             // Scan every reward button for anything that yields a card.
             // Some rewards (e.g. SpecialCardReward from Thieving Hopper) add the
@@ -150,8 +144,13 @@ public static class BattleRewardsReplayPatch
             // CardReward opens NCardRewardSelectionScreen.  We handle the direct
             // ones here and only fall through to the screen path when needed.
             //
+            // SacrificeCardReward also opens NCardRewardSelectionScreen — the
+            // sacrifice alternative is selected by CardRewardReplayPatch once
+            // the screen is ready, matching the real UI flow.
+            //
             // When rewardIndex >= 0 (recorded with multiple card reward packs),
             // we select the Nth CardReward button rather than the first one.
+            bool isSacrifice = ReplayEngine.PeekSacrificeCardReward();
             Node? screenButton = null;
             int cardRewardCount = 0;
             foreach (var (button, reward) in EnumerateRewardButtons(screen))
@@ -159,7 +158,7 @@ public static class BattleRewardsReplayPatch
                 if (IsRewardOfType(reward, "CardReward"))
                 {
                     // Regular card reward — opens a selection screen.
-                    if (rewardIndex >= 0)
+                    if (rewardIndex >= 0 && !isSacrifice)
                     {
                         // Indexed: pick the exact CardReward button.
                         if (cardRewardCount == rewardIndex)
@@ -167,12 +166,17 @@ public static class BattleRewardsReplayPatch
                     }
                     else
                     {
-                        // Legacy (no index): use the first CardReward button.
+                        // Legacy (no index) or sacrifice: use the first CardReward button.
                         screenButton ??= button;
                     }
                     cardRewardCount++;
                     continue;
                 }
+
+                // Skip direct-card-reward path for sacrifices — sacrifice always
+                // goes through the card selection screen.
+                if (isSacrifice)
+                    continue;
 
                 // Any other reward that goes through SyncLocalObtainedCard
                 // (e.g. SpecialCardReward) adds the card immediately with no
@@ -266,57 +270,6 @@ public static class BattleRewardsReplayPatch
             ReplayRunner.ExecuteProceedToNextAct();
             RunManager.Instance.ActChangeSynchronizer.SetLocalPlayerReady();
         }
-    }
-
-    /// <summary>
-    /// Executes a Pael's Wing sacrifice directly via RewardSynchronizer,
-    /// bypassing the card selection screen UI entirely.
-    /// </summary>
-    private static void ExecuteSacrificeDirectly(NRewardsScreen screen)
-    {
-        ReplayRunner.ExecuteSacrificeCardReward();
-
-        try
-        {
-            var localPlayerProp = RunManager.Instance.RewardSynchronizer.GetType()
-                .GetProperty("LocalPlayer", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-            var player = localPlayerProp?.GetValue(RunManager.Instance.RewardSynchronizer);
-            var relicsProp = player?.GetType()
-                .GetProperty("Relics", BindingFlags.Public | BindingFlags.Instance);
-            var relics = relicsProp?.GetValue(player) as System.Collections.IEnumerable;
-            PaelsWing? paelsWing = null;
-            if (relics != null)
-            {
-                foreach (var r in relics)
-                {
-                    var modelProp = r.GetType().GetProperty("Model", BindingFlags.Public | BindingFlags.Instance);
-                    if (modelProp?.GetValue(r) is PaelsWing pw)
-                    {
-                        paelsWing = pw;
-                        break;
-                    }
-                }
-            }
-
-            if (paelsWing == null)
-            {
-                PlayerActionBuffer.LogToDevConsole(
-                    "[RunReplays] Replay: SacrificeCardReward — Pael's Wing relic not found on player.");
-                Callable.From(() => ProcessNextReward(screen)).CallDeferred();
-                return;
-            }
-
-            RunManager.Instance.RewardSynchronizer.SyncLocalPaelsWingSacrifice(paelsWing);
-            PlayerActionBuffer.LogToDevConsole(
-                "[RunReplays] Replay: executed Pael's Wing sacrifice directly.");
-        }
-        catch (Exception ex)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] Replay: SacrificeCardReward threw {ex.GetType().Name}: {ex.Message}");
-        }
-
-        Callable.From(() => ProcessNextReward(screen)).CallDeferred();
     }
 
     private static async Task ProceedToMapAsync()
