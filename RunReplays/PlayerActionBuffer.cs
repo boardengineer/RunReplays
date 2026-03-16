@@ -101,7 +101,6 @@ public static class PlayerActionBuffer
             {
                 _cardPlayRecordedEarly = false;
                 _pendingPreState = GetBattleStateSummary();
-                HandCardSelectRecordPatch.FlushIfPending();
                 CardChoiceScreenSyncPatch.FlushIfPending();
                 CardEffectDeckSelectContext.FlushIfPending();
                 SimpleGridSyncPatch.FlushIfPending();
@@ -138,12 +137,11 @@ public static class PlayerActionBuffer
             LogToDevConsole($"[{timestamp}] {actionText}");
             EntryRecorded?.Invoke(actionText);
 
-            // Hand-card, card-choice-screen, and deck-card selections may buffer their
+            // Card-choice-screen and deck-card selections may buffer their
             // commands until the triggering action is logged.  Flush them now so they
             // follow the triggering action in the minimal log.
             if (isActionWithNestedSelection)
             {
-                HandCardSelectRecordPatch.FlushIfPending();
                 CardChoiceScreenSyncPatch.FlushIfPending();
                 CardEffectDeckSelectContext.FlushIfPending();
                 SimpleGridSyncPatch.FlushIfPending();

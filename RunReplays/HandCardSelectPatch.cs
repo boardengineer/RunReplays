@@ -26,32 +26,12 @@ namespace RunReplays;
 [HarmonyPatch(typeof(PlayerChoiceSynchronizer), nameof(PlayerChoiceSynchronizer.SyncLocalChoice))]
 public static class HandCardSelectRecordPatch
 {
-    private static string? _pending;
-
     /// <summary>
     /// Set by HandCardSelectForDiscardRecordPatch when it records a
     /// FromHandForDiscard selection.  Prevents SyncLocalChoice from
     /// recording a duplicate for the same selection.
     /// </summary>
     internal static bool SuppressNext;
-
-    /// <summary>Sets the pending command from an external recorder (card-triggered discards).</summary>
-    internal static void SetPending(string command) => _pending = command;
-
-    /// <summary>
-    /// Flushes the pending SelectHandCards command. Called by PlayerActionBuffer
-    /// after a PlayCardAction is recorded so the selection follows the card play.
-    /// </summary>
-    internal static void FlushIfPending()
-    {
-        if (_pending == null)
-            return;
-
-        string command = _pending;
-        _pending = null;
-        PlayerActionBuffer.LogToDevConsole($"[HandCardSelectRecordPatch] Flushing: {command}");
-        PlayerActionBuffer.Record(command);
-    }
 
     [HarmonyPostfix]
     public static void Postfix(Player player, uint choiceId, PlayerChoiceResult result)
@@ -173,14 +153,10 @@ public static class HandCardSelectForDiscardRecordPatch
         // RecordAsync's continuation runs.
         HandCardSelectRecordPatch.SuppressNext = true;
 
-        // Card-triggered discards (e.g. Survivor) must buffer so the
-        // SelectHandCards appears after the PlayCardAction in the log.
-        // Power/turn-start discards (e.g. Tools of the Trade) record immediately.
-        bool shouldBuffer = source is CardModel;
-        MegaCrit.Sts2.Core.Helpers.TaskHelper.RunSafely(RecordAsync(__result, shouldBuffer));
+        MegaCrit.Sts2.Core.Helpers.TaskHelper.RunSafely(RecordAsync(__result));
     }
 
-    private static async Task RecordAsync(Task<IEnumerable<CardModel>> task, bool shouldBuffer)
+    private static async Task RecordAsync(Task<IEnumerable<CardModel>> task)
     {
         IEnumerable<CardModel> cards;
         try { cards = await task; }
@@ -218,16 +194,8 @@ public static class HandCardSelectForDiscardRecordPatch
         catch { /* ignore — record anyway if we can't check */ }
 
         string command = $"SelectHandCards {string.Join(" ", ids)}";
-        if (shouldBuffer)
-        {
-            PlayerActionBuffer.LogToDevConsole($"[HandCardSelectForDiscardRecord] Buffered: {command}");
-            HandCardSelectRecordPatch.SetPending(command);
-        }
-        else
-        {
-            PlayerActionBuffer.LogToDevConsole($"[HandCardSelectForDiscardRecord] Recording: {command}");
-            PlayerActionBuffer.Record(command);
-        }
+        PlayerActionBuffer.LogToDevConsole($"[HandCardSelectForDiscardRecord] Recording: {command}");
+        PlayerActionBuffer.Record(command);
     }
 
 }
