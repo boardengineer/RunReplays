@@ -107,10 +107,11 @@ public static class ReplayRunner
 
     public static bool ExecuteCardReward(out string cardTitle)
     {
-        if (!ReplayEngine.ConsumeCardReward(out cardTitle))
+        if (!ReplayEngine.ConsumeCardReward(out cardTitle, out int rewardIndex))
             return false;
 
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take card reward '{cardTitle}'");
+        string indexStr = rewardIndex >= 0 ? $" (pack {rewardIndex})" : "";
+        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take card reward '{cardTitle}'{indexStr}");
         LogNext();
         return true;
     }
@@ -379,6 +380,17 @@ public static class ReplayRunner
         if (cmd.StartsWith("UpgradeCard ") &&
             int.TryParse(cmd.AsSpan("UpgradeCard ".Length), out int upgradeIdx))
             return $"upgrade card at deck index {upgradeIdx}";
+
+        if (cmd.StartsWith("TakeCardReward["))
+        {
+            int closeBracket = cmd.IndexOf("]: ", StringComparison.Ordinal);
+            if (closeBracket >= 0)
+            {
+                string idx = cmd.Substring("TakeCardReward[".Length, closeBracket - "TakeCardReward[".Length);
+                string title = cmd.Substring(closeBracket + "]: ".Length);
+                return $"take card reward '{title}' (pack {idx})";
+            }
+        }
 
         if (cmd.StartsWith("TakeCardReward: "))
             return $"take card reward '{cmd["TakeCardReward: ".Length..]}'";

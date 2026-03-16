@@ -295,20 +295,25 @@ public static class DeckCardSelectRecordPatch
         string titles = string.Join(", ", cardList.Select(c => $"'{c.Title}'"));
         PlayerActionBuffer.RecordVerboseOnly($"[DeckCardSelect] Selected: [{titles}]");
 
+        // Collect all selected indices into a single command so that
+        // multi-card selections (e.g. Morphic Grove) are recorded atomically.
+        var indices = new List<int>(cardList.Count);
         foreach (CardModel card in cardList)
         {
             int index = deckList == null ? -1 : deckList.ToList().IndexOf(card);
-
-            // Buffer the minimal-log command rather than recording it immediately.
-            // If this selection was triggered by a PlayCardAction (combat card effect,
-            // e.g. Seeker Strike), the buffer is flushed by PlayerActionBuffer after
-            // AfterActionExecuted fires for that action, ensuring correct log order.
-            // If triggered by an event option (Wood Carvings), EventOptionChosenLogPatch
-            // flushes the buffer before recording the next ChooseEventOption.
-            CardEffectDeckSelectContext.Buffer($"SelectDeckCard {index}");
-            PlayerActionBuffer.LogToDevConsole(
-                $"[DeckCardSelectPatch] Buffered SelectDeckCard {index} ('{card.Title}').");
+            indices.Add(index);
         }
+
+        // Buffer the minimal-log command rather than recording it immediately.
+        // If this selection was triggered by a PlayCardAction (combat card effect,
+        // e.g. Seeker Strike), the buffer is flushed by PlayerActionBuffer after
+        // AfterActionExecuted fires for that action, ensuring correct log order.
+        // If triggered by an event option (Wood Carvings), EventOptionChosenLogPatch
+        // flushes the buffer before recording the next ChooseEventOption.
+        string command = $"SelectDeckCard {string.Join(" ", indices)}";
+        CardEffectDeckSelectContext.Buffer(command);
+        PlayerActionBuffer.LogToDevConsole(
+            $"[DeckCardSelectPatch] Buffered {command} ({titles}).");
     }
 }
 
@@ -349,14 +354,15 @@ internal sealed class ReplayDeckCardSelector : ICardSelector
 
         var optionList = options.ToList();
 
-        if (!ReplayEngine.ConsumeSelectDeckCard(out int index))
+        if (!ReplayEngine.ConsumeSelectDeckCard(out int[] indices))
         {
             // Fallback: SMITH rest-site upgrades record "UpgradeCard {index}" but
             // during replay the flow goes through CardSelectCmd, not ShowScreen.
-            if (ReplayEngine.ConsumeUpgradeCard(out index))
+            if (ReplayEngine.ConsumeUpgradeCard(out int upgradeIdx))
             {
+                indices = new[] { upgradeIdx };
                 PlayerActionBuffer.LogToDevConsole(
-                    $"[ReplayDeckCardSelector] Consumed UpgradeCard {index} (SMITH upgrade via CardSelectCmd).");
+                    $"[ReplayDeckCardSelector] Consumed UpgradeCard {upgradeIdx} (SMITH upgrade via CardSelectCmd).");
             }
             else
             {
@@ -367,29 +373,39 @@ internal sealed class ReplayDeckCardSelector : ICardSelector
             }
         }
 
-        if (index >= 0 && index < optionList.Count)
+        var selected = new List<CardModel>(indices.Length);
+        foreach (int index in indices)
         {
-            var selected = new List<CardModel> { optionList[index] };
-            PlayerActionBuffer.LogToDevConsole(
-                $"[ReplayDeckCardSelector] Selected '{optionList[index].Title}' at index {index}.");
-
-            // Some relics (e.g. Yummy Cookie) allow upgrading multiple cards in
-            // a single selection.  Keep consuming UpgradeCard commands while they
-            // match available options.
-            while (ReplayEngine.PeekUpgradeCard(out int nextIdx)
-                   && nextIdx >= 0 && nextIdx < optionList.Count)
+            if (index >= 0 && index < optionList.Count)
             {
-                ReplayEngine.ConsumeUpgradeCard(out _);
-                selected.Add(optionList[nextIdx]);
+                selected.Add(optionList[index]);
                 PlayerActionBuffer.LogToDevConsole(
-                    $"[ReplayDeckCardSelector] Selected additional '{optionList[nextIdx].Title}' at index {nextIdx}.");
+                    $"[ReplayDeckCardSelector] Selected '{optionList[index].Title}' at index {index}.");
             }
-
-            return Task.FromResult<IEnumerable<CardModel>>(selected);
+            else
+            {
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[ReplayDeckCardSelector] Index {index} out of range (count={optionList.Count}) — skipping.");
+            }
         }
 
+        // Some relics (e.g. Yummy Cookie) allow upgrading multiple cards in
+        // a single selection.  Keep consuming UpgradeCard commands while they
+        // match available options.
+        while (ReplayEngine.PeekUpgradeCard(out int nextIdx)
+               && nextIdx >= 0 && nextIdx < optionList.Count)
+        {
+            ReplayEngine.ConsumeUpgradeCard(out _);
+            selected.Add(optionList[nextIdx]);
+            PlayerActionBuffer.LogToDevConsole(
+                $"[ReplayDeckCardSelector] Selected additional '{optionList[nextIdx].Title}' at index {nextIdx}.");
+        }
+
+        if (selected.Count > 0)
+            return Task.FromResult<IEnumerable<CardModel>>(selected);
+
         PlayerActionBuffer.LogToDevConsole(
-            $"[ReplayDeckCardSelector] Index {index} out of range (count={optionList.Count}) — falling back.");
+            "[ReplayDeckCardSelector] No valid indices — falling back.");
         return Task.FromResult<IEnumerable<CardModel>>(
             optionList.Take(Math.Max(1, minSelect)).ToList());
     }

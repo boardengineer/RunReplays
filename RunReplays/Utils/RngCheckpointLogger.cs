@@ -24,6 +24,7 @@ internal static class RngCheckpointLogger
 
     internal static void Log(string checkpoint)
     {
+        return; // paused
         try
         {
             var state = RunManager.Instance?.DebugOnlyGetState();

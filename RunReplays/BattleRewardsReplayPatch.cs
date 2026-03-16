@@ -62,7 +62,7 @@ public static class BattleRewardsReplayPatch
             return;
 
         bool hasReward = ReplayEngine.PeekGoldReward(out _)
-                      || ReplayEngine.PeekCardReward(out _)
+                      || ReplayEngine.PeekCardReward(out _, out _)
                       || ReplayEngine.PeekSacrificeCardReward()
                       || ReplayEngine.PeekRelicReward(out _)
                       || ReplayEngine.PeekPotionReward(out _)
@@ -142,21 +142,35 @@ public static class BattleRewardsReplayPatch
             return;
         }
 
-        if (ReplayEngine.PeekCardReward(out string cardTitle))
+        if (ReplayEngine.PeekCardReward(out string cardTitle, out int rewardIndex))
         {
             // Scan every reward button for anything that yields a card.
             // Some rewards (e.g. SpecialCardReward from Thieving Hopper) add the
             // card directly without opening a selection screen, while the normal
             // CardReward opens NCardRewardSelectionScreen.  We handle the direct
             // ones here and only fall through to the screen path when needed.
+            //
+            // When rewardIndex >= 0 (recorded with multiple card reward packs),
+            // we select the Nth CardReward button rather than the first one.
             Node? screenButton = null;
+            int cardRewardCount = 0;
             foreach (var (button, reward) in EnumerateRewardButtons(screen))
             {
                 if (IsRewardOfType(reward, "CardReward"))
                 {
                     // Regular card reward — opens a selection screen.
-                    // Remember it as a fallback; prefer a direct match first.
-                    screenButton ??= button;
+                    if (rewardIndex >= 0)
+                    {
+                        // Indexed: pick the exact CardReward button.
+                        if (cardRewardCount == rewardIndex)
+                            screenButton = button;
+                    }
+                    else
+                    {
+                        // Legacy (no index): use the first CardReward button.
+                        screenButton ??= button;
+                    }
+                    cardRewardCount++;
                     continue;
                 }
 
@@ -331,7 +345,7 @@ public static class BattleRewardsReplayPatch
     /// <summary>
     /// Yields every (button, reward) pair on the rewards screen.
     /// </summary>
-    private static IEnumerable<(Node button, object reward)> EnumerateRewardButtons(Node root)
+    internal static IEnumerable<(Node button, object reward)> EnumerateRewardButtons(Node root)
     {
         if (NRewardButtonType == null)
         {
@@ -382,7 +396,7 @@ public static class BattleRewardsReplayPatch
         return null;
     }
 
-    private static bool IsRewardOfType(object? reward, string baseTypeName)
+    internal static bool IsRewardOfType(object? reward, string baseTypeName)
     {
         Type? t = reward?.GetType();
         while (t != null)

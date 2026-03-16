@@ -62,6 +62,7 @@ internal static class RngLog
 
     internal static void Write(string message)
     {
+        return; // paused
         lock (_lock)
         {
             _writer?.WriteLine(message);

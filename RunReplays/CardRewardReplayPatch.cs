@@ -51,7 +51,7 @@ public static class CardRewardReplayPatch
             return;
         }
 
-        if (ReplayEngine.PeekCardReward(out string cardTitle))
+        if (ReplayEngine.PeekCardReward(out string cardTitle, out _))
         {
             // Defer one frame: _completionSource is set (synchronous), but emitting
             // the signal now would fire SelectCard before the async continuation

@@ -15,11 +15,16 @@ namespace RunReplays;
 
 /// <summary>
 /// Records and replays card selections made via CardSelectCmd.FromChooseACardScreen
-/// (e.g. Skill Potion, Power Potion, Lead Paperweight relic).
+/// (e.g. Skill Potion, Power Potion, Lead Paperweight relic, Morphic Grove).
 ///
 /// Command format:  "SelectCardFromScreen {index}"
 /// The index is the 0-based position in the card list offered to the player.
 /// -1 means the player skipped (canSkip = true and no card chosen).
+///
+/// When the selection is part of a card reward (e.g. Morphic Grove uses
+/// FromChooseACardScreen instead of the normal NCardRewardSelectionScreen),
+/// the SelectCardFromScreen recording is suppressed — the TakeCardReward
+/// command already captures the selection by card title.
 ///
 /// Recording: the Postfix wraps the returned Task so that when the player's
 /// selection completes, the chosen card's index is buffered.  A deferred flush
@@ -30,7 +35,9 @@ namespace RunReplays;
 ///
 /// Replay: a ReplayChooseACardSelector is pushed onto the CardSelectCmd selector
 /// stack before FromChooseACardScreen runs, so the game uses replay data instead
-/// of opening the selection UI.
+/// of opening the selection UI.  When the next command is a TakeCardReward
+/// (no SelectCardFromScreen in the queue), a ReplayCardRewardChooseSelector is
+/// pushed instead — it picks the card by title and consumes the TakeCardReward.
 /// </summary>
 
 // ── Replay / record entry point ───────────────────────────────────────────────
@@ -63,6 +70,15 @@ public static class FromChooseACardScreenPatch
                 PlayerActionBuffer.LogToDevConsole(
                     "[CardChoiceScreenPatch] Pushed ReplayChooseACardSelector for FromChooseACardScreen.");
             }
+            else if (ReplayEngine.PeekCardReward(out string cardTitle, out _))
+            {
+                // Card reward that uses FromChooseACardScreen (e.g. Morphic Grove).
+                // The TakeCardReward command has the card title — use it to select.
+                _pendingScope = CardSelectCmd.PushSelector(new ReplayCardRewardChooseSelector(cardTitle));
+                SelectorStackDebug.Log("PUSH FromChooseACardScreen (card reward by title)");
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[CardChoiceScreenPatch] Pushed ReplayCardRewardChooseSelector for card reward '{cardTitle}'.");
+            }
         }
         else
         {
@@ -92,6 +108,15 @@ public static class FromChooseACardScreenPatch
     private static async Task<CardModel> WrapAndRecord(Task<CardModel> original, List<CardModel> cardList)
     {
         var selected = await original;
+
+        // When the selection is part of a card reward, TakeCardReward records
+        // the selection — don't also emit SelectCardFromScreen.
+        if (BattleRewardPatch.IsProcessingCardReward)
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                "[CardChoiceScreenPatch] Suppressed SelectCardFromScreen (card reward context).");
+            return selected!;
+        }
 
         int index = -1;
 
@@ -165,7 +190,7 @@ public static class CardChoiceScreenSyncPatch
     }
 }
 
-// ── Replay selector ───────────────────────────────────────────────────────────
+// ── Replay selectors ─────────────────────────────────────────────────────────
 
 /// <summary>
 /// ICardSelector that consumes a SelectCardFromScreen command and returns the
@@ -200,6 +225,51 @@ internal sealed class ReplayChooseACardSelector : ICardSelector
         // index == -1: player skipped (canSkip = true).
         PlayerActionBuffer.LogToDevConsole(
             $"[ReplayChooseACardSelector] Index {index} — returning empty (skip or out of range).");
+        return Task.FromResult(Enumerable.Empty<CardModel>());
+    }
+
+    public CardModel? GetSelectedCardReward(
+        IReadOnlyList<CardCreationResult> options,
+        IReadOnlyList<CardRewardAlternative> alternatives)
+        => null;
+}
+
+/// <summary>
+/// ICardSelector for card rewards that route through FromChooseACardScreen
+/// (e.g. Morphic Grove).  Picks the card matching the title from the
+/// TakeCardReward command and consumes it.
+/// </summary>
+internal sealed class ReplayCardRewardChooseSelector : ICardSelector
+{
+    private readonly string _expectedTitle;
+
+    public ReplayCardRewardChooseSelector(string expectedTitle)
+        => _expectedTitle = expectedTitle;
+
+    public Task<IEnumerable<CardModel>> GetSelectedCards(
+        IEnumerable<CardModel> options, int minSelect, int maxSelect)
+    {
+        var scope = FromChooseACardScreenPatch._pendingScope;
+        FromChooseACardScreenPatch._pendingScope = null;
+        scope?.Dispose();
+
+        // Consume the TakeCardReward command.
+        ReplayRunner.ExecuteCardReward(out _);
+
+        var optionList = options.ToList();
+        var match = optionList.FirstOrDefault(c => c.Title == _expectedTitle);
+
+        if (match != null)
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[ReplayCardRewardChooseSelector] Selected '{match.Title}' by title match.");
+            BattleRewardsReplayPatch.OnCardRewardHandled();
+            return Task.FromResult<IEnumerable<CardModel>>(new[] { match });
+        }
+
+        PlayerActionBuffer.LogToDevConsole(
+            $"[ReplayCardRewardChooseSelector] Card '{_expectedTitle}' not found in options.");
+        BattleRewardsReplayPatch.OnCardRewardHandled();
         return Task.FromResult(Enumerable.Empty<CardModel>());
     }
 

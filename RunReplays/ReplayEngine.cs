@@ -376,21 +376,40 @@ public static class ReplayEngine
     // ── Card rewards ──────────────────────────────────────────────────────────
 
     private const string CardRewardPrefix = "TakeCardReward: ";
+    private const string CardRewardIndexedPrefix = "TakeCardReward[";
 
-    public static bool PeekCardReward(out string cardTitle)
+    public static bool PeekCardReward(out string cardTitle, out int rewardIndex)
     {
-        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(CardRewardPrefix))
+        if (_pending.TryPeek(out string? cmd))
         {
-            cardTitle = cmd.Substring(CardRewardPrefix.Length);
-            return true;
+            // Indexed format: TakeCardReward[N]: CardTitle
+            if (cmd.StartsWith(CardRewardIndexedPrefix))
+            {
+                int closeBracket = cmd.IndexOf("]: ", CardRewardIndexedPrefix.Length, StringComparison.Ordinal);
+                if (closeBracket > CardRewardIndexedPrefix.Length &&
+                    int.TryParse(cmd.AsSpan(CardRewardIndexedPrefix.Length, closeBracket - CardRewardIndexedPrefix.Length), out rewardIndex))
+                {
+                    cardTitle = cmd.Substring(closeBracket + "]: ".Length);
+                    return true;
+                }
+            }
+
+            // Legacy format: TakeCardReward: CardTitle
+            if (cmd.StartsWith(CardRewardPrefix))
+            {
+                cardTitle = cmd.Substring(CardRewardPrefix.Length);
+                rewardIndex = -1;
+                return true;
+            }
         }
         cardTitle = string.Empty;
+        rewardIndex = -1;
         return false;
     }
 
-    public static bool ConsumeCardReward(out string cardTitle)
+    public static bool ConsumeCardReward(out string cardTitle, out int rewardIndex)
     {
-        if (PeekCardReward(out cardTitle))
+        if (PeekCardReward(out cardTitle, out rewardIndex))
         {
             SignalConsumed(_pending.Dequeue());
             return true;
@@ -891,24 +910,40 @@ public static class ReplayEngine
     //
     // Recorded by WoodCarvingsCardSelectPatch via NCardGridSelectionScreen.CardsSelected
     // when FromDeckGeneric or FromDeckForEnchantment is active:
-    //   "SelectDeckCard {deckIndex}"
-    // deckIndex is the 0-based position in the card list shown to the player.
+    //   "SelectDeckCard {idx0} {idx1} ..."
+    // Each index is the 0-based position in the card list shown to the player.
+    // Single-card selections produce "SelectDeckCard {idx}"; multi-card selections
+    // (e.g. Morphic Grove) produce "SelectDeckCard {idx0} {idx1}".
 
     private const string SelectDeckCardPrefix = "SelectDeckCard ";
 
-    public static bool PeekSelectDeckCard(out int deckIndex)
+    public static bool PeekSelectDeckCard(out int[] deckIndices)
     {
-        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(SelectDeckCardPrefix)
-            && int.TryParse(cmd.AsSpan(SelectDeckCardPrefix.Length), out deckIndex))
-            return true;
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(SelectDeckCardPrefix))
+        {
+            var parts = cmd.Substring(SelectDeckCardPrefix.Length).Split(' ');
+            var indices = new List<int>(parts.Length);
+            foreach (var part in parts)
+            {
+                if (int.TryParse(part, out int idx))
+                    indices.Add(idx);
+                else
+                {
+                    deckIndices = Array.Empty<int>();
+                    return false;
+                }
+            }
+            deckIndices = indices.ToArray();
+            return deckIndices.Length > 0;
+        }
 
-        deckIndex = -1;
+        deckIndices = Array.Empty<int>();
         return false;
     }
 
-    public static bool ConsumeSelectDeckCard(out int deckIndex)
+    public static bool ConsumeSelectDeckCard(out int[] deckIndices)
     {
-        if (PeekSelectDeckCard(out deckIndex))
+        if (PeekSelectDeckCard(out deckIndices))
         {
             SignalConsumed(_pending.Dequeue());
             return true;
