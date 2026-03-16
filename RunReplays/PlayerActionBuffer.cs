@@ -8,9 +8,11 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Context;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Debug;
 
 namespace RunReplays;
@@ -46,6 +48,12 @@ public static class PlayerActionBuffer
     /// </summary>
     private static string? _pendingPreState;
 
+    /// <summary>
+    /// True after a card play was recorded from EnqueueManualPlay.
+    /// Prevents AfterActionExecuted from re-recording the same action.
+    /// </summary>
+    private static bool _cardPlayRecordedEarly;
+
     [HarmonyPostfix]
     public static void Postfix(ActionExecutor __instance)
     {
@@ -53,6 +61,7 @@ public static class PlayerActionBuffer
         while (_verboseEntries.TryDequeue(out _)) { }
         while (_minimalEntries.TryDequeue(out _)) { }
         _pendingPreState = null;
+        _cardPlayRecordedEarly = false;
 
         RunOverlay.InitForRun();
 
@@ -83,6 +92,19 @@ public static class PlayerActionBuffer
             if (action is VoteForMapCoordAction)
             {
                 CardChoiceScreenSyncPatch.FlushIfPending();
+                return;
+            }
+
+            // PlayCardAction recorded early from EnqueueManualPlay — skip
+            // re-recording but still update pre-state and flush selections.
+            if (action is PlayCardAction && _cardPlayRecordedEarly)
+            {
+                _cardPlayRecordedEarly = false;
+                _pendingPreState = GetBattleStateSummary();
+                HandCardSelectRecordPatch.FlushIfPending();
+                CardChoiceScreenSyncPatch.FlushIfPending();
+                CardEffectDeckSelectContext.FlushIfPending();
+                SimpleGridSyncPatch.FlushIfPending();
                 return;
             }
 
@@ -293,5 +315,55 @@ public static class PlayerActionBuffer
         // the Godot main thread to avoid cross-thread node access.
         var outputBuffer = console.GetNode<RichTextLabel>("OutputContainer/OutputBuffer");
         outputBuffer.CallDeferred(RichTextLabel.MethodName.AppendText, entry + "\n");
+    }
+
+    /// <summary>
+    /// Records a card play action before execution.
+    /// Called from EnqueueManualPlay postfix.
+    /// </summary>
+    internal static void RecordCardPlayEarly(string actionText)
+    {
+        if (ReplayEngine.IsActive)
+            return;
+
+        string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
+
+        string? preState = _pendingPreState;
+        _pendingPreState = null;
+
+        string minimalEntry = preState != null
+            ? actionText + StateSeparator + preState
+            : actionText;
+
+        _verboseEntries.Enqueue((timestamp, actionText));
+        _minimalEntries.Enqueue(minimalEntry);
+        LogToDevConsole($"[{timestamp}] {actionText}");
+        EntryRecorded?.Invoke(actionText);
+
+        _cardPlayRecordedEarly = true;
+    }
+}
+
+/// <summary>
+/// Records a card play as soon as EnqueueManualPlay completes — before the
+/// PlayCardAction executes.  By this point the PlayCardAction constructor has
+/// registered the card in NetCombatCardDb via NetCombatCard.FromModel.
+/// </summary>
+[HarmonyPatch(typeof(CardModel), "EnqueueManualPlay")]
+public static class CardPlayRecordPatch
+{
+    [HarmonyPostfix]
+    public static void Postfix(CardModel __instance, Creature target)
+    {
+        if (ReplayEngine.IsActive)
+            return;
+
+        if (!NetCombatCardDb.Instance.TryGetCardId(__instance, out uint cardId))
+            return;
+
+        string targetStr = target?.CombatId?.ToString() ?? "";
+        string actionText = $"PlayCardAction card: {__instance} index: {cardId} targetid: {targetStr}";
+
+        PlayerActionBuffer.RecordCardPlayEarly(actionText);
     }
 }
