@@ -1,10 +1,10 @@
 # RunReplays
 
-A [Harmony](https://github.com/pardeike/Harmony) mod for **Slay the Spire 2** that records every player decision during a run and can automatically replay it from any save point.
+A **Slay the Spire 2** mod that automatically records your runs and lets you replay them from the main menu. Every decision — card plays, reward picks, event choices, shop purchases — is captured in the background and can be played back at any time.
 
 ## Installation
 
-Copy `RunReplays.dll` into the game's mod folder:
+Copy `RunReplays.dll` and `RunReplays.pck` into the game's mod folder:
 ```
 C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\
 ```
@@ -29,6 +29,8 @@ Logs are saved automatically on every game save to:
 ```
 %APPDATA%/Godot/app_userdata/Slay the Spire 2/RunReplays/logs/{seed}/floor_{floor}/
 ```
+
+See the [replay file format](docs/sts2replay-format.md) for details on the `.sts2replay` log format.
 
 ### Replay
 Load any recorded run from the **Run Replays** button on the main menu. The mod:
