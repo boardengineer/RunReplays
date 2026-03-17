@@ -54,24 +54,18 @@ public static class RunSaveLogger
         int totalFloor = run.MapPointHistory?.Sum(column => column.Count) ?? 0;
 
         // Directory structure: logs/{seed}/floor_{floor}/
-        // Use DateTime.Now for the filename so rapid saves never share a name.
+        // One set of files per seed/floor — overwrites on each save.
         string seedDir  = SanitizeForFileName(seed);
         string floorDir = $"floor_{totalFloor + 1}";
         string logsDir  = Path.Combine(OS.GetUserDataDir(), "RunReplays", "logs", seedDir, floorDir);
         Directory.CreateDirectory(logsDir);
 
-        string baseName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}";
-
-        var verboseActions = PlayerActionBuffer.Snapshot();
         var minimalActions = PlayerActionBuffer.SnapshotMinimal();
 
-        WriteVerbose(Path.Combine(logsDir, $"{baseName}.verbose.log"),
-            seed, character, saveTime, totalFloor, verboseActions);
-
-        WriteMinimal(Path.Combine(logsDir, $"{baseName}.minimal.log"),
+        WriteMinimal(Path.Combine(logsDir, "actions.sts2replay"),
             seed, character, run.Ascension, minimalActions);
 
-        CopySaveBackup(logsDir, baseName);
+        CopySaveBackup(logsDir);
 
         GD.Print($"[RunReplays] Wrote save logs to: {logsDir}");
     }
@@ -116,7 +110,7 @@ public static class RunSaveLogger
         File.WriteAllText(filePath, sb.ToString());
     }
 
-    private static void CopySaveBackup(string logsDir, string baseName)
+    private static void CopySaveBackup(string logsDir)
     {
         try
         {
@@ -131,7 +125,7 @@ public static class RunSaveLogger
                 return;
             }
 
-            string dest = Path.Combine(logsDir, $"{baseName}.save");
+            string dest = Path.Combine(logsDir, "run.save");
             File.Copy(physicalPath, dest, overwrite: true);
         }
         catch (Exception ex)

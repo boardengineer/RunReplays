@@ -269,27 +269,40 @@ public static class RunReplayMenu
                 if (!int.TryParse(dirName.Substring("floor_".Length), out int floor))
                     continue;
 
-                // Pick the most recent log pair. Filenames are yyyy-MM-dd_HH-mm-ss-fff
-                // so lexicographic order is identical to chronological order.
-                string? latestVerbose = Directory
-                    .GetFiles(floorDir, "*.verbose.log")
-                    .OrderByDescending(f => f)
-                    .FirstOrDefault();
+                // Find the minimal/replay log: prefer actions.sts2replay,
+                // then actions.minimal.log, then legacy timestamped *.minimal.log.
+                string? latestMinimal = Path.Combine(floorDir, "actions.sts2replay");
+                if (!File.Exists(latestMinimal))
+                    latestMinimal = Path.Combine(floorDir, "actions.minimal.log");
+                if (!File.Exists(latestMinimal))
+                    latestMinimal = Directory
+                        .GetFiles(floorDir, "*.minimal.log")
+                        .OrderByDescending(f => f)
+                        .FirstOrDefault();
 
-                string? latestMinimal = Directory
-                    .GetFiles(floorDir, "*.minimal.log")
-                    .OrderByDescending(f => f)
-                    .FirstOrDefault();
-
-                if (latestVerbose == null || latestMinimal == null)
+                if (latestMinimal == null)
                     continue;
 
-                // Parse the verbose header for seed, character, and date.
-                var (seed, characterId, savedAt) = ReadVerboseHeader(latestVerbose);
+                // Verbose log is optional — used only for header metadata.
+                string? latestVerbose = Path.Combine(floorDir, "actions.verbose.log");
+                if (!File.Exists(latestVerbose))
+                    latestVerbose = Directory
+                        .GetFiles(floorDir, "*.verbose.log")
+                        .OrderByDescending(f => f)
+                        .FirstOrDefault();
 
-                // The backup save shares the same timestamp basename as the verbose log.
-                string expectedSavePath = latestVerbose[..^".verbose.log".Length] + ".save";
-                string? savePath = File.Exists(expectedSavePath) ? expectedSavePath : null;
+                // Parse header for seed, character, date from verbose if available,
+                // otherwise extract from the minimal log header comments.
+                var (seed, characterId, savedAt) = latestVerbose != null
+                    ? ReadVerboseHeader(latestVerbose)
+                    : ReadMinimalHeader(latestMinimal);
+
+                // Check for save backup.
+                string fixedSave = Path.Combine(floorDir, "run.save");
+                string? legacySave = latestVerbose != null
+                    ? latestVerbose[..^".verbose.log".Length] + ".save" : null;
+                string? savePath = File.Exists(fixedSave) ? fixedSave
+                    : (legacySave != null && File.Exists(legacySave)) ? legacySave : null;
 
                 int ascension = ReadMinimalHeaderAscension(latestMinimal);
 
@@ -369,6 +382,33 @@ public static class RunReplayMenu
         catch { /* malformed log */ }
 
         return 0;
+    }
+
+    /// <summary>
+    /// Reads seed and character from a minimal log header (# comments).
+    /// SavedAt is derived from the file's last-write time.
+    /// </summary>
+    private static (string Seed, string CharacterId, DateTime SavedAt) ReadMinimalHeader(string filePath)
+    {
+        string seed        = "unknown-seed";
+        string characterId = "unknown-character";
+
+        try
+        {
+            foreach (string line in File.ReadLines(filePath))
+            {
+                if (!line.StartsWith('#'))
+                    break;
+                if (line.StartsWith("# Seed: "))
+                    seed = line["# Seed: ".Length..].Trim();
+                else if (line.StartsWith("# Character: "))
+                    characterId = line["# Character: ".Length..].Trim();
+            }
+        }
+        catch { /* malformed log */ }
+
+        DateTime savedAt = File.GetLastWriteTime(filePath);
+        return (seed, characterId, savedAt);
     }
 
     // ── Save load ─────────────────────────────────────────────────────────────

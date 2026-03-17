@@ -47,23 +47,31 @@ public static class RunContinuePatch
             return;
         }
 
-        // The basenames are yyyy-MM-dd_HH-mm-ss-fff, so lexicographic order == chronological order.
-        string? latestVerbose = Directory.EnumerateFiles(logsDir, "*.verbose.log")
-            .OrderByDescending(f => f)
-            .FirstOrDefault();
+        // Find the minimal log: prefer actions.sts2replay, then actions.minimal.log,
+        // then legacy timestamped *.minimal.log files.
+        string latestMinimal = Path.Combine(logsDir, "actions.sts2replay");
+        if (!File.Exists(latestMinimal))
+            latestMinimal = Path.Combine(logsDir, "actions.minimal.log");
+        if (!File.Exists(latestMinimal))
+            latestMinimal = Directory.EnumerateFiles(logsDir, "*.minimal.log")
+                .OrderByDescending(f => f).FirstOrDefault() ?? "";
 
-        string? latestMinimal = Directory.EnumerateFiles(logsDir, "*.minimal.log")
-            .OrderByDescending(f => f)
-            .FirstOrDefault();
-
-        if (latestVerbose == null || latestMinimal == null)
+        if (!File.Exists(latestMinimal))
         {
             GD.Print($"[RunReplays] No log files found to restore in: {logsDir}");
             return;
         }
 
-        var verboseEntries = ParseVerboseLog(latestVerbose);
+        // Verbose log is optional — find it for restore but don't require it.
+        string latestVerbose = Path.Combine(logsDir, "actions.verbose.log");
+        if (!File.Exists(latestVerbose))
+            latestVerbose = Directory.EnumerateFiles(logsDir, "*.verbose.log")
+                .OrderByDescending(f => f).FirstOrDefault() ?? "";
+
         var minimalEntries = ParseMinimalLog(latestMinimal);
+        var verboseEntries = File.Exists(latestVerbose)
+            ? ParseVerboseLog(latestVerbose)
+            : minimalEntries.Select(e => ("RESTORED", e)).ToList() as IReadOnlyList<(string, string)>;
 
         PlayerActionBuffer.Restore(verboseEntries, minimalEntries);
         RunOverlay.RestoreRecentEntries(minimalEntries);
