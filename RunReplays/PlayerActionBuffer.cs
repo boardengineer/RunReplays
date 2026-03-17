@@ -313,6 +313,7 @@ public static class PlayerActionBuffer
     private static readonly FieldInfo? _instanceField =
         typeof(NDevConsole).GetField("_instance", BindingFlags.NonPublic | BindingFlags.Static);
 
+    [System.Diagnostics.Conditional("RUNREPLAYS_VERBOSE")]
     internal static void LogToDevConsole(string entry)
     {
         // Check the backing field directly to avoid the InvalidOperationException
