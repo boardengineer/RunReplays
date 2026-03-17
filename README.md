@@ -8,8 +8,6 @@ A **Slay the Spire 2** mod that automatically records your runs and lets you rep
 - **For Users**
   - [Recording](#recording)
   - [Replay](#replay)
-  - [Mid-run resume](#mid-run-resume)
-  - [Usage](#usage)
 
 ## Installation
 
@@ -31,19 +29,10 @@ Logs are saved automatically on every game save to:
 See the [replay file format](docs/sts2replay-format.md) for details on the `.sts2replay` log format.
 
 ### Replay
-Load any recorded run from the **Run Replays** button on the main menu. The mod:
+Load any recorded run from the **Run Replays** button on the main menu.  Replays will always executed the recorded commands in order for the applicable section
+Replay Options:
 
-- Restores the game save or starts a fresh seeded run
-- Automatically executes every recorded action in order
-- Waits for animations and sub-effects to settle between actions
-- Retries timing-sensitive operations (card plays, UI transitions)
-- Displays a live overlay showing the current command context
-
-### Mid-run resume
-Replay from any intermediate floor using the corresponding save file. New actions recorded after replay completes are appended to the existing log.
-
-### Usage
-
-1. **Play normally** -- actions are recorded in the background with a small overlay in the top-right corner.
-2. **Replay a run** -- from the main menu, click **Run Replays**, pick a seed and floor, and the run replays automatically.
-3. **Continue after replay** -- once all recorded commands are exhausted, normal play resumes and new actions append to the log.
+- Replay the entire run through to a given save
+- Replay the run starting at some lower floor
+- Replay the single floor
+- Load the game to the given point (same as continuing to that floor)

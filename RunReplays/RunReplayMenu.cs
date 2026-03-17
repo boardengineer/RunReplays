@@ -189,7 +189,7 @@ public static class RunReplayMenu
                 row.AddChild(indent);
 
                 var replayBtn = new Button();
-                replayBtn.Text = FormatFloorEntry(entry);
+                replayBtn.Text = $"Replay to floor {entry.Floor}";
                 replayBtn.Alignment = HorizontalAlignment.Left;
                 replayBtn.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
                 row.AddChild(replayBtn);
@@ -197,6 +197,7 @@ public static class RunReplayMenu
                 // "Start from" dropdown — lists earlier floors that have saves.
                 var startOptions = floorsWithSaves
                     .Where(e => e.Floor < entry.Floor)
+                    .OrderByDescending(e => e.Floor)
                     .ToList();
 
                 OptionButton? dropdown = null;
