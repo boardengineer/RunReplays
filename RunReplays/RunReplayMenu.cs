@@ -5,10 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Godot;
+using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Multiplayer;
 using MegaCrit.Sts2.Core.Nodes;
+using MegaCrit.Sts2.Core.Nodes.Audio;
 using MegaCrit.Sts2.Core.Nodes.Screens.MainMenu;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
@@ -476,7 +478,9 @@ public static class RunReplayMenu
         RunState runState = RunState.FromSerializable(serializableRun);
         RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
 
-        await NGame.Instance.Transition.FadeOut();
+        NAudioManager.Instance?.StopMusic();
+        SfxCmd.Play(runState.Players[0].Character.CharacterTransitionSfx);
+        await NGame.Instance.Transition.FadeOut(0.8f, runState.Players[0].Character.CharacterSelectTransitionPath);
         NGame.Instance.ReactionContainer.InitializeNetworking(new NetSingleplayerGameService());
         await NGame.Instance.LoadRun(runState, serializableRun.PreFinishedRoom);
         await NGame.Instance.Transition.FadeIn();
@@ -507,6 +511,9 @@ public static class RunReplayMenu
         }
 
         GD.Print($"[RunReplays] Starting replay: seed={entry.Seed} character={character.Id} floor={entry.Floor} ascension={entry.Ascension} ({commands.Count} commands)");
+
+        NAudioManager.Instance?.StopMusic();
+        SfxCmd.Play(character.CharacterTransitionSfx);
 
         TaskHelper.RunSafely(
             NGame.Instance.StartNewSingleplayerRun(
@@ -592,7 +599,9 @@ public static class RunReplayMenu
         RunState runState = RunState.FromSerializable(serializableRun);
         RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
 
-        await NGame.Instance.Transition.FadeOut();
+        NAudioManager.Instance?.StopMusic();
+        SfxCmd.Play(runState.Players[0].Character.CharacterTransitionSfx);
+        await NGame.Instance.Transition.FadeOut(0.8f, runState.Players[0].Character.CharacterSelectTransitionPath);
         NGame.Instance.ReactionContainer.InitializeNetworking(new NetSingleplayerGameService());
         await NGame.Instance.LoadRun(runState, serializableRun.PreFinishedRoom);
         await NGame.Instance.Transition.FadeIn();
