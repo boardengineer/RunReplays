@@ -74,6 +74,10 @@ public static class PlayerActionBuffer
             if (ReplayEngine.IsActive)
                 return;
 
+            // Reset the card-reward flag so it doesn't leak into non-reward
+            // actions (e.g. potion use triggering FromChooseACardScreen).
+            BattleRewardPatch.IsProcessingCardReward = false;
+
             if (action is UsePotionAction)
                 RecordCardPlayEarly(action.ToString()!);
         };
