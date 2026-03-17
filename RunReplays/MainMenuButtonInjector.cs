@@ -19,6 +19,9 @@ public static class MainMenuButtonInjector
     [HarmonyPostfix]
     public static void Postfix(NMainMenu __instance)
     {
+        // Reset any replay in progress so the game returns to record mode.
+        ReplayEngine.Clear();
+
         // Apply manual patches (isolated from PatchAll).
         // Deferred so the dev console is available for diagnostic logging.
         Callable.From(CrystalSphereManualPatcher.Apply).CallDeferred();
