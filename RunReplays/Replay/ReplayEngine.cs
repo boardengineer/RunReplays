@@ -469,15 +469,38 @@ public static class ReplayEngine
     // ── Sacrifice card reward (Pael's Wing) ─────────────────────────────────
 
     private const string SacrificeCardRewardCmd = "SacrificeCardReward";
+    private const string SacrificeCardRewardIndexedPrefix = "SacrificeCardReward[";
 
-    public static bool PeekSacrificeCardReward()
+    public static bool PeekSacrificeCardReward() =>
+        PeekSacrificeCardReward(out _);
+
+    public static bool PeekSacrificeCardReward(out int rewardIndex)
     {
-        return _pending.TryPeek(out string? cmd) && cmd == SacrificeCardRewardCmd;
+        if (_pending.TryPeek(out string? cmd))
+        {
+            // Indexed format: SacrificeCardReward[N]
+            if (cmd.StartsWith(SacrificeCardRewardIndexedPrefix))
+            {
+                int closeBracket = cmd.IndexOf(']', SacrificeCardRewardIndexedPrefix.Length);
+                if (closeBracket > SacrificeCardRewardIndexedPrefix.Length &&
+                    int.TryParse(cmd.AsSpan(SacrificeCardRewardIndexedPrefix.Length, closeBracket - SacrificeCardRewardIndexedPrefix.Length), out rewardIndex))
+                    return true;
+            }
+
+            // Legacy format: SacrificeCardReward (no index)
+            if (cmd == SacrificeCardRewardCmd)
+            {
+                rewardIndex = -1;
+                return true;
+            }
+        }
+        rewardIndex = -1;
+        return false;
     }
 
-    public static bool ConsumeSacrificeCardReward()
+    public static bool ConsumeSacrificeCardReward(out int rewardIndex)
     {
-        if (PeekSacrificeCardReward())
+        if (PeekSacrificeCardReward(out rewardIndex))
         {
             SignalConsumed(_pending.Dequeue());
             return true;

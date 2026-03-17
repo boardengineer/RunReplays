@@ -120,7 +120,7 @@ public static class ReplayRunner
 
     public static bool ExecuteSacrificeCardReward()
     {
-        if (!ReplayEngine.ConsumeSacrificeCardReward())
+        if (!ReplayEngine.ConsumeSacrificeCardReward(out _))
             return false;
 
         PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: sacrifice card reward (Pael's Wing)");
@@ -395,7 +395,7 @@ public static class ReplayRunner
         if (cmd.StartsWith("TakeCardReward: "))
             return $"take card reward '{cmd["TakeCardReward: ".Length..]}'";
 
-        if (cmd == "SacrificeCardReward")
+        if (cmd == "SacrificeCardReward" || cmd.StartsWith("SacrificeCardReward["))
             return "sacrifice card reward (Pael's Wing)";
 
         if (cmd.StartsWith("TakeRelicReward: "))

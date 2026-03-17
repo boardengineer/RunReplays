@@ -7,6 +7,7 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using MegaCrit.Sts2.Core.Runs;
@@ -136,9 +137,13 @@ public static class BattleRewardsReplayPatch
             return;
         }
 
+        bool isSacrifice = ReplayEngine.PeekSacrificeCardReward(out int sacrificeRewardIndex);
         if (ReplayEngine.PeekCardReward(out string cardTitle, out int rewardIndex)
-            || ReplayEngine.PeekSacrificeCardReward())
+            || isSacrifice)
         {
+            // Use the sacrifice index when it's a sacrifice command.
+            int effectiveIndex = isSacrifice ? sacrificeRewardIndex : rewardIndex;
+
             // Scan every reward button for anything that yields a card.
             // Some rewards (e.g. SpecialCardReward from Thieving Hopper) add the
             // card directly without opening a selection screen, while the normal
@@ -149,25 +154,23 @@ public static class BattleRewardsReplayPatch
             // sacrifice alternative is selected by CardRewardReplayPatch once
             // the screen is ready, matching the real UI flow.
             //
-            // When rewardIndex >= 0 (recorded with multiple card reward packs),
+            // When effectiveIndex >= 0 (recorded with multiple card reward packs),
             // we select the Nth CardReward button rather than the first one.
-            bool isSacrifice = ReplayEngine.PeekSacrificeCardReward();
             Node? screenButton = null;
             int cardRewardCount = 0;
             foreach (var (button, reward) in EnumerateRewardButtons(screen))
             {
                 if (IsRewardOfType(reward, "CardReward"))
                 {
-                    // Regular card reward — opens a selection screen.
-                    if (rewardIndex >= 0 && !isSacrifice)
+                    if (effectiveIndex >= 0)
                     {
                         // Indexed: pick the exact CardReward button.
-                        if (cardRewardCount == rewardIndex)
+                        if (cardRewardCount == effectiveIndex)
                             screenButton = button;
                     }
                     else
                     {
-                        // Legacy (no index) or sacrifice: use the first CardReward button.
+                        // Legacy (no index): use the first CardReward button.
                         screenButton ??= button;
                     }
                     cardRewardCount++;
@@ -248,11 +251,20 @@ public static class BattleRewardsReplayPatch
 
         if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
         {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: potion discard slot={discardSlot} during rewards screen — handing off to CardPlayReplayPatch.");
-            // TryDiscardPotion consumes the command, enqueues DiscardPotionGameAction,
-            // and AfterActionExecuted → ScheduleNextCombatAction → TryResumeRewardsProcessing
-            // will resume ProcessNextReward once the action completes.
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: potion discard slot={discardSlot} during rewards screen.");
             CardPlayReplayPatch.TryDiscardPotion();
+
+            // AfterActionExecuted on the combat ActionExecutor may not fire
+            // for actions enqueued outside combat.  Use a timer fallback to
+            // resume rewards processing after the discard completes.
+            NGame.Instance!.GetTree()!.CreateTimer(1.0).Connect(
+                "timeout", Callable.From(() =>
+                {
+                    if (!TryResumeRewardsProcessing())
+                        return;
+                    PlayerActionBuffer.LogToDevConsole(
+                        "[RunReplays] Replay: resumed rewards after potion discard (timer fallback).");
+                }));
             return;
         }
 

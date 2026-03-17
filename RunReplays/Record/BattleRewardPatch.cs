@@ -157,6 +157,14 @@ public static class BattleRewardPatch
     public static void PaelsWingSacrifice(PaelsWing paelsWing)
     {
         CardChoiceScreenSyncPatch.FlushIfPending();
-        PlayerActionBuffer.Record("SacrificeCardReward");
+
+        int idx = LastCardRewardIndex;
+        LastCardRewardIndex = -1;
+        IsProcessingCardReward = false;
+
+        if (idx >= 0)
+            PlayerActionBuffer.Record($"SacrificeCardReward[{idx}]");
+        else
+            PlayerActionBuffer.Record("SacrificeCardReward");
     }
 }
