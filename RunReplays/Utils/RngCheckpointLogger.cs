@@ -18,6 +18,7 @@ internal static class RngCheckpointLogger
 
     internal static void Clear()
     {
+        return; // paused
         try { File.WriteAllText(LogPath, ""); }
         catch { /* ignore */ }
     }

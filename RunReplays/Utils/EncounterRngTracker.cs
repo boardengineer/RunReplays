@@ -39,6 +39,7 @@ internal static class RngLog
 
     internal static void Reset()
     {
+        return; // paused
         lock (_lock)
         {
             _writer?.Flush();
@@ -50,6 +51,7 @@ internal static class RngLog
 
     internal static void EnsureInitialized()
     {
+        return; // paused
         lock (_lock)
         {
             if (_writer != null) return;
