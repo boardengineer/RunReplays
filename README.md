@@ -11,7 +11,7 @@ A **Slay the Spire 2** mod that automatically records your runs and lets you rep
 
 ## Installation
 
-Copy `RunReplays.dll` and `RunReplays.pck` into the game's mod folder:
+Copy `RunReplays.dll`, `RunReplays.pck`, and `RunReplays.json` into the game's mod folder:
 ```
 C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\
 ```

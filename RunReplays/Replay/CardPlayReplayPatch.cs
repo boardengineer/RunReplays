@@ -735,7 +735,7 @@ public static class CardPlayReplayPatch
         {
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryDiscardPotion: enqueuing DiscardPotionGameAction slot={slotIndex} for player '{player}'.");
             RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(
-                new DiscardPotionGameAction(player, (uint)slotIndex));
+                new DiscardPotionGameAction(player, (uint)slotIndex, CombatManager.Instance.IsInProgress));
         }
         catch (Exception ex)
         {
