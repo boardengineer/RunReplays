@@ -142,6 +142,55 @@ public static class ReplayEngine
         _pending.Clear();
         _recentConsumed.Clear();
         _replayActive = false;
+        ResetAllPatchState();
+    }
+
+    /// <summary>
+    /// Resets all static state across recording and replay patches so that
+    /// both paths can start cleanly after a stall or cancellation.
+    /// </summary>
+    public static void ResetAllPatchState()
+    {
+        // Recording state
+        BattleRewardPatch.LastCardRewardIndex = -1;
+        BattleRewardPatch.IsProcessingCardReward = false;
+        DeckRemovalState.PendingRemoval = false;
+        DeckRemovalState.PendingOptions = null;
+        DeckRemovalState.SuppressRecording = false;
+        ShopPurchaseState.IsPurchasing = false;
+        ShopPurchaseState.PendingLabel = null;
+        EventSelectionPatch.PendingIndex = null;
+        DeckCardSelectContext.Pending = false;
+        SimpleGridContext.Pending = false;
+        HandCardSelectRecordPatch.SuppressNext = false;
+
+        // Replay selector scopes
+        FromChooseACardScreenPatch._pendingScope?.Dispose();
+        FromChooseACardScreenPatch._pendingScope = null;
+        FromDeckGenericPatch._pendingScope?.Dispose();
+        FromDeckGenericPatch._pendingScope = null;
+        FromDeckForEnchantmentPatch._pendingScope?.Dispose();
+        FromDeckForEnchantmentPatch._pendingScope = null;
+        FromDeckForEnchantmentWithFilterPatch._pendingScope?.Dispose();
+        FromDeckForEnchantmentWithFilterPatch._pendingScope = null;
+        FromDeckForEnchantmentWithCardsPatch._pendingScope?.Dispose();
+        FromDeckForEnchantmentWithCardsPatch._pendingScope = null;
+        FromDeckForTransformationPatch._pendingScope?.Dispose();
+        FromDeckForTransformationPatch._pendingScope = null;
+        FromDeckForUpgradePatch._pendingScope?.Dispose();
+        FromDeckForUpgradePatch._pendingScope = null;
+        HandCardSelectReplayPatch._pendingScope?.Dispose();
+        HandCardSelectReplayPatch._pendingScope = null;
+        FromSimpleGridPatch._pendingScope?.Dispose();
+        FromSimpleGridPatch._pendingScope = null;
+
+        // Crystal sphere
+        CrystalSphereReplayPatch.PendingTool = null;
+
+        // Buffered recording contexts
+        CardChoiceScreenSyncPatch.FlushIfPending();
+        CardEffectDeckSelectContext.FlushIfPending();
+        SimpleGridSyncPatch.FlushIfPending();
     }
 
     /// <summary>Returns the next queued command without consuming it.</summary>
