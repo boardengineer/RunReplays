@@ -61,7 +61,9 @@ public static class ShopPurchaseStartPatch
     [HarmonyPrefix]
     public static void Prefix(MerchantEntry __instance)
     {
-        ShopPurchaseState.PendingLabel = __instance switch
+        // Record immediately so the command appears in the log as soon as
+        // the player clicks.  If the purchase fails, UndoLast removes it.
+        string? label = __instance switch
         {
             MerchantCardEntry card     => card.CreationResult?.Card?.Title is string t
                                              ? $"BuyCard {t}" : null,
@@ -71,6 +73,9 @@ public static class ShopPurchaseStartPatch
                                              ? $"BuyPotion {potion.Model.Title.GetFormattedText()}" : null,
             _ => null
         };
+        if (label != null)
+            PlayerActionBuffer.Record(label);
+        ShopPurchaseState.PendingLabel = label;
         ShopPurchaseState.IsPurchasing = true;
     }
 }
@@ -99,12 +104,9 @@ public static class ShopPurchaseCompletedPatch
     [HarmonyPrefix]
     public static void Prefix()
     {
-        string? label = ShopPurchaseState.PendingLabel;
+        // Already recorded at purchase start — just clear state.
         ShopPurchaseState.IsPurchasing = false;
         ShopPurchaseState.PendingLabel = null;
-
-        if (label != null)
-            PlayerActionBuffer.Record(label);
     }
 }
 
@@ -116,6 +118,9 @@ public static class ShopPurchaseFailedPatch
     [HarmonyPrefix]
     public static void Prefix()
     {
+        // Purchase failed — undo the speculatively recorded entry.
+        if (ShopPurchaseState.PendingLabel != null)
+            PlayerActionBuffer.UndoLast();
         ShopPurchaseState.IsPurchasing = false;
         ShopPurchaseState.PendingLabel = null;
     }

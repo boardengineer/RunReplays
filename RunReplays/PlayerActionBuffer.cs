@@ -229,6 +229,31 @@ public static class PlayerActionBuffer
     }
 
     /// <summary>
+    /// Removes the most recently recorded entry from both queues.
+    /// Used to undo a speculatively recorded action (e.g. a shop purchase
+    /// that later fails).
+    /// </summary>
+    public static void UndoLast()
+    {
+        RemoveLast(_verboseEntries);
+        RemoveLast(_minimalEntries);
+    }
+
+    private static void RemoveLast<T>(ConcurrentQueue<T> queue)
+    {
+        int count = queue.Count;
+        if (count == 0) return;
+        // Re-enqueue all but the last item.
+        for (int i = 0; i < count - 1; i++)
+        {
+            if (queue.TryDequeue(out T? item))
+                queue.Enqueue(item);
+        }
+        // Discard the last item.
+        queue.TryDequeue(out _);
+    }
+
+    /// <summary>
     /// Called when ReplayEngine exhausts its command queue.  Restores the
     /// replayed commands into both buffer queues so that the next save log
     /// contains all actions (replayed + new) rather than only the new ones.

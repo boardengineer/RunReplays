@@ -342,16 +342,12 @@ public static class DeckCardSelectRecordPatch
             indices.Add(index);
         }
 
-        // Buffer the minimal-log command rather than recording it immediately.
-        // If this selection was triggered by a PlayCardAction (combat card effect,
-        // e.g. Seeker Strike), the buffer is flushed by PlayerActionBuffer after
-        // AfterActionExecuted fires for that action, ensuring correct log order.
-        // If triggered by an event option (Wood Carvings), EventOptionChosenLogPatch
-        // flushes the buffer before recording the next ChooseEventOption.
+        // Record immediately — PlayCardAction is recorded early (before
+        // execution), so the selection naturally follows it in the log.
         string command = $"SelectDeckCard {string.Join(" ", indices)}";
-        CardEffectDeckSelectContext.Buffer(command);
+        PlayerActionBuffer.RecordMinimalOnly(command);
         PlayerActionBuffer.LogToDevConsole(
-            $"[DeckCardSelectPatch] Buffered {command} ({titles}).");
+            $"[DeckCardSelectPatch] Recorded {command} ({titles}).");
     }
 }
 
