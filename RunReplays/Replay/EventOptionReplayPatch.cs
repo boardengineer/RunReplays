@@ -183,6 +183,19 @@ public static class EventOptionReplayPatch
             return;
         }
 
+        // Handle potion discards that occur between event options (e.g. an
+        // event grants a potion when slots are full, requiring a discard).
+        if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[EventOptionReplayPatch] ContinueIfNeeded — potion discard slot={discardSlot} during event.");
+            CardPlayReplayPatch.TryDiscardPotion();
+
+            // After the discard completes, check again for more event options.
+            TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
+            return;
+        }
+
         if (ReplayEngine.PeekEventOption(out _))
         {
             TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
