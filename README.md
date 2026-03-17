@@ -2,7 +2,16 @@
 
 A [Harmony](https://github.com/pardeike/Harmony) mod for **Slay the Spire 2** that records every player decision during a run and can automatically replay it from any save point.
 
-## Features
+## Installation
+
+Copy `RunReplays.dll` into the game's mod folder:
+```
+C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\
+```
+
+---
+
+## For Users
 
 ### Recording
 Every meaningful player action is captured into a minimal, deterministic command log:
@@ -33,42 +42,32 @@ Load any recorded run from the **Run Replays** button on the main menu. The mod:
 ### Mid-run resume
 Replay from any intermediate floor using the corresponding save file. New actions recorded after replay completes are appended to the existing log.
 
-### Battle state tracking
-Each combat action is annotated with a pre-action state snapshot (hand contents, enemy HP) for debugging desync:
-```
-PlayCardAction card: CARD.BASH index: 2 targetid: 1 || Hand: [Strike, Strike, Bash, Defend, Defend] Enemies: [Beetle 38/38]
-```
-
-## Installation
-
-### Prerequisites
-- Slay the Spire 2 (Steam, Windows)
-- .NET 9.0 SDK
-- The game's mod loading must support Harmony (the game loads DLLs from its `mods/` folder)
-
-### Build
-```bash
-dotnet build RunReplays.sln -c Release
-```
-
-The post-build step copies the DLL to the game's mod directory:
-```
-C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\
-```
-
-### Manual install
-Copy `RunReplays.dll` from the build output to the `mods/` folder above.
-
-## Usage
+### Usage
 
 1. **Play normally** -- actions are recorded in the background with a small overlay in the top-right corner.
 2. **Replay a run** -- from the main menu, click **Run Replays**, pick a seed and floor, and the run replays automatically.
 3. **Continue after replay** -- once all recorded commands are exhausted, normal play resumes and new actions append to the log.
 
-## Architecture
+---
+
+## For Developers
+
+### Build from source
+
+**Prerequisites:**
+- Slay the Spire 2 (Steam, Windows)
+- .NET 9.0 SDK
+
+```bash
+dotnet build RunReplays.sln -c Release
+```
+
+The post-build step copies the DLL to the game's mod directory.
+
+### Architecture
 
 ```
-PlayerActionBuffer          Records actions into verbose + minimal logs
+PlayerActionBuffer          Records actions into the command log
     |
 RunSaveLogger               Persists logs to disk on every game save
     |
@@ -92,13 +91,15 @@ Each game decision point has its own Harmony patch that:
 - **Records** the player's choice as a compact command string
 - **Replays** by consuming the command and invoking the game API directly
 
-## Dependencies
+### Dependencies
 
 | Package | Version | Purpose |
 |---------|---------|---------|
 | [Lib.Harmony](https://github.com/pardeike/Harmony) | 2.4.2 | Runtime method patching |
 | [GodotSharp](https://www.nuget.org/packages/GodotSharp) | 4.7.0-dev.2 | Godot engine bindings |
 | sts2.dll | -- | Slay the Spire 2 game assembly (local reference) |
+
+---
 
 ## License
 
