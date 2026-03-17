@@ -68,8 +68,9 @@ public static class BattleRewardsReplayPatch
                       || ReplayEngine.PeekNetDiscardPotion(out _);
         bool hasMapNode         = ReplayEngine.PeekMapNode(out _, out _);
         bool hasProceedToNextAct = ReplayEngine.PeekProceedToNextAct();
+        bool hasEventOption     = ReplayEngine.PeekEventOption(out _);
 
-        if (!hasReward && !hasMapNode && !hasProceedToNextAct)
+        if (!hasReward && !hasMapNode && !hasProceedToNextAct && !hasEventOption)
         {
             ReplayEngine.PeekNext(out string? next);
             PlayerActionBuffer.LogToDevConsole(
@@ -269,6 +270,19 @@ public static class BattleRewardsReplayPatch
             PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: all rewards done, proceeding to next act.");
             ReplayRunner.ExecuteProceedToNextAct();
             RunManager.Instance.ActChangeSynchronizer.SetLocalPlayerReady();
+            return;
+        }
+
+        if (ReplayEngine.PeekEventOption(out _))
+        {
+            // Player skipped all rewards (e.g. Future of Potions event where
+            // the card reward was declined).  Simulate pressing the proceed
+            // button so the rewards screen closes and the event can continue.
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: no rewards taken, dismissing rewards screen.");
+            var proceedMethod = screen.GetType().GetMethod(
+                "OnProceedButtonPressed",
+                BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            proceedMethod?.Invoke(screen, new object?[] { null });
         }
     }
 
