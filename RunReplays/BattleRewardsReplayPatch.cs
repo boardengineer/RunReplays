@@ -180,11 +180,11 @@ public static class BattleRewardsReplayPatch
 
                 // Any other reward that goes through SyncLocalObtainedCard
                 // (e.g. SpecialCardReward) adds the card immediately with no
-                // selection screen.  We can only verify title for rewards that
-                // expose the card, so accept any non-CardReward card-yielding
-                // button when the title matches or can't be checked.
+                // selection screen.  Only consider rewards that actually expose
+                // a card with a matching title — skip non-card rewards
+                // (GoldReward, PotionReward, RelicReward, etc.).
                 string? rewardCardTitle = GetRewardCardTitle(reward);
-                if (rewardCardTitle != null && rewardCardTitle != cardTitle)
+                if (rewardCardTitle == null || rewardCardTitle != cardTitle)
                     continue;
 
                 ReplayRunner.ExecuteCardReward(out _);
