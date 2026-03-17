@@ -234,6 +234,25 @@ public static class RunReplayMenu
                         LoadSave(captured);
                     };
                 }
+
+                // "Replay Floor" — loads this floor's save and replays only
+                // the commands between this floor and the next floor's log.
+                var nextFloor = seedEntries
+                    .Where(e => e.Floor > entry.Floor)
+                    .OrderBy(e => e.Floor)
+                    .FirstOrDefault();
+                if (entry.SavePath != null && nextFloor != null)
+                {
+                    var replayFloorBtn = new Button();
+                    replayFloorBtn.Text = "Replay Floor";
+                    row.AddChild(replayFloorBtn);
+                    var capturedNext = nextFloor;
+                    replayFloorBtn.Pressed += () =>
+                    {
+                        root.QueueFree();
+                        StartReplayFromFloor(capturedNext, captured);
+                    };
+                }
             }
         }
     }
