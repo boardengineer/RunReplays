@@ -110,6 +110,13 @@ public static class ReplayDispatcher
     public static bool CardPlayInFlight { get; set; }
 
     /// <summary>
+    /// Tracks whether a potion use is in flight.  Set when EnqueueManualUse
+    /// is called, cleared when AfterActionExecuted fires for UsePotionAction.
+    /// Blocks dispatch while the potion animation is playing.
+    /// </summary>
+    public static bool PotionInFlight { get; set; }
+
+    /// <summary>
     /// Called when combat effects have settled after a card play, potion use,
     /// etc.  Bypasses the delay timer for immediate dispatch.
     /// </summary>
@@ -194,6 +201,7 @@ public static class ReplayDispatcher
         _dispatchInProgress = false;
         _lastDispatchedCmd = null;
         CardPlayInFlight = false;
+        PotionInFlight = false;
         ++_dispatchGeneration;
     }
 
@@ -224,6 +232,20 @@ public static class ReplayDispatcher
             return;
         }
 
+        // Block dispatch while a potion animation is playing.
+        if (PotionInFlight)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — potion in flight");
+            return;
+        }
+
+        // Block dispatch while end-turn is completing (waiting for TurnEnded+TurnStarted gate).
+        if (CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — awaiting end-turn completion");
+            return;
+        }
+
         // Don't re-dispatch the same command that's already in progress.
         if (_dispatchInProgress && cmd == _lastDispatchedCmd)
         {
@@ -243,6 +265,8 @@ public static class ReplayDispatcher
         _lastDispatchedCmd = cmd;
 
         int gen = ++_dispatchGeneration;
+        PlayerActionBuffer.LogDispatcher(
+            $"[Dispatcher] TryDispatch: scheduling gen={gen} delay={_delayBetweenCommands}s cmd='{cmd[..Math.Min(cmd.Length, 40)]}'");
         if (_delayBetweenCommands > 0)
         {
             NGame.Instance!.GetTree()!.CreateTimer(_delayBetweenCommands).Connect(
@@ -250,6 +274,9 @@ public static class ReplayDispatcher
                 {
                     if (_dispatchGeneration == gen)
                         ExecuteNext();
+                    else
+                        PlayerActionBuffer.LogDispatcher(
+                            $"[Dispatcher] Timer STALE gen={gen} current={_dispatchGeneration}");
                 }));
         }
         else
@@ -264,8 +291,36 @@ public static class ReplayDispatcher
 
     private static void ExecuteNext()
     {
+        PlayerActionBuffer.LogDispatcher(
+            $"[Dispatcher] ExecuteNext: gen={_dispatchGeneration} inProgress={_dispatchInProgress}" +
+            $" potion={PotionInFlight} card={CardPlayInFlight} endTurn={CardPlayReplayPatch.IsAwaitingEndTurnCompletion}");
+
         if (!ReplayEngine.IsActive || _paused)
             return;
+
+        if (PotionInFlight)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] ExecuteNext: BLOCKED — potion in flight");
+            _dispatchInProgress = false;
+            _lastDispatchedCmd = null;
+            return;
+        }
+
+        if (CardPlayInFlight)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] ExecuteNext: BLOCKED — card play in flight");
+            _dispatchInProgress = false;
+            _lastDispatchedCmd = null;
+            return;
+        }
+
+        if (CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] ExecuteNext: BLOCKED — awaiting end-turn completion");
+            _dispatchInProgress = false;
+            _lastDispatchedCmd = null;
+            return;
+        }
 
         if (_stepping && !_stepRequested)
             return;
