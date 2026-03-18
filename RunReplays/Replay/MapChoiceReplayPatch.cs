@@ -64,6 +64,7 @@ public static class MapChoiceReplayPatch
         if (!ReplayEngine.PeekMapNode(out int col, out int row))
             return;
 
+        ReplayDispatcher.MapMoveInFlight = true;
         Callable.From(() => AutoSelectMapNode(_activeScreen, col, row)).CallDeferred();
     }
 

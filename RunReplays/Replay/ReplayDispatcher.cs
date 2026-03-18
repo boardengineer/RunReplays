@@ -1,4 +1,5 @@
 using Godot;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Nodes;
 
 namespace RunReplays;
@@ -117,6 +118,13 @@ public static class ReplayDispatcher
     public static bool PotionInFlight { get; set; }
 
     /// <summary>
+    /// Tracks whether a map move is in progress.  Set when a MoveToMapCoordAction
+    /// is dispatched, cleared when a room readiness signal arrives (Combat, Event,
+    /// Shop, RestSite, Treasure).  Blocks dispatch while the new room loads.
+    /// </summary>
+    public static bool MapMoveInFlight { get; set; }
+
+    /// <summary>
     /// Called when combat effects have settled after a card play, potion use,
     /// etc.  Bypasses the delay timer for immediate dispatch.
     /// </summary>
@@ -149,9 +157,23 @@ public static class ReplayDispatcher
     /// Called by Harmony postfixes to signal that the game is ready for a
     /// category of action.  Triggers dispatch if the next command matches.
     /// </summary>
+    /// <summary>Room readiness signals that indicate a map move has completed.</summary>
+    private const ReadyState RoomReadyMask =
+        ReadyState.Combat | ReadyState.Event | ReadyState.RestSite |
+        ReadyState.Shop | ReadyState.Treasure;
+
     public static void SignalReady(ReadyState state)
     {
         _ready |= state;
+
+        // A room readiness signal means the map move completed and the
+        // new room is loaded — unblock dispatch.
+        if (MapMoveInFlight && (state & RoomReadyMask) != 0)
+        {
+            PlayerActionBuffer.LogDispatcher($"[Dispatcher] MapMove complete — room ready: {state}");
+            MapMoveInFlight = false;
+        }
+
         TryDispatch();
     }
 
@@ -202,6 +224,7 @@ public static class ReplayDispatcher
         _lastDispatchedCmd = null;
         CardPlayInFlight = false;
         PotionInFlight = false;
+        MapMoveInFlight = false;
         ++_dispatchGeneration;
     }
 
@@ -232,6 +255,17 @@ public static class ReplayDispatcher
             return;
         }
 
+        // Selection commands are consumed by ICardSelector implementations when the
+        // game triggers a selection screen (FromChooseACardScreen, FromDeckGeneric, etc.).
+        // The dispatcher does not touch them — the selector consumes the command,
+        // NotifyConsumed fires, and the dispatcher advances to the next command.
+        if (IsSelectionCommand(cmd))
+        {
+            PlayerActionBuffer.LogDispatcher(
+                $"[Dispatcher] Waiting for selector: '{cmd[..Math.Min(cmd.Length, 50)]}'");
+            return;
+        }
+
         // Block dispatch while a potion animation is playing.
         if (PotionInFlight)
         {
@@ -239,10 +273,26 @@ public static class ReplayDispatcher
             return;
         }
 
+        // Block dispatch while a new room is loading after map movement.
+        if (MapMoveInFlight)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — map move in flight");
+            return;
+        }
+
         // Block dispatch while end-turn is completing (waiting for TurnEnded+TurnStarted gate).
         if (CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
         {
             PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — awaiting end-turn completion");
+            return;
+        }
+
+        // Block potion use/discard during combat startup (before TurnStarted fires).
+        if ((cmd.StartsWith("UsePotionAction ") || cmd.StartsWith("NetDiscardPotionGameAction "))
+            && CombatManager.Instance.IsInProgress
+            && (_ready & ReadyState.Combat) == 0)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — potion during combat startup");
             return;
         }
 
@@ -322,6 +372,14 @@ public static class ReplayDispatcher
             return;
         }
 
+        if (MapMoveInFlight)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] ExecuteNext: BLOCKED — map move in flight");
+            _dispatchInProgress = false;
+            _lastDispatchedCmd = null;
+            return;
+        }
+
         if (_stepping && !_stepRequested)
             return;
 
@@ -331,6 +389,20 @@ public static class ReplayDispatcher
         ReadyState required = GetRequiredState(cmd);
         if (required != ReadyState.None && (_ready & required) == 0)
             return;
+
+        // Potion use/discard returns ReadyState.None (usable in any context),
+        // but during combat startup (before TurnStarted fires) the combat
+        // state isn't ready.  Block until Combat readiness is set.
+        if (required == ReadyState.None
+            && (cmd.StartsWith("UsePotionAction ") || cmd.StartsWith("NetDiscardPotionGameAction "))
+            && CombatManager.Instance.IsInProgress
+            && (_ready & ReadyState.Combat) == 0)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] ExecuteNext: BLOCKED — potion during combat startup");
+            _dispatchInProgress = false;
+            _lastDispatchedCmd = null;
+            return;
+        }
 
         PlayerActionBuffer.LogDispatcher(
             $"[Dispatcher] {cmd}");
@@ -377,6 +449,20 @@ public static class ReplayDispatcher
                 }
                 break;
         }
+    }
+
+    /// <summary>
+    /// Returns true for card selection commands that are consumed inline by
+    /// ICardSelector implementations, not by the dispatcher.
+    /// </summary>
+    private static bool IsSelectionCommand(string cmd)
+    {
+        return cmd.StartsWith("SelectCardFromScreen ")
+            || cmd.StartsWith("SelectDeckCard ")
+            || cmd.StartsWith("SelectHandCards")
+            || cmd.StartsWith("SelectSimpleCard ")
+            || cmd.StartsWith("RemoveCardFromDeck: ")
+            || cmd.StartsWith("UpgradeCard ");
     }
 
     /// <summary>

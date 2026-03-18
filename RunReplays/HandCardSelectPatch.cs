@@ -106,16 +106,15 @@ public static class HandCardSelectReplayPatch
         _pendingScope = null;
 
         SelectorStackDebug.Log("FromHand.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
+        PlayerActionBuffer.LogDispatcher($"[Selection] FromHand.Prefix: IsActive={ReplayEngine.IsActive}");
         if (!ReplayEngine.IsActive)
             return;
 
-        // Only push a selector if SelectHandCards is at or near the front of
-        // the queue.  SkipToSelectHandCards drains everything before the command
-        // and is dangerous when no SelectHandCards was recorded (e.g. Brand as
-        // the last card in hand — empty hand auto-resolves without a choice).
-        // In that case a distant SelectHandCards from a later turn would cause
-        // the skip to consume card plays and end turns.
-        if (!ReplayEngine.SafeSkipToSelectHandCards())
+        ReplayEngine.PeekNext(out string? nextCmd);
+        bool safeSkip = ReplayEngine.SafeSkipToSelectHandCards();
+        PlayerActionBuffer.LogDispatcher($"[Selection] FromHand.Prefix: SafeSkip={safeSkip} nextCmd='{nextCmd}'");
+
+        if (!safeSkip)
             return;
 
         var selector = new ReplayHandCardSelector();
