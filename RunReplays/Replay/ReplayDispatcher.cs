@@ -1,5 +1,6 @@
 using Godot;
 using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.Nodes;
 
 namespace RunReplays;
@@ -148,6 +149,38 @@ public static class ReplayDispatcher
     public static bool PotionInFlight { get; set; }
 
     /// <summary>
+    /// True while a game action is executing (between BeforeActionExecuted
+    /// and AfterActionExecuted).  Blocks all non-selection command dispatch.
+    /// </summary>
+    private static bool _actionInFlight;
+    public static bool ActionInFlight => _actionInFlight;
+
+    /// <summary>
+    /// Subscribes to BeforeActionExecuted / AfterActionExecuted on the given
+    /// executor so that <see cref="ActionInFlight"/> tracks action execution.
+    /// Called from the ActionExecutor constructor patch.
+    /// </summary>
+    public static void SubscribeToExecutor(ActionExecutor executor)
+    {
+        executor.BeforeActionExecuted += OnBeforeAction;
+        executor.AfterActionExecuted += OnAfterAction;
+    }
+
+    private static void OnBeforeAction(GameAction action)
+    {
+        if (!ReplayEngine.IsActive) return;
+        _actionInFlight = true;
+        PlayerActionBuffer.LogDispatcher($"[ActionFlight] BEGIN: {action.GetType().Name}");
+    }
+
+    private static void OnAfterAction(GameAction action)
+    {
+        if (!ReplayEngine.IsActive) return;
+        _actionInFlight = false;
+        PlayerActionBuffer.LogDispatcher($"[ActionFlight] END:   {action.GetType().Name}");
+    }
+
+    /// <summary>
     /// Tracks whether a map move is in progress.  Set when a MoveToMapCoordAction
     /// is dispatched, cleared when a room readiness signal arrives (Combat, Event,
     /// Shop, RestSite, Treasure).  Blocks dispatch while the new room loads.
@@ -252,6 +285,7 @@ public static class ReplayDispatcher
         CardPlayInFlight = false;
         PotionInFlight = false;
         MapMoveInFlight = false;
+        _actionInFlight = false;
         ++_dispatchGeneration;
         RestoreGameSpeed();
     }
@@ -273,6 +307,10 @@ public static class ReplayDispatcher
 
         // Block dispatch while in-flight operations are pending.
         if (PotionInFlight || MapMoveInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
+            return;
+
+        // Block while a game action is executing (BeforeAction → AfterAction).
+        if (ActionInFlight && !IsSelectionCommand(cmd))
             return;
 
         // Selection commands are consumed by ICardSelector implementations when the
@@ -341,6 +379,14 @@ public static class ReplayDispatcher
 
         if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
             return;
+
+        // Block while a game action is executing, unless it's a selection command.
+        if (ActionInFlight && !IsSelectionCommand(cmd))
+        {
+            _dispatchInProgress = false;
+            _lastDispatchedCmd = null;
+            return;
+        }
 
         ReadyState required = GetRequiredState(cmd);
         if (required != ReadyState.None && (_ready & required) == 0)

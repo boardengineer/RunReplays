@@ -64,7 +64,7 @@ public static class EventOptionReplayPatch
 
             PlayerActionBuffer.LogDispatcher("[Event] Event finished — consumed PROCEED, calling NEventRoom.Proceed().");
             TaskHelper.RunSafely(NEventRoom.Proceed());
-            ReplayDispatcher.DispatchNow();
+            DispatchAfterDelay();
             return;
         }
 
@@ -80,7 +80,7 @@ public static class EventOptionReplayPatch
                 ReplayRunner.ExecuteEventOption(out _);
                 PlayerActionBuffer.LogDispatcher($"[Event] Consumed PROCEED (map move follows) — advancing.");
                 TaskHelper.RunSafely(NEventRoom.Proceed());
-                ReplayDispatcher.DispatchNow();
+                DispatchAfterDelay();
                 return;
             }
         }
@@ -127,14 +127,18 @@ public static class EventOptionReplayPatch
         PlayerActionBuffer.LogDispatcher($"[Event] Consumed and selecting option '{textKey}' at index {index}.");
         synchronizer.ChooseLocalOption(index);
 
-        // After the option is chosen, defer to check if more event options follow.
-        Callable.From(() =>
-        {
-            // Signal event readiness so the dispatcher handles the next event
-            // option, potion, or finished state.
-            ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Event);
-            ReplayDispatcher.DispatchNow();
-        }).CallDeferred();
+        // After the option is chosen, wait before checking if more event options follow.
+        NGame.Instance!.GetTree()!.CreateTimer(0.5).Connect(
+            "timeout", Callable.From(() =>
+            {
+                ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Event);
+                ReplayDispatcher.DispatchNow();
+            }));
     }
 
+    private static void DispatchAfterDelay()
+    {
+        NGame.Instance!.GetTree()!.CreateTimer(0.5).Connect(
+            "timeout", Callable.From(() => ReplayDispatcher.DispatchNow()));
+    }
 }

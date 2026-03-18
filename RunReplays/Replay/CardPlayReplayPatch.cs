@@ -112,6 +112,7 @@ public static class CardPlayReplayPatch
         CombatManager.Instance.TurnEnded += _turnEndedHandler;
 
         __instance.AfterActionExecuted += OnAfterActionExecuted;
+        ReplayDispatcher.SubscribeToExecutor(__instance);
 
         // Invalidate any pending timer callbacks from the previous battle.
         _battleGeneration++;
