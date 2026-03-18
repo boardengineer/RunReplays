@@ -73,6 +73,7 @@ public static class TreasureRoomReplayPatch
             _activeRoom = __instance;
             PlayerActionBuffer.LogToDevConsole(
                 "[TreasureRoomReplayPatch] NTreasureRoom ready — stored room reference.");
+            ReplayDispatcher.DispatchNow();
         }
 
         internal static void ClickChest(NTreasureRoom room)
@@ -113,6 +114,7 @@ public static class TreasureRoomReplayPatch
 
             PlayerActionBuffer.LogToDevConsole(
                 $"[TreasureRoomReplayPatch] Relic pick pending (index={relicIndex}) — stored for dispatcher.");
+            ReplayDispatcher.DispatchNow();
         }
     }
 

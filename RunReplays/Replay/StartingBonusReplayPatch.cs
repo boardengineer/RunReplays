@@ -39,6 +39,7 @@ public static class StartingBonusReplayPatch
             return;
 
         _activeSynchronizer = __instance;
+        ReplayDispatcher.DispatchNow();
     }
 
     /// <summary>Called by ReplayDispatcher to trigger starting bonus selection.</summary>

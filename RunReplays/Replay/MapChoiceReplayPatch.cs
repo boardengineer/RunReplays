@@ -51,6 +51,8 @@ public static class MapChoiceReplayPatch
             PlayerActionBuffer.LogToDevConsole("[RunReplays] ReplayEngine failed to peek map node.");
             return;
         }
+
+        ReplayDispatcher.DispatchNow();
     }
 
     /// <summary>Called by ReplayDispatcher to trigger map node selection.</summary>

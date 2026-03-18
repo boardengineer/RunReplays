@@ -35,8 +35,9 @@ public static class ProceedButtonReplayPatch
             return;
 
         PlayerActionBuffer.LogToDevConsole(
-            "[ProceedButtonReplayPatch] NProceedButton ready with map move pending — deferring map open.");
+            "[ProceedButtonReplayPatch] NProceedButton ready with map move pending.");
         Callable.From(OpenMap).CallDeferred();
+        ReplayDispatcher.DispatchNow();
     }
 
     internal static void OpenMap()
