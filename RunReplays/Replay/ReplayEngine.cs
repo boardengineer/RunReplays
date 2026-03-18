@@ -303,9 +303,16 @@ public static class ReplayEngine
         if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(NetDiscardPotionPrefix))
         {
             int markerPos = cmd.LastIndexOf(NetDiscardPotionSlotMarker);
-            if (markerPos >= 0 && int.TryParse(
-                    cmd.AsSpan(markerPos + NetDiscardPotionSlotMarker.Length), out slotIndex))
-                return true;
+            if (markerPos >= 0)
+            {
+                // Extract just the slot number — stop at the next space
+                // (the format may include " in combat: {bool}" after the slot).
+                var afterMarker = cmd.AsSpan(markerPos + NetDiscardPotionSlotMarker.Length);
+                int spaceIdx = afterMarker.IndexOf(' ');
+                var slotSpan = spaceIdx >= 0 ? afterMarker[..spaceIdx] : afterMarker;
+                if (int.TryParse(slotSpan, out slotIndex))
+                    return true;
+            }
         }
         slotIndex = -1;
         return false;

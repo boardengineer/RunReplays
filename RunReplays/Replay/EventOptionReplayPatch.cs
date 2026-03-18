@@ -39,17 +39,36 @@ public static class EventOptionReplayPatch
         PlayerActionBuffer.LogToDevConsole(
             $"[EventOptionReplayPatch] BeginEvent — event='{canonicalEvent.GetType().Name}' isAncient={isAncient} replayActive={replayActive} nextCmd='{nextCmd}'");
 
-        if (!ReplayEngine.PeekEventOption(out string peekedKey))
+        _activeSynchronizer = __instance;
+
+        // Handle potion discards/uses that precede the first event option.
+        if (ReplayEngine.PeekNetDiscardPotion(out _))
         {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[EventOptionReplayPatch] No ChooseEventOption pending — skipping auto-select.");
+            PlayerActionBuffer.LogDispatcher("[Event] NetDiscardPotion before event option — executing discard.");
+            CardPlayReplayPatch.TryDiscardPotion();
+            TaskHelper.RunSafely(RetryAfterDelay(__instance, MaxRetries));
             return;
         }
 
-        _activeSynchronizer = __instance;
+        if (ReplayEngine.PeekUsePotion(out _, out _, out _))
+        {
+            PlayerActionBuffer.LogDispatcher("[Event] UsePotionAction before event option — executing potion use.");
+            CardPlayReplayPatch.TryUsePotion();
+            TaskHelper.RunSafely(RetryAfterDelay(__instance, MaxRetries));
+            return;
+        }
+
+        if (!ReplayEngine.PeekEventOption(out string peekedKey))
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[EventOptionReplayPatch] No ChooseEventOption pending — deferring retry.");
+            TaskHelper.RunSafely(RetryAfterDelay(__instance, MaxRetries));
+            return;
+        }
 
         PlayerActionBuffer.LogToDevConsole(
             $"[EventOptionReplayPatch] Stored synchronizer for textKey='{peekedKey}'.");
+        ReplayDispatcher.DispatchNow();
     }
 
     /// <summary>Called by ReplayDispatcher to trigger event option selection.</summary>
@@ -94,10 +113,36 @@ public static class EventOptionReplayPatch
             return;
         }
 
+        // Handle potion discards/uses interleaved with event options.
+        if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
+        {
+            PlayerActionBuffer.LogDispatcher($"[Event] AutoSelect — potion discard slot={discardSlot}");
+            CardPlayReplayPatch.TryDiscardPotion();
+            TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
+            return;
+        }
+
+        if (ReplayEngine.PeekUsePotion(out _, out _, out _))
+        {
+            PlayerActionBuffer.LogDispatcher("[Event] AutoSelect — potion use");
+            CardPlayReplayPatch.TryUsePotion();
+            TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
+            return;
+        }
+
         if (!ReplayEngine.PeekEventOption(out string textKey, out int recordedIndex))
         {
-            PlayerActionBuffer.LogToDevConsole(
-                "[EventOptionReplayPatch] AutoSelect — no ChooseEventOption at front of queue.");
+            if (retriesLeft > 0)
+            {
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[EventOptionReplayPatch] AutoSelect — no ChooseEventOption at front, retrying ({retriesLeft} left).");
+                TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft - 1));
+            }
+            else
+            {
+                PlayerActionBuffer.LogToDevConsole(
+                    "[EventOptionReplayPatch] AutoSelect — no ChooseEventOption after retries — aborting.");
+            }
             return;
         }
 
@@ -194,6 +239,23 @@ public static class EventOptionReplayPatch
         // Use a delay so any async page transition has time to complete.
         if (finished)
         {
+            TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
+            return;
+        }
+
+        // Handle potion discards/uses between event options.
+        if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot2))
+        {
+            PlayerActionBuffer.LogDispatcher($"[Event] ContinueIfNeeded — potion discard slot={discardSlot2}");
+            CardPlayReplayPatch.TryDiscardPotion();
+            TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
+            return;
+        }
+
+        if (ReplayEngine.PeekUsePotion(out _, out _, out _))
+        {
+            PlayerActionBuffer.LogDispatcher("[Event] ContinueIfNeeded — potion use");
+            CardPlayReplayPatch.TryUsePotion();
             TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
             return;
         }

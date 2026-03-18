@@ -721,7 +721,7 @@ public static class CardPlayReplayPatch
 
     // ── Potion-use execution ──────────────────────────────────────────────────
 
-    private static void TryUsePotion()
+    internal static void TryUsePotion()
     {
         if (!ReplayRunner.ExecuteUsePotion(out uint potionIndex, out uint? targetId, out bool inCombat))
         {
