@@ -333,6 +333,7 @@ public static class CardPlayReplayPatch
             return;
         }
 
+        ReplayDispatcher.DispatchNow();
     }
 
     /// <summary>Called by ReplayDispatcher to trigger the next combat action.</summary>
