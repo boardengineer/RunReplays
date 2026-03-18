@@ -145,7 +145,10 @@ public static class ReplayEngine
 
         _replayActive = _loadedCommands.Count > 0;
         if (_replayActive)
+        {
             ReplayDispatcher.ApplyGameSpeed();
+            ReplayDispatcher.StartWatchdog();
+        }
     }
 
     public static void Clear()

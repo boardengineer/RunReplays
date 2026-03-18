@@ -2,6 +2,7 @@ using Godot;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.Nodes;
+using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 
 namespace RunReplays;
 
@@ -61,6 +62,12 @@ public static class ReplayDispatcher
     /// against this to detect if they've been superseded by DispatchNow.
     /// </summary>
     private static int _dispatchGeneration;
+
+    /// <summary>Timestamp of the last successful command dispatch (System.Environment.TickCount64).</summary>
+    private static long _lastDispatchTick;
+
+    /// <summary>Whether the stall watchdog timer is running.</summary>
+    private static bool _watchdogRunning;
 
     /// <summary>Current readiness state (bitmask of what the game is ready for).</summary>
     public static ReadyState Ready => _ready;
@@ -178,6 +185,7 @@ public static class ReplayDispatcher
         if (!ReplayEngine.IsActive) return;
         _actionInFlight = false;
         PlayerActionBuffer.LogDispatcher($"[ActionFlight] END:   {action.GetType().Name}");
+        TryDispatch();
     }
 
     /// <summary>
@@ -286,8 +294,61 @@ public static class ReplayDispatcher
         PotionInFlight = false;
         MapMoveInFlight = false;
         _actionInFlight = false;
+        _lastDispatchTick = System.Environment.TickCount64;
         ++_dispatchGeneration;
         RestoreGameSpeed();
+        StartWatchdog();
+    }
+
+    /// <summary>
+    /// Starts a recurring 2-second watchdog that checks for stalled map moves.
+    /// If no command has been dispatched for 5+ seconds and the next command
+    /// is a map move, forces readiness and dispatches it.
+    /// </summary>
+    public static void StartWatchdog()
+    {
+        if (_watchdogRunning) return;
+        _watchdogRunning = true;
+        ScheduleWatchdogTick();
+    }
+
+    private static void ScheduleWatchdogTick()
+    {
+        if (!_watchdogRunning) return;
+        NGame.Instance?.GetTree()?.CreateTimer(1.0).Connect(
+            "timeout", Callable.From(WatchdogTick));
+    }
+
+    private static void WatchdogTick()
+    {
+        if (!ReplayEngine.IsActive)
+        {
+            _watchdogRunning = false;
+            return;
+        }
+        
+        long elapsed = System.Environment.TickCount64 - _lastDispatchTick;
+
+        PlayerActionBuffer.LogDispatcher(
+            $"[Watchdog] watchdog ({elapsed}ms idle) — ticking");
+        
+        if (elapsed >= 5000
+            && ReplayEngine.PeekNext(out string? cmd) && cmd != null
+            && cmd.StartsWith("MoveToMapCoordAction "))
+        {
+            PlayerActionBuffer.LogDispatcher(
+                $"[Watchdog] Stall detected ({elapsed}ms idle) — forcing map move dispatch.");
+            // Force map readiness and clear blockers so dispatch can proceed.
+            _actionInFlight = false;
+            MapMoveInFlight = false;
+            _dispatchInProgress = false;
+            _lastDispatchedCmd = null;
+            _ready |= ReadyState.Map;
+            NMapScreen.Instance?.Open();
+            NMapScreen.Instance?.SetTravelEnabled(true);
+        }
+
+        ScheduleWatchdogTick();
     }
 
     /// <summary>
@@ -405,6 +466,7 @@ public static class ReplayDispatcher
             return;
         }
 
+        _lastDispatchTick = System.Environment.TickCount64;
         PlayerActionBuffer.LogDispatcher($"Attempting to dispatch {cmd}");
         switch (required)
         {
