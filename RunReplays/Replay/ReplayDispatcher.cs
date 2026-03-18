@@ -178,14 +178,12 @@ public static class ReplayDispatcher
     {
         if (!ReplayEngine.IsActive) return;
         _actionInFlight = true;
-        PlayerActionBuffer.LogDispatcher($"[ActionFlight] BEGIN: {action.GetType().Name}");
     }
 
     private static void OnAfterAction(GameAction action)
     {
         if (!ReplayEngine.IsActive) return;
         _actionInFlight = false;
-        PlayerActionBuffer.LogDispatcher($"[ActionFlight] END:   {action.GetType().Name}");
         TryDispatch();
     }
 
@@ -330,15 +328,10 @@ public static class ReplayDispatcher
         
         long elapsed = System.Environment.TickCount64 - _lastDispatchTick;
 
-        PlayerActionBuffer.LogDispatcher(
-            $"[Watchdog] watchdog ({elapsed}ms idle) — ticking");
-        
         if (elapsed >= 5000
             && ReplayEngine.PeekNext(out string? cmd) && cmd != null
             && cmd.StartsWith("MoveToMapCoordAction "))
         {
-            PlayerActionBuffer.LogDispatcher(
-                $"[Watchdog] Stall detected ({elapsed}ms idle) — forcing map move dispatch.");
             // Force map readiness and clear blockers so dispatch can proceed.
             _actionInFlight = false;
             MapMoveInFlight = false;
@@ -359,6 +352,7 @@ public static class ReplayDispatcher
     /// </summary>
     internal static void TryDispatch()
     {
+        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch");
         if (!ReplayEngine.IsActive || _paused)
             return;
 
@@ -380,8 +374,20 @@ public static class ReplayDispatcher
         // game triggers a selection screen (FromChooseACardScreen, FromDeckGeneric, etc.).
         // The dispatcher does not touch them — the selector consumes the command,
         // NotifyConsumed fires, and the dispatcher advances to the next command.
+        // Re-check periodically so dispatch resumes promptly after consumption.
         if (IsSelectionCommand(cmd))
+        {
+            int selGen = _dispatchGeneration;
+            NGame.Instance?.GetTree()?.CreateTimer(0.3f).Connect(
+                "timeout", Callable.From(() =>
+                {
+                    if (_dispatchGeneration == selGen) {
+                        PlayerActionBuffer.LogDispatcher("[Dispatcher] schedule new selector for command");
+                        TryDispatch();
+                    }
+                }));
             return;
+        }
 
         // Block potion use/discard during combat startup (before TurnStarted fires).
         if ((cmd.StartsWith("UsePotionAction ") || cmd.StartsWith("NetDiscardPotionGameAction "))
@@ -408,7 +414,11 @@ public static class ReplayDispatcher
                 "timeout", Callable.From(() =>
                 {
                     if (_dispatchGeneration == gen)
-                        ExecuteNext();
+                    {
+                        PlayerActionBuffer.LogDispatcher(
+                            $"[Dispatcher] callback dispatcher triggering.");
+                        TryDispatch();
+                    }
                 }));
         }
         else
@@ -469,16 +479,39 @@ public static class ReplayDispatcher
         }
 
         _lastDispatchTick = System.Environment.TickCount64;
-        PlayerActionBuffer.LogDispatcher($"Attempting to dispatch {cmd}");
 
         // Try the new command object system first.
         ReplayCommand? parsed = ReplayCommandParser.TryParse(cmd);
+        PlayerActionBuffer.LogDispatcher($"[LogDispatch] Parsing command {cmd}");
         if (parsed != null)
         {
             PlayerActionBuffer.LogDispatcher($"[PARSED] executing through typed command path: {cmd}");
-            if (parsed.Execute())
+            var result = parsed.Execute();
+            if (result.Success)
             {
                 ReplayEngine.ConsumeAny();
+                _dispatchInProgress = false;
+                _lastDispatchedCmd = null;
+                int gen = ++_dispatchGeneration;
+                NGame.Instance?.GetTree()?.CreateTimer(0.5f).Connect(
+                    "timeout", Callable.From(() =>
+                    {
+                        if (_dispatchGeneration == gen)
+                            TryDispatch();
+                    }));
+                return;
+            }
+            if (result.RetryDelayMs > 0)
+            {
+                _dispatchInProgress = false;
+                _lastDispatchedCmd = null;
+                int gen = ++_dispatchGeneration;
+                NGame.Instance?.GetTree()?.CreateTimer(result.RetryDelayMs / 1000f).Connect(
+                    "timeout", Callable.From(() =>
+                    {
+                        if (_dispatchGeneration == gen)
+                            TryDispatch();
+                    }));
                 return;
             }
         }
@@ -494,9 +527,6 @@ public static class ReplayDispatcher
                 break;
             case ReadyState.Event:
                 EventOptionReplayPatch.DispatchFromEngine();
-                break;
-            case ReadyState.RestSite:
-                RestSiteReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.StartingBonus:
                 StartingBonusReplayPatch.DispatchFromEngine();

@@ -1,6 +1,36 @@
 namespace RunReplays.Commands;
 
 /// <summary>
+/// Result of executing a <see cref="ReplayCommand"/>.
+/// </summary>
+public readonly struct ExecuteResult
+{
+    /// <summary>Whether the command executed successfully and should be consumed.</summary>
+    public bool Success { get; }
+
+    /// <summary>
+    /// Suggested retry delay in milliseconds.  0 means no retry.
+    /// Only meaningful when <see cref="Success"/> is false.
+    /// </summary>
+    public int RetryDelayMs { get; }
+
+    private ExecuteResult(bool success, int retryDelayMs)
+    {
+        Success = success;
+        RetryDelayMs = retryDelayMs;
+    }
+
+    /// <summary>Command executed successfully — consume it from the queue.</summary>
+    public static ExecuteResult Ok() => new(true, 0);
+
+    /// <summary>Command failed — do not retry.</summary>
+    public static ExecuteResult Fail() => new(false, 0);
+
+    /// <summary>Command not ready — retry after the given delay.</summary>
+    public static ExecuteResult Retry(int delayMs) => new(false, delayMs);
+}
+
+/// <summary>
 /// A parsed replay command that knows its readiness requirements,
 /// how to describe itself, and how to execute against the game API.
 /// Subtypes own their parsing, timing, and execution logic.
@@ -41,14 +71,11 @@ public abstract class ReplayCommand
     /// <summary>
     /// Executes this command against the game API.  Called by the dispatcher
     /// after readiness and timing checks pass.
-    /// Returns true if the command executed successfully and is ready to be
-    /// consumed from the queue.  Returns false if execution failed or the
-    /// command should be retried.
     /// </summary>
-    public virtual bool Execute()
+    public virtual ExecuteResult Execute()
     {
         PlayerActionBuffer.LogDispatcher(
             $"[ReplayCommand] Execute not implemented for {GetType().Name}: {RawText}");
-        return false;
+        return ExecuteResult.Fail();
     }
 }

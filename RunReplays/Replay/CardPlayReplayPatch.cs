@@ -299,10 +299,6 @@ public static class CardPlayReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        PlayerActionBuffer.LogDispatcher(
-            $"[Combat] TurnStarted round={combatState.RoundNumber}" +
-            $" dispatching={_dispatching} awaitingEndTurn={_awaitingEndTurnCompletion}" +
-            $" waitingForEffects={_waitingForEffects}");
         ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Combat);
 
         ReplayEngine.PeekNext(out string? nextCmd);
@@ -323,8 +319,6 @@ public static class CardPlayReplayPatch
         {
             _postEndTurn_turnStartedReceived = true;
             _postEndTurn_savedTurnStartState = combatState;
-            PlayerActionBuffer.LogDispatcher(
-                $"[Combat] TurnStarted: gate signal received (turnEnded={_postEndTurn_turnEndedReceived} turnStarted={_postEndTurn_turnStartedReceived})");
             TryCompleteEndTurnGate();
             return;
         }
@@ -341,10 +335,6 @@ public static class CardPlayReplayPatch
     /// <summary>Called by ReplayDispatcher to trigger the next combat action.</summary>
     internal static void DispatchFromEngine()
     {
-        PlayerActionBuffer.LogDispatcher(
-            $"[Combat] DispatchFromEngine: dispatching={_dispatching} cardPlayInFlight={_cardPlayInFlight}" +
-            $" awaitingEndTurn={_awaitingEndTurnCompletion} waitingForEffects={_waitingForEffects}" +
-            $" turnStartedSinceEndTurn={_turnStartedSinceLastEndTurn}");
         _turnStartRetries = 0;
         ScheduleNextFromQueue("Dispatcher");
     }
@@ -366,15 +356,12 @@ public static class CardPlayReplayPatch
             return;
 
         _postEndTurn_turnEndedReceived = true;
-        PlayerActionBuffer.LogDispatcher(
-            $"[Combat] TurnEnded: gate signal received (turnEnded={_postEndTurn_turnEndedReceived} turnStarted={_postEndTurn_turnStartedReceived})");
 
         // If combat is ending (enemy killed on the last turn), TurnStarted
         // will never fire.  Force-complete the gate so the dispatcher can
         // advance to the rewards screen.
         if (CombatManager.Instance.IsOverOrEnding)
         {
-            PlayerActionBuffer.LogDispatcher("[Combat] TurnEnded: combat is over — force-completing gate.");
             ClearEndTurnGate();
             return;
         }
@@ -393,8 +380,6 @@ public static class CardPlayReplayPatch
             return;
 
         SelectorStackDebug.Log("TryCompleteEndTurnGate: both signals received — dispatching.");
-        PlayerActionBuffer.LogDispatcher("[Combat] EndTurn gate complete — clearing state, dispatching in 2s.");
-
         // Clear all end-turn state.
         _awaitingEndTurnCompletion = false;
         _dispatching = false;
@@ -426,13 +411,11 @@ public static class CardPlayReplayPatch
 
         if (_cardPlayInFlight)
         {
-            PlayerActionBuffer.LogDispatcher($"[Combat] {caller}: BLOCKED — card play in flight.");
             return;
         }
 
         if (_awaitingEndTurnCompletion)
         {
-            PlayerActionBuffer.LogDispatcher($"[Combat] {caller}: BLOCKED — awaiting end-turn completion.");
             return;
         }
 
@@ -440,12 +423,10 @@ public static class CardPlayReplayPatch
 
         if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
         {
-            PlayerActionBuffer.LogDispatcher($"[Combat] {caller}: next is NetDiscardPotion slot={discardSlot}");
             Callable.From(TryDiscardPotion).CallDeferred();
         }
         else if (ReplayEngine.PeekUsePotion(out uint potionIdx, out _, out _))
         {
-            PlayerActionBuffer.LogDispatcher($"[Combat] {caller}: next is UsePotion index={potionIdx}");
             Callable.From(TryUsePotion).CallDeferred();
         }
         else if (ReplayEngine.PeekCardPlay(out uint idx, out _))
@@ -517,7 +498,6 @@ public static class CardPlayReplayPatch
         if (_awaitingEndTurnCompletion)
         {
             if (action is PlayCardAction)
-                PlayerActionBuffer.LogDispatcher($"[Combat] AfterAction: PlayCardAction SKIPPED — awaitingEndTurn");
             return;
         }
 
@@ -543,7 +523,6 @@ public static class CardPlayReplayPatch
         // and let the dispatcher advance.
         if (!_dispatching && action is UsePotionAction outOfCombatPotion)
         {
-            PlayerActionBuffer.LogDispatcher($"[Combat] AfterAction: UsePotionAction COMPLETED outside combat — {outOfCombatPotion}");
             ReplayDispatcher.PotionInFlight = false;
             ReplayDispatcher.DispatchNow();
             return;
@@ -555,8 +534,6 @@ public static class CardPlayReplayPatch
         // next player EndTurn command and stalls the replay.
         if (!_dispatching)
         {
-            if (action is PlayCardAction)
-                PlayerActionBuffer.LogDispatcher($"[Combat] AfterAction: PlayCardAction SKIPPED — dispatching=false");
             return;
         }
 
@@ -564,7 +541,6 @@ public static class CardPlayReplayPatch
         {
             _cardPlayInFlight = false;
             ReplayDispatcher.CardPlayInFlight = false;
-            PlayerActionBuffer.LogDispatcher($"[Combat] AfterAction: PlayCardAction COMPLETED — {playCard}");
             RunOverlay.NotifyCardPlayFinished();
             WaitForEffectsThenDispatch();
         }
@@ -575,7 +551,6 @@ public static class CardPlayReplayPatch
         }
         else if (action is UsePotionAction usePotion)
         {
-            PlayerActionBuffer.LogDispatcher($"[Combat] AfterAction: UsePotionAction COMPLETED — {usePotion}");
             ReplayDispatcher.PotionInFlight = false;
             WaitForEffectsThenDispatch();
         }
@@ -627,7 +602,6 @@ public static class CardPlayReplayPatch
         // clear all combat state so post-combat flows aren't blocked.
         if (CombatManager.Instance.IsOverOrEnding)
         {
-            PlayerActionBuffer.LogDispatcher("[Combat] Effects settled but combat is over — clearing combat state.");
             ClearEndTurnGate();
             return;
         }
@@ -764,26 +738,19 @@ public static class CardPlayReplayPatch
     {
         if (!ReplayRunner.ExecuteUsePotion(out uint potionIndex, out uint? targetId, out bool inCombat))
         {
-            PlayerActionBuffer.LogDispatcher("[Potion] TryUsePotion: ExecuteUsePotion returned false — command not at front.");
             return;
         }
-
-        PlayerActionBuffer.LogDispatcher($"[Potion] TryUsePotion: consumed command — index={potionIndex} target={targetId} combat={inCombat}");
 
         Player? player = ResolveLocalPlayer();
 
         if (player == null)
         {
-            PlayerActionBuffer.LogDispatcher("[Potion] TryUsePotion: FAILED — could not resolve local player.");
             return;
         }
-
-        PlayerActionBuffer.LogDispatcher($"[Potion] TryUsePotion: player={player}, potions={player.Potions.Count()}");
 
         PotionModel? potion = player.GetPotionAtSlotIndex((int)potionIndex);
         if (potion == null)
         {
-            PlayerActionBuffer.LogDispatcher($"[Potion] TryUsePotion: FAILED — no potion at slot {potionIndex}.");
             return;
         }
 
@@ -800,15 +767,11 @@ public static class CardPlayReplayPatch
 
         try
         {
-            PlayerActionBuffer.LogDispatcher($"[Potion] TryUsePotion: using '{potion}' at slot {potionIndex} target={target} via EnqueueManualUse.");
             ReplayDispatcher.PotionInFlight = true;
             potion.EnqueueManualUse(target);
-            PlayerActionBuffer.LogDispatcher("[Potion] TryUsePotion: EnqueueManualUse returned — PotionInFlight=true.");
         }
         catch (Exception ex)
         {
-            PlayerActionBuffer.LogDispatcher(
-                $"[Potion] TryUsePotion: EnqueueManualUse threw {ex.GetType().Name}: {ex.Message}");
             ReplayDispatcher.PotionInFlight = false;
         }
     }
@@ -826,7 +789,6 @@ public static class CardPlayReplayPatch
 
         if (_waitingForEffects)
         {
-            PlayerActionBuffer.LogDispatcher("[Combat] TryEndTurn: BLOCKED — effects still in progress, deferring.");
             Callable.From(TryEndTurn).CallDeferred();
             return;
         }
@@ -839,8 +801,6 @@ public static class CardPlayReplayPatch
             if (_endTurnRetryCount < maxTurnWaitRetries)
             {
                 _endTurnRetryCount++;
-                PlayerActionBuffer.LogDispatcher(
-                    $"[Combat] TryEndTurn: BLOCKED — no TurnStarted since last EndTurn ({_endTurnRetryCount}/{maxTurnWaitRetries}).");
                 int gen = _battleGeneration;
                 NGame.Instance!.GetTree()!.CreateTimer(0.25).Connect(
                     "timeout", Callable.From(() => { if (_battleGeneration == gen) TryEndTurn(); }));
@@ -904,7 +864,6 @@ public static class CardPlayReplayPatch
         _postEndTurn_turnStartedReceived = false;
         _postEndTurn_savedTurnStartState = null;
 
-        PlayerActionBuffer.LogDispatcher($"[Combat] TryEndTurn: ISSUING PlayerCmd.EndTurn, waiting for TurnEnded+TurnStarted gate.");
         PlayerCmd.EndTurn(player, canBackOut: false);
 
         // If combat ended (enemy killed during the turn, before end-turn),
@@ -912,7 +871,6 @@ public static class CardPlayReplayPatch
         // also set a timer fallback.
         if (CombatManager.Instance.IsOverOrEnding)
         {
-            PlayerActionBuffer.LogDispatcher("[Combat] TryEndTurn: combat is over immediately after EndTurn — clearing gate.");
             ClearEndTurnGate();
             return;
         }
@@ -925,7 +883,6 @@ public static class CardPlayReplayPatch
             {
                 if (_battleGeneration != gateGen) return;
                 if (!_awaitingEndTurnCompletion) return;
-                PlayerActionBuffer.LogDispatcher("[Combat] TryEndTurn: gate timeout — force-clearing.");
                 ClearEndTurnGate();
             }));
     }

@@ -13,11 +13,7 @@ public static class ReplayCommandParser
     /// </summary>
     public static ReplayCommand? TryParse(string raw)
     {
-        // Commands are tried in rough frequency order for fast short-circuit.
-        return MapMoveCommand.TryParse(raw);
-        // Future commands will be chained here:
-        // ?? PlayCardCommand.TryParse(raw)
-        // ?? EndTurnCommand.TryParse(raw)
-        // ?? ...
+        return (ReplayCommand?)MapMoveCommand.TryParse(raw)
+            ?? ChooseRestSiteOptionCommand.TryParse(raw);
     }
 }

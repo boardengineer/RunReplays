@@ -41,7 +41,8 @@ public static class RestSiteReplayPatch
 {
     private const int MaxRetries = 20;
 
-    private static RestSiteSynchronizer? _activeSynchronizer;
+    internal static RestSiteSynchronizer? _activeSynchronizer;
+    internal static List<String> validOptions;
 
     [HarmonyPostfix]
     public static void Postfix(RestSiteSynchronizer __instance)
@@ -71,7 +72,7 @@ public static class RestSiteReplayPatch
         TaskHelper.RunSafely(WaitForRoomThenSelect(_activeSynchronizer, optionId));
     }
 
-    private static async Task WaitForRoomThenSelect(
+    internal static async Task WaitForRoomThenSelect(
         RestSiteSynchronizer sync, string optionId, int retriesLeft = MaxRetries)
     {
         if (!ReplayEngine.IsActive)
@@ -123,7 +124,7 @@ public static class RestSiteReplayPatch
         await SelectAndNotifyRoom(sync, index, selectedOption);
     }
 
-    private static async Task SelectAndNotifyRoom(
+    internal static async Task SelectAndNotifyRoom(
         RestSiteSynchronizer sync, int index, RestSiteOption option)
     {
         bool success = await sync.ChooseLocalOption(index);

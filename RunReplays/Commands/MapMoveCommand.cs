@@ -27,11 +27,11 @@ public class MapMoveCommand : ReplayCommand
 
     public override string Describe() => $"navigate to map node col={Col} row={Row}";
 
-    public override bool Execute()
+    public override ExecuteResult Execute()
     {
         Callable.From(() => MapChoiceReplayPatch.AutoSelectMapNode(_activeScreen, Col, Row)).CallDeferred();
         ReplayDispatcher.MapMoveInFlight = true;
-        return true;
+        return ExecuteResult.Ok();
     }
 
     public static MapMoveCommand? TryParse(string raw)
