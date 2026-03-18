@@ -58,6 +58,7 @@ public static class RestSiteReplayPatch
 
         PlayerActionBuffer.LogToDevConsole(
             $"[RestSiteReplayPatch] BeginRestSite — stored synchronizer for option '{optionId}'.");
+        ReplayDispatcher.DispatchNow();
     }
 
     /// <summary>Called by ReplayDispatcher to trigger rest site option selection.</summary>
