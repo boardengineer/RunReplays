@@ -622,6 +622,16 @@ public static class CardPlayReplayPatch
 
         // Enough consecutive quiet frames — effects and animations settled.
         _waitingForEffects = false;
+
+        // If combat ended (e.g. a triggered power killed the last enemy),
+        // clear all combat state so post-combat flows aren't blocked.
+        if (CombatManager.Instance.IsOverOrEnding)
+        {
+            PlayerActionBuffer.LogDispatcher("[Combat] Effects settled but combat is over — clearing combat state.");
+            ClearEndTurnGate();
+            return;
+        }
+
         DispatchNextCombatAction();
     }
 

@@ -346,6 +346,7 @@ public static class ReplayDispatcher
             _ready |= ReadyState.Map;
             NMapScreen.Instance?.Open();
             NMapScreen.Instance?.SetTravelEnabled(true);
+            DispatchNow();
         }
 
         ScheduleWatchdogTick();
