@@ -290,6 +290,10 @@ public static class CardPlayReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
+        PlayerActionBuffer.LogDispatcher(
+            $"[Combat] TurnStarted round={combatState.RoundNumber}" +
+            $" dispatching={_dispatching} awaitingEndTurn={_awaitingEndTurnCompletion}" +
+            $" waitingForEffects={_waitingForEffects}");
         ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Combat);
 
         ReplayEngine.PeekNext(out string? nextCmd);
@@ -327,6 +331,10 @@ public static class CardPlayReplayPatch
     /// <summary>Called by ReplayDispatcher to trigger the next combat action.</summary>
     internal static void DispatchFromEngine()
     {
+        PlayerActionBuffer.LogDispatcher(
+            $"[Combat] DispatchFromEngine: dispatching={_dispatching} cardPlayInFlight={_cardPlayInFlight}" +
+            $" awaitingEndTurn={_awaitingEndTurnCompletion} waitingForEffects={_waitingForEffects}" +
+            $" turnStartedSinceEndTurn={_turnStartedSinceLastEndTurn}");
         _turnStartRetries = 0;
         ScheduleNextFromQueue("Dispatcher");
     }
@@ -364,7 +372,7 @@ public static class CardPlayReplayPatch
             return;
 
         SelectorStackDebug.Log("TryCompleteEndTurnGate: both signals received — dispatching.");
-        PlayerActionBuffer.LogToDevConsole("[RunReplays] EndTurn gate complete (TurnEnded + TurnStarted) — dispatching.");
+        PlayerActionBuffer.LogDispatcher("[Combat] EndTurn gate complete — clearing state, dispatching in 2s.");
 
         // Clear all end-turn state.
         _awaitingEndTurnCompletion = false;
@@ -379,16 +387,8 @@ public static class CardPlayReplayPatch
             _currentCombatState = _postEndTurn_savedTurnStartState;
         _postEndTurn_savedTurnStartState = null;
 
-        // Delay before dispatching so the game fully initializes the new turn.
-        _turnStartRetries = 0;
-        int gen = _battleGeneration;
-        NGame.Instance!.GetTree()!.CreateTimer(2.0).Connect(
-            "timeout", Callable.From(() =>
-            {
-                if (_battleGeneration != gen) return;
-                if (_dispatching || _waitingForEffects) return;
-                ScheduleNextFromQueue("EndTurnGate (post-EndTurn)");
-            }));
+        // Route back through the dispatcher for the next turn.
+        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Combat);
     }
 
     private static int _turnStartRetries;
@@ -404,13 +404,13 @@ public static class CardPlayReplayPatch
 
         if (_cardPlayInFlight)
         {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] {caller}: blocked — card play in flight.");
+            PlayerActionBuffer.LogDispatcher($"[Combat] {caller}: BLOCKED — card play in flight.");
             return;
         }
 
         if (_awaitingEndTurnCompletion)
         {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] {caller}: blocked — awaiting end-turn completion.");
+            PlayerActionBuffer.LogDispatcher($"[Combat] {caller}: BLOCKED — awaiting end-turn completion.");
             return;
         }
 
@@ -579,51 +579,9 @@ public static class CardPlayReplayPatch
 
     private static void DispatchNextCombatAction()
     {
-        ReplayEngine.PeekNext(out string? dncNext);
-        SelectorStackDebug.Log(
-            $"DispatchNextCombatAction: nextCmd='{dncNext ?? "(none)"}'" +
-            $" awaitingEndTurn={_awaitingEndTurnCompletion}" +
-            $" turnStartedSinceEndTurn={_turnStartedSinceLastEndTurn}");
-
-        if (_cardPlayInFlight)
-        {
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] DispatchNextCombatAction: blocked — card play in flight.");
-            return;
-        }
-
-        if (_awaitingEndTurnCompletion)
-        {
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] DispatchNextCombatAction: blocked — awaiting end-turn completion.");
-            return;
-        }
-
-        if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
-        {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Dispatch: NetDiscardPotion slot={discardSlot}.");
-            TryDiscardPotion();
-        }
-        else if (ReplayEngine.PeekUsePotion(out uint potionIdx, out _, out _))
-        {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Dispatch: UsePotion index={potionIdx}.");
-            TryUsePotion();
-        }
-        else if (ReplayEngine.PeekCardPlay(out uint idx, out _))
-        {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Dispatch: CardPlay index={idx}.");
-            TryPlayNextCard();
-        }
-        else if (ReplayEngine.PeekEndTurn())
-        {
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] Dispatch: EndTurn.");
-            TryEndTurn();
-        }
-        else
-        {
-            _dispatching = false;
-            ReplayEngine.PeekNext(out string? next);
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Dispatch: no more combat actions — '{next ?? "(none)"}'. Checking for active rewards screen.");
-            BattleRewardsReplayPatch.TryResumeRewardsProcessing();
-        }
+        // Route back through the dispatcher so delays and pause/step are respected.
+        _dispatching = false;
+        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Combat);
     }
 
     // ── Execution ─────────────────────────────────────────────────────────────

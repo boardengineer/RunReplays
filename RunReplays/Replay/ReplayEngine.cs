@@ -49,6 +49,11 @@ public static class ReplayEngine
                 ReplayCompleted?.Invoke(commands);
             }).CallDeferred();
         }
+
+        // Mark the previous dispatch as complete and re-trigger for the next command.
+        ReplayDispatcher.NotifyConsumed();
+        ReplayDispatcher.TryDispatch();
+
         return cmd;
     }
 

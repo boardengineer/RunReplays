@@ -316,6 +316,17 @@ public static class PlayerActionBuffer
     [System.Diagnostics.Conditional("RUNREPLAYS_VERBOSE")]
     internal static void LogToDevConsole(string entry)
     {
+        WriteToDevConsole(entry);
+    }
+
+    [System.Diagnostics.Conditional("RUNREPLAYS_DISPATCHER")]
+    internal static void LogDispatcher(string entry)
+    {
+        WriteToDevConsole(entry);
+    }
+
+    private static void WriteToDevConsole(string entry)
+    {
         // Check the backing field directly to avoid the InvalidOperationException
         // that NDevConsole.Instance throws when the console hasn't been created yet.
         if (_instanceField?.GetValue(null) is not NDevConsole console)

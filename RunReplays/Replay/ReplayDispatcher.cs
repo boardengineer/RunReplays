@@ -37,9 +37,22 @@ public static class ReplayDispatcher
 
     private static ReadyState _ready;
     private static bool _paused;
-    private static float _delayBetweenCommands;
+    private static float _delayBetweenCommands = 2.0f;
     private static bool _stepping;
     private static bool _stepRequested;
+
+    /// <summary>
+    /// True while a dispatched command is executing (between ExecuteNext and
+    /// the command being consumed from the queue).  Prevents re-dispatch of
+    /// the same command.
+    /// </summary>
+    private static bool _dispatchInProgress;
+
+    /// <summary>
+    /// The command string that was last dispatched.  Used to detect when the
+    /// queue front has changed (i.e. the previous command was consumed).
+    /// </summary>
+    private static string? _lastDispatchedCmd;
 
     /// <summary>Current readiness state (bitmask of what the game is ready for).</summary>
     public static ReadyState Ready => _ready;
@@ -92,9 +105,29 @@ public static class ReplayDispatcher
     public static void SignalReady(ReadyState state)
     {
         _ready |= state;
-        PlayerActionBuffer.LogToDevConsole(
-            $"[Dispatcher] SignalReady: +{state} → {_ready}");
         TryDispatch();
+    }
+
+    /// <summary>
+    /// Called by ReplayEngine.SignalConsumed when a command is dequeued.
+    /// Clears the in-progress guard and re-triggers dispatch for the next command.
+    /// </summary>
+    internal static void NotifyConsumed()
+    {
+        _dispatchInProgress = false;
+        _lastDispatchedCmd = null;
+
+        // Don't re-trigger immediately — respect the delay between commands.
+        // If there's no delay, defer to next frame to avoid re-entry.
+        if (_delayBetweenCommands > 0)
+        {
+            NGame.Instance?.GetTree()?.CreateTimer(_delayBetweenCommands).Connect(
+                "timeout", Callable.From(TryDispatch));
+        }
+        else
+        {
+            Callable.From(TryDispatch).CallDeferred();
+        }
     }
 
     /// <summary>Clears a readiness flag (e.g. when a screen closes).</summary>
@@ -110,13 +143,15 @@ public static class ReplayDispatcher
         _paused = false;
         _stepping = false;
         _stepRequested = false;
+        _dispatchInProgress = false;
+        _lastDispatchedCmd = null;
     }
 
     /// <summary>
     /// Checks if the next queued command can execute given the current readiness
     /// state, and if so, executes it.
     /// </summary>
-    private static void TryDispatch()
+    internal static void TryDispatch()
     {
         if (!ReplayEngine.IsActive)
             return;
@@ -130,11 +165,17 @@ public static class ReplayDispatcher
         if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
             return;
 
+        // Don't re-dispatch the same command that's already in progress.
+        if (_dispatchInProgress && cmd == _lastDispatchedCmd)
+            return;
+
         ReadyState required = GetRequiredState(cmd);
         if (required != ReadyState.None && (_ready & required) == 0)
             return; // Game isn't ready for this command type yet.
 
         _stepRequested = false;
+        _dispatchInProgress = true;
+        _lastDispatchedCmd = cmd;
 
         if (_delayBetweenCommands > 0)
         {
@@ -162,8 +203,8 @@ public static class ReplayDispatcher
         if (required != ReadyState.None && (_ready & required) == 0)
             return;
 
-        PlayerActionBuffer.LogToDevConsole(
-            $"[Dispatcher] ExecuteNext: {required} cmd='{cmd[..Math.Min(cmd.Length, 60)]}'");
+        PlayerActionBuffer.LogDispatcher(
+            $"[Dispatcher] {cmd}");
 
         switch (required)
         {
