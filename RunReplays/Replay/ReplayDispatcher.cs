@@ -377,6 +377,10 @@ public static class ReplayDispatcher
 
     private static void ExecuteNext()
     {
+        // Re-apply speed in case the game reset Engine.TimeScale during a transition.
+        if (ReplayEngine.IsActive && Engine.TimeScale != _gameSpeed)
+            Engine.TimeScale = _gameSpeed;
+
         PlayerActionBuffer.LogDispatcher(
             $"[Dispatcher] ExecuteNext: gen={_dispatchGeneration} inProgress={_dispatchInProgress}" +
             $" potion={PotionInFlight} card={CardPlayInFlight} endTurn={CardPlayReplayPatch.IsAwaitingEndTurnCompletion}");
