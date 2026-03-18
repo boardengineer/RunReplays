@@ -316,6 +316,13 @@ public static class ReplayEngine
         return false;
     }
 
+    // Temp function as a passtrhough to consume
+    public static bool ConsumeAny()
+    { 
+        SignalConsumed(_pending.Dequeue());
+        return true;
+    }
+    
     // ── Potion discard ────────────────────────────────────────────────────────
     //
     // Recorded by PlayerActionBuffer via DiscardPotionGameAction.ToString():

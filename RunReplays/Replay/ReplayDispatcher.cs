@@ -476,8 +476,11 @@ public static class ReplayDispatcher
         if (parsed != null)
         {
             PlayerActionBuffer.LogDispatcher($"[PARSED] executing through typed command path: {cmd}");
-            parsed.Execute();
-            return;
+            if (parsed.Execute())
+            {
+                ReplayEngine.ConsumeAny();
+                return;
+            }
         }
 
         // Legacy string-based dispatch for commands not yet migrated.

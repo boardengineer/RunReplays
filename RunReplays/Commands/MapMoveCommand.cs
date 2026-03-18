@@ -1,3 +1,6 @@
+using Godot;
+using MegaCrit.Sts2.Core.Nodes.Screens.Map;
+
 namespace RunReplays.Commands;
 
 /// <summary>
@@ -9,6 +12,8 @@ public class MapMoveCommand : ReplayCommand
     private const string Prefix = "MoveToMapCoordAction ";
     private const string CoordMarker = "MapCoord (";
 
+    internal static NMapScreen? _activeScreen;
+    
     public int Col { get; }
     public int Row { get; }
 
@@ -24,7 +29,8 @@ public class MapMoveCommand : ReplayCommand
 
     public override bool Execute()
     {
-        MapChoiceReplayPatch.DispatchFromEngine();
+        Callable.From(() => MapChoiceReplayPatch.AutoSelectMapNode(_activeScreen, Col, Row)).CallDeferred();
+        ReplayDispatcher.MapMoveInFlight = true;
         return true;
     }
 

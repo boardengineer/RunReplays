@@ -4,6 +4,7 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Map;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
+using RunReplays.Commands;
 using RunReplays.Utils;
 
 namespace RunReplays;
@@ -31,8 +32,6 @@ public static class MapChoiceReplayPatch
             "_mapPointDictionary",
             BindingFlags.NonPublic | BindingFlags.Instance);
 
-    private static NMapScreen? _activeScreen;
-
     [HarmonyPostfix]
     public static void Postfix(NMapScreen __instance, bool enabled)
     {
@@ -44,7 +43,7 @@ public static class MapChoiceReplayPatch
         PlayerActionBuffer.LogToDevConsole("[RunReplays] Map is now interactive.");
         RngCheckpointLogger.Log("MapInteractive (SetTravelEnabled)");
 
-        _activeScreen = __instance;
+        MapMoveCommand._activeScreen = __instance;
 
         if (!ReplayEngine.PeekMapNode(out int col, out int row))
         {
@@ -53,22 +52,6 @@ public static class MapChoiceReplayPatch
         }
 
         ReplayDispatcher.DispatchNow();
-    }
-
-    /// <summary>Called by ReplayDispatcher to trigger map node selection.</summary>
-    internal static void DispatchFromEngine()
-    {
-        if (_activeScreen == null)
-            _activeScreen = NMapScreen.Instance;
-        if (_activeScreen == null)
-            return;
-
-        // Consume the command here in the dispatcher, not in AutoSelectMapNode.
-        if (!ReplayRunner.ExecuteMapNode(out int col, out int row))
-            return;
-
-        ReplayDispatcher.MapMoveInFlight = true;
-        Callable.From(() => AutoSelectMapNode(_activeScreen, col, row)).CallDeferred();
     }
 
     internal static void AutoSelectMapNode(NMapScreen screen, int col, int row)
@@ -89,4 +72,6 @@ public static class MapChoiceReplayPatch
         CardPlayReplayPatch.InvalidateStaleTimers();
         screen.OnMapPointSelectedLocally(point);
     }
+    
+    // internal static boolean MoveT
 }
