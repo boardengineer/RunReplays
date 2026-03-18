@@ -31,25 +31,43 @@ public static class MapChoiceReplayPatch
             "_mapPointDictionary",
             BindingFlags.NonPublic | BindingFlags.Instance);
 
+    private static NMapScreen? _activeScreen;
+
     [HarmonyPostfix]
     public static void Postfix(NMapScreen __instance, bool enabled)
     {
         if (!enabled || !__instance.IsTravelEnabled)
             return;
 
+        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Map);
+
         PlayerActionBuffer.LogToDevConsole("[RunReplays] Map is now interactive.");
         RngCheckpointLogger.Log("MapInteractive (SetTravelEnabled)");
 
-        if (!ReplayEngine.PeekMapNode(out int col, out int row)) 
+        _activeScreen = __instance;
+
+        if (!ReplayEngine.PeekMapNode(out int col, out int row))
         {
             PlayerActionBuffer.LogToDevConsole("[RunReplays] ReplayEngine failed to peek map node.");
             return;
         }
-
-        Callable.From(() => AutoSelectMapNode(__instance, col, row)).CallDeferred();
     }
 
-    private static void AutoSelectMapNode(NMapScreen screen, int col, int row)
+    /// <summary>Called by ReplayDispatcher to trigger map node selection.</summary>
+    internal static void DispatchFromEngine()
+    {
+        if (_activeScreen == null)
+            _activeScreen = NMapScreen.Instance;
+        if (_activeScreen == null)
+            return;
+
+        if (!ReplayEngine.PeekMapNode(out int col, out int row))
+            return;
+
+        Callable.From(() => AutoSelectMapNode(_activeScreen, col, row)).CallDeferred();
+    }
+
+    internal static void AutoSelectMapNode(NMapScreen screen, int col, int row)
     {
         if (!ReplayRunner.ExecuteMapNode(out int actualCol, out int actualRow))
             return;

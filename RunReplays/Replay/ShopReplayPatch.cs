@@ -43,6 +43,11 @@ public static class ShopRoomReadyPatch
     [HarmonyPostfix]
     public static void Postfix(NMerchantRoom __instance)
     {
+        if (!ReplayEngine.IsActive)
+            return;
+
+        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Shop);
+
         if (!ReplayEngine.PeekOpenShop())
             return;
 
@@ -118,12 +123,25 @@ public static class ShopOpenedReplayPatch
     [HarmonyPostfix]
     public static void Postfix(NMerchantRoom __instance)
     {
+        if (!ReplayEngine.IsActive)
+            return;
+
+        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Shop);
+
         if (!ReplayEngine.PeekOpenShop())
             return;
 
         ReplayRunner.ExecuteOpenShop();
         IsShopReplayActive = true;
-        Callable.From(() => ShopOpenedReplayPatch.ProcessNextPurchase(__instance)).CallDeferred();
+        ActiveRoom = __instance;
+    }
+
+    /// <summary>Called by ReplayDispatcher to trigger next shop action.</summary>
+    internal static void DispatchFromEngine()
+    {
+        if (ActiveRoom == null || !ActiveRoom.IsInsideTree())
+            return;
+        Callable.From(() => ProcessNextPurchase(ActiveRoom)).CallDeferred();
     }
 
     // Accessed by ShopCardRemovalCompletedReplayPatch after InvokePurchaseCompleted.

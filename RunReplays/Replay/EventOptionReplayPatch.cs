@@ -24,11 +24,17 @@ namespace RunReplays;
 [HarmonyPatch(typeof(EventSynchronizer), nameof(EventSynchronizer.BeginEvent))]
 public static class EventOptionReplayPatch
 {
+    private static EventSynchronizer? _activeSynchronizer;
+
     [HarmonyPostfix]
     public static void Postfix(EventSynchronizer __instance, EventModel canonicalEvent)
     {
         bool isAncient = canonicalEvent is AncientEventModel;
         bool replayActive = ReplayEngine.IsActive;
+
+        if (replayActive)
+            ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Event);
+
         ReplayEngine.PeekNext(out string? nextCmd);
         PlayerActionBuffer.LogToDevConsole(
             $"[EventOptionReplayPatch] BeginEvent — event='{canonicalEvent.GetType().Name}' isAncient={isAncient} replayActive={replayActive} nextCmd='{nextCmd}'");
@@ -40,9 +46,18 @@ public static class EventOptionReplayPatch
             return;
         }
 
+        _activeSynchronizer = __instance;
+
         PlayerActionBuffer.LogToDevConsole(
-            $"[EventOptionReplayPatch] Deferring AutoSelect for textKey='{peekedKey}'.");
-        Callable.From(() => AutoSelect(__instance)).CallDeferred();
+            $"[EventOptionReplayPatch] Stored synchronizer for textKey='{peekedKey}'.");
+    }
+
+    /// <summary>Called by ReplayDispatcher to trigger event option selection.</summary>
+    internal static void DispatchFromEngine()
+    {
+        if (_activeSynchronizer == null)
+            return;
+        Callable.From(() => AutoSelect(_activeSynchronizer)).CallDeferred();
     }
 
     private const int MaxRetries = 10;

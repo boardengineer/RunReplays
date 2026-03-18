@@ -37,22 +37,43 @@ public static class TreasureRoomReplayPatch
     // proceed button is clicked so later SetTravelEnabled calls don't re-fire.
     private static NTreasureRoom? _activeRoom;
 
+    /// <summary>Called by ReplayDispatcher to trigger treasure room actions.</summary>
+    internal static void DispatchFromEngine()
+    {
+        if (ReplayEngine.PeekTakeChestRelic(out _))
+        {
+            if (_activeRoom != null && _activeRoom.IsInsideTree())
+                Callable.From(() => ChestOpenReplayPatch.ClickChest(_activeRoom)).CallDeferred();
+            return;
+        }
+
+        if (ReplayEngine.PeekNetPickRelicAction(out int relicIndex))
+        {
+            var sync = RunManager.Instance.TreasureRoomRelicSynchronizer;
+            Callable.From(() => sync.PickRelicLocally(relicIndex)).CallDeferred();
+        }
+    }
+
     [HarmonyPatch(typeof(NTreasureRoom), "_Ready")]
     public static class ChestOpenReplayPatch
     {
         [HarmonyPostfix]
         public static void Postfix(NTreasureRoom __instance)
         {
+            if (!ReplayEngine.IsActive)
+                return;
+
+            ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Treasure);
+
             if (!ReplayEngine.PeekTakeChestRelic(out _))
                 return;
 
             _activeRoom = __instance;
             PlayerActionBuffer.LogToDevConsole(
-                "[TreasureRoomReplayPatch] NTreasureRoom ready — deferring chest open.");
-            Callable.From(() => ClickChest(__instance)).CallDeferred();
+                "[TreasureRoomReplayPatch] NTreasureRoom ready — stored room reference.");
         }
 
-        private static void ClickChest(NTreasureRoom room)
+        internal static void ClickChest(NTreasureRoom room)
         {
             if (!ReplayEngine.IsActive)
                 return;
@@ -80,22 +101,16 @@ public static class TreasureRoomReplayPatch
         [HarmonyPostfix]
         public static void Postfix()
         {
+            if (!ReplayEngine.IsActive)
+                return;
+
+            ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Treasure);
+
             if (!ReplayEngine.PeekNetPickRelicAction(out int relicIndex))
                 return;
 
-            TreasureRoomRelicSynchronizer sync = RunManager.Instance.TreasureRoomRelicSynchronizer;
-
-            if (sync.CurrentRelics == null || relicIndex >= sync.CurrentRelics.Count)
-            {
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[TreasureRoomReplayPatch] Relic index {relicIndex} out of range — aborting.");
-                return;
-            }
-
-            ReplayRunner.ExecuteNetPickRelicAction(out _);
             PlayerActionBuffer.LogToDevConsole(
-                $"[TreasureRoomReplayPatch] Deferring PickRelicLocally({relicIndex}).");
-            Callable.From(() => sync.PickRelicLocally(relicIndex)).CallDeferred();
+                $"[TreasureRoomReplayPatch] Relic pick pending (index={relicIndex}) — stored for dispatcher.");
         }
     }
 

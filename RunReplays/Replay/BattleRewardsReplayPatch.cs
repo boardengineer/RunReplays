@@ -61,6 +61,8 @@ public static class BattleRewardsReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
+        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Rewards);
+
         bool hasReward = ReplayEngine.PeekGoldReward(out _)
                       || ReplayEngine.PeekCardReward(out _, out _)
                       || ReplayEngine.PeekSacrificeCardReward()
@@ -80,7 +82,14 @@ public static class BattleRewardsReplayPatch
         }
 
         _activeScreen = __instance;
-        Callable.From(() => ProcessNextReward(__instance)).CallDeferred();
+    }
+
+    /// <summary>Called by ReplayDispatcher to process the next reward.</summary>
+    internal static void DispatchFromEngine()
+    {
+        if (_activeScreen == null || !_activeScreen.IsInsideTree())
+            return;
+        Callable.From(() => ProcessNextReward(_activeScreen)).CallDeferred();
     }
 
     /// <summary>

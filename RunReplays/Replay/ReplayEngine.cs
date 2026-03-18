@@ -191,6 +191,9 @@ public static class ReplayEngine
         CardChoiceScreenSyncPatch.FlushIfPending();
         CardEffectDeckSelectContext.FlushIfPending();
         SimpleGridSyncPatch.FlushIfPending();
+
+        // Dispatcher
+        ReplayDispatcher.Reset();
     }
 
     /// <summary>Returns the next queued command without consuming it.</summary>

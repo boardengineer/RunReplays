@@ -102,6 +102,14 @@ public static class CrystalSphereReplayPatch
 {
     internal static int? PendingTool;
 
+    /// <summary>Called by ReplayDispatcher to start the crystal sphere click sequence.</summary>
+    internal static void DispatchFromEngine()
+    {
+        // Crystal sphere clicks are self-sequencing once started.
+        // The AfterOverlayOpened postfix already handles the initial dispatch.
+        PlayerActionBuffer.LogToDevConsole("[CrystalSphereReplayPatch] DispatchFromEngine: click sequence driven by overlay postfix.");
+    }
+
     private static MethodInfo? _onCellClicked;
     private static MethodInfo? _onProceedButtonPressed;
     private static Type? _screenType;
@@ -127,6 +135,8 @@ public static class CrystalSphereReplayPatch
     {
         if (!ReplayEngine.IsActive)
             return;
+
+        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.CrystalSphere);
 
         if (!ReplayEngine.PeekCrystalSphereClick(out _, out _, out _))
             return;

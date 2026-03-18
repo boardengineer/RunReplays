@@ -41,16 +41,33 @@ public static class RestSiteReplayPatch
 {
     private const int MaxRetries = 20;
 
+    private static RestSiteSynchronizer? _activeSynchronizer;
+
     [HarmonyPostfix]
     public static void Postfix(RestSiteSynchronizer __instance)
     {
         RngCheckpointLogger.Log("RestSite (BeginRestSite)");
+
+        if (ReplayEngine.IsActive)
+            ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.RestSite);
+
         if (!ReplayEngine.PeekRestSiteOption(out string optionId))
             return;
 
+        _activeSynchronizer = __instance;
+
         PlayerActionBuffer.LogToDevConsole(
-            $"[RestSiteReplayPatch] BeginRestSite — waiting for room, then auto-selecting '{optionId}'.");
-        TaskHelper.RunSafely(WaitForRoomThenSelect(__instance, optionId));
+            $"[RestSiteReplayPatch] BeginRestSite — stored synchronizer for option '{optionId}'.");
+    }
+
+    /// <summary>Called by ReplayDispatcher to trigger rest site option selection.</summary>
+    internal static void DispatchFromEngine()
+    {
+        if (_activeSynchronizer == null)
+            return;
+        if (!ReplayEngine.PeekRestSiteOption(out string optionId))
+            return;
+        TaskHelper.RunSafely(WaitForRoomThenSelect(_activeSynchronizer, optionId));
     }
 
     private static async Task WaitForRoomThenSelect(

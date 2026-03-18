@@ -290,6 +290,8 @@ public static class CardPlayReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
+        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Combat);
+
         ReplayEngine.PeekNext(out string? nextCmd);
         SelectorStackDebug.Log(
             $"OnTurnStarted: round={combatState.RoundNumber}" +
@@ -320,8 +322,13 @@ public static class CardPlayReplayPatch
             return;
         }
 
+    }
+
+    /// <summary>Called by ReplayDispatcher to trigger the next combat action.</summary>
+    internal static void DispatchFromEngine()
+    {
         _turnStartRetries = 0;
-        ScheduleNextFromQueue("TurnStarted");
+        ScheduleNextFromQueue("Dispatcher");
     }
 
     private static void OnTurnEnded(CombatState combatState)

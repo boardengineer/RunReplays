@@ -24,16 +24,31 @@ namespace RunReplays;
 [HarmonyPatch(typeof(EventSynchronizer), nameof(EventSynchronizer.BeginEvent))]
 public static class StartingBonusReplayPatch
 {
+    private static EventSynchronizer? _activeSynchronizer;
+
     [HarmonyPostfix]
     public static void Postfix(EventSynchronizer __instance, EventModel canonicalEvent)
     {
         if (canonicalEvent is not AncientEventModel)
             return;
 
+        if (ReplayEngine.IsActive)
+            ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.StartingBonus);
+
         if (!ReplayEngine.PeekStartingBonus(out int choiceIndex))
             return;
 
-        Callable.From(() => AutoSelect(__instance, choiceIndex)).CallDeferred();
+        _activeSynchronizer = __instance;
+    }
+
+    /// <summary>Called by ReplayDispatcher to trigger starting bonus selection.</summary>
+    internal static void DispatchFromEngine()
+    {
+        if (_activeSynchronizer == null)
+            return;
+        if (!ReplayEngine.PeekStartingBonus(out int choiceIndex))
+            return;
+        AutoSelect(_activeSynchronizer, choiceIndex);
     }
 
     private static void AutoSelect(EventSynchronizer synchronizer, int choiceIndex)
