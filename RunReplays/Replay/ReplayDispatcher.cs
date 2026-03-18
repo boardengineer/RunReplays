@@ -3,6 +3,7 @@ using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
+using RunReplays.Commands;
 
 namespace RunReplays;
 
@@ -469,6 +470,17 @@ public static class ReplayDispatcher
 
         _lastDispatchTick = System.Environment.TickCount64;
         PlayerActionBuffer.LogDispatcher($"Attempting to dispatch {cmd}");
+
+        // Try the new command object system first.
+        ReplayCommand? parsed = ReplayCommandParser.TryParse(cmd);
+        if (parsed != null)
+        {
+            PlayerActionBuffer.LogDispatcher($"[PARSED] executing through typed command path: {cmd}");
+            parsed.Execute();
+            return;
+        }
+
+        // Legacy string-based dispatch for commands not yet migrated.
         switch (required)
         {
             case ReadyState.Combat:
@@ -476,9 +488,6 @@ public static class ReplayDispatcher
                 break;
             case ReadyState.Rewards:
                 BattleRewardsReplayPatch.DispatchFromEngine();
-                break;
-            case ReadyState.Map:
-                MapChoiceReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.Event:
                 EventOptionReplayPatch.DispatchFromEngine();
