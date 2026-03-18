@@ -291,6 +291,25 @@ public static class ReplayDispatcher
             return;
         }
 
+        // Block dispatch while in-flight operations are pending.
+        if (PotionInFlight)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — potion in flight");
+            return;
+        }
+
+        if (MapMoveInFlight)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — map move in flight");
+            return;
+        }
+
+        if (CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — awaiting end-turn completion");
+            return;
+        }
+
         // Selection commands are consumed by ICardSelector implementations when the
         // game triggers a selection screen (FromChooseACardScreen, FromDeckGeneric, etc.).
         // The dispatcher does not touch them — the selector consumes the command,
@@ -299,27 +318,6 @@ public static class ReplayDispatcher
         {
             PlayerActionBuffer.LogDispatcher(
                 $"[Dispatcher] Waiting for selector: '{cmd[..Math.Min(cmd.Length, 50)]}'");
-            return;
-        }
-
-        // Block dispatch while a potion animation is playing.
-        if (PotionInFlight)
-        {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — potion in flight");
-            return;
-        }
-
-        // Block dispatch while a new room is loading after map movement.
-        if (MapMoveInFlight)
-        {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — map move in flight");
-            return;
-        }
-
-        // Block dispatch while end-turn is completing (waiting for TurnEnded+TurnStarted gate).
-        if (CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
-        {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — awaiting end-turn completion");
             return;
         }
 
@@ -456,6 +454,7 @@ public static class ReplayDispatcher
                 BattleRewardsReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.Map:
+                PlayerActionBuffer.LogDispatcher("Blindly dispatching map choice " + cmd);
                 MapChoiceReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.Event:
@@ -468,7 +467,10 @@ public static class ReplayDispatcher
                 StartingBonusReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.Shop:
-                ShopOpenedReplayPatch.DispatchFromEngine();
+                if (cmd.StartsWith("OpenFakeShop") || (FakeMerchantReplayPatch.IsActive))
+                    FakeMerchantReplayPatch.DispatchFromEngine();
+                else
+                    ShopOpenedReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.Treasure:
                 TreasureRoomReplayPatch.DispatchFromEngine();

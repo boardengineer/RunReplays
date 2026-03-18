@@ -63,7 +63,8 @@ public static class MapChoiceReplayPatch
         if (_activeScreen == null)
             return;
 
-        if (!ReplayEngine.PeekMapNode(out int col, out int row))
+        // Consume the command here in the dispatcher, not in AutoSelectMapNode.
+        if (!ReplayRunner.ExecuteMapNode(out int col, out int row))
             return;
 
         ReplayDispatcher.MapMoveInFlight = true;
@@ -72,19 +73,16 @@ public static class MapChoiceReplayPatch
 
     internal static void AutoSelectMapNode(NMapScreen screen, int col, int row)
     {
-        if (!ReplayRunner.ExecuteMapNode(out int actualCol, out int actualRow))
-            return;
-
         if (MapPointDictionaryField?.GetValue(screen) is not Dictionary<MapCoord, NMapPoint> dict)
         {
             PlayerActionBuffer.LogToDevConsole("[RunReplays] MapChoice: could not access map point dictionary.");
             return;
         }
 
-        var coord = new MapCoord(actualCol, actualRow);
+        var coord = new MapCoord(col, row);
         if (!dict.TryGetValue(coord, out NMapPoint? point))
         {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] MapChoice: map point col={actualCol} row={actualRow} not found in dictionary.");
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] MapChoice: map point col={col} row={row} not found in dictionary.");
             return;
         }
 

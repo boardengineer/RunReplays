@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Events;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
+using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 
 namespace RunReplays;
@@ -40,34 +41,6 @@ public static class EventOptionReplayPatch
             $"[EventOptionReplayPatch] BeginEvent — event='{canonicalEvent.GetType().Name}' isAncient={isAncient} replayActive={replayActive} nextCmd='{nextCmd}'");
 
         _activeSynchronizer = __instance;
-
-        // Handle potion discards/uses that precede the first event option.
-        if (ReplayEngine.PeekNetDiscardPotion(out _))
-        {
-            PlayerActionBuffer.LogDispatcher("[Event] NetDiscardPotion before event option — executing discard.");
-            CardPlayReplayPatch.TryDiscardPotion();
-            TaskHelper.RunSafely(RetryAfterDelay(__instance, MaxRetries));
-            return;
-        }
-
-        if (ReplayEngine.PeekUsePotion(out _, out _, out _))
-        {
-            PlayerActionBuffer.LogDispatcher("[Event] UsePotionAction before event option — executing potion use.");
-            CardPlayReplayPatch.TryUsePotion();
-            TaskHelper.RunSafely(RetryAfterDelay(__instance, MaxRetries));
-            return;
-        }
-
-        if (!ReplayEngine.PeekEventOption(out string peekedKey))
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[EventOptionReplayPatch] No ChooseEventOption pending — deferring retry.");
-            TaskHelper.RunSafely(RetryAfterDelay(__instance, MaxRetries));
-            return;
-        }
-
-        PlayerActionBuffer.LogToDevConsole(
-            $"[EventOptionReplayPatch] Stored synchronizer for textKey='{peekedKey}'.");
         ReplayDispatcher.DispatchNow();
     }
 
@@ -75,83 +48,54 @@ public static class EventOptionReplayPatch
     internal static void DispatchFromEngine()
     {
         if (_activeSynchronizer == null)
-            return;
-        Callable.From(() => AutoSelect(_activeSynchronizer)).CallDeferred();
-    }
-
-    private const int MaxRetries = 10;
-
-    private static void AutoSelect(EventSynchronizer synchronizer, int retriesLeft = MaxRetries)
-    {
-        int eventCount = synchronizer.Events.Count;
-        PlayerActionBuffer.LogToDevConsole(
-            $"[EventOptionReplayPatch] AutoSelect — Events.Count={eventCount} retriesLeft={retriesLeft}");
-
-        if (eventCount == 0)
-            return;
-
-        EventModel eventModel = synchronizer.Events[0];
-        bool isFinished = eventModel.IsFinished;
-        var options = eventModel.CurrentOptions;
-        PlayerActionBuffer.LogToDevConsole(
-            $"[EventOptionReplayPatch] AutoSelect — event='{eventModel.Title.GetFormattedText()}' isFinished={isFinished} options={options.Count}");
-
-        // When the event is finished, NEventRoom.SetOptions creates a UI-level PROCEED
-        // button that calls EventOption.Chosen() directly, bypassing ChooseLocalOption.
-        // CurrentOptions is always empty at this point so a normal lookup would always
-        // fail.  Use SkipToEventOption to drain any orphaned interleaved commands
-        // (auto-processed during ChooseLocalOption) and consume the ChooseEventOption,
-        // then call NEventRoom.Proceed() directly.  We call Proceed() regardless of
-        // whether a ChooseEventOption was found — some events may not log one.
-        if (isFinished)
         {
-            ReplayEngine.SkipToEventOption(out string finishedKey);
-            PlayerActionBuffer.LogToDevConsole(finishedKey.Length > 0
-                ? $"[EventOptionReplayPatch] Event finished — consumed '{finishedKey}' and calling NEventRoom.Proceed()."
-                : "[EventOptionReplayPatch] Event finished — no ChooseEventOption in queue; calling NEventRoom.Proceed() directly.");
+            PlayerActionBuffer.LogDispatcher("[Event] DispatchFromEngine: no active synchronizer.");
+            return;
+        }
+
+        var synchronizer = _activeSynchronizer;
+
+        // Check if the event is finished — consume the PROCEED command and advance.
+        if (synchronizer.Events.Count > 0 && synchronizer.Events[0].IsFinished)
+        {
+            // Consume the ChooseEventOption PROCEED so it doesn't loop.
+            if (ReplayEngine.PeekEventOption(out _, out _))
+                ReplayRunner.ExecuteEventOption(out _);
+
+            PlayerActionBuffer.LogDispatcher("[Event] Event finished — consumed PROCEED, calling NEventRoom.Proceed().");
             TaskHelper.RunSafely(NEventRoom.Proceed());
+            ReplayDispatcher.DispatchNow();
             return;
         }
 
-        // Handle potion discards/uses interleaved with event options.
-        if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
+        // If the event option is PROCEED and the next command after it is a map
+        // move, consume PROCEED and let the dispatcher advance to the map move.
+        if (ReplayEngine.PeekEventOption(out string peekKey, out _)
+            && peekKey.Contains("PROCEED", System.StringComparison.OrdinalIgnoreCase))
         {
-            PlayerActionBuffer.LogDispatcher($"[Event] AutoSelect — potion discard slot={discardSlot}");
-            CardPlayReplayPatch.TryDiscardPotion();
-            TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
-            return;
+            // Peek the command after PROCEED.
+            var pending = ReplayEngine.PeekAhead(1);
+            if (pending != null && pending.StartsWith("MoveToMapCoordAction "))
+            {
+                ReplayRunner.ExecuteEventOption(out _);
+                PlayerActionBuffer.LogDispatcher($"[Event] Consumed PROCEED (map move follows) — advancing.");
+                TaskHelper.RunSafely(NEventRoom.Proceed());
+                ReplayDispatcher.DispatchNow();
+                return;
+            }
         }
 
-        if (ReplayEngine.PeekUsePotion(out _, out _, out _))
-        {
-            PlayerActionBuffer.LogDispatcher("[Event] AutoSelect — potion use");
-            CardPlayReplayPatch.TryUsePotion();
-            TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
-            return;
-        }
-
+        // Consume and execute the event option.
         if (!ReplayEngine.PeekEventOption(out string textKey, out int recordedIndex))
         {
-            if (retriesLeft > 0)
-            {
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[EventOptionReplayPatch] AutoSelect — no ChooseEventOption at front, retrying ({retriesLeft} left).");
-                TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft - 1));
-            }
-            else
-            {
-                PlayerActionBuffer.LogToDevConsole(
-                    "[EventOptionReplayPatch] AutoSelect — no ChooseEventOption after retries — aborting.");
-            }
+            // Not ready yet — retry.
+            PlayerActionBuffer.LogDispatcher("[Event] No ChooseEventOption at front — retrying.");
+            NGame.Instance!.GetTree()!.CreateTimer(0.3).Connect(
+                "timeout", Callable.From(() => ReplayDispatcher.DispatchNow()));
             return;
         }
 
-        PlayerActionBuffer.LogToDevConsole(
-            $"[EventOptionReplayPatch] AutoSelect — looking for textKey='{textKey}' recordedIndex={recordedIndex} among {options.Count} options: [{string.Join(", ", options.Select(o => o.TextKey))}]");
-
-        // Prefer the recorded index when it's valid AND the textKey matches.
-        // The textKey check guards against stale options from a previous page
-        // that hasn't transitioned yet (e.g. multi-page events like Colossal Flower).
+        var options = synchronizer.Events[0].CurrentOptions;
         int index = -1;
         if (recordedIndex >= 0 && recordedIndex < options.Count
             && options[recordedIndex].TextKey == textKey)
@@ -160,8 +104,6 @@ public static class EventOptionReplayPatch
         }
         else
         {
-            // Fallback: match by textKey (legacy format, out-of-range index,
-            // or index pointed to a stale option from a previous page).
             for (int i = 0; i < options.Count; i++)
             {
                 if (options[i].TextKey == textKey)
@@ -174,112 +116,25 @@ public static class EventOptionReplayPatch
 
         if (index < 0)
         {
-            string available = options.Count > 0
-                ? string.Join(", ", options.Select(o => $"'{o.TextKey}'"))
-                : "(none)";
-
-            if (retriesLeft > 0)
-            {
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[EventOptionReplayPatch] Option '{textKey}' not yet available (have: [{available}]) — retrying in 100 ms ({retriesLeft} left).");
-                TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft - 1));
-            }
-            else
-            {
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[EventOptionReplayPatch] Option '{textKey}' not found after {MaxRetries} retries (have: [{available}]) — aborting.");
-            }
+            PlayerActionBuffer.LogDispatcher(
+                $"[Event] Option '{textKey}' not found — retrying.");
+            NGame.Instance!.GetTree()!.CreateTimer(0.3).Connect(
+                "timeout", Callable.From(() => ReplayDispatcher.DispatchNow()));
             return;
         }
 
-        // Log event page description and all option details for debugging
-        // card-offering events like Slippery Bridge.
-        try
-        {
-            string eventDesc = eventModel.Description?.GetFormattedText() ?? "(null)";
-            string eventRng = eventModel.Rng != null ? $" eventRng={eventModel.Rng.Counter}" : "";
-            SelectorStackDebug.Log($"[EventAutoSelect] event='{eventModel.Title.GetFormattedText()}'{eventRng}");
-            SelectorStackDebug.Log($"  pageDesc: {eventDesc}");
-            for (int i = 0; i < options.Count; i++)
-            {
-                string optTitle = options[i].Title?.GetFormattedText() ?? "(null)";
-                string optDesc = options[i].Description?.GetFormattedText() ?? "(null)";
-                string optKey = options[i].TextKey ?? "(null)";
-                SelectorStackDebug.Log($"  option[{i}]: title='{optTitle}' key='{optKey}' desc='{optDesc}'");
-            }
-        }
-        catch { /* ignore */ }
-
-        PlayerActionBuffer.LogToDevConsole(
-            $"[EventOptionReplayPatch] AutoSelect — selecting index={index} (textKey='{textKey}').");
         ReplayRunner.ExecuteEventOption(out _);
+        PlayerActionBuffer.LogDispatcher($"[Event] Consumed and selecting option '{textKey}' at index {index}.");
         synchronizer.ChooseLocalOption(index);
 
-        Callable.From(() => ContinueIfNeeded(synchronizer)).CallDeferred();
+        // After the option is chosen, defer to check if more event options follow.
+        Callable.From(() =>
+        {
+            // Signal event readiness so the dispatcher handles the next event
+            // option, potion, or finished state.
+            ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Event);
+            ReplayDispatcher.DispatchNow();
+        }).CallDeferred();
     }
 
-    private static async Task RetryAfterDelay(EventSynchronizer synchronizer, int retriesLeft)
-    {
-        await Task.Delay(100);
-        Callable.From(() => AutoSelect(synchronizer, retriesLeft)).CallDeferred();
-    }
-
-    private static void ContinueIfNeeded(EventSynchronizer synchronizer, int retriesLeft = MaxRetries)
-    {
-        ReplayEngine.PeekNext(out string? nextCmd);
-        int eventCount = synchronizer.Events.Count;
-        bool finished = eventCount > 0 && synchronizer.Events[0].IsFinished;
-        PlayerActionBuffer.LogToDevConsole(
-            $"[EventOptionReplayPatch] ContinueIfNeeded — Events.Count={eventCount} finished={finished} nextCmd='{nextCmd}'");
-
-        if (eventCount == 0)
-            return;
-
-        // If finished, AutoSelect handles PROCEED (drains orphaned commands + Proceed()).
-        // Use a delay so any async page transition has time to complete.
-        if (finished)
-        {
-            TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
-            return;
-        }
-
-        // Handle potion discards/uses between event options.
-        if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot2))
-        {
-            PlayerActionBuffer.LogDispatcher($"[Event] ContinueIfNeeded — potion discard slot={discardSlot2}");
-            CardPlayReplayPatch.TryDiscardPotion();
-            TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
-            return;
-        }
-
-        if (ReplayEngine.PeekUsePotion(out _, out _, out _))
-        {
-            PlayerActionBuffer.LogDispatcher("[Event] ContinueIfNeeded — potion use");
-            CardPlayReplayPatch.TryUsePotion();
-            TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
-            return;
-        }
-
-        if (ReplayEngine.PeekEventOption(out _))
-        {
-            TaskHelper.RunSafely(RetryAfterDelay(synchronizer, retriesLeft));
-            return;
-        }
-
-        // No event option at front of queue.  If one exists deeper (behind orphaned
-        // interleaved commands), retry — either the event will finish asynchronously
-        // (making finished=true next time) or another patch will consume the blocker.
-        if (retriesLeft > 0 && ReplayEngine.HasPendingEventOption())
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[EventOptionReplayPatch] ContinueIfNeeded — pending event option behind interleaved commands; retrying ({retriesLeft} left).");
-            TaskHelper.RunSafely(RetryContinueAfterDelay(synchronizer, retriesLeft - 1));
-        }
-    }
-
-    private static async Task RetryContinueAfterDelay(EventSynchronizer synchronizer, int retriesLeft)
-    {
-        await Task.Delay(100);
-        Callable.From(() => ContinueIfNeeded(synchronizer, retriesLeft)).CallDeferred();
-    }
 }

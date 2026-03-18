@@ -48,6 +48,8 @@ public static class FakeMerchantReplayPatch
 {
     private static NFakeMerchant? _activeInstance;
 
+    internal static bool IsActive => _activeInstance != null;
+
     private static readonly MethodInfo? OpenInventoryMethod =
         typeof(NFakeMerchant).GetMethod("OpenInventory",
             BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
@@ -66,26 +68,65 @@ public static class FakeMerchantReplayPatch
     [HarmonyPostfix]
     public static void Postfix(NFakeMerchant __instance)
     {
+        if (!ReplayEngine.IsActive)
+            return;
+
         if (!ReplayEngine.PeekOpenFakeShop())
             return;
 
-        ReplayRunner.ExecuteOpenFakeShop();
         _activeInstance = __instance;
-        PlayerActionBuffer.LogToDevConsole("[FakeMerchantReplayPatch] AfterRoomIsLoaded — deferring OpenInventory.");
+        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Shop);
+        ReplayDispatcher.DispatchNow();
+    }
 
-        if (OpenInventoryMethod != null)
+    /// <summary>Called by the dispatcher to handle fake shop commands.</summary>
+    internal static void DispatchFromEngine()
+    {
+        if (_activeInstance == null)
+            return;
+
+        if (ReplayEngine.PeekOpenFakeShop())
         {
-            Callable.From(() =>
+            ReplayRunner.ExecuteOpenFakeShop();
+            PlayerActionBuffer.LogDispatcher("[FakeShop] Opening inventory.");
+
+            if (OpenInventoryMethod != null)
             {
-                OpenInventoryMethod.Invoke(__instance, null);
-                // Start the purchase loop after inventory opens.
-                Callable.From(() => ProcessNextPurchase(__instance)).CallDeferred();
-            }).CallDeferred();
+                var merchant = _activeInstance;
+                Callable.From(() =>
+                {
+                    OpenInventoryMethod.Invoke(merchant, null);
+                    ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Shop);
+                    ReplayDispatcher.DispatchNow();
+                }).CallDeferred();
+            }
+            return;
         }
-        else
+
+        if (ReplayEngine.PeekBuyRelic(out string relicTitle))
         {
-            PlayerActionBuffer.LogToDevConsole("[FakeMerchantReplayPatch] Could not find OpenInventory method.");
+            var entries = GetEntries(_activeInstance);
+            var entry = entries?
+                .OfType<MerchantRelicEntry>()
+                .FirstOrDefault(e => e.Model?.Title.GetFormattedText() == relicTitle);
+
+            if (entry == null)
+            {
+                PlayerActionBuffer.LogDispatcher($"[FakeShop] Relic '{relicTitle}' not found — skipping.");
+                ReplayRunner.ExecuteBuyRelic(out _);
+                ReplayDispatcher.DispatchNow();
+                return;
+            }
+
+            ReplayRunner.ExecuteBuyRelic(out _);
+            ShopOpenedReplayPatch.InvokePurchase(entry);
+            PlayerActionBuffer.LogDispatcher($"[FakeShop] Purchased relic '{relicTitle}'.");
+            ReplayDispatcher.DispatchNow();
+            return;
         }
+
+        PlayerActionBuffer.LogDispatcher("[FakeShop] No more fake shop commands.");
+        _activeInstance = null;
     }
 
     // ── Purchase loop ────────────────────────────────────────────────────────

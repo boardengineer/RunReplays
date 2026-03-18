@@ -9,6 +9,7 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Merchant;
 using MegaCrit.Sts2.Core.Helpers;
+using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 
@@ -141,12 +142,112 @@ public static class ShopOpenedReplayPatch
         {
             ReplayRunner.ExecuteOpenShop();
             IsShopReplayActive = true;
-            PlayerActionBuffer.LogDispatcher("[Shop] DispatchFromEngine: consumed OpenShop, opening inventory.");
+            PlayerActionBuffer.LogDispatcher("[Shop] Consumed OpenShop, opening inventory.");
             Callable.From(() => ActiveRoom.OpenInventory()).CallDeferred();
             return;
         }
 
-        Callable.From(() => ProcessNextPurchase(ActiveRoom)).CallDeferred();
+        List<MerchantEntry>? entries = GetEntries(ActiveRoom);
+        if (entries == null || entries.Count == 0)
+        {
+            PlayerActionBuffer.LogDispatcher("[Shop] No entries available yet — retrying.");
+            NGame.Instance!.GetTree()!.CreateTimer(0.1).Connect(
+                "timeout", Callable.From(() => ReplayDispatcher.DispatchNow()));
+            return;
+        }
+
+        if (ReplayEngine.PeekBuyCard(out string cardTitle))
+        {
+            var entry = entries.OfType<MerchantCardEntry>()
+                .FirstOrDefault(e => e.CreationResult?.Card?.Title == cardTitle);
+            if (entry == null)
+            {
+                PlayerActionBuffer.LogDispatcher($"[Shop] Card '{cardTitle}' not found — skipping.");
+                ReplayRunner.ExecuteBuyCard(out _);
+                ReplayDispatcher.DispatchNow();
+                return;
+            }
+            ReplayRunner.ExecuteBuyCard(out _);
+            InvokePurchase(entry);
+            PlayerActionBuffer.LogDispatcher($"[Shop] Purchased card '{cardTitle}'.");
+            ReplayDispatcher.DispatchNow();
+            return;
+        }
+
+        if (ReplayEngine.PeekBuyRelic(out string relicTitle))
+        {
+            var entry = entries.OfType<MerchantRelicEntry>()
+                .FirstOrDefault(e => e.Model?.Title.GetFormattedText() == relicTitle);
+            if (entry == null)
+            {
+                PlayerActionBuffer.LogDispatcher($"[Shop] Relic '{relicTitle}' not found — skipping.");
+                ReplayRunner.ExecuteBuyRelic(out _);
+                ReplayDispatcher.DispatchNow();
+                return;
+            }
+            ReplayRunner.ExecuteBuyRelic(out _);
+            InvokePurchase(entry);
+            PlayerActionBuffer.LogDispatcher($"[Shop] Purchased relic '{relicTitle}'.");
+            ReplayDispatcher.DispatchNow();
+            return;
+        }
+
+        if (ReplayEngine.PeekBuyPotion(out string potionTitle))
+        {
+            var entry = entries.OfType<MerchantPotionEntry>()
+                .FirstOrDefault(e => e.Model?.Title.GetFormattedText() == potionTitle);
+            if (entry == null)
+            {
+                PlayerActionBuffer.LogDispatcher($"[Shop] Potion '{potionTitle}' not found — skipping.");
+                ReplayRunner.ExecuteBuyPotion(out _);
+                ReplayDispatcher.DispatchNow();
+                return;
+            }
+            ReplayRunner.ExecuteBuyPotion(out _);
+            InvokePurchase(entry);
+            PlayerActionBuffer.LogDispatcher($"[Shop] Purchased potion '{potionTitle}'.");
+            ReplayDispatcher.DispatchNow();
+            return;
+        }
+
+        if (ReplayEngine.PeekBuyCardRemoval())
+        {
+            var entry = entries.OfType<MerchantCardRemovalEntry>().FirstOrDefault();
+            if (entry == null)
+            {
+                PlayerActionBuffer.LogDispatcher("[Shop] Card removal entry not found — skipping.");
+                ReplayRunner.ExecuteBuyCardRemoval();
+                ReplayDispatcher.DispatchNow();
+                return;
+            }
+            ReplayRunner.ExecuteBuyCardRemoval();
+            ReplayEngine.SkipToRemoveCardFromDeck();
+            ActiveRoom = ActiveRoom;
+            CardRemovalInProgress = true;
+            PlayerActionBuffer.LogDispatcher("[Shop] Purchased card removal.");
+            InvokePurchase(entry);
+            return;
+        }
+
+        // Stray OpenShop (recorded when inventory was already open).
+        if (ReplayEngine.PeekOpenShop())
+        {
+            PlayerActionBuffer.LogDispatcher("[Shop] Consuming stray OpenShop.");
+            ReplayRunner.ExecuteOpenShop();
+            ReplayDispatcher.DispatchNow();
+            return;
+        }
+
+        // No more shop commands — done.
+        IsShopReplayActive = false;
+        PlayerActionBuffer.LogDispatcher("[Shop] No more shop commands.");
+
+        if (ReplayEngine.PeekMapNode(out _, out _))
+        {
+            PlayerActionBuffer.LogDispatcher("[Shop] Map move next — opening map.");
+            NMapScreen.Instance?.Open();
+            NMapScreen.Instance?.SetTravelEnabled(true);
+        }
     }
 
     // Accessed by ShopCardRemovalCompletedReplayPatch after InvokePurchaseCompleted.

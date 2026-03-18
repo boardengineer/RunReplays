@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Godot;
 
 namespace RunReplays;
@@ -27,8 +28,10 @@ public static class ReplayEngine
     /// When the queue empties naturally (all commands consumed), also fires
     /// ReplayCompleted so callers can restore the action buffer.
     /// </summary>
-    private static string SignalConsumed(string cmd)
+    private static string SignalConsumed(string cmd, [CallerMemberName] string? caller = null)
     {
+        PlayerActionBuffer.LogDispatcher($"[Queue] {caller}: {cmd[..Math.Min(cmd.Length, 60)]} ({_pending.Count} remaining)");
+
         if (_recentConsumed.Count >= 2)
             _recentConsumed.RemoveAt(0);
         _recentConsumed.Add(cmd);
@@ -207,6 +210,22 @@ public static class ReplayEngine
 
     /// <summary>Returns the next queued command without consuming it.</summary>
     public static bool PeekNext(out string? cmd) => _pending.TryPeek(out cmd);
+
+    /// <summary>
+    /// Returns the command at the given offset from the front (0 = front, 1 = second, etc.)
+    /// without consuming anything.  Returns null if the offset is out of range.
+    /// </summary>
+    public static string? PeekAhead(int offset)
+    {
+        int i = 0;
+        foreach (string cmd in _pending)
+        {
+            if (i == offset)
+                return cmd;
+            i++;
+        }
+        return null;
+    }
 
     // ── Starting bonus ────────────────────────────────────────────────────────
 
@@ -623,54 +642,6 @@ public static class ReplayEngine
             return true;
         }
         return false;
-    }
-
-    /// <summary>
-    /// Searches the queue for a ChooseEventOption command, drains any interleaved
-    /// commands that precede it (they are orphaned — already processed by the game
-    /// during ChooseLocalOption), then consumes the event option itself.
-    /// Used for the finished-event PROCEED case so orphaned commands don't linger
-    /// and block subsequent queue consumers (e.g. map navigation).
-    /// Returns true if the event option was found and consumed.
-    /// </summary>
-    public static bool SkipToEventOption(out string textKey)
-    {
-        // Fast path: already at front.
-        if (PeekEventOption(out textKey))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-
-        // Verify a ChooseEventOption exists before draining anything.
-        bool found = false;
-        foreach (string cmd in _pending)
-        {
-            if (cmd.StartsWith(EventOptionPrefix))
-            {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found)
-        {
-            textKey = string.Empty;
-            return false;
-        }
-
-        // Drain interleaved commands until ChooseEventOption is at the front.
-        while (_pending.Count > 0 && !PeekEventOption(out _))
-            SignalConsumed(_pending.Dequeue());
-
-        if (!PeekEventOption(out textKey))
-        {
-            textKey = string.Empty;
-            return false;
-        }
-
-        SignalConsumed(_pending.Dequeue());
-        return true;
     }
 
     /// <summary>
