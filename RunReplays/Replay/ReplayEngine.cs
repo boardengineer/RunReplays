@@ -46,6 +46,7 @@ public static class ReplayEngine
                 // false — bail out so ReplayCompleted is not fired spuriously.
                 if (!_replayActive) return;
                 _replayActive = false;
+                ReplayDispatcher.RestoreGameSpeed();
                 ReplayCompleted?.Invoke(commands);
             }).CallDeferred();
         }
@@ -140,6 +141,8 @@ public static class ReplayEngine
         }
 
         _replayActive = _loadedCommands.Count > 0;
+        if (_replayActive)
+            ReplayDispatcher.ApplyGameSpeed();
     }
 
     public static void Clear()
@@ -147,6 +150,7 @@ public static class ReplayEngine
         _pending.Clear();
         _recentConsumed.Clear();
         _replayActive = false;
+        ReplayDispatcher.RestoreGameSpeed();
         ResetAllPatchState();
     }
 

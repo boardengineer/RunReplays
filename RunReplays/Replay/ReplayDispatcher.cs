@@ -84,6 +84,41 @@ public static class ReplayDispatcher
     }
 
     /// <summary>
+    /// Game speed multiplier during replay. 1.0 = normal, 2.0 = double speed, etc.
+    /// Applied via Engine.TimeScale when replay is active.
+    /// Set to 1.0 to restore normal speed.
+    /// </summary>
+    private static float _gameSpeed = 2.0f;
+    public static float GameSpeed
+    {
+        get => _gameSpeed;
+        set
+        {
+            _gameSpeed = Math.Max(0.1f, value);
+            if (ReplayEngine.IsActive)
+                Engine.TimeScale = _gameSpeed;
+        }
+    }
+
+    /// <summary>
+    /// Applies the game speed when replay starts.
+    /// Called from ReplayEngine.Load or when replay becomes active.
+    /// </summary>
+    public static void ApplyGameSpeed()
+    {
+        if (ReplayEngine.IsActive)
+            Engine.TimeScale = _gameSpeed;
+    }
+
+    /// <summary>
+    /// Restores normal game speed. Called when replay ends or is cancelled.
+    /// </summary>
+    public static void RestoreGameSpeed()
+    {
+        Engine.TimeScale = 1.0;
+    }
+
+    /// <summary>
     /// When true, the dispatcher executes one command per <see cref="Step"/> call
     /// instead of automatically chaining.
     /// </summary>
@@ -226,6 +261,7 @@ public static class ReplayDispatcher
         PotionInFlight = false;
         MapMoveInFlight = false;
         ++_dispatchGeneration;
+        RestoreGameSpeed();
     }
 
     /// <summary>
