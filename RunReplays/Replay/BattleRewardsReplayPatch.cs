@@ -82,6 +82,7 @@ public static class BattleRewardsReplayPatch
         }
 
         _activeScreen = __instance;
+        ReplayDispatcher.DispatchNow();
     }
 
     /// <summary>Called by ReplayDispatcher to process the next reward.</summary>

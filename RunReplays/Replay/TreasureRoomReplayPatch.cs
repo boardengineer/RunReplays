@@ -49,7 +49,9 @@ public static class TreasureRoomReplayPatch
 
         if (ReplayEngine.PeekNetPickRelicAction(out int relicIndex))
         {
+            ReplayRunner.ExecuteNetPickRelicAction(out _);
             var sync = RunManager.Instance.TreasureRoomRelicSynchronizer;
+            PlayerActionBuffer.LogDispatcher($"[Treasure] PickRelicLocally({relicIndex})");
             Callable.From(() => sync.PickRelicLocally(relicIndex)).CallDeferred();
         }
     }
@@ -143,9 +145,11 @@ public static class TreasureRoomReplayPatch
                 return;
 
             NProceedButton button = room.ProceedButton;
-            PlayerActionBuffer.LogToDevConsole(
-                "[TreasureRoomReplayPatch] Clicking proceed button.");
+            PlayerActionBuffer.LogDispatcher(
+                "[Treasure] Clicking proceed button.");
             button.EmitSignal(NClickableControl.SignalName.Released, button);
+            // The proceed opens the map — signal readiness for the next map move.
+            ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Map);
         }
     }
 }
