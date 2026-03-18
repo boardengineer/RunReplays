@@ -54,6 +54,12 @@ public static class ReplayDispatcher
     /// </summary>
     private static string? _lastDispatchedCmd;
 
+    /// <summary>
+    /// Incremented each time a dispatch is scheduled.  Timer callbacks compare
+    /// against this to detect if they've been superseded by DispatchNow.
+    /// </summary>
+    private static int _dispatchGeneration;
+
     /// <summary>Current readiness state (bitmask of what the game is ready for).</summary>
     public static ReadyState Ready => _ready;
 
@@ -91,11 +97,45 @@ public static class ReplayDispatcher
         }
     }
 
+    /// <summary>
+    /// Set when a card play command is issued, cleared when it completes.
+    /// When cleared, triggers immediate dispatch (bypasses delay) so the
+    /// next card play or end turn doesn't wait unnecessarily.
+    /// </summary>
+    /// <summary>
+    /// Tracks whether a card play is in flight.  Set by the combat patch.
+    /// Does NOT trigger immediate dispatch on clear — effects need to settle
+    /// first.  <see cref="NotifyEffectsSettled"/> triggers dispatch after.
+    /// </summary>
+    public static bool CardPlayInFlight { get; set; }
+
+    /// <summary>
+    /// Called when combat effects have settled after a card play, potion use,
+    /// etc.  Bypasses the delay timer for immediate dispatch.
+    /// </summary>
+    public static void NotifyEffectsSettled()
+    {
+        DispatchNow();
+    }
+
     /// <summary>Execute the next command when in stepping mode.</summary>
     public static void Step()
     {
         _stepRequested = true;
         TryDispatch();
+    }
+
+    /// <summary>
+    /// Bypasses the delay timer and dispatches the next command immediately.
+    /// Called by patches when they know the game is ready and waiting would
+    /// cause a visible stall (e.g. after effects settle, after a screen opens).
+    /// </summary>
+    public static void DispatchNow()
+    {
+        ++_dispatchGeneration; // Invalidate any pending timer callback.
+        _dispatchInProgress = false;
+        _lastDispatchedCmd = null;
+        Callable.From(ExecuteNext).CallDeferred();
     }
 
     /// <summary>
@@ -118,15 +158,23 @@ public static class ReplayDispatcher
         _lastDispatchedCmd = null;
 
         // Don't re-trigger immediately — respect the delay between commands.
-        // If there's no delay, defer to next frame to avoid re-entry.
+        int gen = ++_dispatchGeneration;
         if (_delayBetweenCommands > 0)
         {
             NGame.Instance?.GetTree()?.CreateTimer(_delayBetweenCommands).Connect(
-                "timeout", Callable.From(TryDispatch));
+                "timeout", Callable.From(() =>
+                {
+                    if (_dispatchGeneration == gen)
+                        TryDispatch();
+                }));
         }
         else
         {
-            Callable.From(TryDispatch).CallDeferred();
+            Callable.From(() =>
+            {
+                if (_dispatchGeneration == gen)
+                    TryDispatch();
+            }).CallDeferred();
         }
     }
 
@@ -145,6 +193,8 @@ public static class ReplayDispatcher
         _stepRequested = false;
         _dispatchInProgress = false;
         _lastDispatchedCmd = null;
+        CardPlayInFlight = false;
+        ++_dispatchGeneration;
     }
 
     /// <summary>
@@ -177,14 +227,23 @@ public static class ReplayDispatcher
         _dispatchInProgress = true;
         _lastDispatchedCmd = cmd;
 
+        int gen = ++_dispatchGeneration;
         if (_delayBetweenCommands > 0)
         {
             NGame.Instance!.GetTree()!.CreateTimer(_delayBetweenCommands).Connect(
-                "timeout", Callable.From(ExecuteNext));
+                "timeout", Callable.From(() =>
+                {
+                    if (_dispatchGeneration == gen)
+                        ExecuteNext();
+                }));
         }
         else
         {
-            Callable.From(ExecuteNext).CallDeferred();
+            Callable.From(() =>
+            {
+                if (_dispatchGeneration == gen)
+                    ExecuteNext();
+            }).CallDeferred();
         }
     }
 

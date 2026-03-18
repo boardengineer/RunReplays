@@ -487,7 +487,11 @@ public static class CardPlayReplayPatch
         // While waiting for the end-turn to complete, ignore all actions.
         // Only OnTurnStarted (the next player turn) clears this flag.
         if (_awaitingEndTurnCompletion)
+        {
+            if (action is PlayCardAction)
+                PlayerActionBuffer.LogDispatcher($"[Combat] AfterAction: PlayCardAction SKIPPED — awaitingEndTurn");
             return;
+        }
 
         if (_waitingForEffects)
         {
@@ -512,12 +516,17 @@ public static class CardPlayReplayPatch
         // trigger DispatchNextCombatAction, which prematurely consumes the
         // next player EndTurn command and stalls the replay.
         if (!_dispatching)
+        {
+            if (action is PlayCardAction)
+                PlayerActionBuffer.LogDispatcher($"[Combat] AfterAction: PlayCardAction SKIPPED — dispatching=false");
             return;
+        }
 
         if (action is PlayCardAction playCard)
         {
             _cardPlayInFlight = false;
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: PlayCardAction completed ({playCard}).");
+            ReplayDispatcher.CardPlayInFlight = false;
+            PlayerActionBuffer.LogDispatcher($"[Combat] AfterAction: PlayCardAction COMPLETED — {playCard}");
             RunOverlay.NotifyCardPlayFinished();
             WaitForEffectsThenDispatch();
         }
@@ -579,9 +588,9 @@ public static class CardPlayReplayPatch
 
     private static void DispatchNextCombatAction()
     {
-        // Route back through the dispatcher so delays and pause/step are respected.
+        // Route back through the dispatcher — effects have settled, dispatch immediately.
         _dispatching = false;
-        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Combat);
+        ReplayDispatcher.NotifyEffectsSettled();
     }
 
     // ── Execution ─────────────────────────────────────────────────────────────
@@ -672,6 +681,7 @@ public static class CardPlayReplayPatch
         // Success: consume the command and log it.
         _retryCount = 0;
         _cardPlayInFlight = true;
+        ReplayDispatcher.CardPlayInFlight = true;
         ReplayRunner.ExecuteCardPlay(out _, out _);
         RunOverlay.NotifyCardPlayStarted();
         ReplayEngine.PeekNext(out string? afterPlay);
