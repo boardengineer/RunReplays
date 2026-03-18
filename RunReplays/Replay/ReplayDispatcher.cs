@@ -204,24 +204,39 @@ public static class ReplayDispatcher
     internal static void TryDispatch()
     {
         if (!ReplayEngine.IsActive)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: not active");
             return;
+        }
 
         if (_paused)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: paused");
             return;
+        }
 
         if (_stepping && !_stepRequested)
             return;
 
         if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
+        {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: queue empty");
             return;
+        }
 
         // Don't re-dispatch the same command that's already in progress.
         if (_dispatchInProgress && cmd == _lastDispatchedCmd)
+        {
+            PlayerActionBuffer.LogDispatcher($"[Dispatcher] TryDispatch: BLOCKED — already dispatching '{cmd[..Math.Min(cmd.Length, 50)]}'");
             return;
+        }
 
         ReadyState required = GetRequiredState(cmd);
         if (required != ReadyState.None && (_ready & required) == 0)
-            return; // Game isn't ready for this command type yet.
+        {
+            PlayerActionBuffer.LogDispatcher($"[Dispatcher] TryDispatch: WAITING — need {required}, have {_ready}, cmd='{cmd[..Math.Min(cmd.Length, 50)]}'");
+            return;
+        }
 
         _stepRequested = false;
         _dispatchInProgress = true;
@@ -295,7 +310,16 @@ public static class ReplayDispatcher
                 CrystalSphereReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.None:
-                // Card selections etc. — handled inline by selectors.
+                // Potion use/discard can happen in any context.
+                // Card selections are handled inline by selectors (no dispatch needed).
+                if (cmd.StartsWith("UsePotionAction ") || cmd.StartsWith("NetDiscardPotionGameAction "))
+                {
+                    CardPlayReplayPatch.DispatchFromEngine();
+                }
+                else
+                {
+                    PlayerActionBuffer.LogDispatcher($"[Dispatcher] ExecuteNext: no handler for ReadyState.None cmd='{cmd[..Math.Min(cmd.Length, 50)]}'");
+                }
                 break;
         }
     }
@@ -308,8 +332,10 @@ public static class ReplayDispatcher
         // Combat
         if (cmd.StartsWith("PlayCardAction ")) return ReadyState.Combat;
         if (cmd.StartsWith("EndPlayerTurnAction ")) return ReadyState.Combat;
-        if (cmd.StartsWith("UsePotionAction ")) return ReadyState.Combat;
-        if (cmd.StartsWith("NetDiscardPotionGameAction ")) return ReadyState.Combat;
+
+        // Potions can be used/discarded in any context (combat, rewards, events, map).
+        if (cmd.StartsWith("UsePotionAction ")) return ReadyState.None;
+        if (cmd.StartsWith("NetDiscardPotionGameAction ")) return ReadyState.None;
 
         // Rewards
         if (cmd.StartsWith("TakeGoldReward: ")) return ReadyState.Rewards;

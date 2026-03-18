@@ -46,13 +46,9 @@ public static class ShopRoomReadyPatch
         if (!ReplayEngine.IsActive)
             return;
 
+        ShopOpenedReplayPatch.ActiveRoom = __instance;
         ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Shop);
-
-        if (!ReplayEngine.PeekOpenShop())
-            return;
-
-        PlayerActionBuffer.LogToDevConsole("[ShopReplayPatch] NMerchantRoom ready — deferring OpenInventory.");
-        Callable.From(() => __instance.OpenInventory()).CallDeferred();
+        ReplayDispatcher.DispatchNow();
     }
 }
 
@@ -126,21 +122,30 @@ public static class ShopOpenedReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Shop);
-
-        if (!ReplayEngine.PeekOpenShop())
-            return;
-
-        ReplayRunner.ExecuteOpenShop();
-        IsShopReplayActive = true;
         ActiveRoom = __instance;
+        // After inventory opens, signal shop readiness for purchase commands.
+        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Shop);
+        ReplayDispatcher.DispatchNow();
     }
 
     /// <summary>Called by ReplayDispatcher to trigger next shop action.</summary>
     internal static void DispatchFromEngine()
     {
         if (ActiveRoom == null || !ActiveRoom.IsInsideTree())
+        {
+            PlayerActionBuffer.LogDispatcher("[Shop] DispatchFromEngine: no active room.");
             return;
+        }
+
+        if (ReplayEngine.PeekOpenShop())
+        {
+            ReplayRunner.ExecuteOpenShop();
+            IsShopReplayActive = true;
+            PlayerActionBuffer.LogDispatcher("[Shop] DispatchFromEngine: consumed OpenShop, opening inventory.");
+            Callable.From(() => ActiveRoom.OpenInventory()).CallDeferred();
+            return;
+        }
+
         Callable.From(() => ProcessNextPurchase(ActiveRoom)).CallDeferred();
     }
 

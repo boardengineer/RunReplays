@@ -68,7 +68,8 @@ public static class BattleRewardsReplayPatch
                       || ReplayEngine.PeekSacrificeCardReward()
                       || ReplayEngine.PeekRelicReward(out _)
                       || ReplayEngine.PeekPotionReward(out _)
-                      || ReplayEngine.PeekNetDiscardPotion(out _);
+                      || ReplayEngine.PeekNetDiscardPotion(out _)
+                      || ReplayEngine.PeekUsePotion(out _, out _, out _);
         bool hasMapNode         = ReplayEngine.PeekMapNode(out _, out _);
         bool hasProceedToNextAct = ReplayEngine.PeekProceedToNextAct();
         bool hasEventOption     = ReplayEngine.PeekEventOption(out _);
@@ -129,6 +130,10 @@ public static class BattleRewardsReplayPatch
     {
         if (!ReplayEngine.IsActive || !screen.IsInsideTree())
             return;
+
+        ReplayEngine.PeekNext(out string? nextCmd);
+        PlayerActionBuffer.LogDispatcher(
+            $"[Rewards] ProcessNextReward: queue front = '{nextCmd ?? "(empty)"}'");
 
         if (ReplayEngine.PeekGoldReward(out int goldAmount))
         {
@@ -274,6 +279,21 @@ public static class BattleRewardsReplayPatch
                         return;
                     PlayerActionBuffer.LogToDevConsole(
                         "[RunReplays] Replay: resumed rewards after potion discard (timer fallback).");
+                }));
+            return;
+        }
+
+        if (ReplayEngine.PeekUsePotion(out uint pIdx, out _, out bool pCombat))
+        {
+            PlayerActionBuffer.LogDispatcher($"[Rewards] Potion use during rewards screen: index={pIdx} combat={pCombat}");
+            CardPlayReplayPatch.TryUsePotion();
+
+            NGame.Instance!.GetTree()!.CreateTimer(1.0).Connect(
+                "timeout", Callable.From(() =>
+                {
+                    if (!TryResumeRewardsProcessing())
+                        return;
+                    PlayerActionBuffer.LogDispatcher("[Rewards] Resumed rewards after potion use (timer fallback).");
                 }));
             return;
         }

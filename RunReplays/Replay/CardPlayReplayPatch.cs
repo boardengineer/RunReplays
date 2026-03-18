@@ -737,6 +737,13 @@ public static class CardPlayReplayPatch
             return;
         }
 
+        PotionModel? potion = player.GetPotionAtSlotIndex((int)potionIndex);
+        if (potion == null)
+        {
+            PlayerActionBuffer.LogDispatcher($"[Combat] TryUsePotion: no potion at slot {potionIndex}.");
+            return;
+        }
+
         Creature? target = null;
         if (targetId.HasValue)
         {
@@ -744,19 +751,19 @@ public static class CardPlayReplayPatch
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryUsePotion: resolved target id={targetId} → {(target == null ? "null" : target.ToString())}.");
         }
 
-        // For out-of-combat self-targeting, pass the player's own NetId.
-        ulong? targetPlayerId = (!inCombat && target == null) ? player.NetId : (ulong?)null;
+        // Out-of-combat self-targeting: use the player's own creature.
+        if (!inCombat && target == null)
+            target = player.Creature;
 
         try
         {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryUsePotion: enqueuing UsePotionAction index={potionIndex} for player '{player}'.");
-            RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(
-                new UsePotionAction(player, potionIndex, targetId, targetPlayerId, inCombat));
+            PlayerActionBuffer.LogDispatcher($"[Combat] TryUsePotion: using '{potion}' at slot {potionIndex} via EnqueueManualUse.");
+            potion.EnqueueManualUse(target);
         }
         catch (Exception ex)
         {
             PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] TryUsePotion: RequestEnqueue threw {ex.GetType().Name}: {ex.Message}");
+                $"[RunReplays] TryUsePotion: EnqueueManualUse threw {ex.GetType().Name}: {ex.Message}");
         }
     }
 
