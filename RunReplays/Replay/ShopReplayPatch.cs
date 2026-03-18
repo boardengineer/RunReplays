@@ -47,6 +47,7 @@ public static class ShopRoomReadyPatch
         if (!ReplayEngine.IsActive)
             return;
 
+        PlayerActionBuffer.LogDispatcher("[Shop] NMerchantRoom._Ready fired.");
         ShopOpenedReplayPatch.ActiveRoom = __instance;
         ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Shop);
         ReplayDispatcher.DispatchNow();

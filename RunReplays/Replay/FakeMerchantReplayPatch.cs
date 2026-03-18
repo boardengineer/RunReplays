@@ -125,8 +125,9 @@ public static class FakeMerchantReplayPatch
             return;
         }
 
-        PlayerActionBuffer.LogDispatcher("[FakeShop] No more fake shop commands.");
+        PlayerActionBuffer.LogDispatcher("[FakeShop] No more fake shop commands — clearing and re-dispatching.");
         _activeInstance = null;
+        ReplayDispatcher.DispatchNow();
     }
 
     // ── Purchase loop ────────────────────────────────────────────────────────

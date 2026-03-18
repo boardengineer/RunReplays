@@ -134,11 +134,6 @@ public static class ReplayDispatcher
     }
 
     /// <summary>
-    /// Set when a card play command is issued, cleared when it completes.
-    /// When cleared, triggers immediate dispatch (bypasses delay) so the
-    /// next card play or end turn doesn't wait unnecessarily.
-    /// </summary>
-    /// <summary>
     /// Tracks whether a card play is in flight.  Set by the combat patch.
     /// Does NOT trigger immediate dispatch on clear — effects need to settle
     /// first.  <see cref="NotifyEffectsSettled"/> triggers dispatch after.
@@ -188,15 +183,15 @@ public static class ReplayDispatcher
         Callable.From(ExecuteNext).CallDeferred();
     }
 
-    /// <summary>
-    /// Called by Harmony postfixes to signal that the game is ready for a
-    /// category of action.  Triggers dispatch if the next command matches.
-    /// </summary>
     /// <summary>Room readiness signals that indicate a map move has completed.</summary>
     private const ReadyState RoomReadyMask =
         ReadyState.Combat | ReadyState.Event | ReadyState.RestSite |
         ReadyState.Shop | ReadyState.Treasure;
 
+    /// <summary>
+    /// Called by Harmony postfixes to signal that the game is ready for a
+    /// category of action.  Triggers dispatch if the next command matches.
+    /// </summary>
     public static void SignalReady(ReadyState state)
     {
         _ready |= state;
@@ -204,10 +199,7 @@ public static class ReplayDispatcher
         // A room readiness signal means the map move completed and the
         // new room is loaded — unblock dispatch.
         if (MapMoveInFlight && (state & RoomReadyMask) != 0)
-        {
-            PlayerActionBuffer.LogDispatcher($"[Dispatcher] MapMove complete — room ready: {state}");
             MapMoveInFlight = false;
-        }
 
         TryDispatch();
     }
@@ -270,87 +262,45 @@ public static class ReplayDispatcher
     /// </summary>
     internal static void TryDispatch()
     {
-        if (!ReplayEngine.IsActive)
-        {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: not active");
+        if (!ReplayEngine.IsActive || _paused)
             return;
-        }
-
-        if (_paused)
-        {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: paused");
-            return;
-        }
 
         if (_stepping && !_stepRequested)
             return;
 
         if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
-        {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: queue empty");
             return;
-        }
 
         // Block dispatch while in-flight operations are pending.
-        if (PotionInFlight)
-        {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — potion in flight");
+        if (PotionInFlight || MapMoveInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
             return;
-        }
-
-        if (MapMoveInFlight)
-        {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — map move in flight");
-            return;
-        }
-
-        if (CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
-        {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — awaiting end-turn completion");
-            return;
-        }
 
         // Selection commands are consumed by ICardSelector implementations when the
         // game triggers a selection screen (FromChooseACardScreen, FromDeckGeneric, etc.).
         // The dispatcher does not touch them — the selector consumes the command,
         // NotifyConsumed fires, and the dispatcher advances to the next command.
         if (IsSelectionCommand(cmd))
-        {
-            PlayerActionBuffer.LogDispatcher(
-                $"[Dispatcher] Waiting for selector: '{cmd[..Math.Min(cmd.Length, 50)]}'");
             return;
-        }
 
         // Block potion use/discard during combat startup (before TurnStarted fires).
         if ((cmd.StartsWith("UsePotionAction ") || cmd.StartsWith("NetDiscardPotionGameAction "))
             && CombatManager.Instance.IsInProgress
             && (_ready & ReadyState.Combat) == 0)
-        {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] TryDispatch: BLOCKED — potion during combat startup");
             return;
-        }
 
         // Don't re-dispatch the same command that's already in progress.
         if (_dispatchInProgress && cmd == _lastDispatchedCmd)
-        {
-            PlayerActionBuffer.LogDispatcher($"[Dispatcher] TryDispatch: BLOCKED — already dispatching '{cmd[..Math.Min(cmd.Length, 50)]}'");
             return;
-        }
 
         ReadyState required = GetRequiredState(cmd);
         if (required != ReadyState.None && (_ready & required) == 0)
-        {
-            PlayerActionBuffer.LogDispatcher($"[Dispatcher] TryDispatch: WAITING — need {required}, have {_ready}, cmd='{cmd[..Math.Min(cmd.Length, 50)]}'");
             return;
-        }
 
         _stepRequested = false;
         _dispatchInProgress = true;
         _lastDispatchedCmd = cmd;
 
         int gen = ++_dispatchGeneration;
-        PlayerActionBuffer.LogDispatcher(
-            $"[Dispatcher] TryDispatch: scheduling gen={gen} delay={_delayBetweenCommands}s cmd='{cmd[..Math.Min(cmd.Length, 40)]}'");
         if (_delayBetweenCommands > 0)
         {
             NGame.Instance!.GetTree()!.CreateTimer(_delayBetweenCommands).Connect(
@@ -358,9 +308,6 @@ public static class ReplayDispatcher
                 {
                     if (_dispatchGeneration == gen)
                         ExecuteNext();
-                    else
-                        PlayerActionBuffer.LogDispatcher(
-                            $"[Dispatcher] Timer STALE gen={gen} current={_dispatchGeneration}");
                 }));
         }
         else
@@ -379,40 +326,11 @@ public static class ReplayDispatcher
         if (ReplayEngine.IsActive && Engine.TimeScale != _gameSpeed)
             Engine.TimeScale = _gameSpeed;
 
-        PlayerActionBuffer.LogDispatcher(
-            $"[Dispatcher] ExecuteNext: gen={_dispatchGeneration} inProgress={_dispatchInProgress}" +
-            $" potion={PotionInFlight} card={CardPlayInFlight} endTurn={CardPlayReplayPatch.IsAwaitingEndTurnCompletion}");
-
         if (!ReplayEngine.IsActive || _paused)
             return;
 
-        if (PotionInFlight)
+        if (PotionInFlight || CardPlayInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion || MapMoveInFlight)
         {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] ExecuteNext: BLOCKED — potion in flight");
-            _dispatchInProgress = false;
-            _lastDispatchedCmd = null;
-            return;
-        }
-
-        if (CardPlayInFlight)
-        {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] ExecuteNext: BLOCKED — card play in flight");
-            _dispatchInProgress = false;
-            _lastDispatchedCmd = null;
-            return;
-        }
-
-        if (CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
-        {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] ExecuteNext: BLOCKED — awaiting end-turn completion");
-            _dispatchInProgress = false;
-            _lastDispatchedCmd = null;
-            return;
-        }
-
-        if (MapMoveInFlight)
-        {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] ExecuteNext: BLOCKED — map move in flight");
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
             return;
@@ -436,15 +354,12 @@ public static class ReplayDispatcher
             && CombatManager.Instance.IsInProgress
             && (_ready & ReadyState.Combat) == 0)
         {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] ExecuteNext: BLOCKED — potion during combat startup");
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
             return;
         }
 
-        PlayerActionBuffer.LogDispatcher(
-            $"[Dispatcher] {cmd}");
-
+        PlayerActionBuffer.LogDispatcher($"Attempting to dispatch {cmd}");
         switch (required)
         {
             case ReadyState.Combat:
@@ -454,7 +369,6 @@ public static class ReplayDispatcher
                 BattleRewardsReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.Map:
-                PlayerActionBuffer.LogDispatcher("Blindly dispatching map choice " + cmd);
                 MapChoiceReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.Event:
@@ -467,7 +381,11 @@ public static class ReplayDispatcher
                 StartingBonusReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.Shop:
-                if (cmd.StartsWith("OpenFakeShop") || (FakeMerchantReplayPatch.IsActive))
+                if (cmd == "OpenFakeShop")
+                    FakeMerchantReplayPatch.DispatchFromEngine();
+                else if (cmd == "OpenShop")
+                    ShopOpenedReplayPatch.DispatchFromEngine();
+                else if (FakeMerchantReplayPatch.IsActive)
                     FakeMerchantReplayPatch.DispatchFromEngine();
                 else
                     ShopOpenedReplayPatch.DispatchFromEngine();
@@ -480,15 +398,8 @@ public static class ReplayDispatcher
                 break;
             case ReadyState.None:
                 // Potion use/discard can happen in any context.
-                // Card selections are handled inline by selectors (no dispatch needed).
                 if (cmd.StartsWith("UsePotionAction ") || cmd.StartsWith("NetDiscardPotionGameAction "))
-                {
                     CardPlayReplayPatch.DispatchFromEngine();
-                }
-                else
-                {
-                    PlayerActionBuffer.LogDispatcher($"[Dispatcher] ExecuteNext: no handler for ReadyState.None cmd='{cmd[..Math.Min(cmd.Length, 50)]}'");
-                }
                 break;
         }
     }

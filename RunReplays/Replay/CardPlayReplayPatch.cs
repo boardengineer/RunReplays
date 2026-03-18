@@ -126,6 +126,7 @@ public static class CardPlayReplayPatch
         _awaitingEndTurnCompletion = false;
         _endTurnRetryCount = 0;
         _endTurnConsumed = false;
+        _endTurnScheduled = false;
         _retryCount = 0;
         _turnStartRetries = 0;
         _turnStartedSinceLastEndTurn = true;
@@ -398,6 +399,7 @@ public static class CardPlayReplayPatch
         _dispatching = false;
         _waitingForEffects = false;
         _endTurnConsumed = false;
+        _endTurnScheduled = false;
         _endTurnRetryCount = 0;
         _postEndTurn_turnEndedReceived = false;
         _postEndTurn_turnStartedReceived = false;
@@ -452,6 +454,12 @@ public static class CardPlayReplayPatch
         }
         else if (ReplayEngine.PeekEndTurn())
         {
+            if (_endTurnScheduled)
+            {
+                PlayerActionBuffer.LogToDevConsole($"[RunReplays] {caller}: EndTurn already scheduled — skipping.");
+                return;
+            }
+            _endTurnScheduled = true;
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] {caller}: next command is EndTurn, scheduling TryEndTurn (0.5s delay).");
             int gen = _battleGeneration;
             NGame.Instance!.GetTree()!.CreateTimer(0.5).Connect(
@@ -798,10 +806,13 @@ public static class CardPlayReplayPatch
 
     private static int  _endTurnRetryCount;
     private static bool _endTurnConsumed;
+    private static bool _endTurnScheduled;
 
 
     private static void TryEndTurn()
     {
+        _endTurnScheduled = false;
+
         if (_waitingForEffects)
         {
             PlayerActionBuffer.LogDispatcher("[Combat] TryEndTurn: BLOCKED — effects still in progress, deferring.");
@@ -914,6 +925,7 @@ public static class CardPlayReplayPatch
         _dispatching = false;
         _waitingForEffects = false;
         _endTurnConsumed = false;
+        _endTurnScheduled = false;
         _endTurnRetryCount = 0;
         _postEndTurn_turnEndedReceived = false;
         _postEndTurn_turnStartedReceived = false;
