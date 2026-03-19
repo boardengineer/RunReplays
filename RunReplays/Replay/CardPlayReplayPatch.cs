@@ -434,19 +434,6 @@ public static class CardPlayReplayPatch
         {
             Callable.From(TryUsePotion).CallDeferred();
         }
-        if (ReplayEngine.PeekEndTurn())
-        {
-            if (_endTurnScheduled)
-            {
-                PlayerActionBuffer.LogToDevConsole($"[RunReplays] {caller}: EndTurn already scheduled — skipping.");
-                return;
-            }
-            _endTurnScheduled = true;
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] {caller}: next command is EndTurn, scheduling TryEndTurn (0.5s delay).");
-            int gen = _battleGeneration;
-            NGame.Instance!.GetTree()!.CreateTimer(0.5).Connect(
-                "timeout", Callable.From(() => { if (_battleGeneration == gen) TryEndTurn(); }));
-        }
         else
         {
             ReplayEngine.PeekNext(out string? next);
@@ -701,78 +688,28 @@ public static class CardPlayReplayPatch
     private static bool _endTurnScheduled;
 
 
-    private static void TryEndTurn()
+    internal static bool TryEndTurn()
     {
         _endTurnScheduled = false;
 
         if (_waitingForEffects)
         {
-            Callable.From(TryEndTurn).CallDeferred();
-            return;
+            return false; 
         }
 
         // Don't issue EndTurn unless we've received a TurnStarted since the
         // last one — prevents consecutive EndTurns without the game advancing.
         if (!_turnStartedSinceLastEndTurn)
         {
-            const int maxTurnWaitRetries = 50;
-            if (_endTurnRetryCount < maxTurnWaitRetries)
-            {
-                _endTurnRetryCount++;
-                int gen = _battleGeneration;
-                NGame.Instance!.GetTree()!.CreateTimer(0.25).Connect(
-                    "timeout", Callable.From(() => { if (_battleGeneration == gen) TryEndTurn(); }));
-            }
-            else
-            {
-                PlayerActionBuffer.LogToDevConsole("[RunReplays] TryEndTurn: gave up waiting for TurnStarted — aborting.");
-                _dispatching = false;
-            }
-            return;
+            return false;
         }
 
         // Wait until combat is in progress and a player is available.
         if (!CombatManager.Instance.IsInProgress || ResolveLocalPlayer() == null)
         {
-            const int maxReadyRetries = 50;
-            if (_endTurnRetryCount < maxReadyRetries)
-            {
-                _endTurnRetryCount++;
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[RunReplays] TryEndTurn: combat not ready — waiting ({_endTurnRetryCount}/{maxReadyRetries}).");
-                int gen = _battleGeneration;
-                NGame.Instance!.GetTree()!.CreateTimer(0.25).Connect(
-                    "timeout", Callable.From(() => { if (_battleGeneration == gen) TryEndTurn(); }));
-            }
-            else
-            {
-                PlayerActionBuffer.LogToDevConsole("[RunReplays] TryEndTurn: combat not ready after retries — aborting.");
-                _dispatching = false;
-            }
-            return;
+            return false;
         }
 
-        ReplayEngine.PeekNext(out string? peekCmd);
-        SelectorStackDebug.Log(
-            $"TryEndTurn: attempting end turn (retry #{_endTurnRetryCount})" +
-            $" endTurnConsumed={_endTurnConsumed} nextCmd='{peekCmd ?? "(none)"}'");
-
-        // Only consume the command on the first attempt — retries re-issue
-        // PlayerCmd.EndTurn for the same already-consumed command.
-        if (!_endTurnConsumed)
-        {
-            if (!ReplayRunner.ExecuteEndTurn())
-            {
-                PlayerActionBuffer.LogToDevConsole("[RunReplays] TryEndTurn: ExecuteEndTurn returned false (next command is not EndTurn).");
-                SelectorStackDebug.Log("TryEndTurn: ExecuteEndTurn=false, aborting.");
-                return;
-            }
-            _endTurnConsumed = true;
-            ReplayEngine.PeekNext(out string? afterConsume);
-            SelectorStackDebug.Log($"TryEndTurn: consumed EndTurn, next is now '{afterConsume ?? "(none)"}'");
-        }
-
-        // Player was already verified in the readiness check above.
         Player player = ResolveLocalPlayer()!;
 
         // Block all further dispatch until both TurnEnded and TurnStarted fire.
@@ -790,7 +727,7 @@ public static class CardPlayReplayPatch
         if (CombatManager.Instance.IsOverOrEnding)
         {
             ClearEndTurnGate();
-            return;
+            return true;
         }
 
         // Timer fallback: if the gate hasn't completed after 5 seconds,
@@ -803,6 +740,7 @@ public static class CardPlayReplayPatch
                 if (!_awaitingEndTurnCompletion) return;
                 ClearEndTurnGate();
             }));
+        return true;
     }
 
     private static void ClearEndTurnGate()

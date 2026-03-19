@@ -16,8 +16,14 @@ public class EndTurnCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        CardPlayReplayPatch.DispatchFromEngine();
-        return ExecuteResult.Ok();
+        if (CardPlayReplayPatch.TryEndTurn())
+        {
+            return ExecuteResult.Ok();
+        }
+        else
+        {
+            return ExecuteResult.Retry(200);
+        }
     }
 
     public static EndTurnCommand? TryParse(string raw)
