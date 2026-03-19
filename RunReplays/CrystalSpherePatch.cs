@@ -105,6 +105,7 @@ public static class CrystalSphereReplayPatch
     /// <summary>Called by ReplayDispatcher to start the crystal sphere click sequence.</summary>
     internal static void DispatchFromEngine()
     {
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] CrystalSphere.DispatchFromEngine — will be replaced by dispatcher command.");
         // Crystal sphere clicks are self-sequencing once started.
         // The AfterOverlayOpened postfix already handles the initial dispatch.
         PlayerActionBuffer.LogToDevConsole("[CrystalSphereReplayPatch] DispatchFromEngine: click sequence driven by overlay postfix.");

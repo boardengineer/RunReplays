@@ -325,6 +325,12 @@ public static class PlayerActionBuffer
         WriteToDevConsole(entry);
     }
 
+    [System.Diagnostics.Conditional("RUNREPLAYS_MIGRATION")]
+    internal static void LogMigrationWarning(string entry)
+    {
+        WriteToDevConsole(entry);
+    }
+
     private static void WriteToDevConsole(string entry)
     {
         // Check the backing field directly to avoid the InvalidOperationException

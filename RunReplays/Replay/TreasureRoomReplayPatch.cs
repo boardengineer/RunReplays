@@ -40,6 +40,7 @@ public static class TreasureRoomReplayPatch
     /// <summary>Called by ReplayDispatcher to trigger treasure room actions.</summary>
     internal static void DispatchFromEngine()
     {
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] TreasureRoom.DispatchFromEngine — will be replaced by dispatcher command.");
         if (ReplayEngine.PeekTakeChestRelic(out _))
         {
             if (_activeRoom != null && _activeRoom.IsInsideTree())

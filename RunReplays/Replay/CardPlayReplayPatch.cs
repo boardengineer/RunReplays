@@ -335,6 +335,7 @@ public static class CardPlayReplayPatch
     /// <summary>Called by ReplayDispatcher to trigger the next combat action.</summary>
     internal static void DispatchFromEngine()
     {
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] CardPlay.DispatchFromEngine — will be replaced by dispatcher command.");
         _turnStartRetries = 0;
         ScheduleNextFromQueue("Dispatcher");
     }
