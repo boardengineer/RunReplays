@@ -14,6 +14,7 @@ public static class ReplayCommandParser
     public static ReplayCommand? TryParse(string raw)
     {
         return (ReplayCommand?)MapMoveCommand.TryParse(raw)
-            ?? ChooseRestSiteOptionCommand.TryParse(raw);
+            ?? (ReplayCommand?)ChooseRestSiteOptionCommand.TryParse(raw)
+            ?? SelectionCommand.TryParse(raw);
     }
 }

@@ -383,7 +383,7 @@ public static class ReplayDispatcher
                 {
                     if (_dispatchGeneration == selGen) {
                         PlayerActionBuffer.LogDispatcher("[Dispatcher] schedule new selector for command");
-                        TryDispatch();
+                        ExecuteNext();
                     }
                 }));
             return;
