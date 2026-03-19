@@ -356,16 +356,20 @@ public static class ReplayDispatcher
         if (!ReplayEngine.IsActive || _paused)
             return;
 
+        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 2");
         if (_stepping && !_stepRequested)
             return;
 
+        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 3");
         if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
             return;
 
+        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 4");
         // Block dispatch while in-flight operations are pending.
         if (PotionInFlight || MapMoveInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
             return;
 
+        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 5");
         // Block while a game action is executing (BeforeAction → AfterAction).
         if (ActionInFlight && !IsSelectionCommand(cmd))
             return;
@@ -389,16 +393,19 @@ public static class ReplayDispatcher
             return;
         }
 
+        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 6");
         // Block potion use/discard during combat startup (before TurnStarted fires).
-        if ((cmd.StartsWith("UsePotionAction ") || cmd.StartsWith("NetDiscardPotionGameAction "))
+        if ((cmd.StartsWith("UsePotionAction "))
             && CombatManager.Instance.IsInProgress
             && (_ready & ReadyState.Combat) == 0)
             return;
 
+        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 6.5");
         // Don't re-dispatch the same command that's already in progress.
         if (_dispatchInProgress && cmd == _lastDispatchedCmd)
             return;
 
+        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 7");
         ReadyState required = GetRequiredState(cmd);
         if (required != ReadyState.None && (_ready & required) == 0)
             return;
@@ -410,6 +417,7 @@ public static class ReplayDispatcher
         int gen = ++_dispatchGeneration;
         if (_delayBetweenCommands > 0)
         {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 8");
             NGame.Instance!.GetTree()!.CreateTimer(_delayBetweenCommands).Connect(
                 "timeout", Callable.From(() =>
                 {
@@ -423,6 +431,7 @@ public static class ReplayDispatcher
         }
         else
         {
+            PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 9");
             Callable.From(() =>
             {
                 if (_dispatchGeneration == gen)
@@ -433,6 +442,7 @@ public static class ReplayDispatcher
 
     private static void ExecuteNext()
     {
+        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start execute next");
         // Re-apply speed in case the game reset Engine.TimeScale during a transition.
         if (ReplayEngine.IsActive && Engine.TimeScale != _gameSpeed)
             Engine.TimeScale = _gameSpeed;
@@ -524,9 +534,6 @@ public static class ReplayDispatcher
                 break;
             case ReadyState.Rewards:
                 BattleRewardsReplayPatch.DispatchFromEngine();
-                break;
-            case ReadyState.Event:
-                EventOptionReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.StartingBonus:
                 StartingBonusReplayPatch.DispatchFromEngine();

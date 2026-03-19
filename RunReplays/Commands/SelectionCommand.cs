@@ -89,8 +89,6 @@ public class SelectionCommand : ReplayCommand
                 "[UpgradeCardReplayPatch] Could not access _selectedCards — aborting.");
             return ExecuteResult.Retry(300);
         }
-        
-        PlayerActionBuffer.LogDispatcher($"Should execute select but returning try because not yet implemented");
 
         foreach (var deckIndex in Indices)
         {

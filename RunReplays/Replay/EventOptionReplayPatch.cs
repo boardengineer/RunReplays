@@ -25,7 +25,7 @@ namespace RunReplays;
 [HarmonyPatch(typeof(EventSynchronizer), nameof(EventSynchronizer.BeginEvent))]
 public static class EventOptionReplayPatch
 {
-    private static EventSynchronizer? _activeSynchronizer;
+    internal static EventSynchronizer? _activeSynchronizer;
 
     [HarmonyPostfix]
     public static void Postfix(EventSynchronizer __instance, EventModel canonicalEvent)
