@@ -82,7 +82,6 @@ public static class FakeMerchantReplayPatch
     /// <summary>Called by the dispatcher to handle fake shop commands.</summary>
     internal static void DispatchFromEngine()
     {
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] FakeMerchant.DispatchFromEngine — will be replaced by dispatcher command.");
         if (_activeInstance == null)
             return;
 

@@ -45,7 +45,6 @@ public static class StartingBonusReplayPatch
     /// <summary>Called by ReplayDispatcher to trigger starting bonus selection.</summary>
     internal static void DispatchFromEngine()
     {
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] StartingBonus.DispatchFromEngine — will be replaced by dispatcher command.");
         if (_activeSynchronizer == null)
             return;
         if (!ReplayEngine.PeekStartingBonus(out int choiceIndex))

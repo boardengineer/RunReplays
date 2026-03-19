@@ -24,31 +24,8 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeStartingBonus(out choiceIndex))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteStartingBonus — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: choose starting bonus option {choiceIndex}");
-        LogNext();
-        return true;
-    }
-
-    // ── Map node choices ──────────────────────────────────────────────────────
-
-    public static bool ExecuteMapNode(out int col, out int row)
-    {
-        if (!ReplayEngine.ConsumeMapNode(out col, out row))
-            return false;
-
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: navigate to map node col={col} row={row}");
-        LogNext();
-        return true;
-    }
-
-    // ── End player turn ───────────────────────────────────────────────────────
-
-    public static bool ExecuteEndTurn()
-    {
-        if (!ReplayEngine.ConsumeEndTurn())
-            return false;
-
-        PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: end player turn");
         LogNext();
         return true;
     }
@@ -60,6 +37,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeNetDiscardPotion(out slotIndex))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteNetDiscardPotion — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: discard potion slot={slotIndex}");
         LogNext();
         return true;
@@ -72,21 +50,9 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeUsePotion(out potionIndex, out targetId, out inCombat))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteUsePotion — will be replaced by dispatcher command.");
         string target = targetId.HasValue ? $" targeting id={targetId}" : "";
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: use potion index={potionIndex}{target} combat={inCombat}");
-        LogNext();
-        return true;
-    }
-
-    // ── Card plays ────────────────────────────────────────────────────────────
-
-    public static bool ExecuteCardPlay(out uint combatCardIndex, out uint? targetId)
-    {
-        if (!ReplayEngine.ConsumeCardPlay(out combatCardIndex, out targetId))
-            return false;
-
-        string target = targetId.HasValue ? $" targeting id={targetId}" : "";
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: play card index={combatCardIndex}{target}");
         LogNext();
         return true;
     }
@@ -98,6 +64,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeProceedToNextAct())
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteProceedToNextAct — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: proceed to next act");
         LogNext();
         return true;
@@ -110,6 +77,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeCardReward(out cardTitle, out int rewardIndex))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteCardReward — will be replaced by dispatcher command.");
         string indexStr = rewardIndex >= 0 ? $" (pack {rewardIndex})" : "";
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take card reward '{cardTitle}'{indexStr}");
         LogNext();
@@ -123,6 +91,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeSacrificeCardReward(out _))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteSacrificeCardReward — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: sacrifice card reward (Pael's Wing)");
         LogNext();
         return true;
@@ -135,6 +104,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeRelicReward(out relicTitle))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteRelicReward — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take relic reward '{relicTitle}'");
         LogNext();
         return true;
@@ -147,6 +117,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeTakeChestRelic(out relicTitle))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteTakeChestRelic — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: open chest (relic '{relicTitle}')");
         LogNext();
         return true;
@@ -157,6 +128,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeNetPickRelicAction(out relicIndex))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteNetPickRelicAction — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: NetPickRelicAction index {relicIndex}");
         LogNext();
         return true;
@@ -169,6 +141,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumePotionReward(out potionTitle))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecutePotionReward — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take potion reward '{potionTitle}'");
         LogNext();
         return true;
@@ -181,19 +154,8 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeEventOption(out textKey))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteEventOption — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: choose event option '{textKey}'");
-        LogNext();
-        return true;
-    }
-
-    // ── Card upgrades ─────────────────────────────────────────────────────────
-
-    public static bool ExecuteUpgradeCard(out int deckIndex)
-    {
-        if (!ReplayEngine.ConsumeUpgradeCard(out deckIndex))
-            return false;
-
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: upgrade card at deck index {deckIndex}");
         LogNext();
         return true;
     }
@@ -205,6 +167,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeOpenShop())
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteOpenShop — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: open shop");
         LogNext();
         return true;
@@ -215,6 +178,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeOpenFakeShop())
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteOpenFakeShop — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: open fake shop");
         LogNext();
         return true;
@@ -225,6 +189,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeBuyCard(out cardTitle))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteBuyCard — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: buy card '{cardTitle}'");
         LogNext();
         return true;
@@ -235,6 +200,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeBuyRelic(out relicTitle))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteBuyRelic — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: buy relic '{relicTitle}'");
         LogNext();
         return true;
@@ -245,6 +211,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeBuyPotion(out potionTitle))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteBuyPotion — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: buy potion '{potionTitle}'");
         LogNext();
         return true;
@@ -255,6 +222,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeBuyCardRemoval())
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteBuyCardRemoval — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: buy card removal");
         LogNext();
         return true;
@@ -267,6 +235,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeRestSiteOption(out optionId))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteRestSiteOption — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: choose rest site option '{optionId}'");
         LogNext();
         return true;
@@ -279,6 +248,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeGoldReward(out goldAmount))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteGoldReward — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take gold reward {goldAmount}");
         LogNext();
         return true;
@@ -291,6 +261,7 @@ public static class ReplayRunner
         if (!ReplayEngine.ConsumeCrystalSphereClick(out x, out y, out tool))
             return false;
 
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteCrystalSphereClick — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole(
             $"[ReplayRunner] Execute: crystal sphere click ({x},{y}) tool={tool}");
         LogNext();

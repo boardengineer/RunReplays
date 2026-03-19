@@ -133,7 +133,6 @@ public static class ShopOpenedReplayPatch
     /// <summary>Called by ReplayDispatcher to trigger next shop action.</summary>
     internal static void DispatchFromEngine()
     {
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] Shop.DispatchFromEngine — will be replaced by dispatcher command.");
         if (ActiveRoom == null || !ActiveRoom.IsInsideTree())
         {
             PlayerActionBuffer.LogDispatcher("[Shop] DispatchFromEngine: no active room.");

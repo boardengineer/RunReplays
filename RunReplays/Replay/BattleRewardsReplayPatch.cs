@@ -89,7 +89,6 @@ public static class BattleRewardsReplayPatch
     /// <summary>Called by ReplayDispatcher to process the next reward.</summary>
     internal static void DispatchFromEngine()
     {
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] BattleRewards.DispatchFromEngine — will be replaced by dispatcher command.");
         if (_activeScreen == null || !_activeScreen.IsInsideTree())
             return;
         Callable.From(() => ProcessNextReward(_activeScreen)).CallDeferred();
