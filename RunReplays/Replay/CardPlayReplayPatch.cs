@@ -41,7 +41,7 @@ public static class CardPlayReplayPatch
 {
     private static Action<CombatState>? _turnStartedHandler;
     private static Action<CombatState>? _turnEndedHandler;
-    private static CombatState?         _currentCombatState;
+    internal static CombatState?         _currentCombatState;
     private static int                  _retryCount;
 
     /// <summary>
@@ -247,7 +247,7 @@ public static class CardPlayReplayPatch
     /// Returns true when combat is in progress, a local player exists, and
     /// the player's hand has been drawn (i.e. cards are available).
     /// </summary>
-    private static bool IsCombatReady()
+    internal static bool IsCombatReady()
     {
         try
         {
@@ -286,7 +286,7 @@ public static class CardPlayReplayPatch
     /// previous turn's chain (quiet-frame wait → DispatchNextCombatAction)
     /// already handles the transition.
     /// </summary>
-    private static bool _dispatching;
+    internal static bool _dispatching;
 
     private static void OnTurnStarted(CombatState combatState)
     {
@@ -404,6 +404,7 @@ public static class CardPlayReplayPatch
     private static void ScheduleNextFromQueue(string caller)
     {
         ReplayEngine.PeekNext(out string? snqNext);
+        PlayerActionBuffer.LogDispatcher("Schedule next from queue 1");
         SelectorStackDebug.Log(
             $"ScheduleNextFromQueue({caller}): nextCmd='{snqNext ?? "(none)"}'" +
             $" dispatching={_dispatching} awaitingEndTurn={_awaitingEndTurnCompletion}" +
@@ -414,11 +415,15 @@ public static class CardPlayReplayPatch
             return;
         }
 
+        PlayerActionBuffer.LogDispatcher("Schedule next from queue 2");
+        
         if (_awaitingEndTurnCompletion)
         {
             return;
         }
 
+        PlayerActionBuffer.LogDispatcher("Schedule next from queue 3");
+        
         _dispatching = true;
 
         if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
@@ -429,12 +434,7 @@ public static class CardPlayReplayPatch
         {
             Callable.From(TryUsePotion).CallDeferred();
         }
-        else if (ReplayEngine.PeekCardPlay(out uint idx, out _))
-        {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] {caller}: next command is CardPlay index={idx}, scheduling TryPlayNextCard.");
-            Callable.From(TryPlayNextCard).CallDeferred();
-        }
-        else if (ReplayEngine.PeekEndTurn())
+        if (ReplayEngine.PeekEndTurn())
         {
             if (_endTurnScheduled)
             {
@@ -488,11 +488,14 @@ public static class CardPlayReplayPatch
     /// </summary>
     private const int QuietFramesRequired = 3;
 
+    
+    
     private static void OnAfterActionExecuted(GameAction action)
     {
+        PlayerActionBuffer.LogDispatcher("After action executed?");
         if (!ReplayEngine.IsActive)
             return;
-
+        PlayerActionBuffer.LogDispatcher("Schedule next from queue 4");
         // While waiting for the end-turn to complete, ignore all actions.
         // Only OnTurnStarted (the next player turn) clears this flag.
         if (_awaitingEndTurnCompletion)
@@ -614,91 +617,6 @@ public static class CardPlayReplayPatch
         // Route back through the dispatcher — effects have settled, dispatch immediately.
         _dispatching = false;
         ReplayDispatcher.NotifyEffectsSettled();
-    }
-
-    // ── Execution ─────────────────────────────────────────────────────────────
-
-    private static void TryPlayNextCard()
-    {
-        // Peek without consuming so that a failed play can be retried next frame.
-        if (!ReplayEngine.PeekCardPlay(out uint combatCardIndex, out uint? targetId))
-        {
-            ReplayEngine.PeekNext(out string? next);
-            SelectorStackDebug.Log($"TryPlayNextCard: PeekCardPlay=false, next='{next ?? "(none)"}'");
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryPlayNextCard: PeekCardPlay returned false, next='{next ?? "(none)"}'.");
-            return;
-        }
-
-        if (_retryCount == 0)
-            SelectorStackDebug.Log($"TryPlayNextCard: index={combatCardIndex} target={targetId?.ToString() ?? "none"}");
-        PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryPlayNextCard: attempting card index={combatCardIndex} targetId={targetId?.ToString() ?? "none"}.");
-
-        // Check if combat is ready to accept commands — the hand must be
-        // drawn and the player must exist before we resolve cards.
-        if (!IsCombatReady())
-        {
-            const int maxRetries = 50;
-            if (_retryCount >= maxRetries)
-            {
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[RunReplays] TryPlayNextCard: combat not ready after {maxRetries} retries — giving up.");
-                _retryCount = 0;
-                return;
-            }
-
-            _retryCount++;
-            PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] TryPlayNextCard: combat not ready, retry #{_retryCount}.");
-            int gen = _battleGeneration;
-            NGame.Instance!.GetTree()!.CreateTimer(0.25).Connect(
-                "timeout", Callable.From(() => { if (_battleGeneration == gen) TryPlayNextCard(); }));
-            return;
-        }
-
-        CardModel? card;
-        try
-        {
-            card = NetCombatCardDb.Instance.GetCard(combatCardIndex);
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryPlayNextCard: resolved card '{card}' from index {combatCardIndex}.");
-        }
-        catch (Exception ex)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] TryPlayNextCard: GetCard({combatCardIndex}) threw {ex.GetType().Name}: {ex.Message}");
-            return;
-        }
-
-        Creature? target = null;
-        if (targetId.HasValue)
-        {
-            target = _currentCombatState?.GetCreature(targetId);
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryPlayNextCard: resolved target id={targetId} → {(target == null ? "null" : target.ToString())}.");
-        }
-
-        // Consume the command BEFORE TryManualPlay so that any card effect
-        // that triggers a selection (e.g. FromHand) finds the selection command
-        // at the queue front, not the card play command.
-        _retryCount = 0;
-        _cardPlayInFlight = true;
-        ReplayDispatcher.CardPlayInFlight = true;
-        ReplayRunner.ExecuteCardPlay(out _, out _);
-
-        bool played = card.TryManualPlay(target);
-        PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryPlayNextCard: TryManualPlay returned {played} (retry #{_retryCount}).");
-
-        if (!played)
-        {
-            // TryManualPlay failed but we already consumed — can't undo.
-            // This shouldn't happen if IsCombatReady passed.
-            PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] TryPlayNextCard: TryManualPlay returned false AFTER consume — card index={combatCardIndex}.");
-            _cardPlayInFlight = false;
-            ReplayDispatcher.CardPlayInFlight = false;
-            return;
-        }
-        RunOverlay.NotifyCardPlayStarted();
-        ReplayEngine.PeekNext(out string? afterPlay);
-        SelectorStackDebug.Log($"TryPlayNextCard: SUCCESS played '{card}' index={combatCardIndex}, next='{afterPlay ?? "(none)"}'");
     }
 
     // ── Potion-discard execution ──────────────────────────────────────────────

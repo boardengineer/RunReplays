@@ -364,7 +364,7 @@ public static class ReplayDispatcher
         if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
             return;
 
-        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 4");
+        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 4 " + cmd);
         // Block dispatch while in-flight operations are pending.
         if (PotionInFlight || MapMoveInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
             return;
@@ -425,7 +425,7 @@ public static class ReplayDispatcher
                     {
                         PlayerActionBuffer.LogDispatcher(
                             $"[Dispatcher] callback dispatcher triggering.");
-                        TryDispatch();
+                        ExecuteNext();
                     }
                 }));
         }
@@ -440,9 +440,22 @@ public static class ReplayDispatcher
         }
     }
 
+    private static void scheduleDispatchOnDelay()
+    {
+        PlayerActionBuffer.LogDispatcher("Scheduling retry");
+        int gen = ++_dispatchGeneration;
+        NGame.Instance?.GetTree()?.CreateTimer(300 / 1000f).Connect(
+            "timeout", Callable.From(() =>
+            {
+                PlayerActionBuffer.LogDispatcher("firing retry");
+                if (_dispatchGeneration == gen)
+                    TryDispatch();
+            }));
+    }
+
     private static void ExecuteNext()
     {
-        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start execute next");
+        PlayerActionBuffer.LogDispatcher("Start execute next 1");
         // Re-apply speed in case the game reset Engine.TimeScale during a transition.
         if (ReplayEngine.IsActive && Engine.TimeScale != _gameSpeed)
             Engine.TimeScale = _gameSpeed;
@@ -450,19 +463,25 @@ public static class ReplayDispatcher
         if (!ReplayEngine.IsActive || _paused)
             return;
 
+        PlayerActionBuffer.LogDispatcher("Start execute next 2");
         if (PotionInFlight || CardPlayInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion || MapMoveInFlight)
         {
+            PlayerActionBuffer.LogDispatcher($"Scheduling retry PotionInFlight:{PotionInFlight}    |    CardPlayInFlight:{CardPlayInFlight}   |  CardPlayReplayPatch.IsAwaitingEndTurnCompletion:{CardPlayReplayPatch.IsAwaitingEndTurnCompletion}  |  MapMoveInFlight :{MapMoveInFlight}");
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
+            scheduleDispatchOnDelay();
             return;
         }
 
+        PlayerActionBuffer.LogDispatcher("Start execute next 3");
         if (_stepping && !_stepRequested)
             return;
 
+        PlayerActionBuffer.LogDispatcher("Start execute next 4");
         if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
             return;
-
+        PlayerActionBuffer.LogDispatcher("Start execute next 5");
+        
         // Block while a game action is executing, unless it's a selection command.
         if (ActionInFlight && !IsSelectionCommand(cmd))
         {
@@ -471,6 +490,7 @@ public static class ReplayDispatcher
             return;
         }
 
+        PlayerActionBuffer.LogDispatcher("Start execute next 6");
         ReadyState required = GetRequiredState(cmd);
         if (required != ReadyState.None && (_ready & required) == 0)
             return;
@@ -488,6 +508,7 @@ public static class ReplayDispatcher
             return;
         }
 
+        PlayerActionBuffer.LogDispatcher("Start execute next 7");
         _lastDispatchTick = System.Environment.TickCount64;
 
         // Try the new command object system first.
@@ -529,9 +550,6 @@ public static class ReplayDispatcher
         // Legacy string-based dispatch for commands not yet migrated.
         switch (required)
         {
-            case ReadyState.Combat:
-                CardPlayReplayPatch.DispatchFromEngine();
-                break;
             case ReadyState.Rewards:
                 BattleRewardsReplayPatch.DispatchFromEngine();
                 break;
