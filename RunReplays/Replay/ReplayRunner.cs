@@ -241,19 +241,6 @@ public static class ReplayRunner
         return true;
     }
 
-    // ── Gold rewards ──────────────────────────────────────────────────────────
-
-    public static bool ExecuteGoldReward(out int goldAmount)
-    {
-        if (!ReplayEngine.ConsumeGoldReward(out goldAmount))
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteGoldReward — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take gold reward {goldAmount}");
-        LogNext();
-        return true;
-    }
-
     // ── Crystal Sphere clicks ────────────────────────────────────────────────
 
     public static bool ExecuteCrystalSphereClick(out int x, out int y, out int tool)

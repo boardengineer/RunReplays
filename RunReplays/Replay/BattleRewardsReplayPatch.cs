@@ -53,7 +53,7 @@ public static class BattleRewardsReplayPatch
 
     // Kept so OnCardRewardHandled() can re-trigger processing after the card
     // selection screen closes.
-    private static NRewardsScreen? _activeScreen;
+    internal static NRewardsScreen? _activeScreen;
 
     [HarmonyPostfix]
     public static void Postfix(NRewardsScreen __instance)
@@ -126,7 +126,7 @@ public static class BattleRewardsReplayPatch
 
     // ── Internal ──────────────────────────────────────────────────────────────
 
-    private static void ProcessNextReward(NRewardsScreen screen)
+    internal static void ProcessNextReward(NRewardsScreen screen)
     {
         if (!ReplayEngine.IsActive || !screen.IsInsideTree())
             return;
@@ -134,23 +134,6 @@ public static class BattleRewardsReplayPatch
         ReplayEngine.PeekNext(out string? nextCmd);
         PlayerActionBuffer.LogDispatcher(
             $"[Rewards] ProcessNextReward: queue front = '{nextCmd ?? "(empty)"}'");
-
-        if (ReplayEngine.PeekGoldReward(out int goldAmount))
-        {
-            Node? goldButton = FindRewardButton(screen, "GoldReward");
-            if (goldButton == null)
-            {
-                PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: could not find gold reward button.");
-                return;
-            }
-
-            ReplayRunner.ExecuteGoldReward(out _);
-            InvokeGetReward(goldButton);
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: auto-claimed gold reward ({goldAmount}).");
-
-            Callable.From(() => ProcessNextReward(screen)).CallDeferred();
-            return;
-        }
 
         bool isSacrifice = ReplayEngine.PeekSacrificeCardReward(out int sacrificeRewardIndex);
         if (ReplayEngine.PeekCardReward(out string cardTitle, out int rewardIndex)
@@ -334,7 +317,7 @@ public static class BattleRewardsReplayPatch
         NMapScreen.Instance?.SetTravelEnabled(enabled: true);
     }
 
-    private static void InvokeGetReward(Node button)
+    internal static void InvokeGetReward(Node button)
     {
         MethodInfo? method = button.GetType()
             .GetMethod("GetReward", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
@@ -376,7 +359,7 @@ public static class BattleRewardsReplayPatch
         }
     }
 
-    private static Node? FindRewardButton(Node root, string rewardBaseTypeName)
+    internal static Node? FindRewardButton(Node root, string rewardBaseTypeName)
     {
         foreach (var (button, reward) in EnumerateRewardButtons(root))
         {

@@ -18,6 +18,7 @@ public static class ReplayCommandParser
             ?? (ReplayCommand?)MapMoveCommand.TryParse(raw)
             ?? (ReplayCommand?)ChooseRestSiteOptionCommand.TryParse(raw)
             ?? (ReplayCommand?)ChooseEventOptionCommand.TryParse(raw)
+            ?? (ReplayCommand?)GoldRewardCommand.TryParse(raw)
             ?? (ReplayCommand?)SelectDeckCardCommand.TryParse(raw)
             ?? SelectionCommand.TryParse(raw);
     }
