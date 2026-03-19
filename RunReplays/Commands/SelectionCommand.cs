@@ -104,8 +104,7 @@ public class SelectionCommand : ReplayCommand
     {
         if (raw.StartsWith("SelectCardFromScreen "))
             return ParseSingleInt(raw, "SelectCardFromScreen ".Length, SelectionKind.SelectCardFromScreen);
-        if (raw.StartsWith("SelectDeckCard "))
-            return ParseMultiInt(raw, "SelectDeckCard ".Length, SelectionKind.SelectDeckCard);
+        // SelectDeckCard is handled by SelectDeckCardCommand.
         if (raw.StartsWith("SelectHandCards "))
             return ParseMultiInt(raw, "SelectHandCards ".Length, SelectionKind.SelectHandCards);
         if (raw == "SelectHandCards")
