@@ -5,7 +5,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <DefineConstants>RUNREPLAYS_MIGRATION</DefineConstants>
+        <DefineConstants>RUNREPLAYS_MIGRATION;RUNREPLAYS_AUTOPLAY</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>

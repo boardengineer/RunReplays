@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Linq;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
@@ -16,6 +19,19 @@ namespace RunReplays;
 [HarmonyPatch(typeof(NMainMenu), "_Ready")]
 public static class MainMenuButtonInjector
 {
+#if RUNREPLAYS_AUTOPLAY
+    /// <summary>
+    /// When RUNREPLAYS_AUTOPLAY is defined, the mod will automatically launch
+    /// the replay for this seed as soon as the main menu opens.
+    /// Set to the seed string of the replay to auto-launch.
+    /// If null or empty, auto-play is skipped.
+    /// Optionally append ":floor_N" to target a specific floor (e.g. "ABC123:floor_5").
+    /// </summary>
+    private const string AutoPlayTarget = "8AGN4R7RPW:floor_17";
+
+    private static bool _autoPlayFired;
+#endif
+
     [HarmonyPostfix]
     public static void Postfix(NMainMenu __instance)
     {
@@ -59,6 +75,14 @@ public static class MainMenuButtonInjector
             NClickableControl.SignalName.Released,
             Callable.From<NButton>(_ => OnRunReplaysPressed(__instance))
         );
+
+#if RUNREPLAYS_AUTOPLAY
+        if (!_autoPlayFired && !string.IsNullOrEmpty(AutoPlayTarget))
+        {
+            _autoPlayFired = true;
+            Callable.From(() => RunReplayMenu.AutoPlay(AutoPlayTarget)).CallDeferred();
+        }
+#endif
     }
 
     private static void OnRunReplaysPressed(NMainMenu mainMenu)

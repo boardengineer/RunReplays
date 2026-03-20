@@ -138,6 +138,64 @@ public static class RunReplayMenu
         return root;
     }
 
+    // ── Auto-play ──────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Automatically launches a replay matching the given target string.
+    /// Format: "SEED" to replay the highest floor, or "SEED:floor_N" for a
+    /// specific floor.
+    /// </summary>
+    internal static void AutoPlay(string target)
+    {
+        string seed;
+        int? targetFloor = null;
+
+        int colonIdx = target.IndexOf(':');
+        if (colonIdx >= 0)
+        {
+            seed = target[..colonIdx];
+            string floorPart = target[(colonIdx + 1)..];
+            if (floorPart.StartsWith("floor_") &&
+                int.TryParse(floorPart["floor_".Length..], out int f))
+                targetFloor = f;
+            else
+                GD.PrintErr($"[RunReplays] AutoPlay: invalid floor specifier '{floorPart}', replaying highest floor.");
+        }
+        else
+        {
+            seed = target;
+        }
+
+        var entries = LoadEntries()
+            .Where(e => string.Equals(e.Seed, seed, StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(e => e.Floor)
+            .ToList();
+
+        if (entries.Count == 0)
+        {
+            GD.PrintErr($"[RunReplays] AutoPlay: no replays found for seed '{seed}'.");
+            return;
+        }
+
+        ReplayEntry entry;
+        if (targetFloor.HasValue)
+        {
+            entry = entries.FirstOrDefault(e => e.Floor == targetFloor.Value)!;
+            if (entry == null)
+            {
+                GD.PrintErr($"[RunReplays] AutoPlay: no replay found for seed '{seed}' floor {targetFloor.Value}.");
+                return;
+            }
+        }
+        else
+        {
+            entry = entries.First();
+        }
+
+        GD.Print($"[RunReplays] AutoPlay: launching seed={entry.Seed} floor={entry.Floor}");
+        StartReplay(entry);
+    }
+
     // ── List population ───────────────────────────────────────────────────────
 
     private static void PopulateList(VBoxContainer list, Control root)
