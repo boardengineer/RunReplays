@@ -48,8 +48,6 @@ public class CardRewardCommand : ReplayCommand
         Node? screenButton = null;
         int cardRewardCount = 0;
 
-        PlayerActionBuffer.LogMigrationWarning("Executing card reward command");
-
         if (CardRewardReplayPatch.selectionScreen != null)
         {
             if (CardRewardReplayPatch.SelectCard(CardTitle))
@@ -68,13 +66,10 @@ public class CardRewardCommand : ReplayCommand
         {
             if (BattleRewardsReplayPatch.IsRewardOfType(reward, "CardReward"))
             {
-                PlayerActionBuffer.LogMigrationWarning($"Counting card rewards? 1 {RewardIndex}  {cardRewardCount}");
                 if (RewardIndex >= 0)
                 {
                     if (cardRewardCount == RewardIndex)
                     {
-                        PlayerActionBuffer.LogMigrationWarning(
-                            $"[MIGRATION] Claimed direct card reward '{CardTitle}' ({reward.GetType().Name}).");
                         BattleRewardsReplayPatch.InvokeGetReward(button);
                         waitingForRewardScreenOpen = true;
                         return ExecuteResult.Retry(200);

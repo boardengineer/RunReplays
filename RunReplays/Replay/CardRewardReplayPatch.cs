@@ -48,9 +48,7 @@ public static class CardRewardReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        PlayerActionBuffer.LogMigrationWarning(
-            $"NCardRewardSelectionScreen READY");
-        selectionScreen = __instance;
+       selectionScreen = __instance;
         CardRewardCommand.waitingForRewardScreenOpen = false;
         
         if (ReplayEngine.PeekSacrificeCardReward())
