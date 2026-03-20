@@ -97,19 +97,6 @@ public static class ReplayRunner
         return true;
     }
 
-    // ── Relic rewards ─────────────────────────────────────────────────────────
-
-    public static bool ExecuteRelicReward(out string relicTitle)
-    {
-        if (!ReplayEngine.ConsumeRelicReward(out relicTitle))
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteRelicReward — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take relic reward '{relicTitle}'");
-        LogNext();
-        return true;
-    }
-
     // ── Treasure chest relic ──────────────────────────────────────────────────
 
     public static bool ExecuteTakeChestRelic(out string relicTitle)
@@ -134,18 +121,7 @@ public static class ReplayRunner
         return true;
     }
 
-    // ── Potion rewards ────────────────────────────────────────────────────────
 
-    public static bool ExecutePotionReward(out string potionTitle)
-    {
-        if (!ReplayEngine.ConsumePotionReward(out potionTitle))
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecutePotionReward — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take potion reward '{potionTitle}'");
-        LogNext();
-        return true;
-    }
 
     // ── Event option choices ──────────────────────────────────────────────────
 

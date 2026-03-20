@@ -20,6 +20,8 @@ public static class ReplayCommandParser
             ?? (ReplayCommand?)ChooseEventOptionCommand.TryParse(raw)
             ?? (ReplayCommand?)GoldRewardCommand.TryParse(raw)
             ?? (ReplayCommand?)CardRewardCommand.TryParse(raw)
+            ?? (ReplayCommand?)RelicRewardCommand.TryParse(raw)
+            ?? (ReplayCommand?)PotionRewardCommand.TryParse(raw)
             ?? (ReplayCommand?)SelectDeckCardCommand.TryParse(raw)
             ?? SelectionCommand.TryParse(raw);
     }

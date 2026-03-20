@@ -171,40 +171,6 @@ public static class BattleRewardsReplayPatch
             return;
         }
 
-        if (ReplayEngine.PeekRelicReward(out string relicTitle))
-        {
-            Node? relicButton = FindRewardButton(screen, "RelicReward");
-            if (relicButton == null)
-            {
-                PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: could not find relic reward button.");
-                return;
-            }
-
-            ReplayRunner.ExecuteRelicReward(out _);
-            InvokeGetReward(relicButton);
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: auto-claimed relic reward '{relicTitle}'.");
-
-            Callable.From(() => ProcessNextReward(screen)).CallDeferred();
-            return;
-        }
-
-        if (ReplayEngine.PeekPotionReward(out string potionTitle))
-        {
-            Node? potionButton = FindRewardButton(screen, "PotionReward");
-            if (potionButton == null)
-            {
-                PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: could not find potion reward button.");
-                return;
-            }
-
-            ReplayRunner.ExecutePotionReward(out _);
-            InvokeGetReward(potionButton);
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: auto-claimed potion reward '{potionTitle}'.");
-
-            Callable.From(() => ProcessNextReward(screen)).CallDeferred();
-            return;
-        }
-
         if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
         {
             PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: potion discard slot={discardSlot} during rewards screen.");
