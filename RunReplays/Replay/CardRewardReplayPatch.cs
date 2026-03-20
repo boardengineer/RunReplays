@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.Entities.CardRewardAlternatives;
 using MegaCrit.Sts2.Core.Entities.Rewards;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
+using RunReplays.Commands;
 
 namespace RunReplays;
 
@@ -39,57 +40,24 @@ public static class CardRewardReplayPatch
         typeof(NCardRewardSelectionScreen).GetField(
             "_extraOptions", BindingFlags.NonPublic | BindingFlags.Instance);
 
+    internal static NCardRewardSelectionScreen selectionScreen;
+
     [HarmonyPostfix]
     public static void Postfix(NCardRewardSelectionScreen __instance)
     {
         if (!ReplayEngine.IsActive)
             return;
 
+        PlayerActionBuffer.LogMigrationWarning(
+            $"NCardRewardSelectionScreen READY");
+        selectionScreen = __instance;
+        CardRewardCommand.waitingForRewardScreenOpen = false;
+        
         if (ReplayEngine.PeekSacrificeCardReward())
         {
             Callable.From(() => AutoSacrifice(__instance)).CallDeferred();
             return;
         }
-
-        if (ReplayEngine.PeekCardReward(out string cardTitle, out _))
-        {
-            // Defer one frame: _completionSource is set (synchronous), but emitting
-            // the signal now would fire SelectCard before the async continuation
-            // that awaits CardsSelected() has had a chance to attach its handler.
-            Callable.From(() => AutoSelectCard(__instance, cardTitle)).CallDeferred();
-        }
-    }
-
-    private static void AutoSelectCard(NCardRewardSelectionScreen screen, string expectedTitle)
-    {
-        // Guard: replay may have been cancelled between scheduling and execution.
-        if (!ReplayEngine.IsActive)
-            return;
-
-        // Search the full descendant tree for a card holder whose CardModel
-        // title matches. No need to scope through a grid field — FindChildren
-        // is recursive and handles any nesting depth.
-        Node? match = FindHolderByTitle(screen.FindChildren("*", "", owned: false), expectedTitle);
-
-        if (match == null)
-        {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: card '{expectedTitle}' not found in reward screen.");
-            return;
-        }
-
-        // Consume before emitting: the signal fires synchronously inside
-        // SelectCard, so the queue should already be advanced past this entry.
-        ReplayRunner.ExecuteCardReward(out _);
-
-        // Emitting "Pressed" on the holder triggers NCardRewardSelectionScreen's
-        // SelectCard(NCardHolder) handler, which completes the TaskCompletionSource
-        // and causes CardsSelected() to return the chosen card.
-        match.EmitSignal("Pressed", match);
-        PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: auto-selected card reward '{expectedTitle}'.");
-
-        // Notify the rewards screen patch so it can process any remaining
-        // reward buttons (e.g. a gold reward recorded after the card pick).
-        BattleRewardsReplayPatch.OnCardRewardHandled();
     }
 
     private static void AutoSacrifice(NCardRewardSelectionScreen screen)
@@ -166,5 +134,33 @@ public static class CardRewardReplayPatch
                 return node;
         }
         return null;
+    }
+
+    internal static bool SelectCard(string expectedTitle)
+    {
+        // Guard: replay may have been cancelled between scheduling and execution.
+        if (!ReplayEngine.IsActive)
+            return false;
+
+        if (selectionScreen == null)
+            return false;
+
+        // Search the full descendant tree for a card holder whose CardModel
+        // title matches. No need to scope through a grid field — FindChildren
+        // is recursive and handles any nesting depth.
+        Node? match = FindHolderByTitle(selectionScreen.FindChildren("*", "", owned: false), expectedTitle);
+
+        if (match == null)
+        {
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: card '{expectedTitle}' not found in reward screen.");
+            return false;
+        }
+
+        match.EmitSignal("Pressed", match);
+        PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: auto-selected card reward '{expectedTitle}'.");
+
+        selectionScreen = null;
+        return true;
+
     }
 }

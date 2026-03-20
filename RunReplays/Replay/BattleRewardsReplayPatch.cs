@@ -135,81 +135,39 @@ public static class BattleRewardsReplayPatch
         PlayerActionBuffer.LogDispatcher(
             $"[Rewards] ProcessNextReward: queue front = '{nextCmd ?? "(empty)"}'");
 
-        bool isSacrifice = ReplayEngine.PeekSacrificeCardReward(out int sacrificeRewardIndex);
-        if (ReplayEngine.PeekCardReward(out string cardTitle, out int rewardIndex)
-            || isSacrifice)
+        if (ReplayEngine.PeekSacrificeCardReward(out int sacrificeRewardIndex))
         {
-            // Use the sacrifice index when it's a sacrifice command.
-            int effectiveIndex = isSacrifice ? sacrificeRewardIndex : rewardIndex;
-
-            // Scan every reward button for anything that yields a card.
-            // Some rewards (e.g. SpecialCardReward from Thieving Hopper) add the
-            // card directly without opening a selection screen, while the normal
-            // CardReward opens NCardRewardSelectionScreen.  We handle the direct
-            // ones here and only fall through to the screen path when needed.
-            //
-            // SacrificeCardReward also opens NCardRewardSelectionScreen — the
+            // SacrificeCardReward opens NCardRewardSelectionScreen — the
             // sacrifice alternative is selected by CardRewardReplayPatch once
             // the screen is ready, matching the real UI flow.
-            //
-            // When effectiveIndex >= 0 (recorded with multiple card reward packs),
-            // we select the Nth CardReward button rather than the first one.
             Node? screenButton = null;
             int cardRewardCount = 0;
             foreach (var (button, reward) in EnumerateRewardButtons(screen))
             {
                 if (IsRewardOfType(reward, "CardReward"))
                 {
-                    if (effectiveIndex >= 0)
+                    if (sacrificeRewardIndex >= 0)
                     {
-                        // Indexed: pick the exact CardReward button.
-                        if (cardRewardCount == effectiveIndex)
+                        if (cardRewardCount == sacrificeRewardIndex)
                             screenButton = button;
                     }
                     else
                     {
-                        // Legacy (no index): use the first CardReward button.
                         screenButton ??= button;
                     }
                     cardRewardCount++;
-                    continue;
                 }
-
-                // Skip direct-card-reward path for sacrifices — sacrifice always
-                // goes through the card selection screen.
-                if (isSacrifice)
-                    continue;
-
-                // Any other reward that goes through SyncLocalObtainedCard
-                // (e.g. SpecialCardReward) adds the card immediately with no
-                // selection screen.  Only consider rewards that actually expose
-                // a card with a matching title — skip non-card rewards
-                // (GoldReward, PotionReward, RelicReward, etc.).
-                string? rewardCardTitle = GetRewardCardTitle(reward);
-                if (rewardCardTitle == null || rewardCardTitle != cardTitle)
-                    continue;
-
-                ReplayRunner.ExecuteCardReward(out _);
-                InvokeGetReward(button);
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[RunReplays] Replay: auto-claimed direct card reward '{cardTitle}' ({reward.GetType().Name}).");
-
-                Callable.From(() => ProcessNextReward(screen)).CallDeferred();
-                return;
             }
 
             if (screenButton != null)
             {
-                // Do NOT consume the command here — CardRewardReplayPatch does
-                // that once NCardRewardSelectionScreen opens and the card is
-                // selected.
                 InvokeGetReward(screenButton);
-                PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: triggered card reward button.");
+                PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: triggered card reward button for sacrifice.");
                 return;
             }
 
             PlayerActionBuffer.LogToDevConsole(
-                "[RunReplays] Replay: could not find any card reward button.");
+                "[RunReplays] Replay: could not find any card reward button for sacrifice.");
             return;
         }
 
@@ -374,7 +332,7 @@ public static class BattleRewardsReplayPatch
     /// (e.g. SpecialCardReward).  Returns null when the reward type doesn't
     /// expose a card or reflection fails — callers treat null as "accept any".
     /// </summary>
-    private static string? GetRewardCardTitle(object reward)
+    internal static string? GetRewardCardTitle(object reward)
     {
         // Look for a private _card field (SpecialCardReward) or public Card property.
         var field = reward.GetType().GetField("_card", BindingFlags.NonPublic | BindingFlags.Instance);
