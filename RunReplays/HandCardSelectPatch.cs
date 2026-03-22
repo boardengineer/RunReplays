@@ -66,17 +66,27 @@ public static class HandCardSelectRecordPatch
             return;
         }
 
-        var ids = new List<uint>();
-        foreach (CardModel card in cards)
-        {
-            if (NetCombatCardDb.Instance.TryGetCardId(card, out uint id))
-                ids.Add(id);
-        }
-
-        if (ids.Count == 0)
+        var hand = player.PlayerCombatState?.Hand?.Cards;
+        if (hand == null)
             return;
 
-        string command = $"SelectHandCards {string.Join(" ", ids)}";
+        var indices = new List<int>();
+        foreach (CardModel card in cards)
+        {
+            for (int i = 0; i < hand.Count; i++)
+            {
+                if (hand[i] == card)
+                {
+                    indices.Add(i);
+                    break;
+                }
+            }
+        }
+
+        if (indices.Count == 0)
+            return;
+
+        string command = $"SelectHandCards {string.Join(" ", indices)}";
         PlayerActionBuffer.LogToDevConsole($"[HandCardSelectRecordPatch] Recording: {command}");
         PlayerActionBuffer.Record(command);
     }
@@ -147,15 +157,17 @@ public static class HandCardSelectForDiscardRecordPatch
         PlayerActionBuffer.LogToDevConsole(
             $"[HandCardSelectForDiscardRecord] FromHandForDiscard called — source='{source}' ({source?.GetType().Name ?? "null"})");
 
-        // Capture the hand size NOW (before the player selects) so RecordAsync
-        // can distinguish a genuine full-hand selection (e.g. Gambler's Brew)
+        // Capture the hand NOW (before the player selects) so RecordAsync can
+        // find indices and distinguish a genuine full-hand selection (e.g. Gambler's Brew)
         // from an auto-resolved no-choice scenario (e.g. Survivor last card).
-        int handCountBefore = 0;
+        List<CardModel>? handBefore = null;
         try
         {
             var combatState = MegaCrit.Sts2.Core.Combat.CombatManager.Instance?.DebugOnlyGetState();
             var player = combatState?.Players.FirstOrDefault();
-            handCountBefore = player?.PlayerCombatState?.Hand?.Cards?.Count ?? 0;
+            var hand = player?.PlayerCombatState?.Hand?.Cards;
+            if (hand != null)
+                handBefore = new List<CardModel>(hand);
         }
         catch { /* ignore */ }
 
@@ -164,41 +176,48 @@ public static class HandCardSelectForDiscardRecordPatch
         // RecordAsync's continuation runs.
         HandCardSelectRecordPatch.SuppressNext = true;
 
-        MegaCrit.Sts2.Core.Helpers.TaskHelper.RunSafely(RecordAsync(__result, handCountBefore));
+        MegaCrit.Sts2.Core.Helpers.TaskHelper.RunSafely(RecordAsync(__result, handBefore));
     }
 
-    private static async Task RecordAsync(Task<IEnumerable<CardModel>> task, int handCountBefore)
+    private static async Task RecordAsync(Task<IEnumerable<CardModel>> task, List<CardModel>? handBefore)
     {
         IEnumerable<CardModel> cards;
         try { cards = await task; }
         catch { return; }
 
-        var ids = new List<uint>();
+        if (handBefore == null || handBefore.Count == 0)
+            return;
+
+        var indices = new List<int>();
         foreach (CardModel card in cards)
         {
-            if (NetCombatCardDb.Instance.TryGetCardId(card, out uint id))
-                ids.Add(id);
+            for (int i = 0; i < handBefore.Count; i++)
+            {
+                if (handBefore[i] == card)
+                {
+                    indices.Add(i);
+                    break;
+                }
+            }
         }
 
-        if (ids.Count == 0)
+        if (indices.Count == 0)
             return;
 
         // Skip truly auto-resolved discards where there was no real choice.
         // When a card like Survivor is the last in hand, the discard has
         // only 0-1 options and the game auto-resolves without player input.
         // Recording it would leave a stale command in the replay queue.
-        // We use the hand count captured BEFORE the selection (not the current
-        // hand, which may already be modified).  With 0-1 cards there is never
-        // a real choice; with 2+ cards the player made a genuine selection
-        // (e.g. Gambler's Brew discarding the full hand).
-        if (handCountBefore <= 1)
+        // With 0-1 cards there is never a real choice; with 2+ cards the
+        // player made a genuine selection (e.g. Gambler's Brew full hand).
+        if (handBefore.Count <= 1)
         {
             PlayerActionBuffer.LogToDevConsole(
-                $"[HandCardSelectForDiscardRecord] Skipping — auto-resolved (handBefore={handCountBefore}, selected={ids.Count}).");
+                $"[HandCardSelectForDiscardRecord] Skipping — auto-resolved (handBefore={handBefore.Count}, selected={indices.Count}).");
             return;
         }
 
-        string command = $"SelectHandCards {string.Join(" ", ids)}";
+        string command = $"SelectHandCards {string.Join(" ", indices)}";
         PlayerActionBuffer.LogToDevConsole($"[HandCardSelectForDiscardRecord] Recording: {command}");
         PlayerActionBuffer.Record(command);
     }
