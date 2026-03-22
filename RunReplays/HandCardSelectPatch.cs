@@ -147,15 +147,27 @@ public static class HandCardSelectForDiscardRecordPatch
         PlayerActionBuffer.LogToDevConsole(
             $"[HandCardSelectForDiscardRecord] FromHandForDiscard called — source='{source}' ({source?.GetType().Name ?? "null"})");
 
+        // Capture the hand size NOW (before the player selects) so RecordAsync
+        // can distinguish a genuine full-hand selection (e.g. Gambler's Brew)
+        // from an auto-resolved no-choice scenario (e.g. Survivor last card).
+        int handCountBefore = 0;
+        try
+        {
+            var combatState = MegaCrit.Sts2.Core.Combat.CombatManager.Instance?.DebugOnlyGetState();
+            var player = combatState?.Players.FirstOrDefault();
+            handCountBefore = player?.PlayerCombatState?.Hand?.Cards?.Count ?? 0;
+        }
+        catch { /* ignore */ }
+
         // Suppress SyncLocalChoice BEFORE the async await — SyncLocalChoice
         // fires synchronously when the player picks a card, which is before
         // RecordAsync's continuation runs.
         HandCardSelectRecordPatch.SuppressNext = true;
 
-        MegaCrit.Sts2.Core.Helpers.TaskHelper.RunSafely(RecordAsync(__result));
+        MegaCrit.Sts2.Core.Helpers.TaskHelper.RunSafely(RecordAsync(__result, handCountBefore));
     }
 
-    private static async Task RecordAsync(Task<IEnumerable<CardModel>> task)
+    private static async Task RecordAsync(Task<IEnumerable<CardModel>> task, int handCountBefore)
     {
         IEnumerable<CardModel> cards;
         try { cards = await task; }
@@ -171,26 +183,20 @@ public static class HandCardSelectForDiscardRecordPatch
         if (ids.Count == 0)
             return;
 
-        // Check if the discard was auto-resolved (no real choice).
+        // Skip truly auto-resolved discards where there was no real choice.
         // When a card like Survivor is the last in hand, the discard has
         // only 0-1 options and the game auto-resolves without player input.
         // Recording it would leave a stale command in the replay queue.
-        try
+        // We use the hand count captured BEFORE the selection (not the current
+        // hand, which may already be modified).  With 0-1 cards there is never
+        // a real choice; with 2+ cards the player made a genuine selection
+        // (e.g. Gambler's Brew discarding the full hand).
+        if (handCountBefore <= 1)
         {
-            var combatState = MegaCrit.Sts2.Core.Combat.CombatManager.Instance?.DebugOnlyGetState();
-            if (combatState != null)
-            {
-                var player = combatState.Players.FirstOrDefault();
-                var hand = player?.PlayerCombatState?.Hand?.Cards;
-                if (hand != null && hand.Count <= ids.Count)
-                {
-                    PlayerActionBuffer.LogToDevConsole(
-                        $"[HandCardSelectForDiscardRecord] Skipping — auto-resolved (hand={hand.Count}, discarded={ids.Count}).");
-                    return;
-                }
-            }
+            PlayerActionBuffer.LogToDevConsole(
+                $"[HandCardSelectForDiscardRecord] Skipping — auto-resolved (handBefore={handCountBefore}, selected={ids.Count}).");
+            return;
         }
-        catch { /* ignore — record anyway if we can't check */ }
 
         string command = $"SelectHandCards {string.Join(" ", ids)}";
         PlayerActionBuffer.LogToDevConsole($"[HandCardSelectForDiscardRecord] Recording: {command}");

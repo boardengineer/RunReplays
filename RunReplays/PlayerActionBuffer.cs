@@ -48,6 +48,12 @@ public static class PlayerActionBuffer
     /// </summary>
     private static string? _pendingPreState;
 
+    /// <summary>
+    /// Set when UsePotionAction is recorded in BeforeActionExecuted so the
+    /// same action is not recorded again if AfterActionExecuted also fires.
+    /// </summary>
+    private static bool _potionRecordedEarly;
+
     [HarmonyPostfix]
     public static void Postfix(ActionExecutor __instance)
     {
@@ -55,6 +61,7 @@ public static class PlayerActionBuffer
         while (_verboseEntries.TryDequeue(out _)) { }
         while (_minimalEntries.TryDequeue(out _)) { }
         _pendingPreState = null;
+        _potionRecordedEarly = false;
 
         RunOverlay.InitForRun();
 
@@ -79,7 +86,17 @@ public static class PlayerActionBuffer
             BattleRewardPatch.IsProcessingCardReward = false;
 
             if (action is UsePotionAction)
-                RecordCardPlayEarly(action.ToString()!);
+            {
+                var text = action.ToString()!;
+                // Potions that open a card selection screen (Power Potion,
+                // Colorless Potion, Attack Potion, Gambler's Brew, etc.)
+                // fire a second UsePotionAction with an empty potion name
+                // after the selection resolves.  Skip that duplicate.
+                if (!text.Contains("POTION."))
+                    return;
+                _potionRecordedEarly = true;
+                RecordCardPlayEarly(text);
+            }
         };
 
         __instance.AfterActionExecuted += action =>
