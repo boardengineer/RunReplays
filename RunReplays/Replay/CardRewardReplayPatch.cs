@@ -110,6 +110,7 @@ public static class CardRewardReplayPatch
                 "[RunReplays] Replay: invoked OnAlternateRewardSelected to dismiss screen.");
         }
 
+        selectionScreen = null;
         BattleRewardsReplayPatch.OnCardRewardHandled();
     }
 

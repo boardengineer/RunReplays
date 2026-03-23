@@ -41,7 +41,9 @@ public class CardRewardCommand : ReplayCommand
     {
         var screen = BattleRewardsReplayPatch._activeScreen;
         if (screen == null || !screen.IsInsideTree())
+        {
             return ExecuteResult.Retry(200);
+        }
 
         // Scan reward buttons for a direct card reward (e.g. SpecialCardReward)
         // that matches by title and can be claimed without a selection screen.
@@ -53,6 +55,7 @@ public class CardRewardCommand : ReplayCommand
             if (CardRewardReplayPatch.SelectCard(CardTitle))
             {
                 waitingForRewardScreenOpen = false;
+                CardRewardReplayPatch.selectionScreen = null;
                 return ExecuteResult.Ok();
             }
         }
@@ -64,6 +67,21 @@ public class CardRewardCommand : ReplayCommand
 
         foreach (var (button, reward) in BattleRewardsReplayPatch.EnumerateRewardButtons(screen))
         {
+            // Direct path: SpecialCardReward (e.g. stolen cards from Thieving Hopper)
+            // adds the card immediately without opening a selection screen.
+            if (BattleRewardsReplayPatch.IsRewardOfType(reward, "SpecialCardReward"))
+            {
+                string? rewardTitle = BattleRewardsReplayPatch.GetRewardCardTitle(reward);
+                if (rewardTitle != null && rewardTitle == CardTitle)
+                {
+                    PlayerActionBuffer.LogDispatcher($"[CardReward] Claiming SpecialCardReward '{CardTitle}'.");
+                    BattleRewardsReplayPatch.InvokeGetReward(button);
+                    waitingForRewardScreenOpen = false;
+                    CardRewardReplayPatch.selectionScreen = null;
+                    return ExecuteResult.Ok();
+                }
+            }
+
             if (BattleRewardsReplayPatch.IsRewardOfType(reward, "CardReward"))
             {
                 if (RewardIndex >= 0)
@@ -73,7 +91,6 @@ public class CardRewardCommand : ReplayCommand
                         BattleRewardsReplayPatch.InvokeGetReward(button);
                         waitingForRewardScreenOpen = true;
                         return ExecuteResult.Retry(200);
-                        
                     }
                 }
                 else
