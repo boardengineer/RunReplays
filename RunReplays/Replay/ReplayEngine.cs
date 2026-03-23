@@ -170,8 +170,6 @@ public static class ReplayEngine
         BattleRewardPatch.LastCardRewardIndex = -1;
         BattleRewardPatch.IsProcessingCardReward = false;
         DeckRemovalState.PendingRemoval = false;
-        DeckRemovalState.PendingOptions = null;
-        DeckRemovalState.SuppressRecording = false;
         ShopPurchaseState.IsPurchasing = false;
         ShopPurchaseState.PendingLabel = null;
         EventSelectionPatch.PendingIndex = null;
@@ -915,25 +913,40 @@ public static class ReplayEngine
 
     // ── Card removal from deck ────────────────────────────────────────────────
     //
-    // Recorded by DeckRemovalRecordPatch via CardPileCmd.RemoveFromDeck:
-    //   "RemoveCardFromDeck: {deckIndex}"
-    // deckIndex is the 0-based position in the card list shown to the player.
+    // Recorded by DeckCardSelectRecordPatch via NCardGridSelectionScreen.CardsSelected
+    // when FromDeckForRemoval is active:
+    //   "RemoveCardFromDeck: {idx0} {idx1} ..."
+    // Each index is the 0-based position in the card list shown to the player.
 
     private const string RemoveCardFromDeckPrefix = "RemoveCardFromDeck: ";
 
-    public static bool PeekRemoveCardFromDeck(out int deckIndex)
+    public static bool PeekRemoveCardFromDeck(out int[] deckIndices)
     {
-        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(RemoveCardFromDeckPrefix)
-            && int.TryParse(cmd.AsSpan(RemoveCardFromDeckPrefix.Length), out deckIndex))
-            return true;
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(RemoveCardFromDeckPrefix))
+        {
+            var parts = cmd.Substring(RemoveCardFromDeckPrefix.Length).Split(' ');
+            var indices = new List<int>(parts.Length);
+            foreach (var part in parts)
+            {
+                if (int.TryParse(part, out int idx))
+                    indices.Add(idx);
+                else
+                {
+                    deckIndices = Array.Empty<int>();
+                    return false;
+                }
+            }
+            deckIndices = indices.ToArray();
+            return deckIndices.Length > 0;
+        }
 
-        deckIndex = -1;
+        deckIndices = Array.Empty<int>();
         return false;
     }
 
-    public static bool ConsumeRemoveCardFromDeck(out int deckIndex)
+    public static bool ConsumeRemoveCardFromDeck(out int[] deckIndices)
     {
-        if (PeekRemoveCardFromDeck(out deckIndex))
+        if (PeekRemoveCardFromDeck(out deckIndices))
         {
             SignalConsumed(_pending.Dequeue());
             return true;

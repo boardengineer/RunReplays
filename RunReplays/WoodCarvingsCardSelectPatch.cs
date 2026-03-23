@@ -342,10 +342,20 @@ public static class DeckCardSelectRecordPatch
             indices.Add(index);
         }
 
-        // Record immediately — PlayCardAction is recorded early (before
-        // execution), so the selection naturally follows it in the log.
-        string command = $"SelectDeckCard {string.Join(" ", indices)}";
-        PlayerActionBuffer.RecordMinimalOnly(command);
+        // When a deck removal is pending (Empty Cage, Cook, etc.), record as
+        // a single combined RemoveCardFromDeck command.
+        string command;
+        if (DeckRemovalState.PendingRemoval)
+        {
+            DeckRemovalState.PendingRemoval = false;
+            command = $"RemoveCardFromDeck: {string.Join(" ", indices)}";
+            PlayerActionBuffer.Record(command);
+        }
+        else
+        {
+            command = $"SelectDeckCard {string.Join(" ", indices)}";
+            PlayerActionBuffer.RecordMinimalOnly(command);
+        }
         PlayerActionBuffer.LogToDevConsole(
             $"[DeckCardSelectPatch] Recorded {command} ({titles}).");
     }
