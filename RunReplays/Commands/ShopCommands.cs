@@ -32,6 +32,56 @@ public sealed class OpenShopCommand : ReplayCommand
 }
 
 /// <summary>
+/// Buys a card from the shop.
+/// Recorded as: "BuyCard {title}"
+/// </summary>
+public sealed class BuyCardCommand : ReplayCommand
+{
+    private const string Prefix = "BuyCard ";
+
+    public string CardTitle { get; }
+
+    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.Shop;
+
+    private BuyCardCommand(string raw, string cardTitle) : base(raw)
+    {
+        CardTitle = cardTitle;
+    }
+
+    public override string Describe() => $"buy card '{CardTitle}'";
+
+    public override ExecuteResult Execute()
+    {
+        var room = ShopOpenedReplayPatch.ActiveRoom;
+        if (room == null || !room.IsInsideTree())
+            return ExecuteResult.Retry(200);
+
+        var entries = ShopOpenedReplayPatch.GetEntries(room);
+        if (entries == null || entries.Count == 0)
+            return ExecuteResult.Retry(200);
+
+        var entry = entries.OfType<MerchantCardEntry>()
+            .FirstOrDefault(e => e.CreationResult?.Card?.Title == CardTitle);
+
+        if (entry == null)
+        {
+            PlayerActionBuffer.LogMigrationWarning($"[BuyCard] Card '{CardTitle}' not found — skipping.");
+            return ExecuteResult.Ok();
+        }
+
+        ShopOpenedReplayPatch.InvokePurchase(entry);
+        return ExecuteResult.Ok();
+    }
+
+    public static BuyCardCommand? TryParse(string raw)
+    {
+        if (!raw.StartsWith(Prefix))
+            return null;
+        return new BuyCardCommand(raw, raw.Substring(Prefix.Length));
+    }
+}
+
+/// <summary>
 /// Buys a relic from the shop.
 /// Recorded as: "BuyRelic {title}"
 /// </summary>
@@ -114,7 +164,7 @@ public sealed class BuyCardRemovalCommand : ReplayCommand
             return ExecuteResult.Ok();
         }
 
-        ReplayEngine.SkipToRemoveCardFromDeck();
+        // ReplayEngine.SkipToRemoveCardFromDeck();
         ShopOpenedReplayPatch.CardRemovalInProgress = true;
         ShopOpenedReplayPatch.InvokePurchase(entry);
         return ExecuteResult.Ok();

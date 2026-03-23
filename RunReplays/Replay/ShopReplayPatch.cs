@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
+using RunReplays.Utils;
 
 namespace RunReplays;
 
@@ -44,6 +45,8 @@ public static class ShopRoomReadyPatch
     [HarmonyPostfix]
     public static void Postfix(NMerchantRoom __instance)
     {
+        RngCheckpointLogger.Log("Shop (NMerchantRoom._Ready)");
+
         if (!ReplayEngine.IsActive)
             return;
 
@@ -101,12 +104,6 @@ public static class ShopCardRemovalFailedReplayPatch
         NMerchantRoom? room = ShopOpenedReplayPatch.ActiveRoom;
         if (room == null || !room.IsInsideTree())
             return;
-
-        // Consume the pending RemoveCardFromDeck command that will never
-        // be reached because the purchase failed.
-        PlayerActionBuffer.LogMigrationWarning("here 1");
-        if (ReplayEngine.PeekRemoveCardFromDeck(out _))
-            ReplayEngine.ConsumeRemoveCardFromDeck(out _);
 
         PlayerActionBuffer.LogToDevConsole(
             "[ShopReplayPatch] Card removal purchase failed — resuming shop loop.");
@@ -447,10 +444,6 @@ public static class ShopOpenedReplayPatch
             CardRemovalInProgress = false;
             PlayerActionBuffer.LogToDevConsole(
                 $"[ShopReplayPatch] Card removal purchase threw — {ex.GetType().Name}: {ex.Message}");
-
-            PlayerActionBuffer.LogMigrationWarning("here 2");
-            if (ReplayEngine.PeekRemoveCardFromDeck(out _))
-                ReplayEngine.ConsumeRemoveCardFromDeck(out _);
 
             Callable.From(() => ProcessNextPurchase(room)).CallDeferred();
             return true;

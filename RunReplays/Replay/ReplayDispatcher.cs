@@ -494,10 +494,10 @@ public static class ReplayDispatcher
 
         // Try the new command object system first.
         ReplayCommand? parsed = ReplayCommandParser.TryParse(cmd);
-        // PlayerActionBuffer.LogMigrationWarning($"[LogDispatch] Parsing command {cmd}");
+        PlayerActionBuffer.LogMigrationWarning($"[LogDispatch] Parsing command {cmd}");
         if (parsed != null)
         {
-            // PlayerActionBuffer.LogMigrationWarning($"[PARSED] executing through typed command path: {cmd}");
+            PlayerActionBuffer.LogMigrationWarning($"[PARSED] executing through typed command path: {cmd}");
             var result = parsed.Execute();
             if (result.Success)
             {

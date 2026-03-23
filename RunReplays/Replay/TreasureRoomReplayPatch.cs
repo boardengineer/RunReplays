@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using MegaCrit.Sts2.Core.Nodes.Screens.TreasureRoomRelic;
 using MegaCrit.Sts2.Core.Runs;
+using RunReplays.Utils;
 
 namespace RunReplays;
 
@@ -62,9 +63,10 @@ public static class TreasureRoomReplayPatch
         [HarmonyPostfix]
         public static void Postfix(NTreasureRoom __instance)
         {
+            RngCheckpointLogger.Log("Treasure (NTreasureRoom._Ready)");
+
             if (!ReplayEngine.IsActive)
                 return;
-
             ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Treasure);
 
             if (!ReplayEngine.PeekTakeChestRelic(out _))

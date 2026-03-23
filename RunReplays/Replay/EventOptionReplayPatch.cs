@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
+using RunReplays.Utils;
 
 namespace RunReplays;
 
@@ -35,6 +36,8 @@ public static class EventOptionReplayPatch
 
         if (replayActive)
             ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Event);
+
+        RngCheckpointLogger.Log($"Event (BeginEvent '{canonicalEvent.GetType().Name}')");
 
         ReplayEngine.PeekNext(out string? nextCmd);
         PlayerActionBuffer.LogToDevConsole(
