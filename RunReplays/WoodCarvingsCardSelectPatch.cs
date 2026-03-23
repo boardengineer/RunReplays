@@ -40,14 +40,10 @@ internal static class SelectorStackDebug
 
     internal static void Log(string message)
     {
-        try { File.AppendAllText(LogPath, $"[{DateTime.Now:HH:mm:ss.fff}] {message}\n"); }
-        catch { /* ignore */ }
     }
 
     internal static void Clear()
     {
-        try { File.WriteAllText(LogPath, ""); }
-        catch { /* ignore */ }
     }
 }
 

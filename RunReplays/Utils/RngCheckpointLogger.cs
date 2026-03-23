@@ -12,7 +12,7 @@ namespace RunReplays.Utils;
 /// </summary>
 internal static class RngCheckpointLogger
 {
-    private static readonly bool Enabled = true;
+    private static readonly bool Enabled = false;
 
     private static readonly string LogPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
