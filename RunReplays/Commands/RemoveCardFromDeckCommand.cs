@@ -15,17 +15,21 @@ public sealed class RemoveCardFromDeckCommand : ReplayCommand
 {
     private const string Prefix = "RemoveCardFromDeck: ";
 
-    public int DeckIndex { get; }
+    public int[] DeckIndices { get; }
 
     public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.None;
     public override bool IsSelectionCommand => true;
 
-    private RemoveCardFromDeckCommand(string raw, int deckIndex) : base(raw)
+    private RemoveCardFromDeckCommand(string raw, int[] deckIndices) : base(raw)
     {
-        DeckIndex = deckIndex;
+        DeckIndices = deckIndices;
     }
 
-    public override string Describe() => $"remove card from deck index={DeckIndex}";
+    public override string Describe()
+    {
+        string idxStr = DeckIndices.Length > 0 ? string.Join(", ", DeckIndices) : "(none)";
+        return $"remove card from deck indices=[{idxStr}]";
+    }
 
     public override ExecuteResult Execute()
     {
@@ -37,16 +41,21 @@ public sealed class RemoveCardFromDeckCommand : ReplayCommand
         if (cards == null)
             return ExecuteResult.Retry(300);
 
-        if (DeckIndex < 0 || DeckIndex >= cards.Count)
+        foreach (int idx in DeckIndices)
         {
-            PlayerActionBuffer.LogMigrationWarning(
-                $"[RemoveCardFromDeck] Index {DeckIndex} out of range (count={cards.Count}) — retrying.");
-            return ExecuteResult.Retry(300);
+            if (idx < 0 || idx >= cards.Count)
+            {
+                PlayerActionBuffer.LogMigrationWarning(
+                    $"[RemoveCardFromDeck] Index {idx} out of range (count={cards.Count}) — retrying.");
+                return ExecuteResult.Retry(300);
+            }
         }
 
-        var selected = new List<CardModel> { cards[DeckIndex] };
-        PlayerActionBuffer.LogMigrationWarning(
-            $"[RemoveCardFromDeck] Selected '{cards[DeckIndex].Title}' at index {DeckIndex} for removal.");
+        var selected = new List<CardModel>();
+        foreach (int idx in DeckIndices)
+        {
+            selected.Add(cards[idx]);
+        }
 
         CardGridScreenCapture.ResolveSelection(selected);
         return ExecuteResult.Ok();
@@ -57,9 +66,19 @@ public sealed class RemoveCardFromDeckCommand : ReplayCommand
         if (!raw.StartsWith(Prefix))
             return null;
 
-        if (int.TryParse(raw.AsSpan(Prefix.Length).Trim(), out int idx))
-            return new RemoveCardFromDeckCommand(raw, idx);
+        string rest = raw.Substring(Prefix.Length).Trim();
+        if (rest.Length == 0)
+            return null;
 
-        return null;
+        var parts = rest.Split(' ');
+        var indices = new List<int>(parts.Length);
+        foreach (var part in parts)
+        {
+            if (int.TryParse(part, out int idx))
+                indices.Add(idx);
+            else
+                return null;
+        }
+        return new RemoveCardFromDeckCommand(raw, indices.ToArray());
     }
 }
