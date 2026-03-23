@@ -194,8 +194,7 @@ public static class ReplayEngine
         FromDeckForTransformationPatch._pendingScope = null;
         FromDeckForUpgradePatch._pendingScope?.Dispose();
         FromDeckForUpgradePatch._pendingScope = null;
-        HandCardSelectReplayPatch._pendingScope?.Dispose();
-        HandCardSelectReplayPatch._pendingScope = null;
+        Commands.HandSelectionCapture.Clear();
         FromSimpleGridPatch._pendingScope?.Dispose();
         FromSimpleGridPatch._pendingScope = null;
 
@@ -1210,6 +1209,7 @@ public static class ReplayEngine
 
     public static bool ConsumeSelectHandCards(out uint[] cardIds)
     {
+        PlayerActionBuffer.LogMigrationWarning("[MIGRATION WARNING] select hand command going through worng path");
         if (PeekSelectHandCards(out cardIds))
         {
             SignalConsumed(_pending.Dequeue());

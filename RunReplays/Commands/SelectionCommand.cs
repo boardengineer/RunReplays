@@ -7,8 +7,9 @@ namespace RunReplays.Commands;
 /// A card selection command consumed inline by ICardSelector implementations
 /// or Harmony patch postfixes, not by the dispatcher.
 ///
-/// Covers: SelectCardFromScreen, SelectDeckCard, SelectHandCards,
-///         SelectSimpleCard, RemoveCardFromDeck, UpgradeCard.
+/// Covers: SelectCardFromScreen, SelectSimpleCard, RemoveCardFromDeck, UpgradeCard.
+/// SelectHandCards is handled by SelectHandCardsCommand.
+/// SelectDeckCard is handled by SelectDeckCardCommand.
 ///
 /// These commands are never dispatched — the game opens a selection screen,
 /// the corresponding patch peeks the queue, consumes the command, and makes
@@ -20,7 +21,6 @@ public class SelectionCommand : ReplayCommand
     {
         SelectCardFromScreen,
         SelectDeckCard,
-        SelectHandCards,
         SelectSimpleCard,
         RemoveCardFromDeck,
         UpgradeCard,
@@ -34,7 +34,6 @@ public class SelectionCommand : ReplayCommand
     /// - SelectDeckCard: one or more deck indices
     /// - SelectSimpleCard: single card index
     /// - SelectCardFromScreen: single index (-1 = skip)
-    /// - SelectHandCards: combat card IDs (as ints)
     /// - RemoveCardFromDeck: single deck index
     /// </summary>
     public int[] Indices { get; }
@@ -55,7 +54,6 @@ public class SelectionCommand : ReplayCommand
         {
             SelectionKind.SelectCardFromScreen => $"select card from screen index={idxStr}",
             SelectionKind.SelectDeckCard => $"select deck card indices=[{idxStr}]",
-            SelectionKind.SelectHandCards => $"select hand cards ids=[{idxStr}]",
             SelectionKind.SelectSimpleCard => $"select simple card index={idxStr}",
             SelectionKind.RemoveCardFromDeck => $"remove card from deck index={idxStr}",
             SelectionKind.UpgradeCard => $"upgrade card at deck index {idxStr}",
@@ -105,10 +103,7 @@ public class SelectionCommand : ReplayCommand
         if (raw.StartsWith("SelectCardFromScreen "))
             return ParseSingleInt(raw, "SelectCardFromScreen ".Length, SelectionKind.SelectCardFromScreen);
         // SelectDeckCard is handled by SelectDeckCardCommand.
-        if (raw.StartsWith("SelectHandCards "))
-            return ParseMultiInt(raw, "SelectHandCards ".Length, SelectionKind.SelectHandCards);
-        if (raw == "SelectHandCards")
-            return new SelectionCommand(raw, SelectionKind.SelectHandCards, System.Array.Empty<int>());
+        // SelectHandCards is handled by SelectHandCardsCommand.
         if (raw.StartsWith("SelectSimpleCard "))
             return ParseSingleInt(raw, "SelectSimpleCard ".Length, SelectionKind.SelectSimpleCard);
         if (raw.StartsWith("RemoveCardFromDeck: "))
