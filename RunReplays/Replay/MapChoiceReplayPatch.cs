@@ -56,10 +56,8 @@ public static class MapChoiceReplayPatch
 
     internal static void AutoSelectMapNode(NMapScreen screen, int col, int row)
     {
-        PlayerActionBuffer.LogMigrationWarning($"[Map debug] moving 1 {col} {row}.");
         if (MapPointDictionaryField?.GetValue(screen) is not Dictionary<MapCoord, NMapPoint> dict)
         {
-            PlayerActionBuffer.LogMigrationWarning($"[Map debug] moving 2 {col} {row}.");
             PlayerActionBuffer.LogToDevConsole("[RunReplays] MapChoice: could not access map point dictionary.");
             return;
         }
@@ -67,12 +65,9 @@ public static class MapChoiceReplayPatch
         var coord = new MapCoord(col, row);
         if (!dict.TryGetValue(coord, out NMapPoint? point))
         {
-            PlayerActionBuffer.LogMigrationWarning($"[Map debug] moving 3 {col} {row}.");
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] MapChoice: map point col={col} row={row} not found in dictionary.");
             return;
         }
 
-        PlayerActionBuffer.LogMigrationWarning($"[Map debug] moving 4 {col} {row}.");
         CardPlayReplayPatch.InvalidateStaleTimers();
         screen.OnMapPointSelectedLocally(point);
     }

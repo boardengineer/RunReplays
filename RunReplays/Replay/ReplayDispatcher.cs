@@ -353,26 +353,19 @@ public static class ReplayDispatcher
     /// </summary>
     internal static void TryDispatch()
     {
-        PlayerActionBuffer.LogMigrationWarning("Starting dispatch 1 ");
-        
-        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch");
         if (!ReplayEngine.IsActive || _paused)
             return;
 
-        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 2");
         if (_stepping && !_stepRequested)
             return;
 
-        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 3");
         if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
             return;
 
-        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 4 " + cmd);
         // Block dispatch while in-flight operations are pending.
         if (PotionInFlight || MapMoveInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
             return;
 
-        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 5");
         // Block while a game action is executing (BeforeAction → AfterAction).
         if (ActionInFlight && !IsSelectionCommand(cmd))
             return;
@@ -384,32 +377,27 @@ public static class ReplayDispatcher
         // Re-check periodically so dispatch resumes promptly after consumption.
         if (IsSelectionCommand(cmd) && !cmd.StartsWith("SelectHandCards"))
         {
-            PlayerActionBuffer.LogMigrationWarning("Selection command handled elsewhere?");
             int selGen = _dispatchGeneration;
             NGame.Instance?.GetTree()?.CreateTimer(0.3f).Connect(
                 "timeout", Callable.From(() =>
                 {
                     if (_dispatchGeneration == selGen) {
-                        PlayerActionBuffer.LogDispatcher("[Dispatcher] schedule new selector for command");
                         ExecuteNext();
                     }
                 }));
             return;
         }
 
-        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 6");
         // Block potion use/discard during combat startup (before TurnStarted fires).
         if ((cmd.StartsWith("UsePotionAction "))
             && CombatManager.Instance.IsInProgress
             && (_ready & ReadyState.Combat) == 0)
             return;
 
-        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 6.5");
         // Don't re-dispatch the same command that's already in progress.
         if (_dispatchInProgress && cmd == _lastDispatchedCmd)
             return;
 
-        PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 7");
         ReadyState required = GetRequiredState(cmd);
         if (required != ReadyState.None && (_ready & required) == 0)
             return;
@@ -421,21 +409,17 @@ public static class ReplayDispatcher
         int gen = ++_dispatchGeneration;
         if (_delayBetweenCommands > 0)
         {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 8");
             NGame.Instance!.GetTree()!.CreateTimer(_delayBetweenCommands).Connect(
                 "timeout", Callable.From(() =>
                 {
                     if (_dispatchGeneration == gen)
                     {
-                        PlayerActionBuffer.LogDispatcher(
-                            $"[Dispatcher] callback dispatcher triggering.");
                         ExecuteNext();
                     }
                 }));
         }
         else
         {
-            PlayerActionBuffer.LogDispatcher("[Dispatcher] Start dispatch 9");
             Callable.From(() =>
             {
                 if (_dispatchGeneration == gen)
@@ -459,7 +443,6 @@ public static class ReplayDispatcher
 
     private static void ExecuteNext()
     {
-        PlayerActionBuffer.LogMigrationWarning("Start execute next 1");
         // Re-apply speed in case the game reset Engine.TimeScale during a transition.
         if (ReplayEngine.IsActive && Engine.TimeScale != _gameSpeed)
             Engine.TimeScale = _gameSpeed;
@@ -470,7 +453,6 @@ public static class ReplayDispatcher
         if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
             return;
         
-        PlayerActionBuffer.LogMigrationWarning("Start execute next 2");
         if ((PotionInFlight || CardPlayInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion || MapMoveInFlight) && !IsSelectionCommand(cmd))
         {
             PlayerActionBuffer.LogMigrationWarning($"Scheduling retry PotionInFlight:{PotionInFlight}    |    CardPlayInFlight:{CardPlayInFlight}   |  CardPlayReplayPatch.IsAwaitingEndTurnCompletion:{CardPlayReplayPatch.IsAwaitingEndTurnCompletion}  |  MapMoveInFlight :{MapMoveInFlight}");
@@ -480,14 +462,9 @@ public static class ReplayDispatcher
             return;
         }
 
-        PlayerActionBuffer.LogMigrationWarning("Start execute next 3");
         if (_stepping && !_stepRequested)
             return;
 
-        PlayerActionBuffer.LogMigrationWarning("Start execute next 4");
-        
-        PlayerActionBuffer.LogMigrationWarning("Start execute next 5");
-        
         // Block while a game action is executing, unless it's a selection command.
         if (ActionInFlight && !IsSelectionCommand(cmd))
         {
@@ -496,7 +473,6 @@ public static class ReplayDispatcher
             return;
         }
 
-        PlayerActionBuffer.LogMigrationWarning("Start execute next 6");
         ReadyState required = GetRequiredState(cmd);
         if (required != ReadyState.None && (_ready & required) == 0)
             return;
@@ -514,15 +490,14 @@ public static class ReplayDispatcher
             return;
         }
 
-        PlayerActionBuffer.LogMigrationWarning("Start execute next 7");
         _lastDispatchTick = System.Environment.TickCount64;
 
         // Try the new command object system first.
         ReplayCommand? parsed = ReplayCommandParser.TryParse(cmd);
-        PlayerActionBuffer.LogMigrationWarning($"[LogDispatch] Parsing command {cmd}");
+        // PlayerActionBuffer.LogMigrationWarning($"[LogDispatch] Parsing command {cmd}");
         if (parsed != null)
         {
-            PlayerActionBuffer.LogMigrationWarning($"[PARSED] executing through typed command path: {cmd}");
+            // PlayerActionBuffer.LogMigrationWarning($"[PARSED] executing through typed command path: {cmd}");
             var result = parsed.Execute();
             if (result.Success)
             {
@@ -553,6 +528,8 @@ public static class ReplayDispatcher
             }
         }
 
+        PlayerActionBuffer.LogMigrationWarning($"[WARNING] not matching command invoking backup for command: {cmd}");
+        
         // Legacy string-based dispatch for commands not yet migrated.
         switch (required)
         {

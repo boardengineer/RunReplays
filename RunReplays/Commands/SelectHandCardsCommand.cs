@@ -66,13 +66,6 @@ public sealed class SelectHandCardsCommand : ReplayCommand
             if (idx >= 0 && idx < handCards.Count)
             {
                 selected.Add(handCards[idx]);
-                PlayerActionBuffer.LogMigrationWarning(
-                    $"[SelectHandCards] Selected '{handCards[idx].Title}' at hand index {idx}.");
-            }
-            else
-            {
-                PlayerActionBuffer.LogMigrationWarning(
-                    $"[SelectHandCards] Index {idx} out of range (hand={handCards.Count}).");
             }
         }
 
@@ -131,8 +124,6 @@ public static class HandSelectionCapture
     {
         if (!ReplayEngine.IsActive) return;
         ActiveHand = __instance;
-        PlayerActionBuffer.LogMigrationWarning(
-            $"[HandSelectionCapture] Hand captured for selection.");
         ReplayDispatcher.DispatchNow();
     }
 
