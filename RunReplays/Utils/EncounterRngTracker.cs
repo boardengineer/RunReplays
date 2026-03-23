@@ -34,12 +34,14 @@ public static class UpFrontRngTracker
 /// </summary>
 internal static class RngLog
 {
+    private static readonly bool Enabled = false;
+
     private static StreamWriter? _writer;
     private static readonly object _lock = new();
 
     internal static void Reset()
     {
-        return; // paused
+        if (!Enabled) return;
         lock (_lock)
         {
             _writer?.Flush();
@@ -51,7 +53,7 @@ internal static class RngLog
 
     internal static void EnsureInitialized()
     {
-        return; // paused
+        if (!Enabled) return;
         lock (_lock)
         {
             if (_writer != null) return;
@@ -64,7 +66,7 @@ internal static class RngLog
 
     internal static void Write(string message)
     {
-        return; // paused
+        if (!Enabled) return;
         lock (_lock)
         {
             _writer?.WriteLine(message);

@@ -40,7 +40,7 @@ public static class CardRewardReplayPatch
         typeof(NCardRewardSelectionScreen).GetField(
             "_extraOptions", BindingFlags.NonPublic | BindingFlags.Instance);
 
-    internal static NCardRewardSelectionScreen selectionScreen;
+    internal static NCardRewardSelectionScreen? selectionScreen;
 
     [HarmonyPostfix]
     public static void Postfix(NCardRewardSelectionScreen __instance)

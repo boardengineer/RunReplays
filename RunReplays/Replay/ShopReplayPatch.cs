@@ -223,7 +223,7 @@ public static class ShopOpenedReplayPatch
             }
             ReplayRunner.ExecuteBuyCardRemoval();
             ReplayEngine.SkipToRemoveCardFromDeck();
-            ActiveRoom = ActiveRoom;
+            // ActiveRoom intentionally left as-is (card removal reuses the current room).
             CardRemovalInProgress = true;
             PlayerActionBuffer.LogDispatcher("[Shop] Purchased card removal.");
             InvokePurchase(entry);

@@ -30,7 +30,7 @@ public class ChooseRestSiteOptionCommand : ReplayCommand
 
         var options = sync.GetLocalOptions();
         int index = -1;
-        RestSiteOption chosenOption = null;
+        RestSiteOption? chosenOption = null;
         for (int i = 0; i < options.Count; i++)
         {
             if (options[i].OptionId == OptionId)
@@ -41,11 +41,11 @@ public class ChooseRestSiteOptionCommand : ReplayCommand
             }
         }
 
-        if (index == -1)
+        if (index == -1 || chosenOption == null)
             return ExecuteResult.Retry(300);
 
         PlayerActionBuffer.LogDispatcher($"Dispatcher path notifying rest site");
-        RestSiteReplayPatch.SelectAndNotifyRoom(sync, index, chosenOption);
+        _ = RestSiteReplayPatch.SelectAndNotifyRoom(sync, index, chosenOption);
         return ExecuteResult.Ok();
     }
 

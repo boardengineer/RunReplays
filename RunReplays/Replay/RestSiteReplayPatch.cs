@@ -42,7 +42,6 @@ public static class RestSiteReplayPatch
     private const int MaxRetries = 20;
 
     internal static RestSiteSynchronizer? _activeSynchronizer;
-    internal static List<String> validOptions;
 
     [HarmonyPostfix]
     public static void Postfix(RestSiteSynchronizer __instance)

@@ -37,8 +37,6 @@ public static class GetRandomListUnlockPatch
         // Fall back to the hardcoded forced seed if no active seed is set.
         if (ReplayEngine.ActiveSeed != null)
             seed = ReplayEngine.ActiveSeed;
-        else if (ForcedSeedPatch.Enabled)
-            seed = ForcedSeedPatch.ForcedSeed;
         unlockState = UnlockState.all;
     }
 }

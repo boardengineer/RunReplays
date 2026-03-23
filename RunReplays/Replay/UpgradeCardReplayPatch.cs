@@ -22,7 +22,7 @@ public static class UpgradeCardReplayPatch
         typeof(NDeckUpgradeSelectScreen).GetMethod(
             "CheckIfSelectionComplete", BindingFlags.NonPublic | BindingFlags.Instance);
 
-    internal static NDeckUpgradeSelectScreen selectionScreen = null;
+    internal static NDeckUpgradeSelectScreen? selectionScreen;
     
     [HarmonyPostfix]
     public static void Postfix(NDeckUpgradeSelectScreen __result, IReadOnlyList<CardModel> cards)

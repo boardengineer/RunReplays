@@ -12,20 +12,22 @@ namespace RunReplays.Utils;
 /// </summary>
 internal static class RngCheckpointLogger
 {
+    private static readonly bool Enabled = false;
+
     private static readonly string LogPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "SlayTheSpire2", "RunReplays", "rng_checkpoints.log");
 
     internal static void Clear()
     {
-        return; // paused
+        if (!Enabled) return;
         try { File.WriteAllText(LogPath, ""); }
         catch { /* ignore */ }
     }
 
     internal static void Log(string checkpoint)
     {
-        return; // paused
+        if (!Enabled) return;
         try
         {
             var state = RunManager.Instance?.DebugOnlyGetState();

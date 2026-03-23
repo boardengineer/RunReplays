@@ -29,7 +29,7 @@ public class MapMoveCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        Callable.From(() => MapChoiceReplayPatch.AutoSelectMapNode(_activeScreen, Col, Row)).CallDeferred();
+        Callable.From(() => MapChoiceReplayPatch.AutoSelectMapNode(_activeScreen!, Col, Row)).CallDeferred();
         ReplayDispatcher.MapMoveInFlight = true;
         return ExecuteResult.Ok();
     }

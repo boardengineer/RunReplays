@@ -42,7 +42,6 @@ public static class CardPlayReplayPatch
     private static Action<CombatState>? _turnStartedHandler;
     private static Action<CombatState>? _turnEndedHandler;
     internal static CombatState?         _currentCombatState;
-    private static int                  _retryCount;
 
     /// <summary>
     /// Incremented each time a new battle starts (ActionExecutor ctor).
@@ -125,10 +124,6 @@ public static class CardPlayReplayPatch
         _actionFiredThisFrame = false;
         _quietFrameCount = 0;
         _awaitingEndTurnCompletion = false;
-        _endTurnRetryCount = 0;
-        _endTurnConsumed = false;
-        _endTurnScheduled = false;
-        _retryCount = 0;
         _turnStartRetries = 0;
         _turnStartedSinceLastEndTurn = true;
         _postEndTurn_turnEndedReceived = false;
@@ -309,7 +304,6 @@ public static class CardPlayReplayPatch
             $" nextCmd='{nextCmd ?? "(none)"}'");
 
         _currentCombatState = combatState;
-        _retryCount = 0;
         _turnStartedSinceLastEndTurn = true;
 
         // If we're waiting for EndTurn completion, record that TurnStarted
@@ -383,9 +377,6 @@ public static class CardPlayReplayPatch
         _awaitingEndTurnCompletion = false;
         _dispatching = false;
         _waitingForEffects = false;
-        _endTurnConsumed = false;
-        _endTurnScheduled = false;
-        _endTurnRetryCount = 0;
         _postEndTurn_turnEndedReceived = false;
         _postEndTurn_turnStartedReceived = false;
 
@@ -674,7 +665,7 @@ public static class CardPlayReplayPatch
             ReplayDispatcher.PotionInFlight = true;
             potion.EnqueueManualUse(target);
         }
-        catch (Exception ex)
+        catch
         {
             ReplayDispatcher.PotionInFlight = false;
         }
@@ -682,15 +673,10 @@ public static class CardPlayReplayPatch
 
     // ── End-turn execution ────────────────────────────────────────────────────
 
-    private static int  _endTurnRetryCount;
-    private static bool _endTurnConsumed;
-    private static bool _endTurnScheduled;
 
 
     internal static bool TryEndTurn()
     {
-        _endTurnScheduled = false;
-
         if (_waitingForEffects)
         {
             return false; 
@@ -747,9 +733,6 @@ public static class CardPlayReplayPatch
         _awaitingEndTurnCompletion = false;
         _dispatching = false;
         _waitingForEffects = false;
-        _endTurnConsumed = false;
-        _endTurnScheduled = false;
-        _endTurnRetryCount = 0;
         _postEndTurn_turnEndedReceived = false;
         _postEndTurn_turnStartedReceived = false;
         _postEndTurn_savedTurnStartState = null;
