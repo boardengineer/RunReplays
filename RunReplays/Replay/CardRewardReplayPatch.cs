@@ -1,8 +1,6 @@
 using System.Reflection;
 using Godot;
 using HarmonyLib;
-using MegaCrit.Sts2.Core.Entities.CardRewardAlternatives;
-using MegaCrit.Sts2.Core.Entities.Rewards;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 using RunReplays.Commands;
@@ -11,8 +9,8 @@ namespace RunReplays;
 
 /// <summary>
 /// Harmony postfix on NCardRewardSelectionScreen._Ready that, when a replay is
-/// active and the next command is a TakeCardReward or SacrificeCardReward entry,
-/// defers an automatic card selection (or sacrifice) to the next Godot frame.
+/// active and the next command is a TakeCardReward entry,
+/// captures the selection screen instance for CardRewardCommand to use.
 ///
 /// _Ready() is the hook because:
 ///   - It is a plain non-async method that Harmony can patch reliably.
@@ -36,10 +34,6 @@ namespace RunReplays;
 [HarmonyPatch(typeof(NCardRewardSelectionScreen), "_Ready")]
 public static class CardRewardReplayPatch
 {
-    private static readonly FieldInfo? ExtraOptionsField =
-        typeof(NCardRewardSelectionScreen).GetField(
-            "_extraOptions", BindingFlags.NonPublic | BindingFlags.Instance);
-
     internal static NCardRewardSelectionScreen? selectionScreen;
 
     [HarmonyPostfix]
@@ -50,68 +44,6 @@ public static class CardRewardReplayPatch
 
        selectionScreen = __instance;
         CardRewardCommand.waitingForRewardScreenOpen = false;
-        
-        if (ReplayEngine.PeekSacrificeCardReward())
-        {
-            Callable.From(() => AutoSacrifice(__instance)).CallDeferred();
-            return;
-        }
-    }
-
-    private static void AutoSacrifice(NCardRewardSelectionScreen screen)
-    {
-        if (!ReplayEngine.IsActive)
-            return;
-
-        // Read _extraOptions to find the sacrifice alternative.
-        var extras = ExtraOptionsField?.GetValue(screen)
-            as System.Collections.Generic.IReadOnlyList<CardRewardAlternative>;
-
-        if (extras == null || extras.Count == 0)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                "[RunReplays] Replay: SacrificeCardReward — no extra options on screen.");
-            return;
-        }
-
-        // Find the sacrifice alternative (PaelsWing.sacrificeAlternativeKey).
-        // Fall back to the first alternative if only one exists.
-        CardRewardAlternative? sacrifice = null;
-        foreach (var alt in extras)
-        {
-            if (alt.OptionId.Contains("sacrifice", System.StringComparison.OrdinalIgnoreCase)
-                || alt.OptionId.Contains("pael", System.StringComparison.OrdinalIgnoreCase))
-            {
-                sacrifice = alt;
-                break;
-            }
-        }
-        sacrifice ??= extras[0];
-
-        ReplayRunner.ExecuteSacrificeCardReward();
-
-        // The sacrifice logic lives in sacrifice.OnSelect (a Func<Task> that
-        // calls OnSacrificeSynchronized → SyncLocalPaelsWingSacrifice + OnSacrifice).
-        // OnAlternateRewardSelected only handles the post-action (dismiss screen)
-        // and does NOT invoke OnSelect.  We must call OnSelect ourselves, then
-        // invoke OnAlternateRewardSelected to dismiss the screen.
-        var onSelectTask = sacrifice.OnSelect();
-        MegaCrit.Sts2.Core.Helpers.TaskHelper.RunSafely(onSelectTask);
-        PlayerActionBuffer.LogToDevConsole(
-            $"[RunReplays] Replay: invoked sacrifice OnSelect (OptionId='{sacrifice.OptionId}').");
-
-        var method = typeof(NCardRewardSelectionScreen).GetMethod(
-            "OnAlternateRewardSelected",
-            BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-        if (method != null)
-        {
-            method.Invoke(screen, new object[] { sacrifice.AfterSelected });
-            PlayerActionBuffer.LogToDevConsole(
-                "[RunReplays] Replay: invoked OnAlternateRewardSelected to dismiss screen.");
-        }
-
-        selectionScreen = null;
-        BattleRewardsReplayPatch.OnCardRewardHandled();
     }
 
     /// <summary>

@@ -65,7 +65,6 @@ public static class BattleRewardsReplayPatch
 
         bool hasReward = ReplayEngine.PeekGoldReward(out _)
                       || ReplayEngine.PeekCardReward(out _, out _)
-                      || ReplayEngine.PeekSacrificeCardReward()
                       || ReplayEngine.PeekRelicReward(out _)
                       || ReplayEngine.PeekPotionReward(out _)
                       || ReplayEngine.PeekNetDiscardPotion(out _)
@@ -135,41 +134,7 @@ public static class BattleRewardsReplayPatch
         PlayerActionBuffer.LogDispatcher(
             $"[Rewards] ProcessNextReward: queue front = '{nextCmd ?? "(empty)"}'");
 
-        if (ReplayEngine.PeekSacrificeCardReward(out int sacrificeRewardIndex))
-        {
-            // SacrificeCardReward opens NCardRewardSelectionScreen — the
-            // sacrifice alternative is selected by CardRewardReplayPatch once
-            // the screen is ready, matching the real UI flow.
-            Node? screenButton = null;
-            int cardRewardCount = 0;
-            foreach (var (button, reward) in EnumerateRewardButtons(screen))
-            {
-                if (IsRewardOfType(reward, "CardReward"))
-                {
-                    if (sacrificeRewardIndex >= 0)
-                    {
-                        if (cardRewardCount == sacrificeRewardIndex)
-                            screenButton = button;
-                    }
-                    else
-                    {
-                        screenButton ??= button;
-                    }
-                    cardRewardCount++;
-                }
-            }
-
-            if (screenButton != null)
-            {
-                InvokeGetReward(screenButton);
-                PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: triggered card reward button for sacrifice.");
-                return;
-            }
-
-            PlayerActionBuffer.LogToDevConsole(
-                "[RunReplays] Replay: could not find any card reward button for sacrifice.");
-            return;
-        }
+        // SacrificeCardReward is handled by SacrificeCardRewardCommand via the dispatcher.
 
         if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
         {
