@@ -7,9 +7,10 @@ namespace RunReplays.Commands;
 /// A card selection command consumed inline by ICardSelector implementations
 /// or Harmony patch postfixes, not by the dispatcher.
 ///
-/// Covers: SelectCardFromScreen, SelectSimpleCard, RemoveCardFromDeck, UpgradeCard.
+/// Covers: SelectCardFromScreen, SelectSimpleCard, UpgradeCard.
 /// SelectHandCards is handled by SelectHandCardsCommand.
 /// SelectDeckCard is handled by SelectDeckCardCommand.
+/// RemoveCardFromDeck is handled by RemoveCardFromDeckCommand.
 ///
 /// These commands are never dispatched — the game opens a selection screen,
 /// the corresponding patch peeks the queue, consumes the command, and makes
@@ -22,7 +23,6 @@ public class SelectionCommand : ReplayCommand
         SelectCardFromScreen,
         SelectDeckCard,
         SelectSimpleCard,
-        RemoveCardFromDeck,
         UpgradeCard,
     }
 
@@ -34,7 +34,6 @@ public class SelectionCommand : ReplayCommand
     /// - SelectDeckCard: one or more deck indices
     /// - SelectSimpleCard: single card index
     /// - SelectCardFromScreen: single index (-1 = skip)
-    /// - RemoveCardFromDeck: single deck index
     /// </summary>
     public int[] Indices { get; }
 
@@ -55,7 +54,6 @@ public class SelectionCommand : ReplayCommand
             SelectionKind.SelectCardFromScreen => $"select card from screen index={idxStr}",
             SelectionKind.SelectDeckCard => $"select deck card indices=[{idxStr}]",
             SelectionKind.SelectSimpleCard => $"select simple card index={idxStr}",
-            SelectionKind.RemoveCardFromDeck => $"remove card from deck index={idxStr}",
             SelectionKind.UpgradeCard => $"upgrade card at deck index {idxStr}",
             _ => "card selection",
         };
@@ -106,8 +104,7 @@ public class SelectionCommand : ReplayCommand
         // SelectHandCards is handled by SelectHandCardsCommand.
         if (raw.StartsWith("SelectSimpleCard "))
             return ParseSingleInt(raw, "SelectSimpleCard ".Length, SelectionKind.SelectSimpleCard);
-        if (raw.StartsWith("RemoveCardFromDeck: "))
-            return ParseSingleInt(raw, "RemoveCardFromDeck: ".Length, SelectionKind.RemoveCardFromDeck);
+        // RemoveCardFromDeck is handled by RemoveCardFromDeckCommand.
         if (raw.StartsWith("UpgradeCard "))
             return ParseSingleInt(raw, "UpgradeCard ".Length, SelectionKind.UpgradeCard);
         return null;

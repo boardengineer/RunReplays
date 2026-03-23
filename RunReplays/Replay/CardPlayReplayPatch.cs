@@ -158,7 +158,6 @@ public static class CardPlayReplayPatch
         bool hasTransformScope = FromDeckForTransformationPatch._pendingScope != null;
         bool hasUpgradeScope = FromDeckForUpgradePatch._pendingScope != null;
         bool hasChoiceScope = FromChooseACardScreenPatch._pendingScope != null;
-        bool hasRemovalScope = DeckRemovalReplayPatch._pendingScope != null;
         bool hasSimpleGridScope = FromSimpleGridPatch._pendingScope != null;
 
         PlayerActionBuffer.LogToDevConsole(
@@ -166,7 +165,7 @@ public static class CardPlayReplayPatch
             $" | DeckPending={deckPending}" +
             $" | Scopes: Generic={hasGenericScope} Enchant={hasEnchantScope} EnchantFilter={hasEnchantFilterScope}" +
             $" Transform={hasTransformScope} Upgrade={hasUpgradeScope}" +
-            $" Choice={hasChoiceScope} Removal={hasRemovalScope} SimpleGrid={hasSimpleGridScope}");
+            $" Choice={hasChoiceScope} SimpleGrid={hasSimpleGridScope}");
     }
 
     // ── Player resolution ──────────────────────────────────────────────────────

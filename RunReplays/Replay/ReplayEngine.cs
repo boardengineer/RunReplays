@@ -30,7 +30,7 @@ public static class ReplayEngine
     /// </summary>
     private static string SignalConsumed(string cmd, [CallerMemberName] string? caller = null)
     {
-        PlayerActionBuffer.LogDispatcher($"[Queue] {caller}: {cmd[..Math.Min(cmd.Length, 60)]} ({_pending.Count} remaining)");
+        // PlayerActionBuffer.LogMigrationWarning($"[Queue] {caller}: {cmd[..Math.Min(cmd.Length, 60)]} ({_pending.Count} remaining)");
 
         if (_recentConsumed.Count >= 2)
             _recentConsumed.RemoveAt(0);

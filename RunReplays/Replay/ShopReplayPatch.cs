@@ -104,6 +104,7 @@ public static class ShopCardRemovalFailedReplayPatch
 
         // Consume the pending RemoveCardFromDeck command that will never
         // be reached because the purchase failed.
+        PlayerActionBuffer.LogMigrationWarning("here 1");
         if (ReplayEngine.PeekRemoveCardFromDeck(out _))
             ReplayEngine.ConsumeRemoveCardFromDeck(out _);
 
@@ -447,6 +448,7 @@ public static class ShopOpenedReplayPatch
             PlayerActionBuffer.LogToDevConsole(
                 $"[ShopReplayPatch] Card removal purchase threw — {ex.GetType().Name}: {ex.Message}");
 
+            PlayerActionBuffer.LogMigrationWarning("here 2");
             if (ReplayEngine.PeekRemoveCardFromDeck(out _))
                 ReplayEngine.ConsumeRemoveCardFromDeck(out _);
 
@@ -509,7 +511,7 @@ public static class ShopOpenedReplayPatch
     /// (cards, relics, potions, card-removal), so we collect them all and
     /// let the TryBuy* helpers filter by concrete type.
     /// </summary>
-    private static List<MerchantEntry>? GetEntries(NMerchantRoom room)
+    internal static List<MerchantEntry>? GetEntries(NMerchantRoom room)
     {
         const BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic
                               | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
