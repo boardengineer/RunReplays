@@ -533,9 +533,6 @@ public static class ReplayDispatcher
         // Legacy string-based dispatch for commands not yet migrated.
         switch (required)
         {
-            case ReadyState.StartingBonus:
-                StartingBonusReplayPatch.DispatchFromEngine();
-                break;
             case ReadyState.Shop:
                 if (cmd == "OpenFakeShop")
                     FakeMerchantReplayPatch.DispatchFromEngine();
