@@ -542,9 +542,6 @@ public static class ReplayDispatcher
                 else if (FakeMerchantReplayPatch.IsActive)
                     FakeMerchantReplayPatch.DispatchFromEngine();
                 break;
-            case ReadyState.CrystalSphere:
-                CrystalSphereReplayPatch.DispatchFromEngine();
-                break;
         }
     }
 

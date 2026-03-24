@@ -102,20 +102,13 @@ public static class CrystalSphereReplayPatch
 {
     internal static int? PendingTool;
 
-    /// <summary>Called by ReplayDispatcher to start the crystal sphere click sequence.</summary>
-    internal static void DispatchFromEngine()
-    {
-        // Crystal sphere clicks are self-sequencing once started.
-        // The AfterOverlayOpened postfix already handles the initial dispatch.
-        PlayerActionBuffer.LogToDevConsole("[CrystalSphereReplayPatch] DispatchFromEngine: click sequence driven by overlay postfix.");
-    }
-
-    private static MethodInfo? _onCellClicked;
+    internal static GodotObject? ActiveScreen;
+    internal static MethodInfo? OnCellClicked;
     private static MethodInfo? _onProceedButtonPressed;
     private static Type? _screenType;
     private static Type? _cellNodeType;
 
-    private static void EnsureReflection()
+    internal static void EnsureReflection()
     {
         if (_screenType != null) return;
 
@@ -126,7 +119,7 @@ public static class CrystalSphereReplayPatch
 
         if (_screenType != null)
         {
-            _onCellClicked = AccessTools.Method(_screenType, "OnCellClicked");
+            OnCellClicked = AccessTools.Method(_screenType, "OnCellClicked");
             _onProceedButtonPressed = AccessTools.Method(_screenType, "OnProceedButtonPressed");
         }
     }
@@ -136,59 +129,16 @@ public static class CrystalSphereReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
+        ActiveScreen = (GodotObject)__instance;
+        EnsureReflection();
         ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.CrystalSphere);
 
-        if (!ReplayEngine.PeekCrystalSphereClick(out _, out _, out _))
-            return;
-
-        EnsureReflection();
-
-        var screen = (GodotObject)__instance;
-
         PlayerActionBuffer.LogToDevConsole(
-            "[CrystalSphereReplayPatch] Screen opened — starting auto-click sequence.");
-
-        NGame.Instance!.GetTree()!.CreateTimer(0.5).Connect(
-            "timeout", Callable.From(() => DispatchNextClick(screen)));
+            "[CrystalSphereReplayPatch] Screen opened — dispatching clicks.");
+        ReplayDispatcher.DispatchNow();
     }
 
-    private static void DispatchNextClick(GodotObject screen)
-    {
-        if (!GodotObject.IsInstanceValid(screen))
-            return;
-
-        if (!ReplayRunner.ExecuteCrystalSphereClick(out int x, out int y, out int tool))
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                "[CrystalSphereReplayPatch] All clicks done — waiting for proceed.");
-            NGame.Instance!.GetTree()!.CreateTimer(1.0).Connect(
-                "timeout", Callable.From(() => WaitForProceed(screen)));
-            return;
-        }
-
-        PendingTool = tool;
-
-        var cellContainer = Traverse.Create(screen).Field("_cellContainer").GetValue<Node>();
-        GodotObject? target = FindCell(cellContainer, x, y);
-
-        if (target == null)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[CrystalSphereReplayPatch] Cell ({x},{y}) not found — skipping.");
-            PendingTool = null;
-            Callable.From(() => DispatchNextClick(screen)).CallDeferred();
-            return;
-        }
-
-        PlayerActionBuffer.LogToDevConsole(
-            $"[CrystalSphereReplayPatch] Clicking cell ({x},{y}) tool={tool}.");
-        _onCellClicked?.Invoke(screen, new object[] { target });
-
-        NGame.Instance!.GetTree()!.CreateTimer(0.5).Connect(
-            "timeout", Callable.From(() => DispatchNextClick(screen)));
-    }
-
-    private static GodotObject? FindCell(Node? container, int x, int y)
+    internal static GodotObject? FindCell(Node? container, int x, int y)
     {
         if (container == null) return null;
 
@@ -213,6 +163,12 @@ public static class CrystalSphereReplayPatch
     }
 
     private const int MaxProceedRetries = 30;
+
+    internal static void ScheduleProceed(GodotObject screen)
+    {
+        NGame.Instance!.GetTree()!.CreateTimer(1.0).Connect(
+            "timeout", Callable.From(() => WaitForProceed(screen)));
+    }
 
     private static void WaitForProceed(GodotObject screen, int retriesLeft = MaxProceedRetries)
     {
