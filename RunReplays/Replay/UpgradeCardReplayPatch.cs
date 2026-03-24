@@ -10,18 +10,6 @@ namespace RunReplays;
 [HarmonyPatch(typeof(NDeckUpgradeSelectScreen), "ShowScreen")]
 public static class UpgradeCardReplayPatch
 {
-    internal static readonly FieldInfo? CardsField =
-        typeof(NCardGridSelectionScreen).GetField(
-            "_cards", BindingFlags.NonPublic | BindingFlags.Instance);
-
-    internal static readonly FieldInfo? SelectedCardsField =
-        typeof(NCardGridSelectionScreen).GetField(
-            "_selectedCards", BindingFlags.NonPublic | BindingFlags.Instance);
-
-    internal static readonly MethodInfo? CheckIfCompleteMethod =
-        typeof(NDeckUpgradeSelectScreen).GetMethod(
-            "CheckIfSelectionComplete", BindingFlags.NonPublic | BindingFlags.Instance);
-
     internal static NCardGridSelectionScreen? selectionScreen;
     
     [HarmonyPostfix]
