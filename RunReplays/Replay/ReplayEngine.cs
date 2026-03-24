@@ -596,16 +596,6 @@ public static class ReplayEngine
         return false;
     }
 
-    public static bool ConsumeRestSiteOption(out string optionId)
-    {
-        if (PeekRestSiteOption(out optionId))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
-
     // ── Treasure chest relic ──────────────────────────────────────────────────
 
     private const string TakeChestRelicPrefix = "TakeChestRelic ";
@@ -618,16 +608,6 @@ public static class ReplayEngine
             return true;
         }
         relicTitle = string.Empty;
-        return false;
-    }
-
-    public static bool ConsumeTakeChestRelic(out string relicTitle)
-    {
-        if (PeekTakeChestRelic(out relicTitle))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
         return false;
     }
 
@@ -659,16 +639,6 @@ public static class ReplayEngine
             return true;
 
         goldAmount = 0;
-        return false;
-    }
-
-    public static bool ConsumeGoldReward(out int goldAmount)
-    {
-        if (PeekGoldReward(out goldAmount))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
         return false;
     }
 
@@ -715,16 +685,6 @@ public static class ReplayEngine
         }
 
         deckIndices = Array.Empty<int>();
-        return false;
-    }
-
-    public static bool ConsumeRemoveCardFromDeck(out int[] deckIndices)
-    {
-        if (PeekRemoveCardFromDeck(out deckIndices))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
         return false;
     }
 
@@ -992,17 +952,6 @@ public static class ReplayEngine
                 .ToArray();
         }
         return true;
-    }
-
-    public static bool ConsumeSelectHandCards(out uint[] cardIds)
-    {
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION WARNING] select hand command going through worng path");
-        if (PeekSelectHandCards(out cardIds))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
     }
 
     /// <summary>
