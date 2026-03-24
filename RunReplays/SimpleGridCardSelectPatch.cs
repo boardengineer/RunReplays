@@ -47,22 +47,6 @@ public static class FromSimpleGridPatch
     {
         _pendingScope?.Dispose();
         _pendingScope = null;
-
-        SelectorStackDebug.Log("FromSimpleGrid.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
-        if (ReplayEngine.IsActive)
-        {
-            if (ReplayEngine.SkipToSelectSimpleCard())
-            {
-                _pendingScope = CardSelectCmd.PushSelector(new ReplaySimpleCardSelector());
-                SelectorStackDebug.Log("PUSH FromSimpleGrid");
-                PlayerActionBuffer.LogToDevConsole(
-                    "[SimpleGridPatch] Pushed ReplaySimpleCardSelector for FromSimpleGrid.");
-            }
-        }
-        else
-        {
-            SimpleGridContext.Pending = true;
-        }
     }
 }
 
@@ -114,48 +98,4 @@ public static class SimpleGridSyncPatch
     internal static void FlushIfPending()
     {
     }
-}
-
-// ── Replay selector ────────────────────────────────────────────────────────────
-
-/// <summary>
-/// ICardSelector that consumes a SelectSimpleCard command and returns the card
-/// at the recorded index from the options passed by the game.
-/// </summary>
-internal sealed class ReplaySimpleCardSelector : ICardSelector
-{
-    public Task<IEnumerable<CardModel>> GetSelectedCards(
-        IEnumerable<CardModel> options, int minSelect, int maxSelect)
-    {
-        var scope = FromSimpleGridPatch._pendingScope;
-        FromSimpleGridPatch._pendingScope = null;
-        scope?.Dispose();
-
-        var optionList = options.ToList();
-
-        if (!ReplayEngine.ConsumeSelectSimpleCard(out int index))
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                "[ReplaySimpleCardSelector] No SelectSimpleCard command — returning first available card(s).");
-            return Task.FromResult<IEnumerable<CardModel>>(
-                optionList.Take(Math.Max(1, minSelect)).ToList());
-        }
-
-        if (index >= 0 && index < optionList.Count)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[ReplaySimpleCardSelector] Selected '{optionList[index].Title}' at index {index}.");
-            return Task.FromResult<IEnumerable<CardModel>>(new[] { optionList[index] });
-        }
-
-        PlayerActionBuffer.LogToDevConsole(
-            $"[ReplaySimpleCardSelector] Index {index} out of range (count={optionList.Count}) — falling back.");
-        return Task.FromResult<IEnumerable<CardModel>>(
-            optionList.Take(Math.Max(1, minSelect)).ToList());
-    }
-
-    public CardModel? GetSelectedCardReward(
-        IReadOnlyList<CardCreationResult> options,
-        IReadOnlyList<CardRewardAlternative> alternatives)
-        => null;
 }

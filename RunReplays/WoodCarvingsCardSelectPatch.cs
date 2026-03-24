@@ -52,27 +52,6 @@ internal static class DeckCardSelectContext
     internal static bool Pending;
 }
 
-/// <summary>
-/// Buffers "SelectDeckCard {n}" commands that arise from deck card selections
-/// triggered by card effects during combat (e.g. Seeker Strike).
-///
-/// The buffer is necessary because NCardGridSelectionScreen.CardsSelected resolves
-/// (and RecordAsync fires) while the parent PlayCardAction is still executing, so
-/// recording immediately would place SelectDeckCard before PlayCardAction in the
-/// minimal log.  Instead the command is held here and flushed by PlayerActionBuffer
-/// once AfterActionExecuted fires for the PlayCardAction.
-///
-/// For event-triggered selections (Wood Carvings) there is no PlayCardAction, so
-/// EventOptionChosenLogPatch flushes the buffer before recording the next event
-/// option, preserving the correct ordering there as well.
-/// </summary>
-internal static class CardEffectDeckSelectContext
-{
-    internal static void FlushIfPending()
-    {
-    }
-}
-
 // ── FromDeckGeneric ────────────────────────────────────────────────────────────
 
 [HarmonyPatch(typeof(CardSelectCmd), nameof(CardSelectCmd.FromDeckGeneric))]

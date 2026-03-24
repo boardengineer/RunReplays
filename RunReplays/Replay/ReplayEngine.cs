@@ -201,7 +201,6 @@ public static class ReplayEngine
 
         // Buffered recording contexts
         CardChoiceScreenSyncPatch.FlushIfPending();
-        CardEffectDeckSelectContext.FlushIfPending();
         SimpleGridSyncPatch.FlushIfPending();
 
         // Dispatcher

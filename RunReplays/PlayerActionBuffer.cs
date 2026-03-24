@@ -118,7 +118,6 @@ public static class PlayerActionBuffer
             {
                 _pendingPreState = GetBattleStateSummary();
                 CardChoiceScreenSyncPatch.FlushIfPending();
-                CardEffectDeckSelectContext.FlushIfPending();
                 SimpleGridSyncPatch.FlushIfPending();
                 return;
             }

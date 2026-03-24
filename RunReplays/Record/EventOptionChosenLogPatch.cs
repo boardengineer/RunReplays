@@ -41,16 +41,6 @@ public static class EventOptionChosenLogPatch
         try { desc = __instance.Description?.GetFormattedText() ?? ""; }
         catch { /* ignore */ }
 
-        RngCheckpointLogger.Log($"EventOption.Chosen '{textKey}'{eventRngInfo} desc='{desc}'");
-        PlayerActionBuffer.LogToDevConsole(
-            $"[EventOption] Chosen — title='{title}' textKey='{textKey}'{eventRngInfo} desc='{desc}'");
-
-        // Flush any pending deck card selection that was triggered by the previous
-        // event option (e.g. Wood Carvings).  This ensures SelectDeckCard appears
-        // before the next ChooseEventOption in the minimal log, since there is no
-        // PlayCardAction to flush it in the event context.
-        CardEffectDeckSelectContext.FlushIfPending();
-
         int? idx = EventSelectionPatch.PendingIndex;
         EventSelectionPatch.PendingIndex = null;
 
