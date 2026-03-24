@@ -15,14 +15,14 @@ public static class UpgradeCardReplayPatch
             "_cards", BindingFlags.NonPublic | BindingFlags.Instance);
 
     internal static readonly FieldInfo? SelectedCardsField =
-        typeof(NDeckUpgradeSelectScreen).GetField(
+        typeof(NCardGridSelectionScreen).GetField(
             "_selectedCards", BindingFlags.NonPublic | BindingFlags.Instance);
 
     internal static readonly MethodInfo? CheckIfCompleteMethod =
         typeof(NDeckUpgradeSelectScreen).GetMethod(
             "CheckIfSelectionComplete", BindingFlags.NonPublic | BindingFlags.Instance);
 
-    internal static NDeckUpgradeSelectScreen? selectionScreen;
+    internal static NCardGridSelectionScreen? selectionScreen;
     
     [HarmonyPostfix]
     public static void Postfix(NDeckUpgradeSelectScreen __result, IReadOnlyList<CardModel> cards)

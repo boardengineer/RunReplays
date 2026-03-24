@@ -5,36 +5,23 @@ namespace RunReplays.Commands;
 
 /// <summary>
 /// A card selection command consumed inline by ICardSelector implementations
-/// or Harmony patch postfixes, not by the dispatcher.
+/// or dispatched via CardGridScreenCapture when the selection screen opens.
 ///
 /// Covers: SelectCardFromScreen, SelectSimpleCard, UpgradeCard.
 /// SelectHandCards is handled by SelectHandCardsCommand.
 /// SelectDeckCard is handled by SelectDeckCardCommand.
 /// RemoveCardFromDeck is handled by RemoveCardFromDeckCommand.
-///
-/// These commands are never dispatched — the game opens a selection screen,
-/// the corresponding patch peeks the queue, consumes the command, and makes
-/// the selection.  The dispatcher skips them and retries until they're consumed.
 /// </summary>
 public class SelectionCommand : ReplayCommand
 {
     public enum SelectionKind
     {
         SelectCardFromScreen,
-        SelectDeckCard,
         SelectSimpleCard,
         UpgradeCard,
     }
 
     public SelectionKind Kind { get; }
-
-    /// <summary>
-    /// Parsed indices from the command.  Interpretation depends on <see cref="Kind"/>:
-    /// - UpgradeCard: single deck index
-    /// - SelectDeckCard: one or more deck indices
-    /// - SelectSimpleCard: single card index
-    /// - SelectCardFromScreen: single index (-1 = skip)
-    /// </summary>
     public int[] Indices { get; }
 
     public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.None;
@@ -52,7 +39,6 @@ public class SelectionCommand : ReplayCommand
         return Kind switch
         {
             SelectionKind.SelectCardFromScreen => $"select card from screen index={idxStr}",
-            SelectionKind.SelectDeckCard => $"select deck card indices=[{idxStr}]",
             SelectionKind.SelectSimpleCard => $"select simple card index={idxStr}",
             SelectionKind.UpgradeCard => $"upgrade card at deck index {idxStr}",
             _ => "card selection",
@@ -61,38 +47,25 @@ public class SelectionCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        // Use _cards from the screen instance (same list the recording patch indexes
-        // into), not the ShowScreen parameter which may have a different order.
-        var cards = UpgradeCardReplayPatch.CardsField?.GetValue(UpgradeCardReplayPatch.selectionScreen) as IReadOnlyList<CardModel>;
+        var screen = CardGridScreenCapture.ActiveScreen;
+        if (screen == null)
+            return ExecuteResult.Retry(300);
+
+        var cards = CardGridScreenCapture.CardsField?.GetValue(screen) as IReadOnlyList<CardModel>;
         if (cards == null)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                "[UpgradeCardReplayPatch] Could not access _cards — aborting.");
             return ExecuteResult.Retry(300);
-        }
 
-        foreach (var deckIndex in Indices)
-            if (deckIndex < 0 || deckIndex >= cards.Count)
-            {
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[UpgradeCardReplayPatch] Deck index {deckIndex} out of range (count={cards.Count}) — aborting.");
+        foreach (int idx in Indices)
+        {
+            if (idx < 0 || idx >= cards.Count)
                 return ExecuteResult.Retry(300);
-            }
-
-        if (UpgradeCardReplayPatch.SelectedCardsField?.GetValue(UpgradeCardReplayPatch.selectionScreen) is not HashSet<CardModel> selectedCards)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                "[UpgradeCardReplayPatch] Could not access _selectedCards — aborting.");
-            return ExecuteResult.Retry(300);
         }
 
-        foreach (var deckIndex in Indices)
-        {
-            CardModel nextCard = cards[deckIndex];
-            selectedCards.Add(nextCard);
-        }
-        UpgradeCardReplayPatch.CheckIfCompleteMethod?.Invoke(UpgradeCardReplayPatch.selectionScreen, null);
+        var selected = new List<CardModel>();
+        foreach (int idx in Indices)
+            selected.Add(cards[idx]);
 
+        CardGridScreenCapture.ResolveSelection(selected);
         return ExecuteResult.Ok();
     }
 
@@ -100,11 +73,8 @@ public class SelectionCommand : ReplayCommand
     {
         if (raw.StartsWith("SelectCardFromScreen "))
             return ParseSingleInt(raw, "SelectCardFromScreen ".Length, SelectionKind.SelectCardFromScreen);
-        // SelectDeckCard is handled by SelectDeckCardCommand.
-        // SelectHandCards is handled by SelectHandCardsCommand.
         if (raw.StartsWith("SelectSimpleCard "))
             return ParseSingleInt(raw, "SelectSimpleCard ".Length, SelectionKind.SelectSimpleCard);
-        // RemoveCardFromDeck is handled by RemoveCardFromDeckCommand.
         if (raw.StartsWith("UpgradeCard "))
             return ParseSingleInt(raw, "UpgradeCard ".Length, SelectionKind.UpgradeCard);
         return null;
@@ -115,23 +85,5 @@ public class SelectionCommand : ReplayCommand
         if (int.TryParse(raw.AsSpan(prefixLen).Trim(), out int index))
             return new SelectionCommand(raw, kind, new[] { index });
         return null;
-    }
-
-    private static SelectionCommand? ParseMultiInt(string raw, int prefixLen, SelectionKind kind)
-    {
-        string rest = raw.Substring(prefixLen).Trim();
-        if (rest.Length == 0)
-            return new SelectionCommand(raw, kind, System.Array.Empty<int>());
-
-        var parts = rest.Split(' ');
-        var indices = new List<int>(parts.Length);
-        foreach (var part in parts)
-        {
-            if (int.TryParse(part, out int idx))
-                indices.Add(idx);
-            else
-                return null;
-        }
-        return new SelectionCommand(raw, kind, indices.ToArray());
     }
 }

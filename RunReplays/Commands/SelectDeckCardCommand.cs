@@ -117,6 +117,7 @@ public static class CardGridScreenCapture
     {
         if (!ReplayEngine.IsActive) return;
         ActiveScreen = __instance;
+        UpgradeCardReplayPatch.selectionScreen = __instance;
         PlayerActionBuffer.LogDispatcher(
             $"[CardGridCapture] Screen captured: {__instance.GetType().Name}");
         ReplayDispatcher.DispatchNow();
