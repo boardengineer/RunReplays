@@ -2,12 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Merchant;
-using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Events.Custom;
-using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 
 namespace RunReplays;
 
@@ -19,11 +16,8 @@ namespace RunReplays;
 /// merchant character, OnMerchantOpened fires, which calls OpenInventory.
 ///
 /// Recording: prefix on NFakeMerchant.OpenInventory records "OpenFakeShop".
-/// Replay:    postfix on NFakeMerchant.AfterRoomIsLoaded opens the inventory
-///            and starts a purchase loop that handles BuyRelic commands.
-///
-/// The fake merchant only sells relics (with ??? titles), so the purchase
-/// loop only needs to handle BuyRelic.
+/// Replay:    postfix on NFakeMerchant.AfterRoomIsLoaded signals shop readiness
+///            so the dispatcher can execute OpenFakeShopCommand and BuyRelicCommand.
 /// </summary>
 
 // ── Record when the fake merchant shop is opened ─────────────────────────────
@@ -80,122 +74,11 @@ public static class FakeMerchantReplayPatch
         ReplayDispatcher.DispatchNow();
     }
 
-    /// <summary>Called by the dispatcher to handle fake shop commands.</summary>
-    internal static void DispatchFromEngine()
-    {
-        if (ActiveInstance == null)
-            return;
-
-        if (ReplayEngine.PeekOpenFakeShop())
-        {
-            ReplayRunner.ExecuteOpenFakeShop();
-            PlayerActionBuffer.LogDispatcher("[FakeShop] Opening inventory.");
-
-            if (OpenInventoryMethod != null)
-            {
-                var merchant = ActiveInstance;
-                Callable.From(() =>
-                {
-                    OpenInventoryMethod.Invoke(merchant, null);
-                    ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Shop);
-                    ReplayDispatcher.DispatchNow();
-                }).CallDeferred();
-            }
-            return;
-        }
-
-        if (ReplayEngine.PeekBuyRelic(out string relicTitle))
-        {
-            var entries = GetEntries(ActiveInstance);
-            var entry = entries?
-                .OfType<MerchantRelicEntry>()
-                .FirstOrDefault(e => e.Model?.Title.GetFormattedText() == relicTitle);
-
-            if (entry == null)
-            {
-                PlayerActionBuffer.LogDispatcher($"[FakeShop] Relic '{relicTitle}' not found — skipping.");
-                ReplayRunner.ExecuteBuyRelic(out _);
-                ReplayDispatcher.DispatchNow();
-                return;
-            }
-
-            ReplayRunner.ExecuteBuyRelic(out _);
-            ShopOpenedReplayPatch.InvokePurchase(entry);
-            PlayerActionBuffer.LogDispatcher($"[FakeShop] Purchased relic '{relicTitle}'.");
-            ReplayDispatcher.DispatchNow();
-            return;
-        }
-
-        PlayerActionBuffer.LogDispatcher("[FakeShop] No more fake shop commands — clearing and re-dispatching.");
-        ActiveInstance = null;
-        ReplayDispatcher.DispatchNow();
-    }
-
-    // ── Purchase loop ────────────────────────────────────────────────────────
-
-    private const int MaxRetries = 10;
-
-    private static void ProcessNextPurchase(NFakeMerchant merchant, int retriesLeft = MaxRetries)
-    {
-        if (!ReplayEngine.IsActive)
-            return;
-
-        var entries = GetEntries(merchant);
-        if (entries == null || entries.Count == 0)
-        {
-            if (retriesLeft > 0)
-            {
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[FakeMerchantReplayPatch] Entries not yet available — retrying ({retriesLeft} left).");
-                NGame.Instance!.GetTree()!.CreateTimer(0.1).Connect(
-                    "timeout", Callable.From(() => ProcessNextPurchase(merchant, retriesLeft - 1)));
-            }
-            else
-            {
-                PlayerActionBuffer.LogToDevConsole("[FakeMerchantReplayPatch] Could not find entries after retries.");
-            }
-            return;
-        }
-
-        PlayerActionBuffer.LogToDevConsole($"[FakeMerchantReplayPatch] {entries.Count} entries available.");
-
-        if (ReplayEngine.PeekBuyRelic(out string relicTitle))
-        {
-            var entry = entries
-                .OfType<MerchantRelicEntry>()
-                .FirstOrDefault(e => e.Model?.Title.GetFormattedText() == relicTitle);
-
-            if (entry == null)
-            {
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[FakeMerchantReplayPatch] Relic '{relicTitle}' not found in entries — aborting.");
-                return;
-            }
-
-            ReplayRunner.ExecuteBuyRelic(out _);
-            ShopOpenedReplayPatch.InvokePurchase(entry);
-            PlayerActionBuffer.LogToDevConsole($"[FakeMerchantReplayPatch] Triggered purchase of relic '{relicTitle}'.");
-            Callable.From(() => ProcessNextPurchase(merchant)).CallDeferred();
-            return;
-        }
-
-        PlayerActionBuffer.LogToDevConsole("[FakeMerchantReplayPatch] No more purchase commands — done.");
-
-        // If a map move is next, open the map.
-        if (ReplayEngine.PeekMapNode(out _, out _))
-        {
-            PlayerActionBuffer.LogToDevConsole("[FakeMerchantReplayPatch] Map move next — opening map.");
-            NMapScreen.Instance?.Open();
-            NMapScreen.Instance?.SetTravelEnabled(true);
-        }
-    }
-
     internal static List<MerchantEntry>? GetEntries(NFakeMerchant merchant)
     {
         const BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic
                               | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
 
-        // Navigate: NFakeMerchant._event (FakeMerchant model) → _inventory (MerchantInventory)
         object? eventModel = EventField?.GetValue(merchant);
         if (eventModel == null)
         {

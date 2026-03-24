@@ -38,24 +38,7 @@ public static class TreasureRoomReplayPatch
     // proceed button is clicked so later SetTravelEnabled calls don't re-fire.
     internal static NTreasureRoom? ActiveRoom;
 
-    /// <summary>Called by ReplayDispatcher to trigger treasure room actions.</summary>
-    internal static void DispatchFromEngine()
-    {
-        if (ReplayEngine.PeekTakeChestRelic(out _))
-        {
-            if (ActiveRoom != null && ActiveRoom.IsInsideTree())
-                Callable.From(() => ChestOpenReplayPatch.ClickChest(ActiveRoom)).CallDeferred();
-            return;
-        }
 
-        if (ReplayEngine.PeekNetPickRelicAction(out int relicIndex))
-        {
-            ReplayRunner.ExecuteNetPickRelicAction(out _);
-            var sync = RunManager.Instance.TreasureRoomRelicSynchronizer;
-            PlayerActionBuffer.LogDispatcher($"[Treasure] PickRelicLocally({relicIndex})");
-            Callable.From(() => sync.PickRelicLocally(relicIndex)).CallDeferred();
-        }
-    }
 
     [HarmonyPatch(typeof(NTreasureRoom), "_Ready")]
     public static class ChestOpenReplayPatch

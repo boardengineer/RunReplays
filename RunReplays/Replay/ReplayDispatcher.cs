@@ -430,12 +430,10 @@ public static class ReplayDispatcher
 
     private static void scheduleDispatchOnDelay()
     {
-        PlayerActionBuffer.LogDispatcher("Scheduling retry");
         int gen = ++_dispatchGeneration;
-        NGame.Instance?.GetTree()?.CreateTimer(300 / 1000f).Connect(
+        NGame.Instance?.GetTree()?.CreateTimer(0.3f).Connect(
             "timeout", Callable.From(() =>
             {
-                PlayerActionBuffer.LogDispatcher("firing retry");
                 if (_dispatchGeneration == gen)
                     TryDispatch();
             }));
@@ -455,7 +453,6 @@ public static class ReplayDispatcher
         
         if ((PotionInFlight || CardPlayInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion || MapMoveInFlight) && !IsSelectionCommand(cmd))
         {
-            PlayerActionBuffer.LogMigrationWarning($"Scheduling retry PotionInFlight:{PotionInFlight}    |    CardPlayInFlight:{CardPlayInFlight}   |  CardPlayReplayPatch.IsAwaitingEndTurnCompletion:{CardPlayReplayPatch.IsAwaitingEndTurnCompletion}  |  MapMoveInFlight :{MapMoveInFlight}");
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
             scheduleDispatchOnDelay();
@@ -492,12 +489,9 @@ public static class ReplayDispatcher
 
         _lastDispatchTick = System.Environment.TickCount64;
 
-        // Try the new command object system first.
         ReplayCommand? parsed = ReplayCommandParser.TryParse(cmd);
-        // PlayerActionBuffer.LogMigrationWarning($"[LogDispatch] Parsing command {cmd}");
         if (parsed != null)
         {
-            // PlayerActionBuffer.LogMigrationWarning($"[PARSED] executing through typed command path: {cmd}");
             var result = parsed.Execute();
             if (result.Success)
             {
@@ -528,7 +522,7 @@ public static class ReplayDispatcher
             }
         }
 
-        PlayerActionBuffer.LogMigrationWarning($"[WARNING] not matching command invoking backup for command: {cmd}");
+        PlayerActionBuffer.LogMigrationWarning($"[Dispatcher] Unrecognised command: {cmd}");
     }
 
     /// <summary>
@@ -569,7 +563,6 @@ public static class ReplayDispatcher
         if (cmd.StartsWith("MoveToMapCoordAction ")) return ReadyState.Map;
         if (cmd.StartsWith("ChooseEventOption ")) return ReadyState.Event;
         if (cmd.StartsWith("ChooseRestSiteOption ")) return ReadyState.RestSite;
-        if (cmd.StartsWith("ChooseStartingBonus ")) return ReadyState.StartingBonus;
         if (cmd.StartsWith("VoteForMapCoordAction ")) return ReadyState.Rewards;
 
         // Shop

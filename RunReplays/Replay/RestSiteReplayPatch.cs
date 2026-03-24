@@ -61,16 +61,6 @@ public static class RestSiteReplayPatch
         ReplayDispatcher.DispatchNow();
     }
 
-    /// <summary>Called by ReplayDispatcher to trigger rest site option selection.</summary>
-    internal static void DispatchFromEngine()
-    {
-        if (_activeSynchronizer == null)
-            return;
-        if (!ReplayEngine.PeekRestSiteOption(out string optionId))
-            return;
-        TaskHelper.RunSafely(WaitForRoomThenSelect(_activeSynchronizer, optionId));
-    }
-
     internal static async Task WaitForRoomThenSelect(
         RestSiteSynchronizer sync, string optionId, int retriesLeft = MaxRetries)
     {

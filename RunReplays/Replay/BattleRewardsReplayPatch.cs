@@ -85,14 +85,6 @@ public static class BattleRewardsReplayPatch
         ReplayDispatcher.DispatchNow();
     }
 
-    /// <summary>Called by ReplayDispatcher to process the next reward.</summary>
-    internal static void DispatchFromEngine()
-    {
-        if (_activeScreen == null || !_activeScreen.IsInsideTree())
-            return;
-        Callable.From(() => ProcessNextReward(_activeScreen)).CallDeferred();
-    }
-
     /// <summary>
     /// Called by CardRewardReplayPatch after a card has been auto-selected so
     /// that any reward buttons or map transition remaining can be processed.

@@ -324,13 +324,6 @@ public static class CardPlayReplayPatch
         ReplayDispatcher.DispatchNow();
     }
 
-    /// <summary>Called by ReplayDispatcher to trigger the next combat action.</summary>
-    internal static void DispatchFromEngine()
-    {
-        _turnStartRetries = 0;
-        ScheduleNextFromQueue("Dispatcher");
-    }
-
     private static void OnTurnEnded(CombatState combatState)
     {
         PlayerActionBuffer.LogToDevConsole(

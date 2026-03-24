@@ -42,44 +42,4 @@ public static class StartingBonusReplayPatch
         ReplayDispatcher.DispatchNow();
     }
 
-    /// <summary>Called by ReplayDispatcher to trigger starting bonus selection.</summary>
-    internal static void DispatchFromEngine()
-    {
-        if (_activeSynchronizer == null)
-            return;
-        if (!ReplayEngine.PeekStartingBonus(out int choiceIndex))
-            return;
-        AutoSelect(_activeSynchronizer, choiceIndex);
-    }
-
-    private static void AutoSelect(EventSynchronizer synchronizer, int choiceIndex)
-    {
-        if (!ReplayRunner.ExecuteStartingBonus(out _))
-            return;
-
-        synchronizer.ChooseLocalOption(choiceIndex);
-
-        // ChooseLocalOption fires eventOption.Chosen() as a fire-and-forget Task.
-        // Defer one frame so that async chain has started before we proceed.
-        Callable.From(Proceed).CallDeferred();
-    }
-
-    private static readonly MethodInfo? RecalculateTravelabilityMethod =
-        typeof(NMapScreen).GetMethod(
-            "RecalculateTravelability",
-            BindingFlags.NonPublic | BindingFlags.Instance);
-
-    private static void Proceed()
-    {
-        if (NMapScreen.Instance != null)
-            RecalculateTravelabilityMethod?.Invoke(NMapScreen.Instance, null);
-
-        TaskHelper.RunSafely(ProceedAsync());
-    }
-
-    private static async System.Threading.Tasks.Task ProceedAsync()
-    {
-        await RunManager.Instance.ProceedFromTerminalRewardsScreen();
-        NMapScreen.Instance?.SetTravelEnabled(enabled: true);
-    }
 }
