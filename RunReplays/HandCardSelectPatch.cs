@@ -163,13 +163,10 @@ public static class HandCardSelectForDiscardRecordPatch
         if (indices.Count == 0)
             return;
 
-        // Skip truly auto-resolved discards where there was no real choice.
-        // When a card like Survivor is the last in hand, the discard has
-        // only 0-1 options and the game auto-resolves without player input.
-        // Recording it would leave a stale command in the replay queue.
-        // With 0-1 cards there is never a real choice; with 2+ cards the
-        // player made a genuine selection (e.g. Gambler's Brew full hand).
-        if (handBefore.Count <= 1)
+        // Skip auto-resolved discards where there was no real choice.
+        // If every card in hand was selected, the game auto-resolved
+        // (e.g. Hidden Daggers with 2 cards, Survivor with 1 card).
+        if (indices.Count >= handBefore.Count)
         {
             PlayerActionBuffer.LogToDevConsole(
                 $"[HandCardSelectForDiscardRecord] Skipping — auto-resolved (handBefore={handBefore.Count}, selected={indices.Count}).");
