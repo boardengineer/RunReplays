@@ -68,19 +68,8 @@ internal static class DeckCardSelectContext
 /// </summary>
 internal static class CardEffectDeckSelectContext
 {
-    private static readonly List<string> _buffered = new();
-
-    internal static void Buffer(string cmd) => _buffered.Add(cmd);
-
     internal static void FlushIfPending()
     {
-        if (_buffered.Count == 0)
-            return;
-
-        foreach (string cmd in _buffered)
-            PlayerActionBuffer.RecordMinimalOnly(cmd);
-
-        _buffered.Clear();
     }
 }
 

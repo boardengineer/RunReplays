@@ -76,8 +76,6 @@ public static class FromSimpleGridPatch
 [HarmonyPatch(typeof(PlayerChoiceSynchronizer), nameof(PlayerChoiceSynchronizer.SyncLocalChoice))]
 public static class SimpleGridSyncPatch
 {
-    private static string? _pending;
-
     [HarmonyPostfix]
     public static void Postfix(Player player, uint choiceId, PlayerChoiceResult result)
     {
@@ -108,23 +106,13 @@ public static class SimpleGridSyncPatch
             index = -1;
         }
 
-        _pending = $"SelectSimpleCard {index}";
-        PlayerActionBuffer.LogToDevConsole($"[SimpleGridSyncPatch] Buffered: {_pending}");
+        string command = $"SelectSimpleCard {index}";
+        PlayerActionBuffer.LogToDevConsole($"[SimpleGridSyncPatch] Recording: {command}");
+        PlayerActionBuffer.Record(command);
     }
 
-    /// <summary>
-    /// Called by PlayerActionBuffer after a PlayCardAction is recorded.
-    /// Flushes the pending SelectSimpleCard command so it follows the card play in the log.
-    /// </summary>
     internal static void FlushIfPending()
     {
-        if (_pending == null)
-            return;
-
-        string command = _pending;
-        _pending = null;
-        PlayerActionBuffer.LogToDevConsole($"[SimpleGridSyncPatch] Flushing: {command}");
-        PlayerActionBuffer.Record(command);
     }
 }
 

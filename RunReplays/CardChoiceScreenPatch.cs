@@ -163,30 +163,8 @@ public static class FromChooseACardScreenPatch
 /// </summary>
 public static class CardChoiceScreenSyncPatch
 {
-    private static string? _pending;
-
-    /// <summary>
-    /// Buffers a command for later flushing.
-    /// Called by FromChooseACardScreenPatch's async wrapper.
-    /// </summary>
-    internal static void Buffer(string command)
-    {
-        _pending = command;
-    }
-
-    /// <summary>
-    /// Called by PlayerActionBuffer after a triggering action is recorded,
-    /// or by a deferred flush scheduled by the async wrapper.
-    /// </summary>
     internal static void FlushIfPending()
     {
-        if (_pending == null)
-            return;
-
-        string command = _pending;
-        _pending = null;
-        PlayerActionBuffer.LogToDevConsole($"[CardChoiceScreenPatch] Flushing: {command}");
-        PlayerActionBuffer.Record(command);
     }
 }
 
