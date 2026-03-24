@@ -126,6 +126,7 @@ public static class CardPlayReplayPatch
 
         SelectorStackDebug.Log("\n=== Battle Start (ActionExecutor ctor) ===");
         LogCardSelectState("ActionExecutor ctor (battle start)");
+        TreasureRoomReplayPatch.ActiveRoom = null;
         RngCheckpointLogger.Log("CombatStart (ActionExecutor ctor)");
     }
 

@@ -35,9 +35,7 @@ public static class TreasureRoomReplayPatch
     // Set when _Ready fires with a pending TakeChestRelic; cleared after the
     // proceed button is clicked so later SetTravelEnabled calls don't re-fire.
     internal static NTreasureRoom? ActiveRoom;
-
-
-
+    
     [HarmonyPatch(typeof(NTreasureRoom), "_Ready")]
     public static class ChestOpenReplayPatch
     {
@@ -48,14 +46,10 @@ public static class TreasureRoomReplayPatch
 
             if (!ReplayEngine.IsActive)
                 return;
-            ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Treasure);
-
-            if (!ReplayEngine.PeekTakeChestRelic(out _))
-                return;
 
             ActiveRoom = __instance;
-            PlayerActionBuffer.LogToDevConsole(
-                "[TreasureRoomReplayPatch] NTreasureRoom ready — stored room reference.");
+            
+            ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Treasure);
             ReplayDispatcher.DispatchNow();
         }
 
