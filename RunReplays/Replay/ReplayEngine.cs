@@ -510,16 +510,6 @@ public static class ReplayEngine
         return false;
     }
 
-    public static bool ConsumeUpgradeCard(out int deckIndex)
-    {
-        if (PeekUpgradeCard(out deckIndex))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
-
     // ── Shop commands ─────────────────────────────────────────────────────────
     //
     // Recorded by ShopRecordPatch:

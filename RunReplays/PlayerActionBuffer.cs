@@ -290,14 +290,6 @@ public static class PlayerActionBuffer
     }
 
     /// <summary>
-    /// Verbose snapshot: each entry prefixed with its timestamp.
-    /// </summary>
-    public static IReadOnlyList<string> Snapshot()
-    {
-        return new List<string>(_verboseEntries.Select(e => $"[{e.Timestamp}] {e.Action}"));
-    }
-
-    /// <summary>
     /// Minimal snapshot: action text only, no timestamps.
     /// </summary>
     public static IReadOnlyList<string> SnapshotMinimal()

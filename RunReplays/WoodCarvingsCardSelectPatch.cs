@@ -91,10 +91,6 @@ public static class FromDeckGenericPatch
         {
             if (ReplayEngine.PeekSelectDeckCard(out _))
             {
-                _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
-                SelectorStackDebug.Log("PUSH FromDeckGeneric");
-                PlayerActionBuffer.LogToDevConsole(
-                    "[WoodCarvingsPatch] Pushed ReplayDeckCardSelector for FromDeckGeneric.");
             }
         }
         else
@@ -117,28 +113,6 @@ public static class FromDeckForEnchantmentPatch
     {
         _pendingScope?.Dispose();
         _pendingScope = null;
-
-        SelectorStackDebug.Log("FromDeckForEnchantment.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
-        if (ReplayEngine.IsActive)
-        {
-            // Skip if the filter overload already pushed a selector (one overload
-            // may delegate to the other, causing both Harmony prefixes to fire).
-            if (FromDeckForEnchantmentWithFilterPatch._pendingScope != null)
-            {
-                SelectorStackDebug.Log("SKIP FromDeckForEnchantment (EnchantFilter already pushed)");
-            }
-            else if (ReplayEngine.PeekSelectDeckCard(out _))
-            {
-                _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
-                SelectorStackDebug.Log("PUSH FromDeckForEnchantment");
-                PlayerActionBuffer.LogToDevConsole(
-                    "[WoodCarvingsPatch] Pushed ReplayDeckCardSelector for FromDeckForEnchantment.");
-            }
-        }
-        else
-        {
-            DeckCardSelectContext.Pending = true;
-        }
     }
 }
 
@@ -155,29 +129,6 @@ public static class FromDeckForEnchantmentWithFilterPatch
     {
         _pendingScope?.Dispose();
         _pendingScope = null;
-
-        SelectorStackDebug.Log("FromDeckForEnchantmentWithFilter.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
-        if (ReplayEngine.IsActive)
-        {
-            // Skip if the no-filter overload already pushed a selector (the game
-            // routes FromDeckForEnchantment → FromDeckForEnchantment(filter), so
-            // both Harmony prefixes fire for a single call).
-            if (FromDeckForEnchantmentPatch._pendingScope != null)
-            {
-                SelectorStackDebug.Log("SKIP FromDeckForEnchantmentWithFilter (Enchant already pushed)");
-            }
-            else if (ReplayEngine.PeekSelectDeckCard(out _))
-            {
-                _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
-                SelectorStackDebug.Log("PUSH FromDeckForEnchantmentWithFilter");
-                PlayerActionBuffer.LogToDevConsole(
-                    "[SelfHelpBookPatch] Pushed ReplayDeckCardSelector for FromDeckForEnchantment (with filter).");
-            }
-        }
-        else
-        {
-            DeckCardSelectContext.Pending = true;
-        }
     }
 }
 
@@ -194,28 +145,6 @@ public static class FromDeckForEnchantmentWithCardsPatch
     {
         _pendingScope?.Dispose();
         _pendingScope = null;
-
-        SelectorStackDebug.Log("FromDeckForEnchantmentWithCards.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
-        if (ReplayEngine.IsActive)
-        {
-            // Skip if another enchantment overload already pushed a selector.
-            if (FromDeckForEnchantmentPatch._pendingScope != null
-                || FromDeckForEnchantmentWithFilterPatch._pendingScope != null)
-            {
-                SelectorStackDebug.Log("SKIP FromDeckForEnchantmentWithCards (another enchant already pushed)");
-            }
-            else if (ReplayEngine.PeekSelectDeckCard(out _))
-            {
-                _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
-                SelectorStackDebug.Log("PUSH FromDeckForEnchantmentWithCards");
-                PlayerActionBuffer.LogToDevConsole(
-                    "[SapphireSeedPatch] Pushed ReplayDeckCardSelector for FromDeckForEnchantment (with cards).");
-            }
-        }
-        else
-        {
-            DeckCardSelectContext.Pending = true;
-        }
     }
 }
 
@@ -231,22 +160,6 @@ public static class FromDeckForTransformationPatch
     {
         _pendingScope?.Dispose();
         _pendingScope = null;
-
-        SelectorStackDebug.Log("FromDeckForTransformation.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
-        if (ReplayEngine.IsActive)
-        {
-            if (ReplayEngine.PeekSelectDeckCard(out _))
-            {
-                _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
-                SelectorStackDebug.Log("PUSH FromDeckForTransformation");
-                PlayerActionBuffer.LogToDevConsole(
-                    "[DeckTransformPatch] Pushed ReplayDeckCardSelector for FromDeckForTransformation.");
-            }
-        }
-        else
-        {
-            DeckCardSelectContext.Pending = true;
-        }
     }
 }
 
@@ -266,14 +179,6 @@ public static class FromDeckForUpgradePatch
         SelectorStackDebug.Log("FromDeckForUpgrade.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
         if (!ReplayEngine.IsActive)
             return;
-
-        if (ReplayEngine.PeekUpgradeCard(out _))
-        {
-            _pendingScope = CardSelectCmd.PushSelector(new ReplayDeckCardSelector());
-            SelectorStackDebug.Log("PUSH FromDeckForUpgrade");
-            PlayerActionBuffer.LogToDevConsole(
-                "[UpgradePatch] Pushed ReplayDeckCardSelector for FromDeckForUpgrade.");
-        }
     }
 }
 
@@ -344,106 +249,4 @@ public static class DeckCardSelectRecordPatch
         PlayerActionBuffer.LogToDevConsole(
             $"[DeckCardSelectPatch] Recorded {command} ({titles}).");
     }
-}
-
-// ── Replay selector ────────────────────────────────────────────────────────────
-
-/// <summary>
-/// ICardSelector that consumes a SelectDeckCard command and returns the card
-/// at the recorded index from the options passed by the game.
-/// </summary>
-internal sealed class ReplayDeckCardSelector : ICardSelector
-{
-    public Task<IEnumerable<CardModel>> GetSelectedCards(
-        IEnumerable<CardModel> options, int minSelect, int maxSelect)
-    {
-        string scopeSource = FromDeckGenericPatch._pendingScope != null ? "Generic"
-            : FromDeckForEnchantmentPatch._pendingScope != null ? "Enchant"
-            : FromDeckForEnchantmentWithFilterPatch._pendingScope != null ? "EnchantFilter"
-            : FromDeckForEnchantmentWithCardsPatch._pendingScope != null ? "EnchantCards"
-            : FromDeckForTransformationPatch._pendingScope != null ? "Transform"
-            : FromDeckForUpgradePatch._pendingScope != null ? "Upgrade"
-            : "NONE";
-        SelectorStackDebug.Log($"GetSelectedCards called (scope from: {scopeSource}, minSelect={minSelect}, maxSelect={maxSelect})");
-        PlayerActionBuffer.LogToDevConsole(
-            "[ReplayDeckCardSelector] GetSelectedCards called.");
-
-        // Consume the scope that was pushed by whichever patch created us.
-        var scope = FromDeckGenericPatch._pendingScope
-            ?? FromDeckForEnchantmentPatch._pendingScope
-            ?? FromDeckForEnchantmentWithFilterPatch._pendingScope
-            ?? FromDeckForEnchantmentWithCardsPatch._pendingScope
-            ?? FromDeckForTransformationPatch._pendingScope
-            ?? FromDeckForUpgradePatch._pendingScope;
-        FromDeckGenericPatch._pendingScope                 = null;
-        FromDeckForEnchantmentPatch._pendingScope          = null;
-        FromDeckForEnchantmentWithFilterPatch._pendingScope = null;
-        FromDeckForEnchantmentWithCardsPatch._pendingScope  = null;
-        FromDeckForTransformationPatch._pendingScope       = null;
-        FromDeckForUpgradePatch._pendingScope              = null;
-        SelectorStackDebug.Log($"Disposing scope (wasNull={scope == null})");
-        scope?.Dispose();
-
-        var optionList = options.ToList();
-
-        if (!ReplayEngine.ConsumeSelectDeckCard(out int[] indices))
-        {
-            // Fallback: SMITH rest-site upgrades record "UpgradeCard {index}" but
-            // during replay the flow goes through CardSelectCmd, not ShowScreen.
-            if (ReplayEngine.ConsumeUpgradeCard(out int upgradeIdx))
-            {
-                indices = new[] { upgradeIdx };
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[ReplayDeckCardSelector] Consumed UpgradeCard {upgradeIdx} (SMITH upgrade via CardSelectCmd).");
-            }
-            else
-            {
-                PlayerActionBuffer.LogToDevConsole(
-                    "[ReplayDeckCardSelector] No SelectDeckCard/UpgradeCard command — returning first available card(s).");
-                return Task.FromResult<IEnumerable<CardModel>>(
-                    optionList.Take(Math.Max(1, minSelect)).ToList());
-            }
-        }
-
-        var selected = new List<CardModel>(indices.Length);
-        foreach (int index in indices)
-        {
-            if (index >= 0 && index < optionList.Count)
-            {
-                selected.Add(optionList[index]);
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[ReplayDeckCardSelector] Selected '{optionList[index].Title}' at index {index}.");
-            }
-            else
-            {
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[ReplayDeckCardSelector] Index {index} out of range (count={optionList.Count}) — skipping.");
-            }
-        }
-
-        // Some relics (e.g. Yummy Cookie) allow upgrading multiple cards in
-        // a single selection.  Keep consuming UpgradeCard commands while they
-        // match available options.
-        while (ReplayEngine.PeekUpgradeCard(out int nextIdx)
-               && nextIdx >= 0 && nextIdx < optionList.Count)
-        {
-            ReplayEngine.ConsumeUpgradeCard(out _);
-            selected.Add(optionList[nextIdx]);
-            PlayerActionBuffer.LogToDevConsole(
-                $"[ReplayDeckCardSelector] Selected additional '{optionList[nextIdx].Title}' at index {nextIdx}.");
-        }
-
-        if (selected.Count > 0)
-            return Task.FromResult<IEnumerable<CardModel>>(selected);
-
-        PlayerActionBuffer.LogToDevConsole(
-            "[ReplayDeckCardSelector] No valid indices — falling back.");
-        return Task.FromResult<IEnumerable<CardModel>>(
-            optionList.Take(Math.Max(1, minSelect)).ToList());
-    }
-
-    public CardModel? GetSelectedCardReward(
-        IReadOnlyList<CardCreationResult> options,
-        IReadOnlyList<CardRewardAlternative> alternatives)
-        => null;
 }
