@@ -36,15 +36,15 @@ public static class TreasureRoomReplayPatch
 {
     // Set when _Ready fires with a pending TakeChestRelic; cleared after the
     // proceed button is clicked so later SetTravelEnabled calls don't re-fire.
-    private static NTreasureRoom? _activeRoom;
+    internal static NTreasureRoom? ActiveRoom;
 
     /// <summary>Called by ReplayDispatcher to trigger treasure room actions.</summary>
     internal static void DispatchFromEngine()
     {
         if (ReplayEngine.PeekTakeChestRelic(out _))
         {
-            if (_activeRoom != null && _activeRoom.IsInsideTree())
-                Callable.From(() => ChestOpenReplayPatch.ClickChest(_activeRoom)).CallDeferred();
+            if (ActiveRoom != null && ActiveRoom.IsInsideTree())
+                Callable.From(() => ChestOpenReplayPatch.ClickChest(ActiveRoom)).CallDeferred();
             return;
         }
 
@@ -72,7 +72,7 @@ public static class TreasureRoomReplayPatch
             if (!ReplayEngine.PeekTakeChestRelic(out _))
                 return;
 
-            _activeRoom = __instance;
+            ActiveRoom = __instance;
             PlayerActionBuffer.LogToDevConsole(
                 "[TreasureRoomReplayPatch] NTreasureRoom ready — stored room reference.");
             ReplayDispatcher.DispatchNow();
@@ -132,11 +132,11 @@ public static class TreasureRoomReplayPatch
         [HarmonyPostfix]
         public static void Postfix(bool enabled)
         {
-            if (!enabled || _activeRoom == null || !_activeRoom.IsInsideTree())
+            if (!enabled || ActiveRoom == null || !ActiveRoom.IsInsideTree())
                 return;
 
-            NTreasureRoom room = _activeRoom;
-            _activeRoom = null;
+            NTreasureRoom room = ActiveRoom;
+            ActiveRoom = null;
 
             PlayerActionBuffer.LogToDevConsole(
                 "[TreasureRoomReplayPatch] SetTravelEnabled in treasure room — deferring proceed click.");

@@ -34,6 +34,8 @@ public static class ReplayCommandParser
             ?? (ReplayCommand?)UsePotionCommand.TryParse(raw)
             ?? (ReplayCommand?)DiscardPotionCommand.TryParse(raw)
             ?? (ReplayCommand?)ProceedToNextActCommand.TryParse(raw)
+            ?? (ReplayCommand?)TakeChestRelicCommand.TryParse(raw)
+            ?? (ReplayCommand?)NetPickRelicCommand.TryParse(raw)
             ?? SelectionCommand.TryParse(raw);
     }
 }
