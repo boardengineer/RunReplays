@@ -529,36 +529,24 @@ public static class ReplayDispatcher
         }
 
         PlayerActionBuffer.LogMigrationWarning($"[WARNING] not matching command invoking backup for command: {cmd}");
-        
+
         // Legacy string-based dispatch for commands not yet migrated.
         switch (required)
         {
-            case ReadyState.Rewards:
-                BattleRewardsReplayPatch.DispatchFromEngine();
-                break;
             case ReadyState.StartingBonus:
                 StartingBonusReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.Shop:
                 if (cmd == "OpenFakeShop")
                     FakeMerchantReplayPatch.DispatchFromEngine();
-                else if (cmd == "OpenShop")
-                    ShopOpenedReplayPatch.DispatchFromEngine();
                 else if (FakeMerchantReplayPatch.IsActive)
                     FakeMerchantReplayPatch.DispatchFromEngine();
-                else
-                    ShopOpenedReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.Treasure:
                 TreasureRoomReplayPatch.DispatchFromEngine();
                 break;
             case ReadyState.CrystalSphere:
                 CrystalSphereReplayPatch.DispatchFromEngine();
-                break;
-            case ReadyState.None:
-                // Potion use/discard can happen in any context.
-                if (cmd.StartsWith("UsePotionAction ") || cmd.StartsWith("NetDiscardPotionGameAction "))
-                    CardPlayReplayPatch.DispatchFromEngine();
                 break;
         }
     }

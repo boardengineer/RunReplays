@@ -33,6 +33,7 @@ public static class ReplayCommandParser
             ?? (ReplayCommand?)BuyPotionCommand.TryParse(raw)
             ?? (ReplayCommand?)UsePotionCommand.TryParse(raw)
             ?? (ReplayCommand?)DiscardPotionCommand.TryParse(raw)
+            ?? (ReplayCommand?)ProceedToNextActCommand.TryParse(raw)
             ?? SelectionCommand.TryParse(raw);
     }
 }
