@@ -9,8 +9,6 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Screens;
-using MegaCrit.Sts2.Core.Nodes.Screens.Map;
-using MegaCrit.Sts2.Core.Runs;
 
 namespace RunReplays;
 
@@ -46,13 +44,6 @@ public static class BattleRewardsReplayPatch
         typeof(NRewardsScreen).Assembly
             .GetType("MegaCrit.Sts2.Core.Nodes.Rewards.NRewardButton");
 
-    private static readonly MethodInfo? RecalculateTravelabilityMethod =
-        typeof(NMapScreen).GetMethod(
-            "RecalculateTravelability",
-            BindingFlags.NonPublic | BindingFlags.Instance);
-
-    // Kept so OnCardRewardHandled() can re-trigger processing after the card
-    // selection screen closes.
     internal static NRewardsScreen? _activeScreen;
 
     [HarmonyPostfix]
@@ -83,119 +74,6 @@ public static class BattleRewardsReplayPatch
 
         _activeScreen = __instance;
         ReplayDispatcher.DispatchNow();
-    }
-
-    /// <summary>
-    /// Called by CardRewardReplayPatch after a card has been auto-selected so
-    /// that any reward buttons or map transition remaining can be processed.
-    /// Also called by CardPlayReplayPatch after a potion discard that occurred
-    /// during the rewards screen completes.
-    /// </summary>
-    public static void OnCardRewardHandled()
-    {
-        if (_activeScreen == null || !_activeScreen.IsInsideTree())
-            return;
-
-        NRewardsScreen screen = _activeScreen;
-        Callable.From(() => ProcessNextReward(screen)).CallDeferred();
-    }
-
-    /// <summary>
-    /// Called from CardPlayReplayPatch after a DiscardPotionGameAction completes
-    /// with no subsequent combat action pending, so rewards processing can continue.
-    /// </summary>
-    public static bool TryResumeRewardsProcessing()
-    {
-        if (_activeScreen == null || !_activeScreen.IsInsideTree())
-            return false;
-
-        PlayerActionBuffer.LogToDevConsole("[RunReplays] BattleRewardsReplayPatch: resuming rewards processing after potion discard.");
-        NRewardsScreen screen = _activeScreen;
-        Callable.From(() => ProcessNextReward(screen)).CallDeferred();
-        return true;
-    }
-
-    // ── Internal ──────────────────────────────────────────────────────────────
-
-    internal static void ProcessNextReward(NRewardsScreen screen)
-    {
-        if (!ReplayEngine.IsActive || !screen.IsInsideTree())
-            return;
-
-        ReplayEngine.PeekNext(out string? nextCmd);
-        PlayerActionBuffer.LogDispatcher(
-            $"[Rewards] ProcessNextReward: queue front = '{nextCmd ?? "(empty)"}'");
-
-        // SacrificeCardReward is handled by SacrificeCardRewardCommand via the dispatcher.
-
-        if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
-        {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: potion discard slot={discardSlot} during rewards screen.");
-            CardPlayReplayPatch.TryDiscardPotion();
-
-            // AfterActionExecuted on the combat ActionExecutor may not fire
-            // for actions enqueued outside combat.  Use a timer fallback to
-            // resume rewards processing after the discard completes.
-            NGame.Instance!.GetTree()!.CreateTimer(1.0).Connect(
-                "timeout", Callable.From(() =>
-                {
-                    if (!TryResumeRewardsProcessing())
-                        return;
-                    PlayerActionBuffer.LogToDevConsole(
-                        "[RunReplays] Replay: resumed rewards after potion discard (timer fallback).");
-                }));
-            return;
-        }
-
-        if (ReplayEngine.PeekUsePotion(out uint pIdx, out _, out bool pCombat))
-        {
-            PlayerActionBuffer.LogDispatcher($"[Rewards] Potion use during rewards screen: index={pIdx} combat={pCombat}");
-            CardPlayReplayPatch.TryUsePotion();
-
-            NGame.Instance!.GetTree()!.CreateTimer(1.0).Connect(
-                "timeout", Callable.From(() =>
-                {
-                    if (!TryResumeRewardsProcessing())
-                        return;
-                    PlayerActionBuffer.LogDispatcher("[Rewards] Resumed rewards after potion use (timer fallback).");
-                }));
-            return;
-        }
-
-        if (ReplayEngine.PeekMapNode(out _, out _))
-        {
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: all rewards done, proceeding to map.");
-            if (NMapScreen.Instance != null)
-                RecalculateTravelabilityMethod?.Invoke(NMapScreen.Instance, null);
-            TaskHelper.RunSafely(ProceedToMapAsync());
-            return;
-        }
-
-        if (ReplayEngine.PeekProceedToNextAct())
-        {
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: all rewards done, proceeding to next act.");
-            ReplayRunner.ExecuteProceedToNextAct();
-            RunManager.Instance.ActChangeSynchronizer.SetLocalPlayerReady();
-            return;
-        }
-
-        if (ReplayEngine.PeekEventOption(out _))
-        {
-            // Player skipped all rewards (e.g. Future of Potions event where
-            // the card reward was declined).  Simulate pressing the proceed
-            // button so the rewards screen closes and the event can continue.
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: no rewards taken, dismissing rewards screen.");
-            var proceedMethod = screen.GetType().GetMethod(
-                "OnProceedButtonPressed",
-                BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-            proceedMethod?.Invoke(screen, new object?[] { null });
-        }
-    }
-
-    private static async Task ProceedToMapAsync()
-    {
-        await RunManager.Instance.ProceedFromTerminalRewardsScreen();
-        NMapScreen.Instance?.SetTravelEnabled(enabled: true);
     }
 
     internal static void InvokeGetReward(Node button)

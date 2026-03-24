@@ -487,7 +487,7 @@ public static class CardPlayReplayPatch
         if (!_dispatching && action is DiscardPotionGameAction)
         {
             PlayerActionBuffer.LogToDevConsole("[RunReplays] AfterActionExecuted: DiscardPotionGameAction completed outside combat — resuming rewards.");
-            BattleRewardsReplayPatch.TryResumeRewardsProcessing();
+            ReplayDispatcher.DispatchNow();
             return;
         }
 

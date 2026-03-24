@@ -241,13 +241,13 @@ internal sealed class ReplayCardRewardChooseSelector : ICardSelector
         {
             PlayerActionBuffer.LogToDevConsole(
                 $"[ReplayCardRewardChooseSelector] Selected '{match.Title}' by title match.");
-            BattleRewardsReplayPatch.OnCardRewardHandled();
+            ReplayDispatcher.DispatchNow();
             return Task.FromResult<IEnumerable<CardModel>>(new[] { match });
         }
 
         PlayerActionBuffer.LogToDevConsole(
             $"[ReplayCardRewardChooseSelector] Card '{_expectedTitle}' not found in options.");
-        BattleRewardsReplayPatch.OnCardRewardHandled();
+        ReplayDispatcher.DispatchNow();
         return Task.FromResult(Enumerable.Empty<CardModel>());
     }
 

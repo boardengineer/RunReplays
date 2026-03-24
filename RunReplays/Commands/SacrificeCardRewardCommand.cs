@@ -86,7 +86,7 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
 
             CardRewardReplayPatch.selectionScreen = null;
             _screenOpened = false;
-            BattleRewardsReplayPatch.OnCardRewardHandled();
+            ReplayDispatcher.DispatchNow();
             return ExecuteResult.Ok();
         }
 
