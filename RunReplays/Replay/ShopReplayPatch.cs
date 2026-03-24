@@ -358,10 +358,8 @@ public static class ShopOpenedReplayPatch
             return false;
         }
 
-        ReplayRunner.ExecuteBuyCard(out _);
         InvokePurchase(entry);
         PlayerActionBuffer.LogToDevConsole($"[ShopReplayPatch] Triggered purchase of card '{cardTitle}'.");
-        Callable.From(() => ProcessNextPurchase(room)).CallDeferred();
         return true;
     }
 
@@ -383,7 +381,6 @@ public static class ShopOpenedReplayPatch
         ReplayRunner.ExecuteBuyRelic(out _);
         InvokePurchase(entry);
         PlayerActionBuffer.LogToDevConsole($"[ShopReplayPatch] Triggered purchase of relic '{relicTitle}'.");
-        Callable.From(() => ProcessNextPurchase(room)).CallDeferred();
         return true;
     }
 
@@ -405,7 +402,6 @@ public static class ShopOpenedReplayPatch
         ReplayRunner.ExecuteBuyPotion(out _);
         InvokePurchase(entry);
         PlayerActionBuffer.LogToDevConsole($"[ShopReplayPatch] Triggered purchase of potion '{potionTitle}'.");
-        Callable.From(() => ProcessNextPurchase(room)).CallDeferred();
         return true;
     }
 
@@ -445,7 +441,6 @@ public static class ShopOpenedReplayPatch
             PlayerActionBuffer.LogToDevConsole(
                 $"[ShopReplayPatch] Card removal purchase threw — {ex.GetType().Name}: {ex.Message}");
 
-            Callable.From(() => ProcessNextPurchase(room)).CallDeferred();
             return true;
         }
 
