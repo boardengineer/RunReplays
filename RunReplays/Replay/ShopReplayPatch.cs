@@ -48,7 +48,6 @@ public static class ShopRoomReadyPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        PlayerActionBuffer.LogMigrationWarning("[Shop] NMerchantRoom._Ready fired.");
         ShopOpenedReplayPatch.ActiveRoom = __instance;
         ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Shop);
         ReplayDispatcher.DispatchNow();
@@ -163,7 +162,6 @@ public static class ShopOpenedReplayPatch
     /// </summary>
     internal static List<MerchantEntry>? GetEntries(NMerchantRoom room)
     {
-        PlayerActionBuffer.LogMigrationWarning("Get entries 0");
         const BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic
                               | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
 
@@ -171,26 +169,20 @@ public static class ShopOpenedReplayPatch
             .GetProperty("Room", BindingFlags.Public | BindingFlags.Instance)
             ?.GetValue(room);
 
-        PlayerActionBuffer.LogMigrationWarning("Get entries 1");
         if (roomModel == null)
         {
-            PlayerActionBuffer.LogMigrationWarning("[ShopReplayPatch] NMerchantRoom.Room is null.");
             return null;
         }
-        PlayerActionBuffer.LogMigrationWarning("Get entries 2");
-
+        
         object? inventory = roomModel.GetType()
             .GetProperty("Inventory", BindingFlags.Public | BindingFlags.Instance)
             ?.GetValue(roomModel);
 
-        PlayerActionBuffer.LogMigrationWarning("Get entries 3");
         if (inventory == null)
         {
-            PlayerActionBuffer.LogMigrationWarning("[ShopReplayPatch] MerchantRoom.Inventory is null.");
             return null;
         }
 
-        PlayerActionBuffer.LogMigrationWarning("Get entries 4");
         List<MerchantEntry> all = new();
         foreach (FieldInfo field in inventory.GetType().GetFields(bf))
         {
@@ -206,7 +198,6 @@ public static class ShopOpenedReplayPatch
                 all.Add(single);
         }
 
-        PlayerActionBuffer.LogMigrationWarning("Get entries 5");
         foreach (PropertyInfo prop in inventory.GetType().GetProperties(bf))
         {
             if (prop.GetIndexParameters().Length > 0)
@@ -223,8 +214,7 @@ public static class ShopOpenedReplayPatch
             else if (value is MerchantEntry single && !all.Contains(single))
                 all.Add(single);
         }
-        PlayerActionBuffer.LogMigrationWarning("Get entries 6");
-
+        
         if (all.Count > 0)
         {
             PlayerActionBuffer.LogToDevConsole(
@@ -232,8 +222,7 @@ public static class ShopOpenedReplayPatch
                 $"({string.Join(", ", all.Select(e => e.GetType().Name))}).");
             return all;
         }
-        PlayerActionBuffer.LogMigrationWarning("Get entries 7");
-
+        
         PlayerActionBuffer.LogToDevConsole(
             $"[ShopReplayPatch] Inventory ({inventory.GetType().Name}) yielded no MerchantEntry objects.");
         return null;

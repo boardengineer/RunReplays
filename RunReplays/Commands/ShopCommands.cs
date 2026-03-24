@@ -103,36 +103,28 @@ public sealed class BuyRelicCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        PlayerActionBuffer.LogMigrationWarning("Executing Buy Relic 1");
         List<MerchantEntry>? entries = null;
 
-        PlayerActionBuffer.LogMigrationWarning("Executing Buy Relic 1.1");
         var room = ShopOpenedReplayPatch.ActiveRoom;
-        PlayerActionBuffer.LogMigrationWarning($"Executing Buy Relic 1.111 {room}");
         if (room != null && room.IsInsideTree())
             entries = ShopOpenedReplayPatch.GetEntries(room);
 
-        PlayerActionBuffer.LogMigrationWarning("Executing Buy Relic 1.2");
         // Fall back to fake merchant if regular shop isn't active.
         if ((entries == null || entries.Count == 0) && FakeMerchantReplayPatch.ActiveInstance != null)
             entries = FakeMerchantReplayPatch.GetEntries(FakeMerchantReplayPatch.ActiveInstance);
 
-        PlayerActionBuffer.LogMigrationWarning("Executing Buy Relic 2");
         if (entries == null || entries.Count == 0)
             return ExecuteResult.Retry(200);
 
-        PlayerActionBuffer.LogMigrationWarning("Executing Buy Relic 3");
         var entry = entries.OfType<MerchantRelicEntry>()
             .FirstOrDefault(e => e.Model?.Title.GetFormattedText() == RelicTitle);
 
-        PlayerActionBuffer.LogMigrationWarning("Executing Buy Relic 4");
         if (entry == null)
         {
             PlayerActionBuffer.LogMigrationWarning($"[BuyRelic] Relic '{RelicTitle}' not found — skipping.");
             return ExecuteResult.Ok();
         }
-        PlayerActionBuffer.LogMigrationWarning("Executing Buy Relic 5");
-
+        
         ShopOpenedReplayPatch.InvokePurchase(entry);
         return ExecuteResult.Ok();
     }
