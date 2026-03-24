@@ -124,7 +124,7 @@ public static class CardPlayReplayPatch
         _actionFiredThisFrame = false;
         _quietFrameCount = 0;
         _awaitingEndTurnCompletion = false;
-        _turnStartRetries = 0;
+
         _turnStartedSinceLastEndTurn = true;
         _postEndTurn_turnEndedReceived = false;
         _postEndTurn_turnStartedReceived = false;
@@ -378,64 +378,6 @@ public static class CardPlayReplayPatch
 
         // Route back through the dispatcher for the next turn.
         ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Combat);
-    }
-
-    private static int _turnStartRetries;
-    private const int MaxTurnStartRetries = 100;
-
-    private static void ScheduleNextFromQueue(string caller)
-    {
-        ReplayEngine.PeekNext(out string? snqNext);
-        PlayerActionBuffer.LogDispatcher("Schedule next from queue 1");
-        SelectorStackDebug.Log(
-            $"ScheduleNextFromQueue({caller}): nextCmd='{snqNext ?? "(none)"}'" +
-            $" dispatching={_dispatching} awaitingEndTurn={_awaitingEndTurnCompletion}" +
-            $" turnStartedSinceEndTurn={_turnStartedSinceLastEndTurn}");
-
-        if (_cardPlayInFlight)
-        {
-            return;
-        }
-
-        PlayerActionBuffer.LogDispatcher("Schedule next from queue 2");
-        
-        if (_awaitingEndTurnCompletion)
-        {
-            return;
-        }
-
-        PlayerActionBuffer.LogDispatcher("Schedule next from queue 3");
-        
-        _dispatching = true;
-
-        if (ReplayEngine.PeekNetDiscardPotion(out int discardSlot))
-        {
-            Callable.From(TryDiscardPotion).CallDeferred();
-        }
-        else if (ReplayEngine.PeekUsePotion(out uint potionIdx, out _, out _))
-        {
-            Callable.From(TryUsePotion).CallDeferred();
-        }
-        else
-        {
-            ReplayEngine.PeekNext(out string? next);
-
-            if (_turnStartRetries < MaxTurnStartRetries)
-            {
-                _turnStartRetries++;
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[RunReplays] {caller}: no combat action yet — '{next ?? "(none)"}', retry {_turnStartRetries}/{MaxTurnStartRetries}.");
-                int gen = _battleGeneration;
-                NGame.Instance!.GetTree()!.CreateTimer(0.25).Connect(
-                    "timeout", Callable.From(() => { if (_battleGeneration == gen) ScheduleNextFromQueue(caller); }));
-            }
-            else
-            {
-                _dispatching = false;
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[RunReplays] {caller}: gave up after {MaxTurnStartRetries} retries — '{next ?? "(none)"}'.");
-            }
-        }
     }
 
     // ── Post-action chain trigger (waits for sub-effects to settle) ─────────
