@@ -53,25 +53,6 @@ public static class BattleRewardsReplayPatch
             return;
 
         ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Rewards);
-
-        bool hasReward = ReplayEngine.PeekGoldReward(out _)
-                      || ReplayEngine.PeekCardReward(out _, out _)
-                      || ReplayEngine.PeekRelicReward(out _)
-                      || ReplayEngine.PeekPotionReward(out _)
-                      || ReplayEngine.PeekNetDiscardPotion(out _)
-                      || ReplayEngine.PeekUsePotion(out _, out _, out _);
-        bool hasMapNode         = ReplayEngine.PeekMapNode(out _, out _);
-        bool hasProceedToNextAct = ReplayEngine.PeekProceedToNextAct();
-        bool hasEventOption     = ReplayEngine.PeekEventOption(out _);
-
-        if (!hasReward && !hasMapNode && !hasProceedToNextAct && !hasEventOption)
-        {
-            ReplayEngine.PeekNext(out string? next);
-            PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] BattleRewardsReplayPatch: next command is not a reward, map node, or act proceed ('{next ?? "(none)"}'), skipping.");
-            return;
-        }
-
         _activeScreen = __instance;
         ReplayDispatcher.DispatchNow();
     }

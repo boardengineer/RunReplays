@@ -66,13 +66,7 @@ public static class FromDeckGenericPatch
         _pendingScope = null;
 
         SelectorStackDebug.Log("FromDeckGeneric.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
-        if (ReplayEngine.IsActive)
-        {
-            if (ReplayEngine.PeekSelectDeckCard(out _))
-            {
-            }
-        }
-        else
+        if (!ReplayEngine.IsActive)
         {
             DeckCardSelectContext.Pending = true;
         }
