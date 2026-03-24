@@ -1,12 +1,10 @@
 using Godot;
 using HarmonyLib;
-using MegaCrit.Sts2.Core.Multiplayer.Game;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using MegaCrit.Sts2.Core.Nodes.Screens.TreasureRoomRelic;
-using MegaCrit.Sts2.Core.Runs;
 using RunReplays.Utils;
 
 namespace RunReplays;
@@ -61,26 +59,6 @@ public static class TreasureRoomReplayPatch
             ReplayDispatcher.DispatchNow();
         }
 
-        internal static void ClickChest(NTreasureRoom room)
-        {
-            if (!ReplayEngine.IsActive)
-                return;
-
-            NButton? chest = room.GetNodeOrNull<NButton>("%Chest");
-            if (chest == null)
-            {
-                PlayerActionBuffer.LogToDevConsole(
-                    "[TreasureRoomReplayPatch] Chest button node not found.");
-                return;
-            }
-
-            // Consume the TakeChestRelic command — its purpose was to open the
-            // chest; the relic pick is driven by the subsequent NetPickRelicAction.
-            ReplayRunner.ExecuteTakeChestRelic(out string relicTitle);
-            PlayerActionBuffer.LogToDevConsole(
-                $"[TreasureRoomReplayPatch] Opening chest (expected relic '{relicTitle}').");
-            chest.EmitSignal(NClickableControl.SignalName.Released, chest);
-        }
     }
 
     [HarmonyPatch(typeof(NTreasureRoomRelicCollection), nameof(NTreasureRoomRelicCollection.InitializeRelics))]

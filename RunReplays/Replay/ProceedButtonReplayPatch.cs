@@ -34,15 +34,12 @@ public static class ProceedButtonReplayPatch
         if (!ReplayEngine.PeekMapNode(out _, out _))
             return;
 
-        PlayerActionBuffer.LogToDevConsole(
-            "[ProceedButtonReplayPatch] NProceedButton ready with map move pending.");
         Callable.From(OpenMap).CallDeferred();
         ReplayDispatcher.DispatchNow();
     }
 
     internal static void OpenMap()
     {
-        PlayerActionBuffer.LogToDevConsole("[ProceedButtonReplayPatch] Opening map.");
         NMapScreen.Instance?.Open();
         NMapScreen.Instance?.SetTravelEnabled(true);
     }
