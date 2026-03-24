@@ -518,55 +518,7 @@ public static class CardPlayReplayPatch
         _dispatching = false;
         ReplayDispatcher.NotifyEffectsSettled();
     }
-
-    // ── Potion-use execution ──────────────────────────────────────────────────
-
-    internal static void TryUsePotion()
-    {
-        if (!ReplayRunner.ExecuteUsePotion(out uint potionIndex, out uint? targetId, out bool inCombat))
-        {
-            return;
-        }
-
-        Player? player = ResolveLocalPlayer();
-
-        if (player == null)
-        {
-            return;
-        }
-
-        PotionModel? potion = player.GetPotionAtSlotIndex((int)potionIndex);
-        if (potion == null)
-        {
-            return;
-        }
-
-        Creature? target = null;
-        if (targetId.HasValue)
-        {
-            target = _currentCombatState?.GetCreature(targetId);
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryUsePotion: resolved target id={targetId} → {(target == null ? "null" : target.ToString())}.");
-        }
-
-        // Out-of-combat self-targeting: use the player's own creature.
-        if (!inCombat && target == null)
-            target = player.Creature;
-
-        try
-        {
-            ReplayDispatcher.PotionInFlight = true;
-            potion.EnqueueManualUse(target);
-        }
-        catch
-        {
-            ReplayDispatcher.PotionInFlight = false;
-        }
-    }
-
-    // ── End-turn execution ────────────────────────────────────────────────────
-
-
-
+    
     internal static bool TryEndTurn()
     {
         if (_waitingForEffects)

@@ -231,9 +231,6 @@ internal sealed class ReplayCardRewardChooseSelector : ICardSelector
         FromChooseACardScreenPatch._pendingScope = null;
         scope?.Dispose();
 
-        // Consume the TakeCardReward command.
-        ReplayRunner.ExecuteCardReward(out _);
-
         var optionList = options.ToList();
         var match = optionList.FirstOrDefault(c => c.Title == _expectedTitle);
 

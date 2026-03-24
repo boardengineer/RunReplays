@@ -107,7 +107,6 @@ public static class RestSiteReplayPatch
         }
 
         RestSiteOption selectedOption = options[index];
-        ReplayRunner.ExecuteRestSiteOption(out _);
         PlayerActionBuffer.LogToDevConsole(
             $"[RestSiteReplayPatch] Auto-selected rest site option '{optionId}' at index {index}.");
         await SelectAndNotifyRoom(sync, index, selectedOption);
