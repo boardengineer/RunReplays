@@ -529,17 +529,6 @@ public static class ReplayDispatcher
         }
 
         PlayerActionBuffer.LogMigrationWarning($"[WARNING] not matching command invoking backup for command: {cmd}");
-
-        // Legacy string-based dispatch for commands not yet migrated.
-        switch (required)
-        {
-            case ReadyState.Shop:
-                if (cmd == "OpenFakeShop")
-                    FakeMerchantReplayPatch.DispatchFromEngine();
-                else if (FakeMerchantReplayPatch.IsActive)
-                    FakeMerchantReplayPatch.DispatchFromEngine();
-                break;
-        }
     }
 
     /// <summary>

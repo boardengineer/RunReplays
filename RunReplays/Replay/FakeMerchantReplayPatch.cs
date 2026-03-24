@@ -46,11 +46,11 @@ public static class FakeMerchantOpenRecordPatch
 [HarmonyPatch(typeof(NFakeMerchant), "AfterRoomIsLoaded")]
 public static class FakeMerchantReplayPatch
 {
-    private static NFakeMerchant? _activeInstance;
+    internal static NFakeMerchant? ActiveInstance;
 
-    internal static bool IsActive => _activeInstance != null;
+    internal static bool IsActive => ActiveInstance != null;
 
-    private static readonly MethodInfo? OpenInventoryMethod =
+    internal static readonly MethodInfo? OpenInventoryMethod =
         typeof(NFakeMerchant).GetMethod("OpenInventory",
             BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 
@@ -74,7 +74,8 @@ public static class FakeMerchantReplayPatch
         if (!ReplayEngine.PeekOpenFakeShop())
             return;
 
-        _activeInstance = __instance;
+        ActiveInstance = __instance;
+        ShopOpenedReplayPatch.ActiveRoom = null;
         ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Shop);
         ReplayDispatcher.DispatchNow();
     }
@@ -82,7 +83,7 @@ public static class FakeMerchantReplayPatch
     /// <summary>Called by the dispatcher to handle fake shop commands.</summary>
     internal static void DispatchFromEngine()
     {
-        if (_activeInstance == null)
+        if (ActiveInstance == null)
             return;
 
         if (ReplayEngine.PeekOpenFakeShop())
@@ -92,7 +93,7 @@ public static class FakeMerchantReplayPatch
 
             if (OpenInventoryMethod != null)
             {
-                var merchant = _activeInstance;
+                var merchant = ActiveInstance;
                 Callable.From(() =>
                 {
                     OpenInventoryMethod.Invoke(merchant, null);
@@ -105,7 +106,7 @@ public static class FakeMerchantReplayPatch
 
         if (ReplayEngine.PeekBuyRelic(out string relicTitle))
         {
-            var entries = GetEntries(_activeInstance);
+            var entries = GetEntries(ActiveInstance);
             var entry = entries?
                 .OfType<MerchantRelicEntry>()
                 .FirstOrDefault(e => e.Model?.Title.GetFormattedText() == relicTitle);
@@ -126,7 +127,7 @@ public static class FakeMerchantReplayPatch
         }
 
         PlayerActionBuffer.LogDispatcher("[FakeShop] No more fake shop commands — clearing and re-dispatching.");
-        _activeInstance = null;
+        ActiveInstance = null;
         ReplayDispatcher.DispatchNow();
     }
 
@@ -189,7 +190,7 @@ public static class FakeMerchantReplayPatch
         }
     }
 
-    private static List<MerchantEntry>? GetEntries(NFakeMerchant merchant)
+    internal static List<MerchantEntry>? GetEntries(NFakeMerchant merchant)
     {
         const BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic
                               | BindingFlags.Instance | BindingFlags.FlattenHierarchy;

@@ -27,6 +27,7 @@ public static class ReplayCommandParser
             ?? (ReplayCommand?)RemoveCardFromDeckCommand.TryParse(raw)
             ?? (ReplayCommand?)SacrificeCardRewardCommand.TryParse(raw)
             ?? (ReplayCommand?)OpenShopCommand.TryParse(raw)
+            ?? (ReplayCommand?)OpenFakeShopCommand.TryParse(raw)
             ?? (ReplayCommand?)BuyCardCommand.TryParse(raw)
             ?? (ReplayCommand?)BuyRelicCommand.TryParse(raw)
             ?? (ReplayCommand?)BuyCardRemovalCommand.TryParse(raw)
