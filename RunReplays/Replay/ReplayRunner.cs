@@ -17,18 +17,6 @@ public static class ReplayRunner
         LogNext("Loaded replay");
     }
 
-    // ── Potion discard (used by CardPlayReplayPatch.TryDiscardPotion) ─────────
-
-    public static bool ExecuteNetDiscardPotion(out int slotIndex)
-    {
-        if (!ReplayEngine.ConsumeNetDiscardPotion(out slotIndex))
-            return false;
-
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: discard potion slot={slotIndex}");
-        LogNext();
-        return true;
-    }
-
     // ── Potion use (used by CardPlayReplayPatch.TryUsePotion) ────────────────
 
     public static bool ExecuteUsePotion(out uint potionIndex, out uint? targetId, out bool inCombat)
@@ -51,18 +39,6 @@ public static class ReplayRunner
 
         string indexStr = rewardIndex >= 0 ? $" (pack {rewardIndex})" : "";
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take card reward '{cardTitle}'{indexStr}");
-        LogNext();
-        return true;
-    }
-
-    // ── Treasure chest relic (used by TreasureRoomReplayPatch) ───────────────
-
-    public static bool ExecuteTakeChestRelic(out string relicTitle)
-    {
-        if (!ReplayEngine.ConsumeTakeChestRelic(out relicTitle))
-            return false;
-
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: open chest (relic '{relicTitle}')");
         LogNext();
         return true;
     }

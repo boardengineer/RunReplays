@@ -519,37 +519,6 @@ public static class CardPlayReplayPatch
         ReplayDispatcher.NotifyEffectsSettled();
     }
 
-    // ── Potion-discard execution ──────────────────────────────────────────────
-
-    internal static void TryDiscardPotion()
-    {
-        if (!ReplayRunner.ExecuteNetDiscardPotion(out int slotIndex))
-        {
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] TryDiscardPotion: ExecuteNetDiscardPotion returned false.");
-            return;
-        }
-
-        Player? player = ResolveLocalPlayer();
-
-        if (player == null)
-        {
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] TryDiscardPotion: could not resolve local player.");
-            return;
-        }
-
-        try
-        {
-            PlayerActionBuffer.LogToDevConsole($"[RunReplays] TryDiscardPotion: enqueuing DiscardPotionGameAction slot={slotIndex} for player '{player}'.");
-            RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(
-                new DiscardPotionGameAction(player, (uint)slotIndex, CombatManager.Instance.IsInProgress));
-        }
-        catch (Exception ex)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] TryDiscardPotion: RequestEnqueue threw {ex.GetType().Name}: {ex.Message}");
-        }
-    }
-
     // ── Potion-use execution ──────────────────────────────────────────────────
 
     internal static void TryUsePotion()
