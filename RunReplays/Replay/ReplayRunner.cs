@@ -1,10 +1,10 @@
 namespace RunReplays;
 
 /// <summary>
-/// Drives replay execution by consuming commands from ReplayEngine one at a time.
-/// Every Execute* call logs a human-readable description of the command being run
-/// and then prints what comes next.  Actual game-API calls will be added here as
-/// each decision point is implemented; for now the runner is purely diagnostic.
+/// Drives replay execution by consuming commands from ReplayEngine.
+/// Most commands are now handled by typed ReplayCommand classes via the
+/// dispatcher.  The remaining Execute* methods here serve legacy patches
+/// that still consume commands directly.
 /// </summary>
 public static class ReplayRunner
 {
@@ -17,216 +17,64 @@ public static class ReplayRunner
         LogNext("Loaded replay");
     }
 
-    // ── Starting bonus ────────────────────────────────────────────────────────
-
-    public static bool ExecuteStartingBonus(out int choiceIndex)
-    {
-        if (!ReplayEngine.ConsumeStartingBonus(out choiceIndex))
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteStartingBonus — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: choose starting bonus option {choiceIndex}");
-        LogNext();
-        return true;
-    }
-
-    // ── Potion discard ────────────────────────────────────────────────────────
+    // ── Potion discard (used by CardPlayReplayPatch.TryDiscardPotion) ─────────
 
     public static bool ExecuteNetDiscardPotion(out int slotIndex)
     {
         if (!ReplayEngine.ConsumeNetDiscardPotion(out slotIndex))
             return false;
 
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteNetDiscardPotion — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: discard potion slot={slotIndex}");
         LogNext();
         return true;
     }
 
-    // ── Potion use ────────────────────────────────────────────────────────────
+    // ── Potion use (used by CardPlayReplayPatch.TryUsePotion) ────────────────
 
     public static bool ExecuteUsePotion(out uint potionIndex, out uint? targetId, out bool inCombat)
     {
         if (!ReplayEngine.ConsumeUsePotion(out potionIndex, out targetId, out inCombat))
             return false;
 
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteUsePotion — will be replaced by dispatcher command.");
         string target = targetId.HasValue ? $" targeting id={targetId}" : "";
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: use potion index={potionIndex}{target} combat={inCombat}");
         LogNext();
         return true;
     }
 
-    // ── Proceed to next act ───────────────────────────────────────────────────
-
-    public static bool ExecuteProceedToNextAct()
-    {
-        if (!ReplayEngine.ConsumeProceedToNextAct())
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteProceedToNextAct — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: proceed to next act");
-        LogNext();
-        return true;
-    }
-
-    // ── Card rewards ──────────────────────────────────────────────────────────
+    // ── Card rewards (used by CardChoiceScreenPatch) ─────────────────────────
 
     public static bool ExecuteCardReward(out string cardTitle)
     {
         if (!ReplayEngine.ConsumeCardReward(out cardTitle, out int rewardIndex))
             return false;
 
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteCardReward — will be replaced by dispatcher command.");
         string indexStr = rewardIndex >= 0 ? $" (pack {rewardIndex})" : "";
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: take card reward '{cardTitle}'{indexStr}");
         LogNext();
         return true;
     }
 
-    // ── Sacrifice card reward (Pael's Wing) ─────────────────────────────────
-
-    public static bool ExecuteSacrificeCardReward()
-    {
-        if (!ReplayEngine.ConsumeSacrificeCardReward(out _))
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteSacrificeCardReward — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: sacrifice card reward (Pael's Wing)");
-        LogNext();
-        return true;
-    }
-
-    // ── Treasure chest relic ──────────────────────────────────────────────────
+    // ── Treasure chest relic (used by TreasureRoomReplayPatch) ───────────────
 
     public static bool ExecuteTakeChestRelic(out string relicTitle)
     {
         if (!ReplayEngine.ConsumeTakeChestRelic(out relicTitle))
             return false;
 
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteTakeChestRelic — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: open chest (relic '{relicTitle}')");
         LogNext();
         return true;
     }
 
-    public static bool ExecuteNetPickRelicAction(out int relicIndex)
-    {
-        if (!ReplayEngine.ConsumeNetPickRelicAction(out relicIndex))
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteNetPickRelicAction — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: NetPickRelicAction index {relicIndex}");
-        LogNext();
-        return true;
-    }
-
-
-
-    // ── Event option choices ──────────────────────────────────────────────────
-
-    public static bool ExecuteEventOption(out string textKey)
-    {
-        if (!ReplayEngine.ConsumeEventOption(out textKey))
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteEventOption — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: choose event option '{textKey}'");
-        LogNext();
-        return true;
-    }
-
-    // ── Shop commands ─────────────────────────────────────────────────────────
-
-    public static bool ExecuteOpenShop()
-    {
-        if (!ReplayEngine.ConsumeOpenShop())
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteOpenShop — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: open shop");
-        LogNext();
-        return true;
-    }
-
-    public static bool ExecuteOpenFakeShop()
-    {
-        if (!ReplayEngine.ConsumeOpenFakeShop())
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteOpenFakeShop — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: open fake shop");
-        LogNext();
-        return true;
-    }
-
-    public static bool ExecuteBuyCard(out string cardTitle)
-    {
-        if (!ReplayEngine.ConsumeBuyCard(out cardTitle))
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteBuyCard — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: buy card '{cardTitle}'");
-        LogNext();
-        return true;
-    }
-
-    public static bool ExecuteBuyRelic(out string relicTitle)
-    {
-        if (!ReplayEngine.ConsumeBuyRelic(out relicTitle))
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteBuyRelic — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: buy relic '{relicTitle}'");
-        LogNext();
-        return true;
-    }
-
-    public static bool ExecuteBuyPotion(out string potionTitle)
-    {
-        if (!ReplayEngine.ConsumeBuyPotion(out potionTitle))
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteBuyPotion — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: buy potion '{potionTitle}'");
-        LogNext();
-        return true;
-    }
-
-    public static bool ExecuteBuyCardRemoval()
-    {
-        if (!ReplayEngine.ConsumeBuyCardRemoval())
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteBuyCardRemoval — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole("[ReplayRunner] Execute: buy card removal");
-        LogNext();
-        return true;
-    }
-
-    // ── Rest site option choices ──────────────────────────────────────────────
+    // ── Rest site option (used by RestSiteReplayPatch) ───────────────────────
 
     public static bool ExecuteRestSiteOption(out string optionId)
     {
         if (!ReplayEngine.ConsumeRestSiteOption(out optionId))
             return false;
 
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteRestSiteOption — will be replaced by dispatcher command.");
         PlayerActionBuffer.LogToDevConsole($"[ReplayRunner] Execute: choose rest site option '{optionId}'");
-        LogNext();
-        return true;
-    }
-
-    // ── Crystal Sphere clicks ────────────────────────────────────────────────
-
-    public static bool ExecuteCrystalSphereClick(out int x, out int y, out int tool)
-    {
-        if (!ReplayEngine.ConsumeCrystalSphereClick(out x, out y, out tool))
-            return false;
-
-        PlayerActionBuffer.LogMigrationWarning("[MIGRATION] ExecuteCrystalSphereClick — will be replaced by dispatcher command.");
-        PlayerActionBuffer.LogToDevConsole(
-            $"[ReplayRunner] Execute: crystal sphere click ({x},{y}) tool={tool}");
         LogNext();
         return true;
     }
@@ -245,135 +93,29 @@ public static class ReplayRunner
 
     private static string Describe(string cmd)
     {
-        if (cmd.StartsWith("ChooseStartingBonus ") &&
-            int.TryParse(cmd.AsSpan("ChooseStartingBonus ".Length), out int bonusIdx))
-            return $"choose starting bonus option {bonusIdx}";
-
-        if (cmd.StartsWith("MoveToMapCoordAction "))
-        {
-            int markerIdx = cmd.IndexOf("MapCoord (", StringComparison.Ordinal);
-            if (markerIdx >= 0)
-            {
-                var coords = cmd.AsSpan(markerIdx + "MapCoord (".Length);
-                int comma = coords.IndexOf(',');
-                int close = coords.IndexOf(')');
-                if (comma > 0 && close > comma &&
-                    int.TryParse(coords[..comma].Trim(), out int col) &&
-                    int.TryParse(coords[(comma + 1)..close].Trim(), out int row))
-                    return $"navigate to map node col={col} row={row}";
-            }
-        }
-
-        if (cmd.StartsWith("EndPlayerTurnAction "))
-            return "end player turn";
-
-        if (cmd.StartsWith("NetDiscardPotionGameAction for player "))
-        {
-            int slotIdx = cmd.LastIndexOf(" potion slot: ", StringComparison.Ordinal);
-            return slotIdx >= 0
-                ? $"discard potion slot {cmd[(slotIdx + " potion slot: ".Length)..]}"
-                : "discard potion";
-        }
-
-        if (cmd.StartsWith("VoteForMapCoordAction "))
-            return "proceed to next act";
+        // Try typed command description first.
+        var parsed = Commands.ReplayCommandParser.TryParse(cmd);
+        if (parsed != null)
+            return parsed.Describe();
 
         if (cmd.StartsWith("SelectCardFromScreen ") && ReplayEngine.PeekSelectCardFromScreen(out int screenIdx))
-        {
             return screenIdx >= 0 ? $"select card from screen index={screenIdx}" : "skip card selection screen";
-        }
 
         if (cmd.StartsWith("SelectHandCards ") && ReplayEngine.PeekSelectHandCards(out uint[] hIds))
-        {
-            string cards = hIds.Length > 0 ? string.Join(",", hIds) : "(none)";
-            return $"select hand cards [{cards}]";
-        }
+            return $"select hand cards [{(hIds.Length > 0 ? string.Join(",", hIds) : "(none)")}]";
 
-        if (cmd.StartsWith("UsePotionAction ") && ReplayEngine.PeekUsePotion(out uint pIdx, out uint? pTarget, out _))
-        {
-            string tStr = pTarget.HasValue ? $" targeting id={pTarget}" : "";
-            return $"use potion index={pIdx}{tStr}";
-        }
+        if (cmd.StartsWith("SelectDeckCard "))
+            return "select deck card";
 
-        if (cmd.StartsWith("PlayCardAction "))
-        {
-            int targetIdx = cmd.LastIndexOf(" targetid: ", StringComparison.Ordinal);
-            int indexIdx  = cmd.LastIndexOf(" index: ",    StringComparison.Ordinal);
-            if (indexIdx >= 0 && targetIdx > indexIdx)
-            {
-                var indexSpan  = cmd.AsSpan(indexIdx + " index: ".Length, targetIdx - indexIdx - " index: ".Length).Trim();
-                var targetSpan = cmd.AsSpan(targetIdx + " targetid: ".Length).Trim();
-                if (uint.TryParse(indexSpan, out uint idx))
-                {
-                    string targetStr = targetSpan.Length > 0 ? $" targeting id={targetSpan}" : "";
-                    return $"play card index={idx}{targetStr}";
-                }
-            }
-        }
+        if (cmd.StartsWith("SelectSimpleCard "))
+            return "select simple card";
+
+        if (cmd.StartsWith("RemoveCardFromDeck: "))
+            return "remove card from deck";
 
         if (cmd.StartsWith("UpgradeCard ") &&
             int.TryParse(cmd.AsSpan("UpgradeCard ".Length), out int upgradeIdx))
             return $"upgrade card at deck index {upgradeIdx}";
-
-        if (cmd.StartsWith("TakeCardReward["))
-        {
-            int closeBracket = cmd.IndexOf("]: ", StringComparison.Ordinal);
-            if (closeBracket >= 0)
-            {
-                string idx = cmd.Substring("TakeCardReward[".Length, closeBracket - "TakeCardReward[".Length);
-                string title = cmd.Substring(closeBracket + "]: ".Length);
-                return $"take card reward '{title}' (pack {idx})";
-            }
-        }
-
-        if (cmd.StartsWith("TakeCardReward: "))
-            return $"take card reward '{cmd["TakeCardReward: ".Length..]}'";
-
-        if (cmd == "SacrificeCardReward" || cmd.StartsWith("SacrificeCardReward["))
-            return "sacrifice card reward (Pael's Wing)";
-
-        if (cmd.StartsWith("TakeRelicReward: "))
-            return $"take relic reward '{cmd["TakeRelicReward: ".Length..]}'";
-
-        if (cmd.StartsWith("TakePotionReward: "))
-            return $"take potion reward '{cmd["TakePotionReward: ".Length..]}'";
-
-        if (cmd.StartsWith("TakeGoldReward: "))
-            return $"take gold reward {cmd["TakeGoldReward: ".Length..]}";
-
-        if (cmd.StartsWith("TakeChestRelic "))
-            return $"open chest (relic '{cmd["TakeChestRelic ".Length..]}')";
-
-        if (cmd.StartsWith("NetPickRelicAction for player "))
-            return $"pick chest relic ({cmd})";
-
-        if (cmd.StartsWith("ChooseRestSiteOption "))
-            return $"choose rest site option '{cmd["ChooseRestSiteOption ".Length..]}'";
-
-        if (cmd == "OpenShop")
-            return "open shop";
-
-        if (cmd == "OpenFakeShop")
-            return "open fake merchant shop";
-
-        if (cmd.StartsWith("BuyCard "))
-            return $"buy card '{cmd["BuyCard ".Length..]}'";
-
-        if (cmd.StartsWith("BuyRelic "))
-            return $"buy relic '{cmd["BuyRelic ".Length..]}'";
-
-        if (cmd.StartsWith("BuyPotion "))
-            return $"buy potion '{cmd["BuyPotion ".Length..]}'";
-
-        if (cmd == "BuyCardRemoval")
-            return "buy card removal";
-
-        if (cmd.StartsWith("ChooseEventOption "))
-            return $"choose event option '{cmd["ChooseEventOption ".Length..]}'";
-
-        if (cmd.StartsWith("CrystalSphereClick ") &&
-            ReplayEngine.PeekCrystalSphereClick(out int csX, out int csY, out int csTool))
-            return $"crystal sphere click ({csX},{csY}) tool={csTool}";
 
         return $"(unknown) {cmd}";
     }

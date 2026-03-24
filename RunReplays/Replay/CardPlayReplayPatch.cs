@@ -51,14 +51,6 @@ public static class CardPlayReplayPatch
     /// </summary>
     private static int _battleGeneration;
 
-
-    /// <summary>
-    /// True between TryManualPlay succeeding and AfterActionExecuted firing
-    /// for PlayCardAction.  Blocks all dispatch entry points so no new
-    /// commands are issued while the game is resolving a card play.
-    /// </summary>
-    private static bool _cardPlayInFlight;
-
     /// <summary>
     /// True after TryEndTurn issues PlayerCmd.EndTurn.  Blocks all dispatch
     /// until both TurnEnded and TurnStarted have fired (in any order).
@@ -119,7 +111,6 @@ public static class CardPlayReplayPatch
         // Reset all dispatch state so stale flags from a previous battle
         // or non-combat context don't block OnTurnStarted.
         _dispatching = false;
-        _cardPlayInFlight = false;
         _waitingForEffects = false;
         _actionFiredThisFrame = false;
         _quietFrameCount = 0;
@@ -182,7 +173,6 @@ public static class CardPlayReplayPatch
         // Clear flags that block OnTurnStarted from starting a new dispatch.
         _dispatching = false;
         _waitingForEffects = false;
-        _cardPlayInFlight = false;
         _awaitingEndTurnCompletion = false;
     }
 
@@ -453,7 +443,6 @@ public static class CardPlayReplayPatch
 
         if (action is PlayCardAction playCard)
         {
-            _cardPlayInFlight = false;
             ReplayDispatcher.CardPlayInFlight = false;
             RunOverlay.NotifyCardPlayFinished();
             WaitForEffectsThenDispatch();

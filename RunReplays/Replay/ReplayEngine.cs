@@ -227,30 +227,6 @@ public static class ReplayEngine
         return null;
     }
 
-    // ── Starting bonus ────────────────────────────────────────────────────────
-
-    private const string StartingBonusPrefix = "ChooseStartingBonus ";
-
-    public static bool PeekStartingBonus(out int choiceIndex)
-    {
-        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(StartingBonusPrefix)
-            && int.TryParse(cmd.AsSpan(StartingBonusPrefix.Length), out choiceIndex))
-            return true;
-
-        choiceIndex = -1;
-        return false;
-    }
-
-    public static bool ConsumeStartingBonus(out int choiceIndex)
-    {
-        if (PeekStartingBonus(out choiceIndex))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
-
     // ── Map node choices ──────────────────────────────────────────────────────
     //
     // Recorded by PlayerActionBuffer via MoveToMapCoordAction.ToString():
@@ -543,16 +519,6 @@ public static class ReplayEngine
         return false;
     }
 
-    public static bool ConsumeSacrificeCardReward(out int rewardIndex)
-    {
-        if (PeekSacrificeCardReward(out rewardIndex))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
-
     // ── Relic rewards ─────────────────────────────────────────────────────────
 
     private const string RelicRewardPrefix = "TakeRelicReward: ";
@@ -641,16 +607,6 @@ public static class ReplayEngine
         return false;
     }
 
-    public static bool ConsumeEventOption(out string textKey)
-    {
-        if (PeekEventOption(out textKey))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
-
     /// <summary>
     /// Returns true if any ChooseEventOption command exists anywhere in the queue,
     /// regardless of position.
@@ -709,20 +665,8 @@ public static class ReplayEngine
     public static bool PeekOpenShop()
         => _pending.TryPeek(out string? cmd) && cmd == OpenShopCmd;
 
-    public static bool ConsumeOpenShop()
-    {
-        if (PeekOpenShop()) { SignalConsumed(_pending.Dequeue()); return true; }
-        return false;
-    }
-
     public static bool PeekOpenFakeShop()
         => _pending.TryPeek(out string? cmd) && cmd == OpenFakeShopCmd;
-
-    public static bool ConsumeOpenFakeShop()
-    {
-        if (PeekOpenFakeShop()) { SignalConsumed(_pending.Dequeue()); return true; }
-        return false;
-    }
 
     public static bool PeekBuyCard(out string cardTitle)
     {
@@ -732,12 +676,6 @@ public static class ReplayEngine
             return true;
         }
         cardTitle = string.Empty;
-        return false;
-    }
-
-    public static bool ConsumeBuyCard(out string cardTitle)
-    {
-        if (PeekBuyCard(out cardTitle)) { SignalConsumed(_pending.Dequeue()); return true; }
         return false;
     }
 
@@ -752,12 +690,6 @@ public static class ReplayEngine
         return false;
     }
 
-    public static bool ConsumeBuyRelic(out string relicTitle)
-    {
-        if (PeekBuyRelic(out relicTitle)) { SignalConsumed(_pending.Dequeue()); return true; }
-        return false;
-    }
-
     public static bool PeekBuyPotion(out string potionTitle)
     {
         if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(BuyPotionPrefix))
@@ -769,20 +701,8 @@ public static class ReplayEngine
         return false;
     }
 
-    public static bool ConsumeBuyPotion(out string potionTitle)
-    {
-        if (PeekBuyPotion(out potionTitle)) { SignalConsumed(_pending.Dequeue()); return true; }
-        return false;
-    }
-
     public static bool PeekBuyCardRemoval()
         => _pending.TryPeek(out string? cmd) && cmd == BuyCardRemovalCmd;
-
-    public static bool ConsumeBuyCardRemoval()
-    {
-        if (PeekBuyCardRemoval()) { SignalConsumed(_pending.Dequeue()); return true; }
-        return false;
-    }
 
     // ── Rest site option choices ──────────────────────────────────────────────
     //
@@ -854,16 +774,6 @@ public static class ReplayEngine
         return false;
     }
 
-    public static bool ConsumeNetPickRelicAction(out int relicIndex)
-    {
-        if (PeekNetPickRelicAction(out relicIndex))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
-
     // ── Gold rewards ──────────────────────────────────────────────────────────
 
     private const string GoldRewardPrefix = "TakeGoldReward: ";
@@ -900,16 +810,6 @@ public static class ReplayEngine
 
     public static bool PeekProceedToNextAct()
         => _pending.TryPeek(out string? cmd) && cmd.StartsWith(ProceedToNextActPrefix);
-
-    public static bool ConsumeProceedToNextAct()
-    {
-        if (PeekProceedToNextAct())
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
 
     // ── Card removal from deck ────────────────────────────────────────────────
     //
@@ -1346,13 +1246,4 @@ public static class ReplayEngine
         return false;
     }
 
-    public static bool ConsumeCrystalSphereClick(out int x, out int y, out int tool)
-    {
-        if (PeekCrystalSphereClick(out x, out y, out tool))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
 }
