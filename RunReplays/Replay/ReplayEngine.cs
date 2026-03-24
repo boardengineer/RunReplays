@@ -257,38 +257,6 @@ public static class ReplayEngine
         return false;
     }
 
-    public static bool ConsumeMapNode(out int col, out int row)
-    {
-        if (PeekMapNode(out col, out row))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
-
-    // ── End player turn ───────────────────────────────────────────────────────
-    //
-    // Recorded by PlayerActionBuffer via EndPlayerTurnAction.ToString():
-    //   "EndPlayerTurnAction for player {playerId} round {combatRound}"
-
-    private const string EndTurnPrefix = "EndPlayerTurnAction ";
-
-    public static bool PeekEndTurn()
-    {
-        return _pending.TryPeek(out string? cmd) && cmd.StartsWith(EndTurnPrefix);
-    }
-
-    public static bool ConsumeEndTurn()
-    {
-        if (PeekEndTurn())
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
-
     // Temp function as a passtrhough to consume
     public static bool ConsumeAny()
     { 
@@ -321,16 +289,6 @@ public static class ReplayEngine
             }
         }
         slotIndex = -1;
-        return false;
-    }
-
-    public static bool ConsumeNetDiscardPotion(out int slotIndex)
-    {
-        if (PeekNetDiscardPotion(out slotIndex))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
         return false;
     }
 
@@ -384,16 +342,6 @@ public static class ReplayEngine
         return true;
     }
 
-    public static bool ConsumeUsePotion(out uint potionIndex, out uint? targetId, out bool inCombat)
-    {
-        if (PeekUsePotion(out potionIndex, out targetId, out inCombat))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
-
     // ── Card plays ────────────────────────────────────────────────────────────
     //
     // Recorded by PlayerActionBuffer via PlayCardAction.ToString():
@@ -401,47 +349,6 @@ public static class ReplayEngine
     // TargetId prints as empty string when null.
 
     private const string CardPlayPrefix       = "PlayCardAction ";
-    private const string CardPlayIndexMarker  = " index: ";
-    private const string CardPlayTargetMarker = " targetid: ";
-
-    public static bool PeekCardPlay(out uint combatCardIndex, out uint? targetId)
-    {
-        combatCardIndex = 0;
-        targetId = null;
-
-        if (!_pending.TryPeek(out string? cmd) || !cmd.StartsWith(CardPlayPrefix))
-            return false;
-
-        // Parse from the right so card display names containing spaces are safe.
-        int targetIdx = cmd.LastIndexOf(CardPlayTargetMarker, StringComparison.Ordinal);
-        int indexIdx  = cmd.LastIndexOf(CardPlayIndexMarker,  StringComparison.Ordinal);
-
-        if (targetIdx < 0 || indexIdx < 0 || indexIdx >= targetIdx)
-            return false;
-
-        ReadOnlySpan<char> indexStr = cmd.AsSpan(
-            indexIdx + CardPlayIndexMarker.Length,
-            targetIdx - indexIdx - CardPlayIndexMarker.Length).Trim();
-
-        if (!uint.TryParse(indexStr, out combatCardIndex))
-            return false;
-
-        ReadOnlySpan<char> targetStr = cmd.AsSpan(targetIdx + CardPlayTargetMarker.Length).Trim();
-        if (targetStr.Length > 0 && uint.TryParse(targetStr, out uint tid))
-            targetId = tid;
-
-        return true;
-    }
-
-    public static bool ConsumeCardPlay(out uint combatCardIndex, out uint? targetId)
-    {
-        if (PeekCardPlay(out combatCardIndex, out targetId))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
 
     // ── Card rewards ──────────────────────────────────────────────────────────
 
@@ -477,23 +384,10 @@ public static class ReplayEngine
         return false;
     }
 
-    public static bool ConsumeCardReward(out string cardTitle, out int rewardIndex)
-    {
-        if (PeekCardReward(out cardTitle, out rewardIndex))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
-
     // ── Sacrifice card reward (Pael's Wing) ─────────────────────────────────
 
     private const string SacrificeCardRewardCmd = "SacrificeCardReward";
     private const string SacrificeCardRewardIndexedPrefix = "SacrificeCardReward[";
-
-    public static bool PeekSacrificeCardReward() =>
-        PeekSacrificeCardReward(out _);
 
     public static bool PeekSacrificeCardReward(out int rewardIndex)
     {
@@ -534,16 +428,6 @@ public static class ReplayEngine
         return false;
     }
 
-    public static bool ConsumeRelicReward(out string relicTitle)
-    {
-        if (PeekRelicReward(out relicTitle))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
-        return false;
-    }
-
     // ── Potion rewards ────────────────────────────────────────────────────────
 
     private const string PotionRewardPrefix = "TakePotionReward: ";
@@ -556,16 +440,6 @@ public static class ReplayEngine
             return true;
         }
         potionTitle = string.Empty;
-        return false;
-    }
-
-    public static bool ConsumePotionReward(out string potionTitle)
-    {
-        if (PeekPotionReward(out potionTitle))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
         return false;
     }
 
@@ -1203,7 +1077,6 @@ public static class ReplayEngine
     private static bool IsCombatSignificant(string cmd)
     {
         return cmd.StartsWith(CardPlayPrefix)
-            || cmd.StartsWith(EndTurnPrefix)
             || cmd.StartsWith(UsePotionPrefix)
             || cmd.StartsWith(NetDiscardPotionPrefix)
             || cmd.StartsWith(MapNodePrefix)
