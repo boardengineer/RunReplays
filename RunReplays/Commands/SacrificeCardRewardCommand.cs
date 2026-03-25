@@ -55,7 +55,7 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
     public override ExecuteResult Execute()
     {
         // Step 3+4: selection screen is open — perform the sacrifice.
-        var screen = CardRewardReplayPatch.selectionScreen;
+        var screen = ReplayState.CardRewardSelectionScreen;
         if (screen != null)
         {
             var extras = ExtraOptionsField?.GetValue(screen)
@@ -84,7 +84,7 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
             
             OnAlternateRewardSelectedMethod?.Invoke(screen, new object[] { sacrifice.AfterSelected });
 
-            CardRewardReplayPatch.selectionScreen = null;
+            ReplayState.CardRewardSelectionScreen = null;
             _screenOpened = false;
             ReplayDispatcher.DispatchNow();
             return ExecuteResult.Ok();

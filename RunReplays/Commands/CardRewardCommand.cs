@@ -63,12 +63,11 @@ public class CardRewardCommand : ReplayCommand
         Node? screenButton = null;
         int cardRewardCount = 0;
 
-        if (CardRewardReplayPatch.selectionScreen != null)
+        if (ReplayState.CardRewardSelectionScreen != null)
         {
-            if (CardRewardReplayPatch.SelectCard(CardTitle))
+            if (SelectCard(CardTitle))
             {
                 waitingForRewardScreenOpen = false;
-                CardRewardReplayPatch.selectionScreen = null;
                 return ExecuteResult.Ok();
             }
         }
@@ -90,7 +89,7 @@ public class CardRewardCommand : ReplayCommand
                     PlayerActionBuffer.LogDispatcher($"[CardReward] Claiming SpecialCardReward '{CardTitle}'.");
                     CardRewardCommand.InvokeGetReward(button);
                     waitingForRewardScreenOpen = false;
-                    CardRewardReplayPatch.selectionScreen = null;
+                    ReplayState.CardRewardSelectionScreen = null;
                     return ExecuteResult.Ok();
                 }
             }
@@ -231,5 +230,51 @@ public class CardRewardCommand : ReplayCommand
             t = t.BaseType;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Returns the first node in <paramref name="nodes"/> whose CardModel title
+    /// matches <paramref name="expectedTitle"/>, or null if none is found.
+    /// </summary>
+    private static Node? FindHolderByTitle(
+        Godot.Collections.Array<Node> nodes, string expectedTitle)
+    {
+        foreach (Node node in nodes)
+        {
+            PropertyInfo? prop = node.GetType().GetProperty(
+                "CardModel", BindingFlags.Public | BindingFlags.Instance);
+
+            if (prop?.GetValue(node) is not CardModel card)
+                continue;
+
+            if (card.Title == expectedTitle)
+                return node;
+        }
+        return null;
+    }
+
+    internal static bool SelectCard(string expectedTitle)
+    {
+        if (!ReplayEngine.IsActive)
+            return false;
+
+        if (ReplayState.CardRewardSelectionScreen == null)
+            return false;
+
+        Node? match = FindHolderByTitle(
+            ReplayState.CardRewardSelectionScreen.FindChildren("*", "", owned: false),
+            expectedTitle);
+
+        if (match == null)
+        {
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: card '{expectedTitle}' not found in reward screen.");
+            return false;
+        }
+
+        match.EmitSignal("Pressed", match);
+        PlayerActionBuffer.LogToDevConsole($"[RunReplays] Replay: auto-selected card reward '{expectedTitle}'.");
+
+        ReplayState.CardRewardSelectionScreen = null;
+        return true;
     }
 }

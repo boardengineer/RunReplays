@@ -3,6 +3,7 @@ using Godot;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.Nodes.Screens;
+using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 
 namespace RunReplays;
 
@@ -21,6 +22,11 @@ public static class ReplayState
     /// The currently active rewards screen, set by the BattleRewardsReplayPatch postfix.
     /// </summary>
     public static NRewardsScreen? ActiveRewardsScreen { get; set; }
+
+    /// <summary>
+    /// The card reward selection screen, set by CardRewardReplayPatch postfix.
+    /// </summary>
+    public static NCardRewardSelectionScreen? CardRewardSelectionScreen { get; set; }
 
     /// <summary>
     /// Tracks whether a card play is in flight.  Set by the combat patch.
@@ -99,6 +105,7 @@ public static class ReplayState
     internal static void Reset()
     {
         ActiveRewardsScreen = null;
+        CardRewardSelectionScreen = null;
         CardPlayInFlight = false;
         PotionInFlight = false;
         _actionInFlight = false;
