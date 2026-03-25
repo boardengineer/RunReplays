@@ -11,6 +11,9 @@ namespace RunReplays.Commands;
 /// </summary>
 public sealed class OpenFakeShopCommand : ReplayCommand
 {
+    private static readonly MethodInfo? OpenInventoryMethod =
+        typeof(NFakeMerchant).GetMethod("OpenInventory",
+            BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 
     private OpenFakeShopCommand(string raw) : base(raw) { }
 
@@ -18,23 +21,17 @@ public sealed class OpenFakeShopCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        var merchant = FakeMerchantReplayPatch.ActiveInstance;
+        var merchant = ReplayState.FakeMerchantInstance;
         if (merchant == null || !merchant.IsInsideTree())
             return ExecuteResult.Retry(200);
 
-        var openMethod = FakeMerchantReplayPatch.OpenInventoryMethod;
+        var openMethod = OpenInventoryMethod;
         if (openMethod == null)
         {
             PlayerActionBuffer.LogToDevConsole("[OpenFakeShop] OpenInventory method not found.");
             return ExecuteResult.Ok();
         }
-
-        // Check if entries are already available before opening.
-        var entries = FakeMerchantReplayPatch.GetEntries(merchant);
-        if (entries == null || entries.Count == 0)
-            return ExecuteResult.Retry(200);
-
-        PlayerActionBuffer.LogDispatcher("[FakeShop] Opening inventory.");
+        
         openMethod.Invoke(merchant, null);
 
         return ExecuteResult.Ok();

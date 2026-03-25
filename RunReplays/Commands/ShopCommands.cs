@@ -1,7 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Godot;
 using MegaCrit.Sts2.Core.Entities.Merchant;
+using MegaCrit.Sts2.Core.Nodes.Events.Custom;
 
 using RunReplays.Patches;
 namespace RunReplays.Commands;
@@ -108,8 +111,8 @@ public sealed class BuyRelicCommand : ReplayCommand
             entries = ShopOpenedReplayPatch.GetEntries(room);
 
         // Fall back to fake merchant if regular shop isn't active.
-        if ((entries == null || entries.Count == 0) && FakeMerchantReplayPatch.ActiveInstance != null)
-            entries = FakeMerchantReplayPatch.GetEntries(FakeMerchantReplayPatch.ActiveInstance);
+        if ((entries == null || entries.Count == 0) && ReplayState.FakeMerchantInstance != null)
+            entries = GetFakeMerchantEntries(ReplayState.FakeMerchantInstance);
 
         if (entries == null || entries.Count == 0)
             return ExecuteResult.Retry(200);
@@ -132,6 +135,69 @@ public sealed class BuyRelicCommand : ReplayCommand
         if (!raw.StartsWith(Prefix))
             return null;
         return new BuyRelicCommand(raw, raw.Substring(Prefix.Length));
+    }
+
+    // NFakeMerchant._event is the FakeMerchant model which holds the inventory.
+    private static readonly FieldInfo? EventField =
+        typeof(NFakeMerchant).GetField("_event",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+    // FakeMerchant._inventory is the MerchantInventory with relic entries.
+    private static readonly FieldInfo? InventoryField =
+        typeof(NFakeMerchant).Assembly
+            .GetType("MegaCrit.Sts2.Core.Models.Events.FakeMerchant")
+            ?.GetField("_inventory", BindingFlags.NonPublic | BindingFlags.Instance);
+
+    internal static List<MerchantEntry>? GetFakeMerchantEntries(NFakeMerchant merchant)
+    {
+        const BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic
+                              | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
+
+        object? eventModel = EventField?.GetValue(merchant);
+        if (eventModel == null)
+        {
+            PlayerActionBuffer.LogToDevConsole("[FakeMerchantReplayPatch] _event field is null.");
+            return null;
+        }
+
+        object? inventory = InventoryField?.GetValue(eventModel);
+        if (inventory == null)
+        {
+            PlayerActionBuffer.LogToDevConsole("[FakeMerchantReplayPatch] _inventory field is null.");
+            return null;
+        }
+
+        var all = new List<MerchantEntry>();
+        foreach (var field in inventory.GetType().GetFields(bf))
+        {
+            object? value;
+            try { value = field.GetValue(inventory); }
+            catch { continue; }
+
+            if (value is IEnumerable enumerable)
+                foreach (object? item in enumerable)
+                    if (item is MerchantEntry e)
+                        all.Add(e);
+            else if (value is MerchantEntry single)
+                all.Add(single);
+        }
+
+        foreach (var prop in inventory.GetType().GetProperties(bf))
+        {
+            if (prop.GetIndexParameters().Length > 0) continue;
+            object? value;
+            try { value = prop.GetValue(inventory); }
+            catch { continue; }
+
+            if (value is IEnumerable enumerable)
+                foreach (object? item in enumerable)
+                    if (item is MerchantEntry e && !all.Contains(e))
+                        all.Add(e);
+            else if (value is MerchantEntry single && !all.Contains(single))
+                all.Add(single);
+        }
+
+        return all.Count > 0 ? all : null;
     }
 }
 
