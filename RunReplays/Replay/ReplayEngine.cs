@@ -262,64 +262,7 @@ public static class ReplayEngine
         SignalConsumed(_pending.Dequeue());
         return true;
     }
-
-    // ── Card rewards ──────────────────────────────────────────────────────────
-
-    private const string CardRewardPrefix = "TakeCardReward: ";
-    private const string CardRewardIndexedPrefix = "TakeCardReward[";
-
-    public static bool PeekCardReward(out string cardTitle, out int rewardIndex)
-    {
-        if (_pending.TryPeek(out string? cmd))
-        {
-            // Indexed format: TakeCardReward[N]: CardTitle
-            if (cmd.StartsWith(CardRewardIndexedPrefix))
-            {
-                int closeBracket = cmd.IndexOf("]: ", CardRewardIndexedPrefix.Length, StringComparison.Ordinal);
-                if (closeBracket > CardRewardIndexedPrefix.Length &&
-                    int.TryParse(cmd.AsSpan(CardRewardIndexedPrefix.Length, closeBracket - CardRewardIndexedPrefix.Length), out rewardIndex))
-                {
-                    cardTitle = cmd.Substring(closeBracket + "]: ".Length);
-                    return true;
-                }
-            }
-
-            // Legacy format: TakeCardReward: CardTitle
-            if (cmd.StartsWith(CardRewardPrefix))
-            {
-                cardTitle = cmd.Substring(CardRewardPrefix.Length);
-                rewardIndex = -1;
-                return true;
-            }
-        }
-        cardTitle = string.Empty;
-        rewardIndex = -1;
-        return false;
-    }
-
-    private const string OpenFakeShopCmd   = "OpenFakeShop";
-
-    public static bool PeekOpenFakeShop()
-        => _pending.TryPeek(out string? cmd) && cmd == OpenFakeShopCmd;
-
-    // ── Rest site option choices ──────────────────────────────────────────────
-    //
-    // Recorded by RestSiteRecordPatch via RestSiteSynchronizer.ChooseLocalOption:
-    //   "ChooseRestSiteOption {optionId}"  (e.g. "HEAL", "SMITH")
-
-    private const string RestSiteOptionPrefix = "ChooseRestSiteOption ";
-
-    public static bool PeekRestSiteOption(out string optionId)
-    {
-        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(RestSiteOptionPrefix))
-        {
-            optionId = cmd.Substring(RestSiteOptionPrefix.Length);
-            return true;
-        }
-        optionId = string.Empty;
-        return false;
-    }
-
+    
     // ── Crystal Sphere minigame clicks ──────────────────────────────────────
     //
     // Recorded by CrystalSphereCellClickedPatch via CrystalSphereMinigame.CellClicked:

@@ -57,23 +57,9 @@ public static class FromChooseACardScreenPatch
         _pendingScope = null;
 
         SelectorStackDebug.Log("FromChooseACardScreen.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
-        if (ReplayEngine.IsActive)
-        {
-            if (ReplayEngine.PeekCardReward(out string cardTitle, out _))
-            {
-                // Card reward that uses FromChooseACardScreen (e.g. Morphic Grove).
-                // The TakeCardReward command has the card title — use it to select.
-                _pendingScope = CardSelectCmd.PushSelector(new ReplayCardRewardChooseSelector(cardTitle));
-                SelectorStackDebug.Log("PUSH FromChooseACardScreen (card reward by title)");
-                PlayerActionBuffer.LogToDevConsole(
-                    $"[CardChoiceScreenPatch] Pushed ReplayCardRewardChooseSelector for card reward '{cardTitle}'.");
-            }
-        }
-        else
+        if (!ReplayEngine.IsActive)
         {
             _recordingCards = cards.ToList();
-            PlayerActionBuffer.LogToDevConsole(
-                $"[CardChoiceScreenPatch] Prefix: captured {_recordingCards.Count} card(s) for recording.");
         }
     }
 

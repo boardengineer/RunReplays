@@ -48,16 +48,11 @@ public static class RestSiteReplayPatch
     {
         RngCheckpointLogger.Log("RestSite (BeginRestSite)");
 
-        if (ReplayEngine.IsActive)
-            ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.RestSite);
-
-        if (!ReplayEngine.PeekRestSiteOption(out string optionId))
+        if (!ReplayEngine.IsActive)
             return;
-
+        
+        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.RestSite);
         _activeSynchronizer = __instance;
-
-        PlayerActionBuffer.LogToDevConsole(
-            $"[RestSiteReplayPatch] BeginRestSite — stored synchronizer for option '{optionId}'.");
         ReplayDispatcher.DispatchNow();
     }
 
@@ -120,23 +115,7 @@ public static class RestSiteReplayPatch
             $"[RestSiteReplayPatch] ChooseLocalOption returned {success} — notifying room.");
         if (!success)
             return;
-
-        // Check for another pending rest site option (e.g. Miniature Tent grants
-        // two rest site choices).  If found, select it before notifying the room,
-        // so the proceed button only appears after all options are consumed.
-        if (ReplayEngine.PeekRestSiteOption(out string nextOptionId))
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[RestSiteReplayPatch] Another rest site option pending: '{nextOptionId}' — continuing chain.");
-            Callable.From(() =>
-            {
-                NRestSiteRoom.Instance?.AfterSelectingOption(option);
-                TaskHelper.RunSafely(WaitForRoomThenSelect(sync, nextOptionId));
-            }).CallDeferred();
-        }
-        else
-        {
-            Callable.From(() => NRestSiteRoom.Instance?.AfterSelectingOption(option)).CallDeferred();
-        }
+        
+        Callable.From(() => NRestSiteRoom.Instance?.AfterSelectingOption(option)).CallDeferred();
     }
 }

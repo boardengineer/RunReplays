@@ -65,9 +65,6 @@ public static class FakeMerchantReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        if (!ReplayEngine.PeekOpenFakeShop())
-            return;
-
         ActiveInstance = __instance;
         ShopOpenedReplayPatch.ActiveRoom = null;
         ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Shop);
