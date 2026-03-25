@@ -19,7 +19,6 @@ public sealed class TakeChestRelicCommand : ReplayCommand
 
     public string RelicTitle { get; }
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Treasure;
 
     private TakeChestRelicCommand(string raw, string relicTitle) : base(raw)
     {
@@ -66,7 +65,6 @@ public sealed class NetPickRelicCommand : ReplayCommand
 
     public int RelicIndex { get; }
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Treasure;
 
     private NetPickRelicCommand(string raw, int relicIndex) : base(raw)
     {

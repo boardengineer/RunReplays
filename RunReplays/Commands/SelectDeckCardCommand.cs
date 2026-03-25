@@ -23,7 +23,6 @@ public class SelectDeckCardCommand : ReplayCommand
 
     public int[] DeckIndices { get; }
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.None;
     public override bool IsSelectionCommand => true;
 
     private SelectDeckCardCommand(string raw, int[] deckIndices) : base(raw)

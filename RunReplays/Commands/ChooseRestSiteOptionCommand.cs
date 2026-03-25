@@ -13,7 +13,6 @@ public class ChooseRestSiteOptionCommand : ReplayCommand
 
     public string OptionId { get; }
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.RestSite;
 
     private ChooseRestSiteOptionCommand(string raw, string optionId) : base(raw)
     {

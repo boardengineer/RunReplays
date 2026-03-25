@@ -17,7 +17,6 @@ public class ChooseEventOptionCommand : ReplayCommand
     public string TextKey { get; }
     public int RecordedIndex { get; }
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Event;
 
     private ChooseEventOptionCommand(string raw, string textKey, int recordedIndex) : base(raw)
     {
@@ -89,8 +88,7 @@ public class ChooseEventOptionCommand : ReplayCommand
         NGame.Instance!.GetTree()!.CreateTimer(0.5).Connect(
             "timeout", Callable.From(() =>
             {
-                ReplayState.SignalReady(ReplayState.ReadyState.Event);
-                ReplayDispatcher.DispatchNow();
+                                ReplayDispatcher.DispatchNow();
             }));
     }
 

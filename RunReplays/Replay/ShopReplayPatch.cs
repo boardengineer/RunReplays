@@ -49,8 +49,7 @@ public static class ShopRoomReadyPatch
             return;
 
         ShopOpenedReplayPatch.ActiveRoom = __instance;
-        ReplayState.SignalReady(ReplayState.ReadyState.Shop);
-        ReplayDispatcher.DispatchNow();
+                ReplayDispatcher.DispatchNow();
     }
 }
 
@@ -106,8 +105,7 @@ public static class ShopOpenedReplayPatch
             return;
 
         ActiveRoom = __instance;
-        ReplayState.SignalReady(ReplayState.ReadyState.Shop);
-        ReplayDispatcher.DispatchNow();
+                ReplayDispatcher.DispatchNow();
     }
 
     internal static NMerchantRoom? ActiveRoom;

@@ -11,7 +11,6 @@ namespace RunReplays.Commands;
 /// </summary>
 public sealed class OpenShopCommand : ReplayCommand
 {
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Shop;
 
     private OpenShopCommand(string raw) : base(raw) { }
 
@@ -42,7 +41,6 @@ public sealed class BuyCardCommand : ReplayCommand
 
     public string CardTitle { get; }
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Shop;
 
     private BuyCardCommand(string raw, string cardTitle) : base(raw)
     {
@@ -92,7 +90,6 @@ public sealed class BuyRelicCommand : ReplayCommand
 
     public string RelicTitle { get; }
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Shop;
 
     private BuyRelicCommand(string raw, string relicTitle) : base(raw)
     {
@@ -147,7 +144,6 @@ public sealed class BuyRelicCommand : ReplayCommand
 /// </summary>
 public sealed class BuyCardRemovalCommand : ReplayCommand
 {
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Shop;
 
     private BuyCardRemovalCommand(string raw) : base(raw) { }
 
@@ -190,7 +186,6 @@ public sealed class BuyPotionCommand : ReplayCommand
 
     public string PotionTitle { get; }
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Shop;
 
     private BuyPotionCommand(string raw, string potionTitle) : base(raw)
     {

@@ -131,7 +131,7 @@ public static class CrystalSphereReplayPatch
 
         ActiveScreen = (GodotObject)__instance;
         EnsureReflection();
-        ReplayState.SignalReady(ReplayState.ReadyState.CrystalSphere);
+        ReplayDispatcher.TryDispatch();
 
         PlayerActionBuffer.LogToDevConsole(
             "[CrystalSphereReplayPatch] Screen opened — dispatching clicks.");

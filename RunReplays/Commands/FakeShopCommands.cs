@@ -10,7 +10,6 @@ namespace RunReplays.Commands;
 /// </summary>
 public sealed class OpenFakeShopCommand : ReplayCommand
 {
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Shop;
 
     private OpenFakeShopCommand(string raw) : base(raw) { }
 

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Godot;
-using MegaCrit.Sts2.Core.Combat;
-using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using MegaCrit.Sts2.Core.Runs;
@@ -12,12 +10,7 @@ namespace RunReplays;
 
 /// <summary>
 /// Central controller for replay command execution.  Sits between game events
-/// (which signal readiness) and command execution (which invokes game APIs).
-///
-/// Game event postfixes call <see cref="ReplayState.SignalReady"/> to indicate that the
-/// game is ready to accept a particular category of action.  The dispatcher
-/// checks the next command in the queue and, if it matches a ready category,
-/// executes it after an optional delay.
+/// and command execution (which invokes game APIs).
 ///
 /// This gives the mod control over pacing and pausing replay commands
 /// independently of game event timing.
@@ -162,16 +155,25 @@ public static class ReplayDispatcher
         ++_dispatchGeneration;
         RestoreGameSpeed();
         StartWatchdog();
-        SubscribeToRoomEntered();
+        SubscribeToRoomEvents();
     }
 
-    private static bool _subscribedToRoomEntered;
+    private static bool _subscribedToRoomEvents;
 
-    private static void SubscribeToRoomEntered()
+    private static void SubscribeToRoomEvents()
     {
-        if (_subscribedToRoomEntered) return;
-        _subscribedToRoomEntered = true;
+        if (_subscribedToRoomEvents) return;
+        _subscribedToRoomEvents = true;
+        RunManager.Instance.RoomEntered += OnRoomEntered;
         RunManager.Instance.RoomExited += OnRoomExited;
+    }
+
+    private static void OnRoomEntered()
+    {
+        if (!ReplayEngine.IsActive) return;
+
+        MapMoveInFlight = false;
+        TryDispatch();
     }
 
     private static void OnRoomExited()
@@ -215,12 +217,11 @@ public static class ReplayDispatcher
             && ReplayEngine.PeekNext(out string? cmd) && cmd != null
             && cmd.StartsWith("MoveToMapCoordAction "))
         {
-            // Force map readiness and clear blockers so dispatch can proceed.
+            // Force-clear blockers so dispatch can proceed.
             ReplayState.ClearActionInFlight();
             MapMoveInFlight = false;
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
-            ReplayState.SignalReady(ReplayState.ReadyState.Map);
             NMapScreen.Instance?.Open();
             NMapScreen.Instance?.SetTravelEnabled(true);
             DispatchNow();
@@ -267,18 +268,8 @@ public static class ReplayDispatcher
             return;
         }
 
-        // Block potion use/discard during combat startup (before TurnStarted fires).
-        if ((cmd.StartsWith("UsePotionAction "))
-            && CombatManager.Instance.IsInProgress
-            && (ReplayState.Ready & ReplayState.ReadyState.Combat) == 0)
-            return;
-
         // Don't re-dispatch the same command that's already in progress.
         if (_dispatchInProgress && cmd == _lastDispatchedCmd)
-            return;
-
-        ReplayState.ReadyState required = GetRequiredState(cmd);
-        if (required != ReplayState.ReadyState.None && (ReplayState.Ready & required) == 0)
             return;
 
         _dispatchInProgress = true;
@@ -345,23 +336,6 @@ public static class ReplayDispatcher
             return;
         }
 
-        ReplayState.ReadyState required = GetRequiredState(cmd);
-        if (required != ReplayState.ReadyState.None && (ReplayState.Ready & required) == 0)
-            return;
-
-        // Potion use/discard returns ReadyState.None (usable in any context),
-        // but during combat startup (before TurnStarted fires) the combat
-        // state isn't ready.  Block until Combat readiness is set.
-        if (required == ReplayState.ReadyState.None
-            && (cmd.StartsWith("UsePotionAction ") || cmd.StartsWith("NetDiscardPotionGameAction "))
-            && CombatManager.Instance.IsInProgress
-            && (ReplayState.Ready & ReplayState.ReadyState.Combat) == 0)
-        {
-            _dispatchInProgress = false;
-            _lastDispatchedCmd = null;
-            return;
-        }
-
         _lastDispatchTick = System.Environment.TickCount64;
 
         ReplayCommand? parsed = ReplayCommandParser.TryParse(cmd);
@@ -414,52 +388,4 @@ public static class ReplayDispatcher
             || cmd.StartsWith("UpgradeCard ");
     }
 
-    /// <summary>
-    /// Maps a raw command string to the readiness category it requires.
-    /// </summary>
-    private static ReplayState.ReadyState GetRequiredState(string cmd)
-    {
-        // Combat
-        if (cmd.StartsWith("PlayCardAction ")) return ReplayState.ReadyState.Combat;
-        if (cmd.StartsWith("EndPlayerTurnAction ")) return ReplayState.ReadyState.Combat;
-
-        // Potions can be used/discarded in any context (combat, rewards, events, map).
-        if (cmd.StartsWith("UsePotionAction ")) return ReplayState.ReadyState.None;
-        if (cmd.StartsWith("NetDiscardPotionGameAction ")) return ReplayState.ReadyState.None;
-
-        // Rewards
-        if (cmd.StartsWith("TakeGoldReward: ")) return ReplayState.ReadyState.Rewards;
-        if (cmd.StartsWith("TakeCardReward")) return ReplayState.ReadyState.Rewards;
-        if (cmd == "SacrificeCardReward" || cmd.StartsWith("SacrificeCardReward[")) return ReplayState.ReadyState.Rewards;
-        if (cmd.StartsWith("TakeRelicReward: ")) return ReplayState.ReadyState.Rewards;
-        if (cmd.StartsWith("TakePotionReward: ")) return ReplayState.ReadyState.Rewards;
-
-        // Navigation
-        if (cmd.StartsWith("MoveToMapCoordAction ")) return ReplayState.ReadyState.Map;
-        if (cmd.StartsWith("ChooseEventOption ")) return ReplayState.ReadyState.Event;
-        if (cmd.StartsWith("ChooseRestSiteOption ")) return ReplayState.ReadyState.RestSite;
-        if (cmd.StartsWith("VoteForMapCoordAction ")) return ReplayState.ReadyState.Rewards;
-
-        // Shop
-        if (cmd == "OpenShop" || cmd == "OpenFakeShop") return ReplayState.ReadyState.Shop;
-        if (cmd.StartsWith("BuyCard ") || cmd.StartsWith("BuyRelic ")
-            || cmd.StartsWith("BuyPotion ") || cmd == "BuyCardRemoval") return ReplayState.ReadyState.Shop;
-
-        // Treasure
-        if (cmd.StartsWith("TakeChestRelic ")) return ReplayState.ReadyState.Treasure;
-        if (cmd.StartsWith("NetPickRelicAction ")) return ReplayState.ReadyState.Treasure;
-
-        // Minigames
-        if (cmd.StartsWith("CrystalSphereClick ")) return ReplayState.ReadyState.CrystalSphere;
-
-        // Card selections don't need readiness — they're consumed inline by selectors.
-        if (cmd.StartsWith("SelectCardFromScreen ")) return ReplayState.ReadyState.None;
-        if (cmd.StartsWith("SelectDeckCard ")) return ReplayState.ReadyState.None;
-        if (cmd.StartsWith("SelectHandCards")) return ReplayState.ReadyState.None;
-        if (cmd.StartsWith("SelectSimpleCard ")) return ReplayState.ReadyState.None;
-        if (cmd.StartsWith("RemoveCardFromDeck: ")) return ReplayState.ReadyState.None;
-        if (cmd.StartsWith("UpgradeCard ")) return ReplayState.ReadyState.None;
-
-        return ReplayState.ReadyState.None;
-    }
 }

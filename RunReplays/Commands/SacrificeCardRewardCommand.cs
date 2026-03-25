@@ -39,7 +39,6 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
     /// <summary>True once we've opened the card reward screen and are waiting for the selection screen.</summary>
     private static bool _screenOpened;
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Rewards;
 
     private SacrificeCardRewardCommand(string raw, int rewardIndex) : base(raw)
     {

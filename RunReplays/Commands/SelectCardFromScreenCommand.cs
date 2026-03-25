@@ -22,7 +22,6 @@ public sealed class SelectCardFromScreenCommand : ReplayCommand
 
     public int Index { get; }
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.None;
     public override bool IsSelectionCommand => true;
 
     private SelectCardFromScreenCommand(string raw, int index) : base(raw)

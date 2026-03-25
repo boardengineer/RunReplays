@@ -49,8 +49,7 @@ public static class TreasureRoomReplayPatch
 
             ActiveRoom = __instance;
             
-            ReplayState.SignalReady(ReplayState.ReadyState.Treasure);
-            ReplayDispatcher.DispatchNow();
+                        ReplayDispatcher.DispatchNow();
         }
 
     }
@@ -64,8 +63,7 @@ public static class TreasureRoomReplayPatch
             if (!ReplayEngine.IsActive)
                 return;
 
-            ReplayState.SignalReady(ReplayState.ReadyState.Treasure);
-            ReplayDispatcher.DispatchNow();
+                        ReplayDispatcher.DispatchNow();
         }
     }
 
@@ -102,7 +100,7 @@ public static class TreasureRoomReplayPatch
                 "[Treasure] Clicking proceed button.");
             button.EmitSignal(NClickableControl.SignalName.Released, button);
             // The proceed opens the map — signal readiness for the next map move.
-            ReplayState.SignalReady(ReplayState.ReadyState.Map);
+            ReplayDispatcher.TryDispatch();
         }
     }
 }

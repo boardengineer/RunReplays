@@ -12,7 +12,6 @@ public class PotionRewardCommand : ReplayCommand
 
     public string PotionTitle { get; }
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Rewards;
 
     private PotionRewardCommand(string raw, string potionTitle) : base(raw)
     {

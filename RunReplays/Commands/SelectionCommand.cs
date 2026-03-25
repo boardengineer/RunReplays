@@ -24,7 +24,6 @@ public class SelectionCommand : ReplayCommand
     public SelectionKind Kind { get; }
     public int[] Indices { get; }
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.None;
     public override bool IsSelectionCommand => true;
 
     private SelectionCommand(string raw, SelectionKind kind, int[] indices) : base(raw)

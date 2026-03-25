@@ -12,7 +12,6 @@ public class RelicRewardCommand : ReplayCommand
 
     public string RelicTitle { get; }
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Rewards;
 
     private RelicRewardCommand(string raw, string relicTitle) : base(raw)
     {

@@ -12,7 +12,6 @@ public class GoldRewardCommand : ReplayCommand
 
     public int GoldAmount { get; }
 
-    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Rewards;
 
     private GoldRewardCommand(string raw, int goldAmount) : base(raw)
     {
