@@ -1,20 +1,21 @@
-using System.Reflection;
-using Godot;
-using MegaCrit.Sts2.Core.Nodes.Events.Custom;
-
 using RunReplays.Patch;
+
 namespace RunReplays.Commands;
 
 /// <summary>
-/// Open the fake merchant event shop inventory.
-/// Recorded as: "OpenFakeShop"
+///     Open the fake merchant event shop inventory.
+///     Recorded as: "OpenFakeShop"
 /// </summary>
 public sealed class OpenFakeShopCommand : ReplayCommand
 {
+    private OpenFakeShopCommand(string raw) : base(raw)
+    {
+    }
 
-    private OpenFakeShopCommand(string raw) : base(raw) { }
-
-    public override string Describe() => "open fake shop";
+    public override string Describe()
+    {
+        return "open fake shop";
+    }
 
     public override ExecuteResult Execute()
     {
@@ -41,5 +42,7 @@ public sealed class OpenFakeShopCommand : ReplayCommand
     }
 
     public static OpenFakeShopCommand? TryParse(string raw)
-        => raw == "OpenFakeShop" ? new OpenFakeShopCommand(raw) : null;
+    {
+        return raw == "OpenFakeShop" ? new OpenFakeShopCommand(raw) : null;
+    }
 }

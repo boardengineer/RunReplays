@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Reflection;
-using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Map;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
@@ -8,22 +7,19 @@ using RunReplays.Commands;
 using RunReplays.Utils;
 
 namespace RunReplays.Patch;
-using RunReplays;
 
 /// <summary>
-/// Harmony postfix on NMapScreen.SetTravelEnabled that, when a replay is active
-/// and the next command is a ChooseMapNode entry, defers an automatic map node
-/// selection to the next Godot frame.
-///
-/// SetTravelEnabled is the hook because it is called with enabled=true at the
-/// exact moment the map becomes interactive — both from our own
-/// StartingBonusReplayPatch and from ProceedFromTerminalRewardsScreen for
-/// combat rooms.  We confirm IsTravelEnabled is true after the call (the method
-/// ANDs the flag with Hook.ShouldProceedToNextMapPoint) before scheduling.
-///
-/// _mapPointDictionary is private so it is accessed via reflection once at
-/// class-load time.  OnMapPointSelectedLocally is public and handles vote
-/// dispatch to MapSelectionSynchronizer just as a real click would.
+///     Harmony postfix on NMapScreen.SetTravelEnabled that, when a replay is active
+///     and the next command is a ChooseMapNode entry, defers an automatic map node
+///     selection to the next Godot frame.
+///     SetTravelEnabled is the hook because it is called with enabled=true at the
+///     exact moment the map becomes interactive — both from our own
+///     StartingBonusReplayPatch and from ProceedFromTerminalRewardsScreen for
+///     combat rooms.  We confirm IsTravelEnabled is true after the call (the method
+///     ANDs the flag with Hook.ShouldProceedToNextMapPoint) before scheduling.
+///     _mapPointDictionary is private so it is accessed via reflection once at
+///     class-load time.  OnMapPointSelectedLocally is public and handles vote
+///     dispatch to MapSelectionSynchronizer just as a real click would.
 /// </summary>
 [HarmonyPatch(typeof(NMapScreen), nameof(NMapScreen.SetTravelEnabled))]
 public static class MapChoiceReplayPatch
@@ -46,7 +42,7 @@ public static class MapChoiceReplayPatch
 
         MapMoveCommand._activeScreen = __instance;
 
-        if (!ReplayEngine.PeekMapNode(out int col, out int row))
+        if (!ReplayEngine.PeekMapNode(out var col, out var row))
         {
             PlayerActionBuffer.LogToDevConsole("[RunReplays] ReplayEngine failed to peek map node.");
             return;
@@ -64,14 +60,11 @@ public static class MapChoiceReplayPatch
         }
 
         var coord = new MapCoord(col, row);
-        if (!dict.TryGetValue(coord, out NMapPoint? point))
-        {
-            return;
-        }
+        if (!dict.TryGetValue(coord, out var point)) return;
 
         CardPlayReplayPatch.InvalidateStaleTimers();
         screen.OnMapPointSelectedLocally(point);
     }
-    
+
     // internal static boolean MoveT
 }

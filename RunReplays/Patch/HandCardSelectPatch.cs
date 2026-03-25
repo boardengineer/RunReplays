@@ -3,32 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
-using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Models;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 
 namespace RunReplays.Patch;
-using RunReplays;
 
 /// <summary>
-/// Records hand-card selections (e.g. Touch of Insanity) into the action log
-/// by patching PlayerChoiceSynchronizer.SyncLocalChoice — the single point
-/// where every finalised local choice is announced.
-///
-/// Only CombatCard-type choices are captured (those created by CardSelectCmd.FromHand).
-/// Commands are recorded immediately when the choice is made.
+///     Records hand-card selections (e.g. Touch of Insanity) into the action log
+///     by patching PlayerChoiceSynchronizer.SyncLocalChoice — the single point
+///     where every finalised local choice is announced.
+///     Only CombatCard-type choices are captured (those created by CardSelectCmd.FromHand).
+///     Commands are recorded immediately when the choice is made.
 /// </summary>
 [HarmonyPatch(typeof(PlayerChoiceSynchronizer), nameof(PlayerChoiceSynchronizer.SyncLocalChoice))]
 public static class HandCardSelectRecordPatch
 {
     /// <summary>
-    /// Set by HandCardSelectForDiscardRecordPatch when it records a
-    /// FromHandForDiscard selection.  Prevents SyncLocalChoice from
-    /// recording a duplicate for the same selection.
+    ///     Set by HandCardSelectForDiscardRecordPatch when it records a
+    ///     FromHandForDiscard selection.  Prevents SyncLocalChoice from
+    ///     recording a duplicate for the same selection.
     /// </summary>
     internal static bool SuppressNext;
 
@@ -49,7 +48,8 @@ public static class HandCardSelectRecordPatch
         if (SuppressNext)
         {
             SuppressNext = false;
-            PlayerActionBuffer.LogToDevConsole("[HandCardSelectRecordPatch] Suppressed — already recorded by FromHandForDiscard.");
+            PlayerActionBuffer.LogToDevConsole(
+                "[HandCardSelectRecordPatch] Suppressed — already recorded by FromHandForDiscard.");
             return;
         }
 
@@ -70,26 +70,21 @@ public static class HandCardSelectRecordPatch
             return;
 
         var indices = new List<int>();
-        foreach (CardModel card in cards)
-        {
-            for (int i = 0; i < hand.Count; i++)
-            {
+        foreach (var card in cards)
+            for (var i = 0; i < hand.Count; i++)
                 if (hand[i] == card)
                 {
                     indices.Add(i);
                     break;
                 }
-            }
-        }
 
         if (indices.Count == 0)
             return;
 
-        string command = $"SelectHandCards {string.Join(" ", indices)}";
+        var command = $"SelectHandCards {string.Join(" ", indices)}";
         PlayerActionBuffer.LogToDevConsole($"[HandCardSelectRecordPatch] Recording: {command}");
         PlayerActionBuffer.Record(command);
     }
-
 }
 
 // ── Replay ────────────────────────────────────────────────────────────────────
@@ -97,10 +92,10 @@ public static class HandCardSelectRecordPatch
 // ── FromHandForDiscard (e.g. Tools of the Trade) ────────────────────────────
 
 /// <summary>
-/// Records hand-card selections that go through CardSelectCmd.FromHandForDiscard
-/// (e.g. Tools of the Trade's start-of-turn discard).  This path does NOT go
-/// through PlayerChoiceSynchronizer.SyncLocalChoice, so HandCardSelectRecordPatch
-/// never captures it.  We await the Task result and record the selected card IDs.
+///     Records hand-card selections that go through CardSelectCmd.FromHandForDiscard
+///     (e.g. Tools of the Trade's start-of-turn discard).  This path does NOT go
+///     through PlayerChoiceSynchronizer.SyncLocalChoice, so HandCardSelectRecordPatch
+///     never captures it.  We await the Task result and record the selected card IDs.
 /// </summary>
 [HarmonyPatch(typeof(CardSelectCmd), nameof(CardSelectCmd.FromHandForDiscard))]
 public static class HandCardSelectForDiscardRecordPatch
@@ -123,43 +118,48 @@ public static class HandCardSelectForDiscardRecordPatch
         List<CardModel>? handBefore = null;
         try
         {
-            var combatState = MegaCrit.Sts2.Core.Combat.CombatManager.Instance?.DebugOnlyGetState();
+            var combatState = CombatManager.Instance?.DebugOnlyGetState();
             var player = combatState?.Players.FirstOrDefault();
             var hand = player?.PlayerCombatState?.Hand?.Cards;
             if (hand != null)
                 handBefore = new List<CardModel>(hand);
         }
-        catch { /* ignore */ }
+        catch
+        {
+            /* ignore */
+        }
 
         // Suppress SyncLocalChoice BEFORE the async await — SyncLocalChoice
         // fires synchronously when the player picks a card, which is before
         // RecordAsync's continuation runs.
         HandCardSelectRecordPatch.SuppressNext = true;
 
-        MegaCrit.Sts2.Core.Helpers.TaskHelper.RunSafely(RecordAsync(__result, handBefore));
+        TaskHelper.RunSafely(RecordAsync(__result, handBefore));
     }
 
     private static async Task RecordAsync(Task<IEnumerable<CardModel>> task, List<CardModel>? handBefore)
     {
         IEnumerable<CardModel> cards;
-        try { cards = await task; }
-        catch { return; }
+        try
+        {
+            cards = await task;
+        }
+        catch
+        {
+            return;
+        }
 
         if (handBefore == null || handBefore.Count == 0)
             return;
 
         var indices = new List<int>();
-        foreach (CardModel card in cards)
-        {
-            for (int i = 0; i < handBefore.Count; i++)
-            {
+        foreach (var card in cards)
+            for (var i = 0; i < handBefore.Count; i++)
                 if (handBefore[i] == card)
                 {
                     indices.Add(i);
                     break;
                 }
-            }
-        }
 
         if (indices.Count == 0)
             return;
@@ -174,10 +174,8 @@ public static class HandCardSelectForDiscardRecordPatch
             return;
         }
 
-        string command = $"SelectHandCards {string.Join(" ", indices)}";
+        var command = $"SelectHandCards {string.Join(" ", indices)}";
         PlayerActionBuffer.LogToDevConsole($"[HandCardSelectForDiscardRecord] Recording: {command}");
         PlayerActionBuffer.Record(command);
     }
-
 }
-

@@ -3,17 +3,22 @@ using MegaCrit.Sts2.Core.Runs;
 namespace RunReplays.Commands;
 
 /// <summary>
-/// Proceed to the next act after the boss fight.
-/// Recorded as: "VoteForMapCoordAction {playerId}"
+///     Proceed to the next act after the boss fight.
+///     Recorded as: "VoteForMapCoordAction {playerId}"
 /// </summary>
 public sealed class ProceedToNextActCommand : ReplayCommand
 {
     private const string Prefix = "VoteForMapCoordAction ";
 
 
-    private ProceedToNextActCommand(string raw) : base(raw) { }
+    private ProceedToNextActCommand(string raw) : base(raw)
+    {
+    }
 
-    public override string Describe() => "proceed to next act";
+    public override string Describe()
+    {
+        return "proceed to next act";
+    }
 
     public override ExecuteResult Execute()
     {
@@ -22,5 +27,7 @@ public sealed class ProceedToNextActCommand : ReplayCommand
     }
 
     public static ProceedToNextActCommand? TryParse(string raw)
-        => raw.StartsWith(Prefix) ? new ProceedToNextActCommand(raw) : null;
+    {
+        return raw.StartsWith(Prefix) ? new ProceedToNextActCommand(raw) : null;
+    }
 }

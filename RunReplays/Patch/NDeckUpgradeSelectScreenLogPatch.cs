@@ -8,12 +8,11 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 
 namespace RunReplays.Patch;
-using RunReplays;
 
 /// <summary>
-/// Harmony postfix on NCardGridSelectionScreen.CardsSelected that logs to the
-/// dev console when NDeckUpgradeSelectScreen resolves a card selection,
-/// and records each selected card's deck index into the action buffer.
+///     Harmony postfix on NCardGridSelectionScreen.CardsSelected that logs to the
+///     dev console when NDeckUpgradeSelectScreen resolves a card selection,
+///     and records each selected card's deck index into the action buffer.
 /// </summary>
 [HarmonyPatch(typeof(NCardGridSelectionScreen), nameof(NCardGridSelectionScreen.CardsSelected))]
 public static class NDeckUpgradeSelectScreenLogPatch
@@ -28,7 +27,7 @@ public static class NDeckUpgradeSelectScreenLogPatch
         if (__instance is not NDeckUpgradeSelectScreen)
             return;
 
-        IReadOnlyList<CardModel>? deckList =
+        var deckList =
             CardsField?.GetValue(__instance) as IReadOnlyList<CardModel>;
 
         TaskHelper.RunSafely(LogAsync(__result, deckList));
@@ -36,17 +35,17 @@ public static class NDeckUpgradeSelectScreenLogPatch
 
     private static async Task LogAsync(Task<IEnumerable<CardModel>> task, IReadOnlyList<CardModel>? deckList)
     {
-        IEnumerable<CardModel> cards = await task;
-        List<CardModel> cardList = cards.ToList();
-        string titles = string.Join(", ", cardList.Select(c => $"'{c.Title}'"));
+        var cards = await task;
+        var cardList = cards.ToList();
+        var titles = string.Join(", ", cardList.Select(c => $"'{c.Title}'"));
 
         PlayerActionBuffer.LogToDevConsole(
             $"[NDeckUpgradeSelectScreen] CardsSelected resolved — cards=[{titles}]");
 
         PlayerActionBuffer.RecordVerboseOnly($"[NDeckUpgradeSelectScreen] Upgraded cards: [{titles}]");
-        foreach (CardModel card in cardList)
+        foreach (var card in cardList)
         {
-            int index = deckList == null ? -1 : deckList.ToList().IndexOf(card);
+            var index = deckList == null ? -1 : deckList.ToList().IndexOf(card);
             PlayerActionBuffer.RecordMinimalOnly($"UpgradeCard {index}");
         }
     }

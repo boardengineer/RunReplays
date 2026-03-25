@@ -9,28 +9,29 @@ using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 namespace RunReplays.Commands;
 
 /// <summary>
-/// Select a card from a choose-a-card screen (Power Potion, Attack Potion, etc.).
-/// Recorded as: "SelectCardFromScreen {index}"
-/// Index -1 means skip (no card selected).
-///
-/// Uses ChooseACardScreenCapture to resolve the selection, mirroring
-/// the CardGridScreenCapture pattern used by SelectDeckCardCommand.
+///     Select a card from a choose-a-card screen (Power Potion, Attack Potion, etc.).
+///     Recorded as: "SelectCardFromScreen {index}"
+///     Index -1 means skip (no card selected).
+///     Uses ChooseACardScreenCapture to resolve the selection, mirroring
+///     the CardGridScreenCapture pattern used by SelectDeckCardCommand.
 /// </summary>
 public sealed class SelectCardFromScreenCommand : ReplayCommand
 {
     private const string Prefix = "SelectCardFromScreen ";
-
-    public int Index { get; }
-
-    public override bool IsSelectionCommand => true;
 
     private SelectCardFromScreenCommand(string raw, int index) : base(raw)
     {
         Index = index;
     }
 
+    public int Index { get; }
+
+    public override bool IsSelectionCommand => true;
+
     public override string Describe()
-        => Index >= 0 ? $"select card from screen index={Index}" : "skip card selection";
+    {
+        return Index >= 0 ? $"select card from screen index={Index}" : "skip card selection";
+    }
 
     public override ExecuteResult Execute()
     {
@@ -60,7 +61,7 @@ public sealed class SelectCardFromScreenCommand : ReplayCommand
         if (!raw.StartsWith(Prefix))
             return null;
 
-        if (int.TryParse(raw.AsSpan(Prefix.Length).Trim(), out int index))
+        if (int.TryParse(raw.AsSpan(Prefix.Length).Trim(), out var index))
             return new SelectCardFromScreenCommand(raw, index);
 
         return null;
@@ -68,9 +69,9 @@ public sealed class SelectCardFromScreenCommand : ReplayCommand
 }
 
 /// <summary>
-/// Captures NChooseACardSelectionScreen instances when CardsSelected is called
-/// and provides helpers to resolve their _completionSource directly.
-/// Mirrors CardGridScreenCapture for NCardGridSelectionScreen.
+///     Captures NChooseACardSelectionScreen instances when CardsSelected is called
+///     and provides helpers to resolve their _completionSource directly.
+///     Mirrors CardGridScreenCapture for NCardGridSelectionScreen.
 /// </summary>
 [HarmonyPatch(typeof(NChooseACardSelectionScreen), nameof(NChooseACardSelectionScreen.CardsSelected))]
 public static class ChooseACardScreenCapture

@@ -19,34 +19,22 @@ using MegaCrit.Sts2.Core.Saves.Managers;
 namespace RunReplays;
 
 /// <summary>
-/// Builds and manages the Run Replays browse screen that opens when the player
-/// presses the "Run Replays" button from the main menu.
-///
-/// The menu is a plain Godot Control tree created entirely from code — no .tscn
-/// required. It is added as a direct child of NMainMenu so it covers the menu
-/// layout, and inherits the main menu's active theme so buttons and labels
-/// automatically adopt the game's visual style.
-///
-/// Directory layout scanned:
-///   {UserDataDir}/RunReplays/logs/{seed}/floor_{N}/{datetime}.verbose.log
-///
-/// The verbose log header supplies the seed, character ID, and save date.
-/// Each unique (seed, floor) pair is represented by its most recent log pair.
-/// Entries are sorted newest-first. Selecting an entry loads the matching
-/// minimal log into ReplayEngine and starts a new run with the stored seed and
-/// character.
+///     Builds and manages the Run Replays browse screen that opens when the player
+///     presses the "Run Replays" button from the main menu.
+///     The menu is a plain Godot Control tree created entirely from code — no .tscn
+///     required. It is added as a direct child of NMainMenu so it covers the menu
+///     layout, and inherits the main menu's active theme so buttons and labels
+///     automatically adopt the game's visual style.
+///     Directory layout scanned:
+///     {UserDataDir}/RunReplays/logs/{seed}/floor_{N}/{datetime}.verbose.log
+///     The verbose log header supplies the seed, character ID, and save date.
+///     Each unique (seed, floor) pair is represented by its most recent log pair.
+///     Entries are sorted newest-first. Selecting an entry loads the matching
+///     minimal log into ReplayEngine and starts a new run with the stored seed and
+///     character.
 /// </summary>
 public static class RunReplayMenu
 {
-    private record ReplayEntry(
-        string Seed,
-        string CharacterId,
-        int Floor,
-        int Ascension,
-        DateTime SavedAt,
-        string MinimalLogPath,
-        string? SavePath);
-
     public static Control Create(NMainMenu mainMenu)
     {
         // Root: full-rect, stops mouse events reaching the menu behind it.
@@ -141,22 +129,22 @@ public static class RunReplayMenu
     // ── Auto-play ──────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Automatically launches a replay matching the given target string.
-    /// Format: "SEED" to replay the highest floor, or "SEED:floor_N" for a
-    /// specific floor.
+    ///     Automatically launches a replay matching the given target string.
+    ///     Format: "SEED" to replay the highest floor, or "SEED:floor_N" for a
+    ///     specific floor.
     /// </summary>
     internal static void AutoPlay(string target)
     {
         string seed;
         int? targetFloor = null;
 
-        int colonIdx = target.IndexOf(':');
+        var colonIdx = target.IndexOf(':');
         if (colonIdx >= 0)
         {
             seed = target[..colonIdx];
-            string floorPart = target[(colonIdx + 1)..];
+            var floorPart = target[(colonIdx + 1)..];
             if (floorPart.StartsWith("floor_") &&
-                int.TryParse(floorPart["floor_".Length..], out int f))
+                int.TryParse(floorPart["floor_".Length..], out var f))
                 targetFloor = f;
             else
                 GD.PrintErr($"[RunReplays] AutoPlay: invalid floor specifier '{floorPart}', replaying highest floor.");
@@ -221,9 +209,9 @@ public static class RunReplayMenu
 
         foreach (var (seed, seedEntries) in groups)
         {
-            string character = seedEntries.First().CharacterId;
-            DateTime latest  = seedEntries.Max(e => e.SavedAt);
-            string latestStr = latest != DateTime.MinValue
+            var character = seedEntries.First().CharacterId;
+            var latest = seedEntries.Max(e => e.SavedAt);
+            var latestStr = latest != DateTime.MinValue
                 ? latest.ToString("yyyy-MM-dd  HH:mm:ss")
                 : "unknown date";
 
@@ -240,8 +228,8 @@ public static class RunReplayMenu
             floorContainer.Visible = false;
             list.AddChild(floorContainer);
 
-            bool expanded = false;
-            var capturedBtn       = headerBtn;
+            var expanded = false;
+            var capturedBtn = headerBtn;
             var capturedContainer = floorContainer;
             headerBtn.Pressed += () =>
             {
@@ -258,7 +246,7 @@ public static class RunReplayMenu
                 .OrderBy(e => e.Floor)
                 .ToList();
 
-            foreach (ReplayEntry entry in seedEntries)
+            foreach (var entry in seedEntries)
             {
                 var row = new HBoxContainer();
                 row.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
@@ -287,7 +275,7 @@ public static class RunReplayMenu
                 {
                     dropdown = new OptionButton();
                     dropdown.AddItem("From start", 0);
-                    for (int i = 0; i < startOptions.Count; i++)
+                    for (var i = 0; i < startOptions.Count; i++)
                         dropdown.AddItem($"From Floor {startOptions[i].Floor}", i + 1);
                     dropdown.Selected = 0;
                     row.AddChild(dropdown);
@@ -298,7 +286,7 @@ public static class RunReplayMenu
                 var capturedDropdown = dropdown;
                 replayBtn.Pressed += () =>
                 {
-                    int sel = capturedDropdown?.Selected ?? 0;
+                    var sel = capturedDropdown?.Selected ?? 0;
                     root.QueueFree();
                     if (sel == 0 || capturedOptions.Count == 0)
                         StartReplay(captured);
@@ -342,7 +330,7 @@ public static class RunReplayMenu
 
     private static string FormatFloorEntry(ReplayEntry entry)
     {
-        string date = entry.SavedAt != DateTime.MinValue
+        var date = entry.SavedAt != DateTime.MinValue
             ? entry.SavedAt.ToString("yyyy-MM-dd  HH:mm:ss")
             : "unknown date";
 
@@ -353,63 +341,62 @@ public static class RunReplayMenu
 
     private static List<ReplayEntry> LoadEntries()
     {
-        string logsRoot = Path.Combine(OS.GetUserDataDir(), "RunReplays", "logs");
+        var logsRoot = Path.Combine(OS.GetUserDataDir(), "RunReplays", "logs");
         var entries = new List<ReplayEntry>();
 
         if (!Directory.Exists(logsRoot))
             return entries;
 
-        foreach (string seedDir in Directory.GetDirectories(logsRoot))
+        foreach (var seedDir in Directory.GetDirectories(logsRoot))
+        foreach (var floorDir in Directory.GetDirectories(seedDir))
         {
-            foreach (string floorDir in Directory.GetDirectories(seedDir))
-            {
-                string dirName = Path.GetFileName(floorDir);
+            var dirName = Path.GetFileName(floorDir);
 
-                if (!dirName.StartsWith("floor_"))
-                    continue;
+            if (!dirName.StartsWith("floor_"))
+                continue;
 
-                if (!int.TryParse(dirName.Substring("floor_".Length), out int floor))
-                    continue;
+            if (!int.TryParse(dirName.Substring("floor_".Length), out var floor))
+                continue;
 
-                // Find the minimal/replay log: prefer actions.sts2replay,
-                // then actions.minimal.log, then legacy timestamped *.minimal.log.
-                string? latestMinimal = Path.Combine(floorDir, "actions.sts2replay");
-                if (!File.Exists(latestMinimal))
-                    latestMinimal = Path.Combine(floorDir, "actions.minimal.log");
-                if (!File.Exists(latestMinimal))
-                    latestMinimal = Directory
-                        .GetFiles(floorDir, "*.minimal.log")
-                        .OrderByDescending(f => f)
-                        .FirstOrDefault();
+            // Find the minimal/replay log: prefer actions.sts2replay,
+            // then actions.minimal.log, then legacy timestamped *.minimal.log.
+            var latestMinimal = Path.Combine(floorDir, "actions.sts2replay");
+            if (!File.Exists(latestMinimal))
+                latestMinimal = Path.Combine(floorDir, "actions.minimal.log");
+            if (!File.Exists(latestMinimal))
+                latestMinimal = Directory
+                    .GetFiles(floorDir, "*.minimal.log")
+                    .OrderByDescending(f => f)
+                    .FirstOrDefault();
 
-                if (latestMinimal == null)
-                    continue;
+            if (latestMinimal == null)
+                continue;
 
-                // Verbose log is optional — used only for header metadata.
-                string? latestVerbose = Path.Combine(floorDir, "actions.verbose.log");
-                if (!File.Exists(latestVerbose))
-                    latestVerbose = Directory
-                        .GetFiles(floorDir, "*.verbose.log")
-                        .OrderByDescending(f => f)
-                        .FirstOrDefault();
+            // Verbose log is optional — used only for header metadata.
+            var latestVerbose = Path.Combine(floorDir, "actions.verbose.log");
+            if (!File.Exists(latestVerbose))
+                latestVerbose = Directory
+                    .GetFiles(floorDir, "*.verbose.log")
+                    .OrderByDescending(f => f)
+                    .FirstOrDefault();
 
-                // Parse header for seed, character, date from verbose if available,
-                // otherwise extract from the minimal log header comments.
-                var (seed, characterId, savedAt) = latestVerbose != null
-                    ? ReadVerboseHeader(latestVerbose)
-                    : ReadMinimalHeader(latestMinimal);
+            // Parse header for seed, character, date from verbose if available,
+            // otherwise extract from the minimal log header comments.
+            var (seed, characterId, savedAt) = latestVerbose != null
+                ? ReadVerboseHeader(latestVerbose)
+                : ReadMinimalHeader(latestMinimal);
 
-                // Check for save backup.
-                string fixedSave = Path.Combine(floorDir, "run.save");
-                string? legacySave = latestVerbose != null
-                    ? latestVerbose[..^".verbose.log".Length] + ".save" : null;
-                string? savePath = File.Exists(fixedSave) ? fixedSave
-                    : (legacySave != null && File.Exists(legacySave)) ? legacySave : null;
+            // Check for save backup.
+            var fixedSave = Path.Combine(floorDir, "run.save");
+            var legacySave = latestVerbose != null
+                ? latestVerbose[..^".verbose.log".Length] + ".save"
+                : null;
+            var savePath = File.Exists(fixedSave) ? fixedSave
+                : legacySave != null && File.Exists(legacySave) ? legacySave : null;
 
-                int ascension = ReadMinimalHeaderAscension(latestMinimal);
+            var ascension = ReadMinimalHeaderAscension(latestMinimal);
 
-                entries.Add(new ReplayEntry(seed, characterId, floor, ascension, savedAt, latestMinimal, savePath));
-            }
+            entries.Add(new ReplayEntry(seed, characterId, floor, ascension, savedAt, latestMinimal, savePath));
         }
 
         // Newest saves at the top of the list.
@@ -417,37 +404,37 @@ public static class RunReplayMenu
     }
 
     /// <summary>
-    /// Reads the first few header lines of a verbose log to extract the seed,
-    /// character ID, and save timestamp without reading the whole file.
-    /// Header format (7 lines total including trailing blank):
-    ///   === Run Replays – Action Log (Verbose) ===
-    ///   Seed:        {seed}
-    ///   Character:   {characterId}
-    ///   Saved at:    yyyy-MM-dd HH:mm:ss
-    ///   Floor:       {n}
-    ///   Actions:     {n}
-    ///   (blank)
+    ///     Reads the first few header lines of a verbose log to extract the seed,
+    ///     character ID, and save timestamp without reading the whole file.
+    ///     Header format (7 lines total including trailing blank):
+    ///     === Run Replays – Action Log (Verbose) ===
+    ///     Seed:        {seed}
+    ///     Character:   {characterId}
+    ///     Saved at:    yyyy-MM-dd HH:mm:ss
+    ///     Floor:       {n}
+    ///     Actions:     {n}
+    ///     (blank)
     /// </summary>
     private static (string Seed, string CharacterId, DateTime SavedAt) ReadVerboseHeader(string filePath)
     {
-        string seed        = "unknown-seed";
-        string characterId = "unknown-character";
-        DateTime savedAt   = DateTime.MinValue;
+        var seed = "unknown-seed";
+        var characterId = "unknown-character";
+        var savedAt = DateTime.MinValue;
 
         try
         {
             using var reader = new StreamReader(filePath);
             reader.ReadLine(); // === banner ===
 
-            string? seedLine = reader.ReadLine();
+            var seedLine = reader.ReadLine();
             if (seedLine != null)
                 seed = seedLine.Substring("Seed:        ".Length).Trim();
 
-            string? charLine = reader.ReadLine();
+            var charLine = reader.ReadLine();
             if (charLine != null)
                 characterId = charLine.Substring("Character:   ".Length).Trim();
 
-            string? dateLine = reader.ReadLine();
+            var dateLine = reader.ReadLine();
             if (dateLine != null)
                 DateTime.TryParseExact(
                     dateLine.Substring("Saved at:    ".Length).Trim(),
@@ -465,39 +452,42 @@ public static class RunReplayMenu
     }
 
     /// <summary>
-    /// Reads the "# Ascension: N" line from a minimal log header.
-    /// Returns 0 if the header is missing or malformed.
+    ///     Reads the "# Ascension: N" line from a minimal log header.
+    ///     Returns 0 if the header is missing or malformed.
     /// </summary>
     private static int ReadMinimalHeaderAscension(string filePath)
     {
         const string prefix = "# Ascension: ";
         try
         {
-            foreach (string line in File.ReadLines(filePath))
+            foreach (var line in File.ReadLines(filePath))
             {
                 if (!line.StartsWith('#'))
                     break; // Past the header.
-                if (line.StartsWith(prefix) && int.TryParse(line[prefix.Length..].Trim(), out int asc))
+                if (line.StartsWith(prefix) && int.TryParse(line[prefix.Length..].Trim(), out var asc))
                     return asc;
             }
         }
-        catch { /* malformed log */ }
+        catch
+        {
+            /* malformed log */
+        }
 
         return 0;
     }
 
     /// <summary>
-    /// Reads seed and character from a minimal log header (# comments).
-    /// SavedAt is derived from the file's last-write time.
+    ///     Reads seed and character from a minimal log header (# comments).
+    ///     SavedAt is derived from the file's last-write time.
     /// </summary>
     private static (string Seed, string CharacterId, DateTime SavedAt) ReadMinimalHeader(string filePath)
     {
-        string seed        = "unknown-seed";
-        string characterId = "unknown-character";
+        var seed = "unknown-seed";
+        var characterId = "unknown-character";
 
         try
         {
-            foreach (string line in File.ReadLines(filePath))
+            foreach (var line in File.ReadLines(filePath))
             {
                 if (!line.StartsWith('#'))
                     break;
@@ -507,9 +497,12 @@ public static class RunReplayMenu
                     characterId = line["# Character: ".Length..].Trim();
             }
         }
-        catch { /* malformed log */ }
+        catch
+        {
+            /* malformed log */
+        }
 
-        DateTime savedAt = File.GetLastWriteTime(filePath);
+        var savedAt = File.GetLastWriteTime(filePath);
         return (seed, characterId, savedAt);
     }
 
@@ -526,12 +519,12 @@ public static class RunReplayMenu
         // Copy the backup save file over the game's live save slot.
         try
         {
-            int profileId = SaveManager.Instance.CurrentProfileId;
-            string godotPath = UserDataPathProvider.GetProfileScopedPath(
+            var profileId = SaveManager.Instance.CurrentProfileId;
+            var godotPath = UserDataPathProvider.GetProfileScopedPath(
                 profileId, "saves/" + RunSaveManager.runSaveFileName);
-            string destPath = ProjectSettings.GlobalizePath(godotPath);
+            var destPath = ProjectSettings.GlobalizePath(godotPath);
             Directory.CreateDirectory(Path.GetDirectoryName(destPath)!);
-            File.Copy(entry.SavePath!, destPath, overwrite: true);
+            File.Copy(entry.SavePath!, destPath, true);
             GD.Print($"[RunReplays] Copied backup save to: {destPath}");
         }
         catch (Exception ex)
@@ -541,7 +534,7 @@ public static class RunReplayMenu
         }
 
         // Load and continue the run, mirroring OnContinueButtonPressedAsync.
-        ReadSaveResult<SerializableRun> result = SaveManager.Instance.LoadRunSave();
+        var result = SaveManager.Instance.LoadRunSave();
         if (!result.Success || result.SaveData == null)
         {
             GD.PrintErr("[RunReplays] Failed to load copied save.");
@@ -554,8 +547,8 @@ public static class RunReplayMenu
             return;
         }
 
-        SerializableRun serializableRun = result.SaveData;
-        RunState runState = RunState.FromSerializable(serializableRun);
+        var serializableRun = result.SaveData;
+        var runState = RunState.FromSerializable(serializableRun);
         RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
 
         NAudioManager.Instance?.StopMusic();
@@ -572,15 +565,15 @@ public static class RunReplayMenu
     {
         // Load the minimal log into the replay engine so auto-execution kicks in
         // as the new run reaches each decision point.
-        string[] lines   = File.ReadAllLines(entry.MinimalLogPath);
-        var      commands = lines.Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith('#')).ToList();
+        var lines = File.ReadAllLines(entry.MinimalLogPath);
+        var commands = lines.Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith('#')).ToList();
         ReplayDispatcher.Load(commands);
         ReplayEngine.ActiveSeed = entry.Seed;
 
         // Resolve the character model by matching the stored entry string against
         // all registered characters. Fall back to the first available character
         // for old logs that predate the Character header line.
-        CharacterModel? character =
+        var character =
             ModelDb.AllCharacters.FirstOrDefault(c => c.Id.Entry == entry.CharacterId)
             ?? ModelDb.AllCharacters.FirstOrDefault();
 
@@ -590,7 +583,8 @@ public static class RunReplayMenu
             return;
         }
 
-        GD.Print($"[RunReplays] Starting replay: seed={entry.Seed} character={character.Id} floor={entry.Floor} ascension={entry.Ascension} ({commands.Count} commands)");
+        GD.Print(
+            $"[RunReplays] Starting replay: seed={entry.Seed} character={character.Id} floor={entry.Floor} ascension={entry.Ascension} ({commands.Count} commands)");
 
         NAudioManager.Instance?.StopMusic();
         SfxCmd.Play(character.CharacterTransitionSfx);
@@ -598,17 +592,16 @@ public static class RunReplayMenu
         TaskHelper.RunSafely(
             NGame.Instance.StartNewSingleplayerRun(
                 character,
-                shouldSave: true,
+                true,
                 ActModel.GetDefaultList(),
                 [],
                 entry.Seed,
-                entry.Ascension,
-                null));
+                entry.Ascension));
     }
 
     /// <summary>
-    /// Starts a replay from an intermediate floor by loading the starting
-    /// floor's save and replaying only the commands that follow it.
+    ///     Starts a replay from an intermediate floor by loading the starting
+    ///     floor's save and replaying only the commands that follow it.
     /// </summary>
     private static void StartReplayFromFloor(ReplayEntry target, ReplayEntry startFrom)
     {
@@ -622,15 +615,16 @@ public static class RunReplayMenu
         // The starting floor's log contains all commands up to that point.
         // The target's log contains all commands up to the target floor.
         // The difference is the commands we need to replay.
-        string[] startLines  = File.ReadAllLines(startFrom.MinimalLogPath);
-        int      skipCount   = startLines.Count(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith('#'));
+        var startLines = File.ReadAllLines(startFrom.MinimalLogPath);
+        var skipCount = startLines.Count(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith('#'));
 
-        string[] targetLines = File.ReadAllLines(target.MinimalLogPath);
-        var      allCommands = targetLines.Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith('#')).ToList();
+        var targetLines = File.ReadAllLines(target.MinimalLogPath);
+        var allCommands = targetLines.Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith('#')).ToList();
 
         if (skipCount >= allCommands.Count)
         {
-            GD.PrintErr($"[RunReplays] Starting floor has {skipCount} commands but target only has {allCommands.Count} — loading save directly.");
+            GD.PrintErr(
+                $"[RunReplays] Starting floor has {skipCount} commands but target only has {allCommands.Count} — loading save directly.");
             LoadSave(startFrom);
             return;
         }
@@ -649,12 +643,12 @@ public static class RunReplayMenu
     {
         try
         {
-            int profileId = SaveManager.Instance.CurrentProfileId;
-            string godotPath = UserDataPathProvider.GetProfileScopedPath(
+            var profileId = SaveManager.Instance.CurrentProfileId;
+            var godotPath = UserDataPathProvider.GetProfileScopedPath(
                 profileId, "saves/" + RunSaveManager.runSaveFileName);
-            string destPath = ProjectSettings.GlobalizePath(godotPath);
+            var destPath = ProjectSettings.GlobalizePath(godotPath);
             Directory.CreateDirectory(Path.GetDirectoryName(destPath)!);
-            File.Copy(startFrom.SavePath!, destPath, overwrite: true);
+            File.Copy(startFrom.SavePath!, destPath, true);
         }
         catch (Exception ex)
         {
@@ -662,7 +656,7 @@ public static class RunReplayMenu
             return;
         }
 
-        ReadSaveResult<SerializableRun> result = SaveManager.Instance.LoadRunSave();
+        var result = SaveManager.Instance.LoadRunSave();
         if (!result.Success || result.SaveData == null)
         {
             GD.PrintErr("[RunReplays] Failed to load save for mid-floor replay.");
@@ -675,8 +669,8 @@ public static class RunReplayMenu
             return;
         }
 
-        SerializableRun serializableRun = result.SaveData;
-        RunState runState = RunState.FromSerializable(serializableRun);
+        var serializableRun = result.SaveData;
+        var runState = RunState.FromSerializable(serializableRun);
         RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
 
         NAudioManager.Instance?.StopMusic();
@@ -686,4 +680,13 @@ public static class RunReplayMenu
         await NGame.Instance.LoadRun(runState, serializableRun.PreFinishedRoom);
         await NGame.Instance.Transition.FadeIn();
     }
+
+    private record ReplayEntry(
+        string Seed,
+        string CharacterId,
+        int Floor,
+        int Ascension,
+        DateTime SavedAt,
+        string MinimalLogPath,
+        string? SavePath);
 }

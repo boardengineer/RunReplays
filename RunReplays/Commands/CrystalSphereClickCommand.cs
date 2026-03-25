@@ -1,24 +1,19 @@
 using System;
 using Godot;
 using HarmonyLib;
-
 using RunReplays.Patch;
+
 namespace RunReplays.Commands;
 
 /// <summary>
-/// Click a cell in the Crystal Sphere minigame.
-/// Recorded as: "CrystalSphereClick {x} {y} {tool}"
-///
-/// The command sets PendingTool so the CellClicked prefix applies the correct
-/// tool, then invokes OnCellClicked on the active screen with the matching cell.
+///     Click a cell in the Crystal Sphere minigame.
+///     Recorded as: "CrystalSphereClick {x} {y} {tool}"
+///     The command sets PendingTool so the CellClicked prefix applies the correct
+///     tool, then invokes OnCellClicked on the active screen with the matching cell.
 /// </summary>
 public sealed class CrystalSphereClickCommand : ReplayCommand
 {
     private const string Prefix = "CrystalSphereClick ";
-
-    public int X { get; }
-    public int Y { get; }
-    public int Tool { get; }
 
 
     private CrystalSphereClickCommand(string raw, int x, int y, int tool) : base(raw)
@@ -28,7 +23,14 @@ public sealed class CrystalSphereClickCommand : ReplayCommand
         Tool = tool;
     }
 
-    public override string Describe() => $"crystal sphere click ({X},{Y}) tool={Tool}";
+    public int X { get; }
+    public int Y { get; }
+    public int Tool { get; }
+
+    public override string Describe()
+    {
+        return $"crystal sphere click ({X},{Y}) tool={Tool}";
+    }
 
     public override ExecuteResult Execute()
     {
@@ -47,7 +49,7 @@ public sealed class CrystalSphereClickCommand : ReplayCommand
         CrystalSphereReplayPatch.PendingTool = Tool;
 
         var cellContainer = Traverse.Create(screen).Field("_cellContainer").GetValue<Node>();
-        GodotObject? target = CrystalSphereReplayPatch.FindCell(cellContainer, X, Y);
+        var target = CrystalSphereReplayPatch.FindCell(cellContainer, X, Y);
 
         if (target == null)
         {
@@ -67,20 +69,18 @@ public sealed class CrystalSphereClickCommand : ReplayCommand
         if (!raw.StartsWith(Prefix))
             return null;
 
-        ReadOnlySpan<char> rest = raw.AsSpan(Prefix.Length);
-        int sp1 = rest.IndexOf(' ');
+        var rest = raw.AsSpan(Prefix.Length);
+        var sp1 = rest.IndexOf(' ');
         if (sp1 <= 0) return null;
 
-        int sp2 = rest[(sp1 + 1)..].IndexOf(' ');
+        var sp2 = rest[(sp1 + 1)..].IndexOf(' ');
         if (sp2 <= 0) return null;
         sp2 += sp1 + 1;
 
-        if (int.TryParse(rest[..sp1], out int x)
-            && int.TryParse(rest[(sp1 + 1)..sp2], out int y)
-            && int.TryParse(rest[(sp2 + 1)..], out int tool))
-        {
+        if (int.TryParse(rest[..sp1], out var x)
+            && int.TryParse(rest[(sp1 + 1)..sp2], out var y)
+            && int.TryParse(rest[(sp2 + 1)..], out var tool))
             return new CrystalSphereClickCommand(raw, x, y, tool);
-        }
 
         return null;
     }

@@ -1,17 +1,14 @@
-using Godot;
-
 using RunReplays.Patch;
+
 namespace RunReplays.Commands;
 
 /// <summary>
-/// Claims a potion reward from the rewards screen.
-/// Recorded as: "TakePotionReward: {title}"
+///     Claims a potion reward from the rewards screen.
+///     Recorded as: "TakePotionReward: {title}"
 /// </summary>
 public class PotionRewardCommand : ReplayCommand
 {
     private const string Prefix = "TakePotionReward: ";
-
-    public string PotionTitle { get; }
 
 
     private PotionRewardCommand(string raw, string potionTitle) : base(raw)
@@ -19,7 +16,12 @@ public class PotionRewardCommand : ReplayCommand
         PotionTitle = potionTitle;
     }
 
-    public override string Describe() => $"claim potion reward '{PotionTitle}'";
+    public string PotionTitle { get; }
+
+    public override string Describe()
+    {
+        return $"claim potion reward '{PotionTitle}'";
+    }
 
     public override ExecuteResult Execute()
     {
@@ -27,7 +29,7 @@ public class PotionRewardCommand : ReplayCommand
         if (screen == null || !screen.IsInsideTree())
             return ExecuteResult.Retry(200);
 
-        Node? potionButton = BattleRewardsReplayPatch.FindRewardButton(screen, "PotionReward");
+        var potionButton = BattleRewardsReplayPatch.FindRewardButton(screen, "PotionReward");
         if (potionButton == null)
         {
             PlayerActionBuffer.LogDispatcher("[PotionReward] Potion reward button not found — skipping.");

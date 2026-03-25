@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -11,29 +12,29 @@ using MegaCrit.Sts2.Core.Nodes.Combat;
 namespace RunReplays.Commands;
 
 /// <summary>
-/// Hand-card selection command.  When the game opens the hand selection UI
-/// (via CardSelectCmd.FromHand / FromHandForDiscard), a Harmony postfix on
-/// NPlayerHand.SelectCards captures the hand instance.  Execute() then maps
-/// the recorded hand indices to cards and resolves the hand's
-/// _selectionCompletionSource directly — bypassing the UI entirely.
+///     Hand-card selection command.  When the game opens the hand selection UI
+///     (via CardSelectCmd.FromHand / FromHandForDiscard), a Harmony postfix on
+///     NPlayerHand.SelectCards captures the hand instance.  Execute() then maps
+///     the recorded hand indices to cards and resolves the hand's
+///     _selectionCompletionSource directly — bypassing the UI entirely.
 /// </summary>
 public sealed class SelectHandCardsCommand : ReplayCommand
 {
     private const string Prefix = "SelectHandCards ";
-
-    /// <summary>Hand-position indices of the selected cards.</summary>
-    public int[] HandIndices { get; }
-
-    public override bool IsSelectionCommand => true;
 
     private SelectHandCardsCommand(string raw, int[] handIndices) : base(raw)
     {
         HandIndices = handIndices;
     }
 
+    /// <summary>Hand-position indices of the selected cards.</summary>
+    public int[] HandIndices { get; }
+
+    public override bool IsSelectionCommand => true;
+
     public override string Describe()
     {
-        string idxStr = HandIndices.Length > 0 ? string.Join(", ", HandIndices) : "(none)";
+        var idxStr = HandIndices.Length > 0 ? string.Join(", ", HandIndices) : "(none)";
         return $"select hand cards [{idxStr}]";
     }
 
@@ -60,13 +61,9 @@ public sealed class SelectHandCardsCommand : ReplayCommand
             return ExecuteResult.Retry(100);
 
         var selected = new List<CardModel>();
-        foreach (int idx in HandIndices)
-        {
+        foreach (var idx in HandIndices)
             if (idx >= 0 && idx < handCards.Count)
-            {
                 selected.Add(handCards[idx]);
-            }
-        }
 
         tcs.TrySetResult(selected);
         HandSelectionCapture.ActiveHand = null;
@@ -77,37 +74,34 @@ public sealed class SelectHandCardsCommand : ReplayCommand
     {
         if (raw.StartsWith(Prefix))
         {
-            string rest = raw.Substring(Prefix.Length).Trim();
+            var rest = raw.Substring(Prefix.Length).Trim();
             if (rest.Length == 0)
-                return new SelectHandCardsCommand(raw, System.Array.Empty<int>());
+                return new SelectHandCardsCommand(raw, Array.Empty<int>());
 
             var parts = rest.Split(' ');
             var indices = new List<int>(parts.Length);
             foreach (var part in parts)
-            {
-                if (int.TryParse(part, out int idx))
+                if (int.TryParse(part, out var idx))
                     indices.Add(idx);
                 else
                     return null;
-            }
             return new SelectHandCardsCommand(raw, indices.ToArray());
         }
 
         if (raw == "SelectHandCards")
-            return new SelectHandCardsCommand(raw, System.Array.Empty<int>());
+            return new SelectHandCardsCommand(raw, Array.Empty<int>());
 
         return null;
     }
 }
 
 /// <summary>
-/// Captures NPlayerHand instances when they enter card selection mode
-/// and provides reflection access to resolve the selection directly.
-///
-/// NPlayerHand.SelectCards creates a _selectionCompletionSource that drives
-/// the selection UI.  By resolving it ourselves (TrySetResult), we bypass
-/// the UI entirely — matching the pattern used by CardGridScreenCapture
-/// for deck card selection.
+///     Captures NPlayerHand instances when they enter card selection mode
+///     and provides reflection access to resolve the selection directly.
+///     NPlayerHand.SelectCards creates a _selectionCompletionSource that drives
+///     the selection UI.  By resolving it ourselves (TrySetResult), we bypass
+///     the UI entirely — matching the pattern used by CardGridScreenCapture
+///     for deck card selection.
 /// </summary>
 [HarmonyPatch(typeof(NPlayerHand), nameof(NPlayerHand.SelectCards))]
 public static class HandSelectionCapture

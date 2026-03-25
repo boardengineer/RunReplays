@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,25 +15,23 @@ using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Debug;
-
 using RunReplays.Patch;
+using RunReplays.Utils;
+
 namespace RunReplays;
 
 /// <summary>
-/// Accumulates recordable player actions for the duration of a run.
-///
-/// A new ActionExecutor is constructed at the start of every run, so its
-/// constructor is the right place to both clear the previous run's buffer
-/// and subscribe to AfterActionExecuted for the new one.
-///
-/// The buffer is never drained between saves — each save log is a full
-/// snapshot of all actions from run-start to that save point.
+///     Accumulates recordable player actions for the duration of a run.
+///     A new ActionExecutor is constructed at the start of every run, so its
+///     constructor is the right place to both clear the previous run's buffer
+///     and subscribe to AfterActionExecuted for the new one.
+///     The buffer is never drained between saves — each save log is a full
+///     snapshot of all actions from run-start to that save point.
 /// </summary>
-[HarmonyPatch(typeof(ActionExecutor), MethodType.Constructor, new[] { typeof(ActionQueueSet) })]
+[HarmonyPatch(typeof(ActionExecutor), MethodType.Constructor, typeof(ActionQueueSet))]
 public static class PlayerActionBuffer
 {
-    /// <summary>Fired (on the calling thread) each time a line is added to the buffer.</summary>
-    internal static event Action<string>? EntryRecorded;
+    private const string StateSeparator = " || ";
 
     // Separate queues allow verbose and minimal to hold entirely different
     // content for the same event (e.g. a multi-line block vs a single summary).
@@ -40,22 +39,33 @@ public static class PlayerActionBuffer
     private static readonly ConcurrentQueue<(string Timestamp, string Action)> _verboseEntries = new();
     private static readonly ConcurrentQueue<string> _minimalEntries = new();
 
-    private const string StateSeparator = " || ";
-
     /// <summary>
-    /// Holds the battle state captured after the previous recordable action
-    /// (= the state before the next action).  Set at TurnStarted for the
-    /// first action of a turn, then updated after each recordable action.
+    ///     Holds the battle state captured after the previous recordable action
+    ///     (= the state before the next action).  Set at TurnStarted for the
+    ///     first action of a turn, then updated after each recordable action.
     /// </summary>
     private static string? _pendingPreState;
+
+    // Reflected once; null until the field is found.
+    private static readonly FieldInfo? _instanceField =
+        typeof(NDevConsole).GetField("_instance", BindingFlags.NonPublic | BindingFlags.Static);
+
+    /// <summary>Fired (on the calling thread) each time a line is added to the buffer.</summary>
+    internal static event Action<string>? EntryRecorded;
 
 
     [HarmonyPostfix]
     public static void Postfix(ActionExecutor __instance)
     {
         // Clear both queues whenever a new executor is created (new run start).
-        while (_verboseEntries.TryDequeue(out _)) { }
-        while (_minimalEntries.TryDequeue(out _)) { }
+        while (_verboseEntries.TryDequeue(out _))
+        {
+        }
+
+        while (_minimalEntries.TryDequeue(out _))
+        {
+        }
+
         _pendingPreState = null;
 
         RunOverlay.InitForRun();
@@ -125,16 +135,16 @@ public static class PlayerActionBuffer
 
             CardChoiceScreenSyncPatch.FlushIfPending();
 
-            string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
-            string actionText = action.ToString()!;
+            var timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
+            var actionText = action.ToString()!;
 
             // Grab the pre-state (captured after the previous action or at
             // turn start) and update it for the next action.
-            string? preState = _pendingPreState;
+            var preState = _pendingPreState;
             _pendingPreState = GetBattleStateSummary();
 
             // Append pre-action state to minimal entry for replay validation.
-            string minimalEntry = preState != null
+            var minimalEntry = preState != null
                 ? actionText + StateSeparator + preState
                 : actionText;
 
@@ -152,9 +162,9 @@ public static class PlayerActionBuffer
     }
 
     /// <summary>
-    /// Returns a compact summary of the current battle state:
-    ///   Hand: [card1, card2] Enemies: [Monster 42/44, ...]
-    /// Returns null when not in combat.
+    ///     Returns a compact summary of the current battle state:
+    ///     Hand: [card1, card2] Enemies: [Monster 42/44, ...]
+    ///     Returns null when not in combat.
     /// </summary>
     internal static string? GetBattleStateSummary()
     {
@@ -166,8 +176,15 @@ public static class PlayerActionBuffer
             return null;
 
         Player? me;
-        try { me = LocalContext.GetMe(state); }
-        catch { me = state.Players.FirstOrDefault(); }
+        try
+        {
+            me = LocalContext.GetMe(state);
+        }
+        catch
+        {
+            me = state.Players.FirstOrDefault();
+        }
+
         if (me == null)
             return null;
 
@@ -175,36 +192,36 @@ public static class PlayerActionBuffer
         sb.Append("Hand: [");
         var hand = me.PlayerCombatState?.Hand?.Cards;
         if (hand != null)
-        {
-            for (int i = 0; i < hand.Count; i++)
+            for (var i = 0; i < hand.Count; i++)
             {
                 if (i > 0) sb.Append(", ");
                 sb.Append(hand[i].Title);
             }
-        }
+
         sb.Append("] Enemies: [");
-        bool first = true;
+        var first = true;
         foreach (var enemy in state.Enemies)
         {
             if (!first) sb.Append(", ");
             first = false;
             sb.Append(enemy.Name).Append(' ')
-              .Append(enemy.CurrentHp).Append('/').Append(enemy.MaxHp);
+                .Append(enemy.CurrentHp).Append('/').Append(enemy.MaxHp);
         }
+
         sb.Append(']');
         return sb.ToString();
     }
 
     /// <summary>
-    /// Records the same text into both verbose and minimal (for non-GameAction
-    /// events where the two formats share content).
+    ///     Records the same text into both verbose and minimal (for non-GameAction
+    ///     events where the two formats share content).
     /// </summary>
     public static void Record(string text)
     {
         if (ReplayEngine.IsActive)
             return;
 
-        string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
+        var timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
         _verboseEntries.Enqueue((timestamp, text));
         _minimalEntries.Enqueue(text);
         LogToDevConsole($"[{timestamp}] {text}");
@@ -212,23 +229,23 @@ public static class PlayerActionBuffer
     }
 
     /// <summary>
-    /// Records only into the verbose log (e.g. decorative separators or
-    /// per-option lines that the minimal log replaces with a summary).
+    ///     Records only into the verbose log (e.g. decorative separators or
+    ///     per-option lines that the minimal log replaces with a summary).
     /// </summary>
     public static void RecordVerboseOnly(string text)
     {
         if (ReplayEngine.IsActive)
             return;
 
-        string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
+        var timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
         _verboseEntries.Enqueue((timestamp, text));
         LogToDevConsole($"[{timestamp}] {text}");
         EntryRecorded?.Invoke(text);
     }
 
     /// <summary>
-    /// Records only into the minimal log (e.g. a compact summary line that
-    /// replaces a multi-line verbose block).
+    ///     Records only into the minimal log (e.g. a compact summary line that
+    ///     replaces a multi-line verbose block).
     /// </summary>
     public static void RecordMinimalOnly(string text)
     {
@@ -239,9 +256,9 @@ public static class PlayerActionBuffer
     }
 
     /// <summary>
-    /// Removes the most recently recorded entry from both queues.
-    /// Used to undo a speculatively recorded action (e.g. a shop purchase
-    /// that later fails).
+    ///     Removes the most recently recorded entry from both queues.
+    ///     Used to undo a speculatively recorded action (e.g. a shop purchase
+    ///     that later fails).
     /// </summary>
     public static void UndoLast()
     {
@@ -251,23 +268,21 @@ public static class PlayerActionBuffer
 
     private static void RemoveLast<T>(ConcurrentQueue<T> queue)
     {
-        int count = queue.Count;
+        var count = queue.Count;
         if (count == 0) return;
         // Re-enqueue all but the last item.
-        for (int i = 0; i < count - 1; i++)
-        {
-            if (queue.TryDequeue(out T? item))
+        for (var i = 0; i < count - 1; i++)
+            if (queue.TryDequeue(out var item))
                 queue.Enqueue(item);
-        }
         // Discard the last item.
         queue.TryDequeue(out _);
     }
 
     /// <summary>
-    /// Called when ReplayEngine exhausts its command queue.  Restores the
-    /// replayed commands into both buffer queues so that the next save log
-    /// contains all actions (replayed + new) rather than only the new ones.
-    /// The overlay's recent-entry display is also refreshed.
+    ///     Called when ReplayEngine exhausts its command queue.  Restores the
+    ///     replayed commands into both buffer queues so that the next save log
+    ///     contains all actions (replayed + new) rather than only the new ones.
+    ///     The overlay's recent-entry display is also refreshed.
     /// </summary>
     private static void OnReplayCompleted(IReadOnlyList<string> commands)
     {
@@ -277,7 +292,7 @@ public static class PlayerActionBuffer
         // Strip " || state" suffix for overlay display.
         var displayEntries = commands.Select(c =>
         {
-            int sep = c.IndexOf(StateSeparator, StringComparison.Ordinal);
+            var sep = c.IndexOf(StateSeparator, StringComparison.Ordinal);
             return sep >= 0 ? c[..sep] : c;
         }).ToList();
         RunOverlay.RestoreRecentEntries(displayEntries);
@@ -286,11 +301,11 @@ public static class PlayerActionBuffer
             $"[PlayerActionBuffer] Replay completed — restored {commands.Count} command(s) to buffer.");
         CardPlayReplayPatch.LogCardSelectState("ReplayCompleted");
         SelectorStackDebug.Log("=== ReplayCompleted ===");
-        Utils.RngCheckpointLogger.Log("=== ReplayCompleted ===");
+        RngCheckpointLogger.Log("=== ReplayCompleted ===");
     }
 
     /// <summary>
-    /// Minimal snapshot: action text only, no timestamps.
+    ///     Minimal snapshot: action text only, no timestamps.
     /// </summary>
     public static IReadOnlyList<string> SnapshotMinimal()
     {
@@ -298,8 +313,8 @@ public static class PlayerActionBuffer
     }
 
     /// <summary>
-    /// Restores both queues from previously-saved log files (used when a run is continued).
-    /// Called after the buffer has already been cleared by the ActionExecutor constructor patch.
+    ///     Restores both queues from previously-saved log files (used when a run is continued).
+    ///     Called after the buffer has already been cleared by the ActionExecutor constructor patch.
     /// </summary>
     public static void Restore(
         IReadOnlyList<(string Timestamp, string Action)> verboseEntries,
@@ -311,23 +326,19 @@ public static class PlayerActionBuffer
             _minimalEntries.Enqueue(entry);
     }
 
-    // Reflected once; null until the field is found.
-    private static readonly FieldInfo? _instanceField =
-        typeof(NDevConsole).GetField("_instance", BindingFlags.NonPublic | BindingFlags.Static);
-
-    [System.Diagnostics.Conditional("RUNREPLAYS_VERBOSE")]
+    [Conditional("RUNREPLAYS_VERBOSE")]
     internal static void LogToDevConsole(string entry)
     {
         WriteToDevConsole(entry);
     }
 
-    [System.Diagnostics.Conditional("RUNREPLAYS_DISPATCHER")]
+    [Conditional("RUNREPLAYS_DISPATCHER")]
     internal static void LogDispatcher(string entry)
     {
         WriteToDevConsole(entry);
     }
 
-    [System.Diagnostics.Conditional("RUNREPLAYS_MIGRATION")]
+    [Conditional("RUNREPLAYS_MIGRATION")]
     internal static void LogMigrationWarning(string entry)
     {
         WriteToDevConsole(entry);
@@ -347,21 +358,21 @@ public static class PlayerActionBuffer
     }
 
     /// <summary>
-    /// Records a card play action before execution.
-    /// Consumes the pending pre-state (AfterActionExecuted will capture
-    /// a fresh one after the card's effects resolve).
+    ///     Records a card play action before execution.
+    ///     Consumes the pending pre-state (AfterActionExecuted will capture
+    ///     a fresh one after the card's effects resolve).
     /// </summary>
     internal static void RecordCardPlayEarly(string actionText)
     {
         if (ReplayEngine.IsActive)
             return;
 
-        string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
+        var timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
 
-        string? preState = _pendingPreState;
+        var preState = _pendingPreState;
         _pendingPreState = null;
 
-        string minimalEntry = preState != null
+        var minimalEntry = preState != null
             ? actionText + StateSeparator + preState
             : actionText;
 
@@ -373,9 +384,9 @@ public static class PlayerActionBuffer
 }
 
 /// <summary>
-/// Records a card play as soon as EnqueueManualPlay completes — before the
-/// PlayCardAction executes.  By this point the PlayCardAction constructor has
-/// registered the card in NetCombatCardDb via NetCombatCard.FromModel.
+///     Records a card play as soon as EnqueueManualPlay completes — before the
+///     PlayCardAction executes.  By this point the PlayCardAction constructor has
+///     registered the card in NetCombatCardDb via NetCombatCard.FromModel.
 /// </summary>
 [HarmonyPatch(typeof(CardModel), "EnqueueManualPlay")]
 public static class CardPlayRecordPatch
@@ -386,13 +397,12 @@ public static class CardPlayRecordPatch
         if (ReplayEngine.IsActive)
             return;
 
-        if (!NetCombatCardDb.Instance.TryGetCardId(__instance, out uint cardId))
+        if (!NetCombatCardDb.Instance.TryGetCardId(__instance, out var cardId))
             return;
 
-        string targetStr = target?.CombatId?.ToString() ?? "";
-        string actionText = $"PlayCardAction card: {__instance} index: {cardId} targetid: {targetStr}";
+        var targetStr = target?.CombatId?.ToString() ?? "";
+        var actionText = $"PlayCardAction card: {__instance} index: {cardId} targetid: {targetStr}";
 
         PlayerActionBuffer.RecordCardPlayEarly(actionText);
     }
 }
-

@@ -4,13 +4,12 @@ using MegaCrit.Sts2.Core.Models;
 namespace RunReplays.Commands;
 
 /// <summary>
-/// A card selection command consumed inline by ICardSelector implementations
-/// or dispatched via CardGridScreenCapture when the selection screen opens.
-///
-/// Covers: SelectCardFromScreen, SelectSimpleCard, UpgradeCard.
-/// SelectHandCards is handled by SelectHandCardsCommand.
-/// SelectDeckCard is handled by SelectDeckCardCommand.
-/// RemoveCardFromDeck is handled by RemoveCardFromDeckCommand.
+///     A card selection command consumed inline by ICardSelector implementations
+///     or dispatched via CardGridScreenCapture when the selection screen opens.
+///     Covers: SelectCardFromScreen, SelectSimpleCard, UpgradeCard.
+///     SelectHandCards is handled by SelectHandCardsCommand.
+///     SelectDeckCard is handled by SelectDeckCardCommand.
+///     RemoveCardFromDeck is handled by RemoveCardFromDeckCommand.
 /// </summary>
 public class SelectionCommand : ReplayCommand
 {
@@ -18,13 +17,8 @@ public class SelectionCommand : ReplayCommand
     {
         SelectCardFromScreen,
         SelectSimpleCard,
-        UpgradeCard,
+        UpgradeCard
     }
-
-    public SelectionKind Kind { get; }
-    public int[] Indices { get; }
-
-    public override bool IsSelectionCommand => true;
 
     private SelectionCommand(string raw, SelectionKind kind, int[] indices) : base(raw)
     {
@@ -32,15 +26,20 @@ public class SelectionCommand : ReplayCommand
         Indices = indices;
     }
 
+    public SelectionKind Kind { get; }
+    public int[] Indices { get; }
+
+    public override bool IsSelectionCommand => true;
+
     public override string Describe()
     {
-        string idxStr = Indices.Length > 0 ? string.Join(", ", Indices) : "(none)";
+        var idxStr = Indices.Length > 0 ? string.Join(", ", Indices) : "(none)";
         return Kind switch
         {
             SelectionKind.SelectCardFromScreen => $"select card from screen index={idxStr}",
             SelectionKind.SelectSimpleCard => $"select simple card index={idxStr}",
             SelectionKind.UpgradeCard => $"upgrade card at deck index {idxStr}",
-            _ => "card selection",
+            _ => "card selection"
         };
     }
 
@@ -54,14 +53,12 @@ public class SelectionCommand : ReplayCommand
         if (cards == null)
             return ExecuteResult.Retry(300);
 
-        foreach (int idx in Indices)
-        {
+        foreach (var idx in Indices)
             if (idx < 0 || idx >= cards.Count)
                 return ExecuteResult.Retry(300);
-        }
 
         var selected = new List<CardModel>();
-        foreach (int idx in Indices)
+        foreach (var idx in Indices)
             selected.Add(cards[idx]);
 
         CardGridScreenCapture.ResolveSelection(selected);

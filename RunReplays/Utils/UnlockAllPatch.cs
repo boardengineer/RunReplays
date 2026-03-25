@@ -6,8 +6,8 @@ using MegaCrit.Sts2.Core.Unlocks;
 namespace RunReplays.Utils;
 
 /// <summary>
-/// Patches SaveManager.GenerateUnlockStateFromProgress to always return
-/// UnlockState.all, unlocking all characters, cards, relics, and potions.
+///     Patches SaveManager.GenerateUnlockStateFromProgress to always return
+///     UnlockState.all, unlocking all characters, cards, relics, and potions.
 /// </summary>
 [HarmonyPatch(typeof(SaveManager), nameof(SaveManager.GenerateUnlockStateFromProgress))]
 public static class UnlockAllPatch
@@ -20,8 +20,8 @@ public static class UnlockAllPatch
 }
 
 /// <summary>
-/// Forces GetRandomList to use UnlockState.all so that the act pool/order
-/// is deterministic regardless of player progression.
+///     Forces GetRandomList to use UnlockState.all so that the act pool/order
+///     is deterministic regardless of player progression.
 /// </summary>
 [HarmonyPatch(typeof(ActModel), nameof(ActModel.GetRandomList))]
 public static class GetRandomListUnlockPatch
@@ -42,8 +42,8 @@ public static class GetRandomListUnlockPatch
 }
 
 /// <summary>
-/// Forces HasSeenEncounter to always return true so that discovery order
-/// never reorders encounters — making the encounter list fully seed-deterministic.
+///     Forces HasSeenEncounter to always return true so that discovery order
+///     never reorders encounters — making the encounter list fully seed-deterministic.
 /// </summary>
 [HarmonyPatch(typeof(UnlockState), nameof(UnlockState.HasSeenEncounter))]
 public static class HasSeenEncounterPatch

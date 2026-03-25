@@ -1,44 +1,51 @@
 using System.Collections.Generic;
 using Godot;
-using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.GameActions;
 
 namespace RunReplays;
 
 /// <summary>
-/// Tracks in-flight operation state for the replay system.  The dispatcher
-/// checks this state before executing queued commands.
+///     Tracks in-flight operation state for the replay system.  The dispatcher
+///     checks this state before executing queued commands.
 /// </summary>
 public static class ReplayState
 {
     /// <summary>
-    /// Tracks whether a card play is in flight.  Set by the combat patch.
-    /// Does NOT trigger immediate dispatch on clear — effects need to settle
-    /// first.  <see cref="ReplayDispatcher.NotifyEffectsSettled"/> triggers dispatch after.
+    ///     Screens that have been resolved but should be freed at a safe lifecycle
+    ///     point (room exit, turn start) rather than immediately.
+    /// </summary>
+    private static readonly List<Node> _pendingScreenCleanup = new();
+
+    /// <summary>
+    ///     Tracks whether a card play is in flight.  Set by the combat patch.
+    ///     Does NOT trigger immediate dispatch on clear — effects need to settle
+    ///     first.  <see cref="ReplayDispatcher.NotifyEffectsSettled" /> triggers dispatch after.
     /// </summary>
     public static bool CardPlayInFlight { get; set; }
 
     /// <summary>
-    /// Tracks whether a potion use is in flight.  Set when EnqueueManualUse
-    /// is called, cleared when AfterActionExecuted fires for UsePotionAction.
-    /// Blocks dispatch while the potion animation is playing.
+    ///     Tracks whether a potion use is in flight.  Set when EnqueueManualUse
+    ///     is called, cleared when AfterActionExecuted fires for UsePotionAction.
+    ///     Blocks dispatch while the potion animation is playing.
     /// </summary>
     public static bool PotionInFlight { get; set; }
 
     /// <summary>
-    /// True while a game action is executing (between BeforeActionExecuted
-    /// and AfterActionExecuted).  Blocks all non-selection command dispatch.
+    ///     True while a game action is executing (between BeforeActionExecuted
+    ///     and AfterActionExecuted).  Blocks all non-selection command dispatch.
     /// </summary>
-    private static bool _actionInFlight;
-    public static bool ActionInFlight => _actionInFlight;
+    public static bool ActionInFlight { get; private set; }
 
     /// <summary>Force-clears the action-in-flight flag (used by the watchdog).</summary>
-    internal static void ClearActionInFlight() => _actionInFlight = false;
+    internal static void ClearActionInFlight()
+    {
+        ActionInFlight = false;
+    }
 
     /// <summary>
-    /// Subscribes to BeforeActionExecuted / AfterActionExecuted on the given
-    /// executor so that <see cref="ActionInFlight"/> tracks action execution.
-    /// Called from the ActionExecutor constructor patch.
+    ///     Subscribes to BeforeActionExecuted / AfterActionExecuted on the given
+    ///     executor so that <see cref="ActionInFlight" /> tracks action execution.
+    ///     Called from the ActionExecutor constructor patch.
     /// </summary>
     public static void SubscribeToExecutor(ActionExecutor executor)
     {
@@ -49,21 +56,15 @@ public static class ReplayState
     private static void OnBeforeAction(GameAction action)
     {
         if (!ReplayEngine.IsActive) return;
-        _actionInFlight = true;
+        ActionInFlight = true;
     }
 
     private static void OnAfterAction(GameAction action)
     {
         if (!ReplayEngine.IsActive) return;
-        _actionInFlight = false;
+        ActionInFlight = false;
         ReplayDispatcher.TryDispatch();
     }
-
-    /// <summary>
-    /// Screens that have been resolved but should be freed at a safe lifecycle
-    /// point (room exit, turn start) rather than immediately.
-    /// </summary>
-    private static readonly List<Node> _pendingScreenCleanup = new();
 
     /// <summary>Enqueue a screen node for deferred cleanup.</summary>
     internal static void EnqueueScreenCleanup(Node screen)
@@ -72,15 +73,13 @@ public static class ReplayState
     }
 
     /// <summary>
-    /// Frees all screens queued for cleanup.  Called on room exit and turn start.
+    ///     Frees all screens queued for cleanup.  Called on room exit and turn start.
     /// </summary>
     internal static void DrainScreenCleanup()
     {
         foreach (var screen in _pendingScreenCleanup)
-        {
             if (GodotObject.IsInstanceValid(screen))
                 screen.QueueFree();
-        }
         _pendingScreenCleanup.Clear();
     }
 
@@ -89,7 +88,7 @@ public static class ReplayState
     {
         CardPlayInFlight = false;
         PotionInFlight = false;
-        _actionInFlight = false;
+        ActionInFlight = false;
         DrainScreenCleanup();
     }
 }

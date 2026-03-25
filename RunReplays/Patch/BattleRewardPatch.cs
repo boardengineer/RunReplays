@@ -1,14 +1,9 @@
-using System.Reflection;
-using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
-using MegaCrit.Sts2.Core.Nodes.Screens;
 
 namespace RunReplays.Patch;
-using RunReplays;
-
 
 [HarmonyPatch(typeof(RewardSynchronizer))]
 public static class BattleRewardPatch
@@ -23,7 +18,7 @@ public static class BattleRewardPatch
         if (ShopPurchaseState.IsPurchasing) return;
         CardChoiceScreenSyncPatch.FlushIfPending();
 
-        int idx = LastCardRewardIndex;
+        var idx = LastCardRewardIndex;
         LastCardRewardIndex = -1;
         IsProcessingCardReward = false;
 
@@ -66,7 +61,7 @@ public static class BattleRewardPatch
     {
         CardChoiceScreenSyncPatch.FlushIfPending();
 
-        int idx = LastCardRewardIndex;
+        var idx = LastCardRewardIndex;
         LastCardRewardIndex = -1;
         IsProcessingCardReward = false;
 

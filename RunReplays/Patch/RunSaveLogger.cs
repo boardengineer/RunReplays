@@ -11,17 +11,15 @@ using MegaCrit.Sts2.Core.Saves;
 using MegaCrit.Sts2.Core.Saves.Managers;
 
 namespace RunReplays.Patch;
-using RunReplays;
 
 /// <summary>
-/// Harmony postfix on RunManager.ToSave() that writes a snapshot log file
-/// every time the game serialises a run for saving.
-///
-/// ToSave() is synchronous and returns the complete SerializableRun, so we
-/// can access all run data without re-reading from disk.
-/// Two files are written per save:
-///   {UserDataDir}/RunReplays/logs/{seed}/floor_{floor}/{datetime}.verbose.log
-///   {UserDataDir}/RunReplays/logs/{seed}/floor_{floor}/{datetime}.minimal.log
+///     Harmony postfix on RunManager.ToSave() that writes a snapshot log file
+///     every time the game serialises a run for saving.
+///     ToSave() is synchronous and returns the complete SerializableRun, so we
+///     can access all run data without re-reading from disk.
+///     Two files are written per save:
+///     {UserDataDir}/RunReplays/logs/{seed}/floor_{floor}/{datetime}.verbose.log
+///     {UserDataDir}/RunReplays/logs/{seed}/floor_{floor}/{datetime}.minimal.log
 /// </summary>
 [HarmonyPatch(typeof(RunManager), nameof(RunManager.ToSave))]
 public static class RunSaveLogger
@@ -44,8 +42,8 @@ public static class RunSaveLogger
 
     private static void WriteRunLog(SerializableRun run)
     {
-        string seed      = run.SerializableRng?.Seed ?? "unknown-seed";
-        string character = run.Players?.FirstOrDefault()?.CharacterId?.Entry ?? "unknown-character";
+        var seed = run.SerializableRng?.Seed ?? "unknown-seed";
+        var character = run.Players?.FirstOrDefault()?.CharacterId?.Entry ?? "unknown-character";
 
         // SaveTime / StartTime are seconds since Unix epoch (ToUnixTimeSeconds).
         var saveTime = DateTimeOffset.FromUnixTimeSeconds(run.SaveTime).LocalDateTime;
@@ -53,13 +51,13 @@ public static class RunSaveLogger
 
         // TotalFloor mirrors RunState.TotalFloor: sum of visited rooms across all
         // player history columns (same formula the top-bar floor icon uses).
-        int totalFloor = run.MapPointHistory?.Sum(column => column.Count) ?? 0;
+        var totalFloor = run.MapPointHistory?.Sum(column => column.Count) ?? 0;
 
         // Directory structure: logs/{seed}/floor_{floor}/
         // One set of files per seed/floor — overwrites on each save.
-        string seedDir  = SanitizeForFileName(seed);
-        string floorDir = $"floor_{totalFloor + 1}";
-        string logsDir  = Path.Combine(OS.GetUserDataDir(), "RunReplays", "logs", seedDir, floorDir);
+        var seedDir = SanitizeForFileName(seed);
+        var floorDir = $"floor_{totalFloor + 1}";
+        var logsDir = Path.Combine(OS.GetUserDataDir(), "RunReplays", "logs", seedDir, floorDir);
         Directory.CreateDirectory(logsDir);
 
         var minimalActions = PlayerActionBuffer.SnapshotMinimal();
@@ -83,7 +81,7 @@ public static class RunSaveLogger
         sb.AppendLine($"Floor:       {totalFloor + 1}");
         sb.AppendLine($"Actions:     {actions.Count}");
         sb.AppendLine();
-        foreach (string entry in actions)
+        foreach (var entry in actions)
             sb.AppendLine(entry);
         File.WriteAllText(filePath, sb.ToString());
     }
@@ -107,7 +105,7 @@ public static class RunSaveLogger
         sb.AppendLine($"# Ascension: {ascension}");
         sb.AppendLine($"# Game: {gameVersion}");
         sb.AppendLine($"# Mod: {ModVersion.Current}");
-        foreach (string entry in actions)
+        foreach (var entry in actions)
             sb.AppendLine(entry);
         File.WriteAllText(filePath, sb.ToString());
     }
@@ -116,10 +114,10 @@ public static class RunSaveLogger
     {
         try
         {
-            int profileId = SaveManager.Instance.CurrentProfileId;
-            string godotPath = UserDataPathProvider.GetProfileScopedPath(
+            var profileId = SaveManager.Instance.CurrentProfileId;
+            var godotPath = UserDataPathProvider.GetProfileScopedPath(
                 profileId, "saves/" + RunSaveManager.runSaveFileName);
-            string physicalPath = ProjectSettings.GlobalizePath(godotPath);
+            var physicalPath = ProjectSettings.GlobalizePath(godotPath);
 
             if (!File.Exists(physicalPath))
             {
@@ -127,8 +125,8 @@ public static class RunSaveLogger
                 return;
             }
 
-            string dest = Path.Combine(logsDir, "run.save");
-            File.Copy(physicalPath, dest, overwrite: true);
+            var dest = Path.Combine(logsDir, "run.save");
+            File.Copy(physicalPath, dest, true);
         }
         catch (Exception ex)
         {
@@ -138,7 +136,7 @@ public static class RunSaveLogger
 
     private static string SanitizeForFileName(string value)
     {
-        foreach (char c in Path.GetInvalidFileNameChars())
+        foreach (var c in Path.GetInvalidFileNameChars())
             value = value.Replace(c, '_');
         return value;
     }

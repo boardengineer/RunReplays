@@ -8,14 +8,12 @@ using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
 
 namespace RunReplays.Patch;
-using RunReplays;
 
 /// <summary>
-/// Harmony postfix on RunManager.SetUpSavedSinglePlayer() that restores the
-/// action buffer from the most recent log files for the continued run.
-///
-/// Timing: this postfix fires after InitializeShared() has already constructed
-/// a fresh ActionExecutor and cleared the buffer, so enqueuing here is safe.
+///     Harmony postfix on RunManager.SetUpSavedSinglePlayer() that restores the
+///     action buffer from the most recent log files for the continued run.
+///     Timing: this postfix fires after InitializeShared() has already constructed
+///     a fresh ActionExecutor and cleared the buffer, so enqueuing here is safe.
 /// </summary>
 [HarmonyPatch(typeof(RunManager), nameof(RunManager.SetUpSavedSinglePlayer))]
 public static class RunContinuePatch
@@ -35,12 +33,12 @@ public static class RunContinuePatch
 
     private static void RestoreActionBuffer(SerializableRun save)
     {
-        string seed = save.SerializableRng?.Seed ?? "unknown-seed";
-        int totalFloor = save.MapPointHistory?.Sum(column => column.Count) ?? 0;
+        var seed = save.SerializableRng?.Seed ?? "unknown-seed";
+        var totalFloor = save.MapPointHistory?.Sum(column => column.Count) ?? 0;
 
-        string seedDir  = SanitizeForFileName(seed);
-        string floorDir = $"floor_{totalFloor + 1}";
-        string logsDir  = Path.Combine(OS.GetUserDataDir(), "RunReplays", "logs", seedDir, floorDir);
+        var seedDir = SanitizeForFileName(seed);
+        var floorDir = $"floor_{totalFloor + 1}";
+        var logsDir = Path.Combine(OS.GetUserDataDir(), "RunReplays", "logs", seedDir, floorDir);
 
         if (!Directory.Exists(logsDir))
         {
@@ -50,7 +48,7 @@ public static class RunContinuePatch
 
         // Find the minimal log: prefer actions.sts2replay, then actions.minimal.log,
         // then legacy timestamped *.minimal.log files.
-        string latestMinimal = Path.Combine(logsDir, "actions.sts2replay");
+        var latestMinimal = Path.Combine(logsDir, "actions.sts2replay");
         if (!File.Exists(latestMinimal))
             latestMinimal = Path.Combine(logsDir, "actions.minimal.log");
         if (!File.Exists(latestMinimal))
@@ -64,7 +62,7 @@ public static class RunContinuePatch
         }
 
         // Verbose log is optional — find it for restore but don't require it.
-        string latestVerbose = Path.Combine(logsDir, "actions.verbose.log");
+        var latestVerbose = Path.Combine(logsDir, "actions.verbose.log");
         if (!File.Exists(latestVerbose))
             latestVerbose = Directory.EnumerateFiles(logsDir, "*.verbose.log")
                 .OrderByDescending(f => f).FirstOrDefault() ?? "";
@@ -76,35 +74,36 @@ public static class RunContinuePatch
 
         PlayerActionBuffer.Restore(verboseEntries, minimalEntries);
         RunOverlay.RestoreRecentEntries(minimalEntries);
-        GD.Print($"[RunReplays] Restored {verboseEntries.Count} verbose / {minimalEntries.Count} minimal entries from: {logsDir}");
+        GD.Print(
+            $"[RunReplays] Restored {verboseEntries.Count} verbose / {minimalEntries.Count} minimal entries from: {logsDir}");
     }
 
     /// <summary>
-    /// Parses a verbose log file. Skips the 6-line header block (=== line + 4 metadata lines + blank),
-    /// then parses "[HH:mm:ss.fff] {action}" lines.
+    ///     Parses a verbose log file. Skips the 6-line header block (=== line + 4 metadata lines + blank),
+    ///     then parses "[HH:mm:ss.fff] {action}" lines.
     /// </summary>
     private static IReadOnlyList<(string Timestamp, string Action)> ParseVerboseLog(string filePath)
     {
         var entries = new List<(string, string)>();
-        string[] lines = File.ReadAllLines(filePath);
+        var lines = File.ReadAllLines(filePath);
 
         // Header is: === banner, Seed:, Character:, Saved at:, Floor:, Actions:, blank line — skip 7 lines.
         const int headerLines = 7;
 
-        for (int i = headerLines; i < lines.Length; i++)
+        for (var i = headerLines; i < lines.Length; i++)
         {
-            string line = lines[i];
+            var line = lines[i];
             if (line.Length == 0)
                 continue;
 
             // Expected format: "[HH:mm:ss.fff] text"
             if (line.StartsWith('['))
             {
-                int closeBracket = line.IndexOf(']');
+                var closeBracket = line.IndexOf(']');
                 if (closeBracket > 0 && closeBracket + 2 <= line.Length)
                 {
-                    string timestamp = line.Substring(1, closeBracket - 1);
-                    string action    = line.Substring(closeBracket + 2); // skip "] "
+                    var timestamp = line.Substring(1, closeBracket - 1);
+                    var action = line.Substring(closeBracket + 2); // skip "] "
                     entries.Add((timestamp, action));
                     continue;
                 }
@@ -118,7 +117,7 @@ public static class RunContinuePatch
     }
 
     /// <summary>
-    /// Parses a minimal log file. Each non-empty line is a plain action string.
+    ///     Parses a minimal log file. Each non-empty line is a plain action string.
     /// </summary>
     private static IReadOnlyList<string> ParseMinimalLog(string filePath)
     {
@@ -129,7 +128,7 @@ public static class RunContinuePatch
 
     private static string SanitizeForFileName(string value)
     {
-        foreach (char c in Path.GetInvalidFileNameChars())
+        foreach (var c in Path.GetInvalidFileNameChars())
             value = value.Replace(c, '_');
         return value;
     }

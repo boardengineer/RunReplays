@@ -4,8 +4,8 @@ using MegaCrit.Sts2.Core.Runs;
 namespace RunReplays.Utils;
 
 /// <summary>
-/// Harmony prefix on RunState.CreateForNewRun that replaces the seed with a
-/// fixed value for every new run, making results fully reproducible.
+///     Harmony prefix on RunState.CreateForNewRun that replaces the seed with a
+///     fixed value for every new run, making results fully reproducible.
 /// </summary>
 [HarmonyPatch(typeof(RunState), nameof(RunState.CreateForNewRun))]
 public static class ForcedSeedPatch

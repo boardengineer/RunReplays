@@ -1,38 +1,20 @@
-using System;
-using System.IO;
-using System.Linq;
 using Godot;
 using HarmonyLib;
-using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Screens.MainMenu;
-
 using RunReplays.Patch;
+
 namespace RunReplays;
 
 /// <summary>
-/// Harmony postfix on NMainMenu._Ready() that injects a "Run Replays" button
-/// into the main menu just above the Quit button.
-///
-/// The game auto-discovers [HarmonyPatch] classes and calls PatchAll() when
-/// no [ModInitializerAttribute] type is present in the assembly.
+///     Harmony postfix on NMainMenu._Ready() that injects a "Run Replays" button
+///     into the main menu just above the Quit button.
+///     The game auto-discovers [HarmonyPatch] classes and calls PatchAll() when
+///     no [ModInitializerAttribute] type is present in the assembly.
 /// </summary>
 [HarmonyPatch(typeof(NMainMenu), "_Ready")]
 public static class MainMenuButtonInjector
 {
-#if RUNREPLAYS_AUTOPLAY
-    /// <summary>
-    /// When RUNREPLAYS_AUTOPLAY is defined, the mod will automatically launch
-    /// the replay for this seed as soon as the main menu opens.
-    /// Set to the seed string of the replay to auto-launch.
-    /// If null or empty, auto-play is skipped.
-    /// Optionally append ":floor_N" to target a specific floor (e.g. "ABC123:floor_5").
-    /// </summary>
-    private const string AutoPlayTarget = "8AGN4R7RPW:floor_17";
-
-    private static bool _autoPlayFired;
-#endif
-
     [HarmonyPostfix]
     public static void Postfix(NMainMenu __instance)
     {
@@ -53,7 +35,7 @@ public static class MainMenuButtonInjector
         // _Ready() will be called on the duplicate when it enters the tree,
         // so ConnectSignals() re-wires all internal hover/press animations fresh.
         var quitButton = __instance.GetNode<NMainMenuTextButton>("MainMenuTextButtons/QuitButton");
-        int quitIndex = quitButton.GetIndex();
+        var quitIndex = quitButton.GetIndex();
 
         var replayButton = (NMainMenuTextButton)quitButton.Duplicate(6);
         replayButton.Name = "RunReplaysButton";
@@ -66,10 +48,7 @@ public static class MainMenuButtonInjector
         buttonContainer.MoveChild(replayButton, quitIndex);
 
         // Override label text now that _Ready() has run and label is valid.
-        if (replayButton.label != null)
-        {
-            replayButton.label.Text = "Run Replays";
-        }
+        if (replayButton.label != null) replayButton.label.Text = "Run Replays";
 
         // Wire the Released signal to our handler.
         replayButton.Connect(
@@ -91,4 +70,16 @@ public static class MainMenuButtonInjector
         var menu = RunReplayMenu.Create(mainMenu);
         mainMenu.AddChild(menu);
     }
+#if RUNREPLAYS_AUTOPLAY
+    /// <summary>
+    ///     When RUNREPLAYS_AUTOPLAY is defined, the mod will automatically launch
+    ///     the replay for this seed as soon as the main menu opens.
+    ///     Set to the seed string of the replay to auto-launch.
+    ///     If null or empty, auto-play is skipped.
+    ///     Optionally append ":floor_N" to target a specific floor (e.g. "ABC123:floor_5").
+    /// </summary>
+    private const string AutoPlayTarget = "8AGN4R7RPW:floor_17";
+
+    private static bool _autoPlayFired;
+#endif
 }

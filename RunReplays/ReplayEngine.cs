@@ -1,33 +1,67 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Godot;
-
+using RunReplays.Commands;
 using RunReplays.Patch;
+using RunReplays.Utils;
+
 namespace RunReplays;
 
 /// <summary>
-/// Raw command queue for an active replay.
-/// Exposes typed Peek helpers for each command kind; consumption and logging
-/// are handled by ReplayDispatcher, which calls these methods and proxies results.
+///     Raw command queue for an active replay.
+///     Exposes typed Peek helpers for each command kind; consumption and logging
+///     are handled by ReplayDispatcher, which calls these methods and proxies results.
 /// </summary>
 public static class ReplayEngine
 {
+    /// <summary>State suffix separator embedded in minimal log entries.</summary>
+    private const string StateSeparator = " || ";
+
+    // ── Map node choices ──────────────────────────────────────────────────────
+    //
+    // Recorded by PlayerActionBuffer via MoveToMapCoordAction.ToString():
+    //   "MoveToMapCoordAction {playerId} MapCoord ({col}, {row})"
+
+    private const string MapNodePrefix = "MoveToMapCoordAction ";
+    private const string MapCoordMarker = "MapCoord (";
     private static readonly Queue<string> _pending = new();
+
+    private static readonly List<string> _recentConsumed = new(2);
+
+    // True only while commands loaded by Load() are still pending.
+    // Set false by Clear() so ReplayCompleted is not fired on explicit cancels.
+    private static bool _replayActive;
+    private static List<string> _loadedCommands = new();
+
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    ///     True while commands are queued OR while the last command was just consumed
+    ///     but its AfterActionExecuted callback may not have fired yet.
+    ///     The _replayActive flag is cleared one Godot frame after the queue empties
+    ///     so that the last replayed action is still suppressed from recording.
+    /// </summary>
+    public static bool IsActive => _pending.Count > 0 || _replayActive;
+
+    /// <summary>
+    ///     The seed of the run being replayed or loaded from a save.
+    ///     Set by RunReplayMenu before starting the run.  Used by
+    ///     GetRandomListUnlockPatch to override the seed deterministically.
+    ///     Null when not using the replay menu (falls back to ForcedSeedPatch).
+    /// </summary>
+    public static string? ActiveSeed { get; set; }
 
     // ── Overlay context ───────────────────────────────────────────────────────
 
     /// <summary>Fired on the calling thread each time a command is consumed.</summary>
     internal static event Action? ContextChanged;
 
-    private static readonly List<string> _recentConsumed = new(2);
-
     /// <summary>
-    /// Dequeues one command, records it in the recent-history buffer, and
-    /// fires ContextChanged so the overlay can refresh.
-    /// When the queue empties naturally (all commands consumed), also fires
-    /// ReplayCompleted so callers can restore the action buffer.
+    ///     Dequeues one command, records it in the recent-history buffer, and
+    ///     fires ContextChanged so the overlay can refresh.
+    ///     When the queue empties naturally (all commands consumed), also fires
+    ///     ReplayCompleted so callers can restore the action buffer.
     /// </summary>
     private static string SignalConsumed(string cmd, [CallerMemberName] string? caller = null)
     {
@@ -65,21 +99,16 @@ public static class ReplayEngine
     // ── Replay-completed notification ─────────────────────────────────────────
 
     /// <summary>
-    /// Fired when the last queued command is consumed (i.e. the replay finishes
-    /// naturally). Carries the full list of commands that were loaded so
-    /// subscribers can restore the action buffer for the record phase.
-    /// Not fired when Clear() is called explicitly.
+    ///     Fired when the last queued command is consumed (i.e. the replay finishes
+    ///     naturally). Carries the full list of commands that were loaded so
+    ///     subscribers can restore the action buffer for the record phase.
+    ///     Not fired when Clear() is called explicitly.
     /// </summary>
     internal static event Action<IReadOnlyList<string>>? ReplayCompleted;
 
-    // True only while commands loaded by Load() are still pending.
-    // Set false by Clear() so ReplayCompleted is not fired on explicit cancels.
-    private static bool _replayActive;
-    private static List<string> _loadedCommands = new();
-
     /// <summary>
-    /// Returns up to 2 recently consumed commands (prev), the current front of
-    /// the queue (current), and up to 2 commands ahead of it (next).
+    ///     Returns up to 2 recently consumed commands (prev), the current front of
+    ///     the queue (current), and up to 2 commands ahead of it (next).
     /// </summary>
     internal static void GetReplayContext(
         out IReadOnlyList<string> prev,
@@ -88,47 +117,26 @@ public static class ReplayEngine
     {
         prev = _recentConsumed;
 
-        string[] arr = _pending.ToArray();
+        var arr = _pending.ToArray();
         current = arr.Length > 0 ? arr[0] : null;
 
         var nextList = new List<string>(2);
-        for (int i = 1; i < Math.Min(arr.Length, 3); i++)
+        for (var i = 1; i < Math.Min(arr.Length, 3); i++)
             nextList.Add(arr[i]);
         next = nextList;
     }
-
-    // ─────────────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// True while commands are queued OR while the last command was just consumed
-    /// but its AfterActionExecuted callback may not have fired yet.
-    /// The _replayActive flag is cleared one Godot frame after the queue empties
-    /// so that the last replayed action is still suppressed from recording.
-    /// </summary>
-    public static bool IsActive => _pending.Count > 0 || _replayActive;
-
-    /// <summary>
-    /// The seed of the run being replayed or loaded from a save.
-    /// Set by RunReplayMenu before starting the run.  Used by
-    /// GetRandomListUnlockPatch to override the seed deterministically.
-    /// Null when not using the replay menu (falls back to ForcedSeedPatch).
-    /// </summary>
-    public static string? ActiveSeed { get; set; }
-
-    /// <summary>State suffix separator embedded in minimal log entries.</summary>
-    private const string StateSeparator = " || ";
 
     public static void Load(IReadOnlyList<string> commands)
     {
         SelectorStackDebug.Clear();
         SelectorStackDebug.Log("=== Replay Load ===");
-        Utils.RngCheckpointLogger.Clear();
-        Utils.RngCheckpointLogger.Log("=== Replay Load ===");
+        RngCheckpointLogger.Clear();
+        RngCheckpointLogger.Log("=== Replay Load ===");
         _pending.Clear();
         _recentConsumed.Clear();
 
         _loadedCommands = new List<string>();
-        foreach (string raw in commands)
+        foreach (var raw in commands)
         {
             if (string.IsNullOrWhiteSpace(raw))
                 continue;
@@ -138,8 +146,8 @@ public static class ReplayEngine
                 continue;
 
             // Strip the " || state" suffix so the command text parses cleanly.
-            int sepIdx = raw.IndexOf(StateSeparator, StringComparison.Ordinal);
-            string cmd = sepIdx >= 0 ? raw[..sepIdx] : raw;
+            var sepIdx = raw.IndexOf(StateSeparator, StringComparison.Ordinal);
+            var cmd = sepIdx >= 0 ? raw[..sepIdx] : raw;
             _loadedCommands.Add(cmd);
             _pending.Enqueue(cmd);
         }
@@ -162,8 +170,8 @@ public static class ReplayEngine
     }
 
     /// <summary>
-    /// Resets all static state across recording and replay patches so that
-    /// both paths can start cleanly after a stall or cancellation.
+    ///     Resets all static state across recording and replay patches so that
+    ///     both paths can start cleanly after a stall or cancellation.
     /// </summary>
     public static void ResetAllPatchState()
     {
@@ -193,7 +201,7 @@ public static class ReplayEngine
         FromDeckForTransformationPatch._pendingScope = null;
         FromDeckForUpgradePatch._pendingScope?.Dispose();
         FromDeckForUpgradePatch._pendingScope = null;
-        Commands.HandSelectionCapture.Clear();
+        HandSelectionCapture.Clear();
         FromSimpleGridPatch._pendingScope?.Dispose();
         FromSimpleGridPatch._pendingScope = null;
 
@@ -209,49 +217,46 @@ public static class ReplayEngine
     }
 
     /// <summary>Returns the next queued command without consuming it.</summary>
-    public static bool PeekNext(out string? cmd) => _pending.TryPeek(out cmd);
+    public static bool PeekNext(out string? cmd)
+    {
+        return _pending.TryPeek(out cmd);
+    }
 
     /// <summary>
-    /// Returns the command at the given offset from the front (0 = front, 1 = second, etc.)
-    /// without consuming anything.  Returns null if the offset is out of range.
+    ///     Returns the command at the given offset from the front (0 = front, 1 = second, etc.)
+    ///     without consuming anything.  Returns null if the offset is out of range.
     /// </summary>
     public static string? PeekAhead(int offset)
     {
-        int i = 0;
-        foreach (string cmd in _pending)
+        var i = 0;
+        foreach (var cmd in _pending)
         {
             if (i == offset)
                 return cmd;
             i++;
         }
+
         return null;
     }
 
-    // ── Map node choices ──────────────────────────────────────────────────────
-    //
-    // Recorded by PlayerActionBuffer via MoveToMapCoordAction.ToString():
-    //   "MoveToMapCoordAction {playerId} MapCoord ({col}, {row})"
-
-    private const string MapNodePrefix   = "MoveToMapCoordAction ";
-    private const string MapCoordMarker  = "MapCoord (";
-
     public static bool PeekMapNode(out int col, out int row)
     {
-        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(MapNodePrefix))
+        if (_pending.TryPeek(out var cmd) && cmd.StartsWith(MapNodePrefix))
         {
-            int markerIdx = cmd.IndexOf(MapCoordMarker, StringComparison.Ordinal);
+            var markerIdx = cmd.IndexOf(MapCoordMarker, StringComparison.Ordinal);
             if (markerIdx >= 0)
             {
-                ReadOnlySpan<char> coords = cmd.AsSpan(markerIdx + MapCoordMarker.Length);
+                var coords = cmd.AsSpan(markerIdx + MapCoordMarker.Length);
                 // coords = "{col}, {row})"
-                int comma = coords.IndexOf(',');
-                int close = coords.IndexOf(')');
+                var comma = coords.IndexOf(',');
+                var close = coords.IndexOf(')');
                 if (comma > 0 && close > comma
-                    && int.TryParse(coords[..comma].Trim(), out col)
-                    && int.TryParse(coords[(comma + 1)..close].Trim(), out row))
+                              && int.TryParse(coords[..comma].Trim(), out col)
+                              && int.TryParse(coords[(comma + 1)..close].Trim(), out row))
                     return true;
             }
         }
+
         col = -1;
         row = -1;
         return false;
@@ -259,7 +264,7 @@ public static class ReplayEngine
 
     // Temp function as a passtrhough to consume
     public static bool ConsumeAny()
-    { 
+    {
         SignalConsumed(_pending.Dequeue());
         return true;
     }

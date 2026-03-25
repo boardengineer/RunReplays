@@ -1,17 +1,14 @@
-using Godot;
-
 using RunReplays.Patch;
+
 namespace RunReplays.Commands;
 
 /// <summary>
-/// Claims a gold reward from the rewards screen.
-/// Recorded as: "TakeGoldReward: {amount}"
+///     Claims a gold reward from the rewards screen.
+///     Recorded as: "TakeGoldReward: {amount}"
 /// </summary>
 public class GoldRewardCommand : ReplayCommand
 {
     private const string Prefix = "TakeGoldReward: ";
-
-    public int GoldAmount { get; }
 
 
     private GoldRewardCommand(string raw, int goldAmount) : base(raw)
@@ -19,7 +16,12 @@ public class GoldRewardCommand : ReplayCommand
         GoldAmount = goldAmount;
     }
 
-    public override string Describe() => $"claim gold reward ({GoldAmount})";
+    public int GoldAmount { get; }
+
+    public override string Describe()
+    {
+        return $"claim gold reward ({GoldAmount})";
+    }
 
     public override ExecuteResult Execute()
     {
@@ -27,7 +29,7 @@ public class GoldRewardCommand : ReplayCommand
         if (screen == null || !screen.IsInsideTree())
             return ExecuteResult.Retry(200);
 
-        Node? goldButton = BattleRewardsReplayPatch.FindRewardButton(screen, "GoldReward");
+        var goldButton = BattleRewardsReplayPatch.FindRewardButton(screen, "GoldReward");
         if (goldButton == null)
         {
             PlayerActionBuffer.LogDispatcher("[GoldReward] Gold reward button not found — skipping.");

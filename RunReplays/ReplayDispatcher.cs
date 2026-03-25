@@ -5,42 +5,38 @@ using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using MegaCrit.Sts2.Core.Runs;
 using RunReplays.Commands;
-
 using RunReplays.Patch;
+using Environment = System.Environment;
+
 namespace RunReplays;
 
 /// <summary>
-/// Central controller for replay command execution.  Sits between game events
-/// and command execution (which invokes game APIs).
-///
-/// This gives the mod control over pacing and pausing replay commands
-/// independently of game event timing.
+///     Central controller for replay command execution.  Sits between game events
+///     and command execution (which invokes game APIs).
+///     This gives the mod control over pacing and pausing replay commands
+///     independently of game event timing.
 /// </summary>
 public static class ReplayDispatcher
 {
-    public static void Load(IReadOnlyList<string> commands)
-    {
-        ReplayEngine.Load(commands);
-    }
-
     private static bool _paused;
-    private static float _delayBetweenCommands = 2.0f;
+    private static readonly float _delayBetweenCommands = 2.0f;
+
     /// <summary>
-    /// True while a dispatched command is executing (between ExecuteNext and
-    /// the command being consumed from the queue).  Prevents re-dispatch of
-    /// the same command.
+    ///     True while a dispatched command is executing (between ExecuteNext and
+    ///     the command being consumed from the queue).  Prevents re-dispatch of
+    ///     the same command.
     /// </summary>
     private static bool _dispatchInProgress;
 
     /// <summary>
-    /// The command string that was last dispatched.  Used to detect when the
-    /// queue front has changed (i.e. the previous command was consumed).
+    ///     The command string that was last dispatched.  Used to detect when the
+    ///     queue front has changed (i.e. the previous command was consumed).
     /// </summary>
     private static string? _lastDispatchedCmd;
 
     /// <summary>
-    /// Incremented each time a dispatch is scheduled.  Timer callbacks compare
-    /// against this to detect if they've been superseded by DispatchNow.
+    ///     Incremented each time a dispatch is scheduled.  Timer callbacks compare
+    ///     against this to detect if they've been superseded by DispatchNow.
     /// </summary>
     private static int _dispatchGeneration;
 
@@ -51,11 +47,14 @@ public static class ReplayDispatcher
     private static bool _watchdogRunning;
 
     /// <summary>
-    /// Game speed multiplier during replay. 1.0 = normal, 2.0 = double speed, etc.
-    /// Applied via Engine.TimeScale when replay is active.
-    /// Set to 1.0 to restore normal speed.
+    ///     Game speed multiplier during replay. 1.0 = normal, 2.0 = double speed, etc.
+    ///     Applied via Engine.TimeScale when replay is active.
+    ///     Set to 1.0 to restore normal speed.
     /// </summary>
     private static float _gameSpeed = 2.0f;
+
+    private static bool _subscribedToRoomEvents;
+
     public static float GameSpeed
     {
         get => _gameSpeed;
@@ -68,8 +67,20 @@ public static class ReplayDispatcher
     }
 
     /// <summary>
-    /// Applies the game speed when replay starts.
-    /// Called from ReplayEngine.Load or when replay becomes active.
+    ///     Tracks whether a map move is in progress.  Set when a MoveToMapCoordAction
+    ///     is dispatched, cleared when a room readiness signal arrives (Combat, Event,
+    ///     Shop, RestSite, Treasure).  Blocks dispatch while the new room loads.
+    /// </summary>
+    public static bool MapMoveInFlight { get; set; }
+
+    public static void Load(IReadOnlyList<string> commands)
+    {
+        ReplayEngine.Load(commands);
+    }
+
+    /// <summary>
+    ///     Applies the game speed when replay starts.
+    ///     Called from ReplayEngine.Load or when replay becomes active.
     /// </summary>
     public static void ApplyGameSpeed()
     {
@@ -78,7 +89,7 @@ public static class ReplayDispatcher
     }
 
     /// <summary>
-    /// Restores normal game speed. Called when replay ends or is cancelled.
+    ///     Restores normal game speed. Called when replay ends or is cancelled.
     /// </summary>
     public static void RestoreGameSpeed()
     {
@@ -86,15 +97,8 @@ public static class ReplayDispatcher
     }
 
     /// <summary>
-    /// Tracks whether a map move is in progress.  Set when a MoveToMapCoordAction
-    /// is dispatched, cleared when a room readiness signal arrives (Combat, Event,
-    /// Shop, RestSite, Treasure).  Blocks dispatch while the new room loads.
-    /// </summary>
-    public static bool MapMoveInFlight { get; set; }
-
-    /// <summary>
-    /// Called when combat effects have settled after a card play, potion use,
-    /// etc.  Bypasses the delay timer for immediate dispatch.
+    ///     Called when combat effects have settled after a card play, potion use,
+    ///     etc.  Bypasses the delay timer for immediate dispatch.
     /// </summary>
     public static void NotifyEffectsSettled()
     {
@@ -102,9 +106,9 @@ public static class ReplayDispatcher
     }
 
     /// <summary>
-    /// Bypasses the delay timer and dispatches the next command immediately.
-    /// Called by patches when they know the game is ready and waiting would
-    /// cause a visible stall (e.g. after effects settle, after a screen opens).
+    ///     Bypasses the delay timer and dispatches the next command immediately.
+    ///     Called by patches when they know the game is ready and waiting would
+    ///     cause a visible stall (e.g. after effects settle, after a screen opens).
     /// </summary>
     public static void DispatchNow()
     {
@@ -115,8 +119,8 @@ public static class ReplayDispatcher
     }
 
     /// <summary>
-    /// Called by ReplayEngine.SignalConsumed when a command is dequeued.
-    /// Clears the in-progress guard and re-triggers dispatch for the next command.
+    ///     Called by ReplayEngine.SignalConsumed when a command is dequeued.
+    ///     Clears the in-progress guard and re-triggers dispatch for the next command.
     /// </summary>
     internal static void NotifyConsumed()
     {
@@ -124,24 +128,20 @@ public static class ReplayDispatcher
         _lastDispatchedCmd = null;
 
         // Don't re-trigger immediately — respect the delay between commands.
-        int gen = ++_dispatchGeneration;
+        var gen = ++_dispatchGeneration;
         if (_delayBetweenCommands > 0)
-        {
             NGame.Instance?.GetTree()?.CreateTimer(_delayBetweenCommands).Connect(
                 "timeout", Callable.From(() =>
                 {
                     if (_dispatchGeneration == gen)
                         TryDispatch();
                 }));
-        }
         else
-        {
             Callable.From(() =>
             {
                 if (_dispatchGeneration == gen)
                     TryDispatch();
             }).CallDeferred();
-        }
     }
 
     /// <summary>Resets all dispatcher state.  Called on replay start and clear.</summary>
@@ -152,14 +152,12 @@ public static class ReplayDispatcher
         _dispatchInProgress = false;
         _lastDispatchedCmd = null;
         MapMoveInFlight = false;
-        _lastDispatchTick = System.Environment.TickCount64;
+        _lastDispatchTick = Environment.TickCount64;
         ++_dispatchGeneration;
         RestoreGameSpeed();
         StartWatchdog();
         SubscribeToRoomEvents();
     }
-
-    private static bool _subscribedToRoomEvents;
 
     private static void SubscribeToRoomEvents()
     {
@@ -186,9 +184,9 @@ public static class ReplayDispatcher
     }
 
     /// <summary>
-    /// Starts a recurring 2-second watchdog that checks for stalled map moves.
-    /// If no command has been dispatched for 5+ seconds and the next command
-    /// is a map move, forces readiness and dispatches it.
+    ///     Starts a recurring 2-second watchdog that checks for stalled map moves.
+    ///     If no command has been dispatched for 5+ seconds and the next command
+    ///     is a map move, forces readiness and dispatches it.
     /// </summary>
     public static void StartWatchdog()
     {
@@ -211,11 +209,11 @@ public static class ReplayDispatcher
             _watchdogRunning = false;
             return;
         }
-        
-        long elapsed = System.Environment.TickCount64 - _lastDispatchTick;
+
+        var elapsed = Environment.TickCount64 - _lastDispatchTick;
 
         if (elapsed >= 5000
-            && ReplayEngine.PeekNext(out string? cmd) && cmd != null
+            && ReplayEngine.PeekNext(out var cmd) && cmd != null
             && cmd.StartsWith("MoveToMapCoordAction "))
         {
             // Force-clear blockers so dispatch can proceed.
@@ -232,15 +230,15 @@ public static class ReplayDispatcher
     }
 
     /// <summary>
-    /// Checks if the next queued command can execute given the current readiness
-    /// state, and if so, executes it.
+    ///     Checks if the next queued command can execute given the current readiness
+    ///     state, and if so, executes it.
     /// </summary>
     internal static void TryDispatch()
     {
         if (!ReplayEngine.IsActive || _paused)
             return;
 
-        if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
+        if (!ReplayEngine.PeekNext(out var cmd) || cmd == null)
             return;
 
         // Block dispatch while in-flight operations are pending.
@@ -258,13 +256,11 @@ public static class ReplayDispatcher
         // Re-check periodically so dispatch resumes promptly after consumption.
         if (IsSelectionCommand(cmd) && !cmd.StartsWith("SelectHandCards"))
         {
-            int selGen = _dispatchGeneration;
+            var selGen = _dispatchGeneration;
             NGame.Instance?.GetTree()?.CreateTimer(0.3f).Connect(
                 "timeout", Callable.From(() =>
                 {
-                    if (_dispatchGeneration == selGen) {
-                        ExecuteNext();
-                    }
+                    if (_dispatchGeneration == selGen) ExecuteNext();
                 }));
             return;
         }
@@ -276,31 +272,24 @@ public static class ReplayDispatcher
         _dispatchInProgress = true;
         _lastDispatchedCmd = cmd;
 
-        int gen = ++_dispatchGeneration;
+        var gen = ++_dispatchGeneration;
         if (_delayBetweenCommands > 0)
-        {
             NGame.Instance!.GetTree()!.CreateTimer(_delayBetweenCommands).Connect(
                 "timeout", Callable.From(() =>
                 {
-                    if (_dispatchGeneration == gen)
-                    {
-                        ExecuteNext();
-                    }
+                    if (_dispatchGeneration == gen) ExecuteNext();
                 }));
-        }
         else
-        {
             Callable.From(() =>
             {
                 if (_dispatchGeneration == gen)
                     ExecuteNext();
             }).CallDeferred();
-        }
     }
 
     private static void scheduleDispatchOnDelay()
     {
-        int gen = ++_dispatchGeneration;
+        var gen = ++_dispatchGeneration;
         NGame.Instance?.GetTree()?.CreateTimer(0.3f).Connect(
             "timeout", Callable.From(() =>
             {
@@ -318,10 +307,11 @@ public static class ReplayDispatcher
         if (!ReplayEngine.IsActive || _paused)
             return;
 
-        if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
+        if (!ReplayEngine.PeekNext(out var cmd) || cmd == null)
             return;
-        
-        if ((ReplayState.PotionInFlight || ReplayState.CardPlayInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion || MapMoveInFlight) && !IsSelectionCommand(cmd))
+
+        if ((ReplayState.PotionInFlight || ReplayState.CardPlayInFlight ||
+             CardPlayReplayPatch.IsAwaitingEndTurnCompletion || MapMoveInFlight) && !IsSelectionCommand(cmd))
         {
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
@@ -337,9 +327,9 @@ public static class ReplayDispatcher
             return;
         }
 
-        _lastDispatchTick = System.Environment.TickCount64;
+        _lastDispatchTick = Environment.TickCount64;
 
-        ReplayCommand? parsed = ReplayCommandParser.TryParse(cmd);
+        var parsed = ReplayCommandParser.TryParse(cmd);
         if (parsed != null)
         {
             var result = parsed.Execute();
@@ -348,7 +338,7 @@ public static class ReplayDispatcher
                 ReplayEngine.ConsumeAny();
                 _dispatchInProgress = false;
                 _lastDispatchedCmd = null;
-                int gen = ++_dispatchGeneration;
+                var gen = ++_dispatchGeneration;
                 NGame.Instance?.GetTree()?.CreateTimer(0.5f).Connect(
                     "timeout", Callable.From(() =>
                     {
@@ -357,11 +347,12 @@ public static class ReplayDispatcher
                     }));
                 return;
             }
+
             if (result.RetryDelayMs > 0)
             {
                 _dispatchInProgress = false;
                 _lastDispatchedCmd = null;
-                int gen = ++_dispatchGeneration;
+                var gen = ++_dispatchGeneration;
                 NGame.Instance?.GetTree()?.CreateTimer(result.RetryDelayMs / 1000f).Connect(
                     "timeout", Callable.From(() =>
                     {
@@ -376,17 +367,16 @@ public static class ReplayDispatcher
     }
 
     /// <summary>
-    /// Returns true for card selection commands that are consumed inline by
-    /// ICardSelector implementations, not by the dispatcher.
+    ///     Returns true for card selection commands that are consumed inline by
+    ///     ICardSelector implementations, not by the dispatcher.
     /// </summary>
     private static bool IsSelectionCommand(string cmd)
     {
         return cmd.StartsWith("SelectCardFromScreen ")
-            || cmd.StartsWith("SelectDeckCard ")
-            || cmd.StartsWith("SelectHandCards")
-            || cmd.StartsWith("SelectSimpleCard ")
-            || cmd.StartsWith("RemoveCardFromDeck: ")
-            || cmd.StartsWith("UpgradeCard ");
+               || cmd.StartsWith("SelectDeckCard ")
+               || cmd.StartsWith("SelectHandCards")
+               || cmd.StartsWith("SelectSimpleCard ")
+               || cmd.StartsWith("RemoveCardFromDeck: ")
+               || cmd.StartsWith("UpgradeCard ");
     }
-
 }
