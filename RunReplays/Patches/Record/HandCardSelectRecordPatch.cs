@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace RunReplays.Patches.Record;
 using RunReplays;
+using RunReplays.Commands;
 
 /// <summary>
 /// Records hand-card selections (e.g. Touch of Insanity) into the action log
@@ -85,9 +86,9 @@ public static class HandCardSelectRecordPatch
         if (indices.Count == 0)
             return;
 
-        string command = $"SelectHandCards {string.Join(" ", indices)}";
-        PlayerActionBuffer.LogToDevConsole($"[HandCardSelectRecordPatch] Recording: {command}");
-        PlayerActionBuffer.Record(command);
+        var cmd = new SelectHandCardsCommand(indices.ToArray());
+        PlayerActionBuffer.LogToDevConsole($"[HandCardSelectRecordPatch] Recording: {cmd}");
+        PlayerActionBuffer.Record(cmd.ToString());
     }
 
 }
@@ -174,9 +175,9 @@ public static class HandCardSelectForDiscardRecordPatch
             return;
         }
 
-        string command = $"SelectHandCards {string.Join(" ", indices)}";
-        PlayerActionBuffer.LogToDevConsole($"[HandCardSelectForDiscardRecord] Recording: {command}");
-        PlayerActionBuffer.Record(command);
+        var cmd = new SelectHandCardsCommand(indices.ToArray());
+        PlayerActionBuffer.LogToDevConsole($"[HandCardSelectForDiscardRecord] Recording: {cmd}");
+        PlayerActionBuffer.Record(cmd.ToString());
     }
 
 }

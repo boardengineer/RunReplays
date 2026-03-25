@@ -19,10 +19,13 @@ public sealed class RemoveCardFromDeckCommand : ReplayCommand
 
     public override bool IsSelectionCommand => true;
 
-    private RemoveCardFromDeckCommand(string raw, int[] deckIndices) : base(raw)
+    public RemoveCardFromDeckCommand(int[] deckIndices) : base("")
     {
         DeckIndices = deckIndices;
     }
+
+    public override string ToString()
+        => $"{Prefix}{string.Join(" ", DeckIndices)}";
 
     public override string Describe()
     {
@@ -78,6 +81,6 @@ public sealed class RemoveCardFromDeckCommand : ReplayCommand
             else
                 return null;
         }
-        return new RemoveCardFromDeckCommand(raw, indices.ToArray());
+        return new RemoveCardFromDeckCommand(indices.ToArray());
     }
 }

@@ -3,6 +3,7 @@ using MegaCrit.Sts2.Core.Entities.RestSite;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
 
 namespace RunReplays.Patches.Record;
+using RunReplays.Commands;
 
 [HarmonyPatch(typeof(RestSiteSynchronizer), nameof(RestSiteSynchronizer.ChooseLocalOption))]
 public static class RestSiteRecordPatch
@@ -18,6 +19,6 @@ public static class RestSiteRecordPatch
         }
 
         string optionId = options[index].OptionId;
-        PlayerActionBuffer.Record($"ChooseRestSiteOption {optionId}");
+        PlayerActionBuffer.Record(new ChooseRestSiteOptionCommand(optionId).ToString());
     }
 }

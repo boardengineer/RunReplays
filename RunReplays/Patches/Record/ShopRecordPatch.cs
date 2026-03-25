@@ -4,6 +4,7 @@ using MegaCrit.Sts2.Core.Nodes.Rooms;
 
 namespace RunReplays.Patches.Record;
 using RunReplays;
+using RunReplays.Commands;
 
 /// <summary>
 /// Shared state for shop purchase recording.
@@ -50,7 +51,7 @@ public static class ShopOpenRecordPatch
         // second call (e.g. from a UI refresh) would record a duplicate OpenShop
         // that later stalls ProcessNextPurchase during replay.
         if (__instance.Inventory?.IsOpen == false)
-            PlayerActionBuffer.Record("OpenShop");
+            PlayerActionBuffer.Record(new OpenShopCommand().ToString());
     }
 }
 
@@ -67,11 +68,11 @@ public static class ShopPurchaseStartPatch
         string? label = __instance switch
         {
             MerchantCardEntry card     => card.CreationResult?.Card?.Title is string t
-                                             ? $"BuyCard {t}" : null,
+                                             ? new BuyCardCommand(t).ToString() : null,
             MerchantRelicEntry relic   => relic.Model  != null
-                                             ? $"BuyRelic {relic.Model.Title.GetFormattedText()}"  : null,
+                                             ? new BuyRelicCommand(relic.Model.Title.GetFormattedText()).ToString()  : null,
             MerchantPotionEntry potion => potion.Model != null
-                                             ? $"BuyPotion {potion.Model.Title.GetFormattedText()}" : null,
+                                             ? new BuyPotionCommand(potion.Model.Title.GetFormattedText()).ToString() : null,
             _ => null
         };
         if (label != null)
@@ -91,7 +92,7 @@ public static class ShopCardRemovalPurchaseStartPatch
         // log — the card-removal UI fires CardPileCmd.RemoveFromDeck before
         // InvokePurchaseCompleted, so recording at completion would invert the order.
         // PendingLabel is left null so ShopPurchaseCompletedPatch skips re-recording.
-        PlayerActionBuffer.Record("BuyCardRemoval");
+        PlayerActionBuffer.Record(new BuyCardRemovalCommand().ToString());
         ShopPurchaseState.PendingLabel = null;
         ShopPurchaseState.IsPurchasing = true;
     }

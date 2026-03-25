@@ -26,10 +26,15 @@ public sealed class SelectHandCardsCommand : ReplayCommand
 
     public override bool IsSelectionCommand => true;
 
-    private SelectHandCardsCommand(string raw, int[] handIndices) : base(raw)
+    public SelectHandCardsCommand(int[] handIndices) : base("")
     {
         HandIndices = handIndices;
     }
+
+    public override string ToString()
+        => HandIndices.Length > 0
+            ? $"{Prefix}{string.Join(" ", HandIndices)}"
+            : "SelectHandCards";
 
     public override string Describe()
     {
@@ -79,7 +84,7 @@ public sealed class SelectHandCardsCommand : ReplayCommand
         {
             string rest = raw.Substring(Prefix.Length).Trim();
             if (rest.Length == 0)
-                return new SelectHandCardsCommand(raw, System.Array.Empty<int>());
+                return new SelectHandCardsCommand(System.Array.Empty<int>());
 
             var parts = rest.Split(' ');
             var indices = new List<int>(parts.Length);
@@ -90,11 +95,11 @@ public sealed class SelectHandCardsCommand : ReplayCommand
                 else
                     return null;
             }
-            return new SelectHandCardsCommand(raw, indices.ToArray());
+            return new SelectHandCardsCommand(indices.ToArray());
         }
 
         if (raw == "SelectHandCards")
-            return new SelectHandCardsCommand(raw, System.Array.Empty<int>());
+            return new SelectHandCardsCommand(System.Array.Empty<int>());
 
         return null;
     }

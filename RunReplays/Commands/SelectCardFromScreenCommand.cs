@@ -24,10 +24,13 @@ public sealed class SelectCardFromScreenCommand : ReplayCommand
 
     public override bool IsSelectionCommand => true;
 
-    private SelectCardFromScreenCommand(string raw, int index) : base(raw)
+    public SelectCardFromScreenCommand(int index) : base("")
     {
         Index = index;
     }
+
+    public override string ToString()
+        => $"{Prefix}{Index}";
 
     public override string Describe()
         => Index >= 0 ? $"select card from screen index={Index}" : "skip card selection";
@@ -61,7 +64,7 @@ public sealed class SelectCardFromScreenCommand : ReplayCommand
             return null;
 
         if (int.TryParse(raw.AsSpan(Prefix.Length).Trim(), out int index))
-            return new SelectCardFromScreenCommand(raw, index);
+            return new SelectCardFromScreenCommand(index);
 
         return null;
     }

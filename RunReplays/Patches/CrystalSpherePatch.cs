@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.Nodes;
 
 namespace RunReplays.Patches;
 using RunReplays;
+using RunReplays.Commands;
 
 /// <summary>
 /// Crystal Sphere minigame recording and replay support.
@@ -93,7 +94,7 @@ public static class CrystalSphereCellClickedPatch
         int x = Traverse.Create(__0).Property("X").GetValue<int>();
         int y = Traverse.Create(__0).Property("Y").GetValue<int>();
 
-        PlayerActionBuffer.Record($"CrystalSphereClick {x} {y} {toolVal}");
+        PlayerActionBuffer.Record(new CrystalSphereClickCommand(x, y, toolVal).ToString());
     }
 }
 

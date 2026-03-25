@@ -41,10 +41,15 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
     private static bool _screenOpened;
 
 
-    private SacrificeCardRewardCommand(string raw, int rewardIndex) : base(raw)
+    public SacrificeCardRewardCommand(int rewardIndex = -1) : base("")
     {
         RewardIndex = rewardIndex;
     }
+
+    public override string ToString()
+        => RewardIndex >= 0
+            ? $"SacrificeCardReward[{RewardIndex}]"
+            : "SacrificeCardReward";
 
     public override string Describe()
     {
@@ -138,12 +143,12 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
                     raw.AsSpan(IndexedPrefix.Length, closeBracket - IndexedPrefix.Length),
                     out int idx))
             {
-                return new SacrificeCardRewardCommand(raw, idx);
+                return new SacrificeCardRewardCommand(idx);
             }
         }
 
         if (raw == Cmd)
-            return new SacrificeCardRewardCommand(raw, -1);
+            return new SacrificeCardRewardCommand();
 
         return null;
     }

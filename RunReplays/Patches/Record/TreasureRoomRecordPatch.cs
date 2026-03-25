@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.Multiplayer.Game;
 
 namespace RunReplays.Patches.Record;
 using RunReplays;
+using RunReplays.Commands;
 
 /// <summary>
 /// Harmony prefix on TreasureRoomRelicSynchronizer.PickRelicLocally that
@@ -35,6 +36,6 @@ public static class TreasureRoomRecordPatch
         string relicTitle = relics[index].Title.GetFormattedText();
         PlayerActionBuffer.LogToDevConsole(
             $"[TreasureRoomRecordPatch] Recording TakeChestRelic '{relicTitle}' (index={index}).");
-        PlayerActionBuffer.Record($"TakeChestRelic {relicTitle}");
+        PlayerActionBuffer.Record(new TakeChestRelicCommand(relicTitle).ToString());
     }
 }

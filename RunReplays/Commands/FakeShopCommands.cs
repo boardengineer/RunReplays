@@ -15,7 +15,9 @@ public sealed class OpenFakeShopCommand : ReplayCommand
         typeof(NFakeMerchant).GetMethod("OpenInventory",
             BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 
-    private OpenFakeShopCommand(string raw) : base(raw) { }
+    public OpenFakeShopCommand() : base("") { }
+
+    public override string ToString() => "OpenFakeShop";
 
     public override string Describe() => "open fake shop";
 
@@ -38,5 +40,5 @@ public sealed class OpenFakeShopCommand : ReplayCommand
     }
 
     public static OpenFakeShopCommand? TryParse(string raw)
-        => raw == "OpenFakeShop" ? new OpenFakeShopCommand(raw) : null;
+        => raw == "OpenFakeShop" ? new OpenFakeShopCommand() : null;
 }

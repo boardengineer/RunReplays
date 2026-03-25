@@ -38,11 +38,16 @@ public class CardRewardCommand : ReplayCommand
     public int RewardIndex { get; }
 
 
-    private CardRewardCommand(string raw, string cardTitle, int rewardIndex) : base(raw)
+    public CardRewardCommand(string cardTitle, int rewardIndex = -1) : base("")
     {
         CardTitle = cardTitle;
         RewardIndex = rewardIndex;
     }
+
+    public override string ToString()
+        => RewardIndex >= 0
+            ? $"TakeCardReward[{RewardIndex}]: {CardTitle}"
+            : $"TakeCardReward: {CardTitle}";
 
     public override string Describe()
     {
@@ -138,13 +143,13 @@ public class CardRewardCommand : ReplayCommand
                     out int idx))
             {
                 string title = raw.Substring(closeBracket + "]: ".Length);
-                return new CardRewardCommand(raw, title, idx);
+                return new CardRewardCommand(title, idx);
             }
         }
 
         // Legacy format: "TakeCardReward: CardTitle"
         if (raw.StartsWith(Prefix))
-            return new CardRewardCommand(raw, raw.Substring(Prefix.Length), -1);
+            return new CardRewardCommand(raw.Substring(Prefix.Length));
 
         return null;
     }

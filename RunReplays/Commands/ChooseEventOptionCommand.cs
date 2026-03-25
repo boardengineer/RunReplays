@@ -19,11 +19,16 @@ public class ChooseEventOptionCommand : ReplayCommand
     public int RecordedIndex { get; }
 
 
-    private ChooseEventOptionCommand(string raw, string textKey, int recordedIndex) : base(raw)
+    public ChooseEventOptionCommand(string textKey, int recordedIndex) : base("")
     {
         TextKey = textKey;
         RecordedIndex = recordedIndex;
     }
+
+    public override string ToString()
+        => RecordedIndex >= 0
+            ? $"{Prefix}{RecordedIndex} {TextKey}"
+            : $"{Prefix}{TextKey}";
 
     public override string Describe() => $"choose event option '{TextKey}'";
 
@@ -103,9 +108,9 @@ public class ChooseEventOptionCommand : ReplayCommand
         // New format: "ChooseEventOption {index} {textKey}"
         int space = rest.IndexOf(' ');
         if (space >= 0 && int.TryParse(rest.AsSpan(0, space), out int idx))
-            return new ChooseEventOptionCommand(raw, rest.Substring(space + 1), idx);
+            return new ChooseEventOptionCommand(rest.Substring(space + 1), idx);
 
         // Legacy format: "ChooseEventOption {textKey}"
-        return new ChooseEventOptionCommand(raw, rest, -1);
+        return new ChooseEventOptionCommand(rest, -1);
     }
 }

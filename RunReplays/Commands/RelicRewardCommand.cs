@@ -13,10 +13,12 @@ public class RelicRewardCommand : ReplayCommand
     public string RelicTitle { get; }
 
 
-    private RelicRewardCommand(string raw, string relicTitle) : base(raw)
+    public RelicRewardCommand(string relicTitle) : base("")
     {
         RelicTitle = relicTitle;
     }
+
+    public override string ToString() => $"TakeRelicReward: {RelicTitle}";
 
     public override string Describe() => $"claim relic reward '{RelicTitle}'";
 
@@ -44,6 +46,6 @@ public class RelicRewardCommand : ReplayCommand
         if (!raw.StartsWith(Prefix))
             return null;
 
-        return new RelicRewardCommand(raw, raw.Substring(Prefix.Length));
+        return new RelicRewardCommand(raw.Substring(Prefix.Length));
     }
 }

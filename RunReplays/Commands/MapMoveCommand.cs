@@ -28,11 +28,14 @@ public class MapMoveCommand : ReplayCommand
     public int Row { get; }
 
 
-    private MapMoveCommand(string raw, int col, int row) : base(raw)
+    public MapMoveCommand(int col, int row) : base("")
     {
         Col = col;
         Row = row;
     }
+
+    public override string ToString()
+        => $"{Prefix}0 {CoordMarker}{Col}, {Row})";
 
     public override string Describe() => $"navigate to map node col={Col} row={Row}";
 
@@ -59,7 +62,7 @@ public class MapMoveCommand : ReplayCommand
             && int.TryParse(coords[..comma].Trim(), out int col)
             && int.TryParse(coords[(comma + 1)..close].Trim(), out int row))
         {
-            return new MapMoveCommand(raw, col, row);
+            return new MapMoveCommand(col, row);
         }
 
         return null;

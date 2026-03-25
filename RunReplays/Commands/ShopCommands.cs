@@ -14,14 +14,13 @@ namespace RunReplays.Commands;
 /// </summary>
 public sealed class OpenShopCommand : ReplayCommand
 {
-    private OpenShopCommand(string raw) : base(raw)
+    public OpenShopCommand() : base("")
     {
     }
 
-    public override string Describe()
-    {
-        return "open shop";
-    }
+    public override string ToString() => "OpenShop";
+
+    public override string Describe() => "open shop";
 
     public override ExecuteResult Execute()
     {
@@ -35,7 +34,7 @@ public sealed class OpenShopCommand : ReplayCommand
 
     public static OpenShopCommand? TryParse(string raw)
     {
-        return raw == "OpenShop" ? new OpenShopCommand(raw) : null;
+        return raw == "OpenShop" ? new OpenShopCommand() : null;
     }
 
     /// <summary>
@@ -163,17 +162,16 @@ public sealed class BuyCardCommand : ReplayCommand
     private const string Prefix = "BuyCard ";
 
 
-    private BuyCardCommand(string raw, string cardTitle) : base(raw)
+    public BuyCardCommand(string cardTitle) : base("")
     {
         CardTitle = cardTitle;
     }
 
     public string CardTitle { get; }
 
-    public override string Describe()
-    {
-        return $"buy card '{CardTitle}'";
-    }
+    public override string ToString() => $"BuyCard {CardTitle}";
+
+    public override string Describe() => $"buy card '{CardTitle}'";
 
     public override ExecuteResult Execute()
     {
@@ -202,7 +200,7 @@ public sealed class BuyCardCommand : ReplayCommand
     {
         if (!raw.StartsWith(Prefix))
             return null;
-        return new BuyCardCommand(raw, raw.Substring(Prefix.Length));
+        return new BuyCardCommand(raw.Substring(Prefix.Length));
     }
 }
 
@@ -226,17 +224,16 @@ public sealed class BuyRelicCommand : ReplayCommand
             ?.GetField("_inventory", BindingFlags.NonPublic | BindingFlags.Instance);
 
 
-    private BuyRelicCommand(string raw, string relicTitle) : base(raw)
+    public BuyRelicCommand(string relicTitle) : base("")
     {
         RelicTitle = relicTitle;
     }
 
     public string RelicTitle { get; }
 
-    public override string Describe()
-    {
-        return $"buy relic '{RelicTitle}'";
-    }
+    public override string ToString() => $"BuyRelic {RelicTitle}";
+
+    public override string Describe() => $"buy relic '{RelicTitle}'";
 
     public override ExecuteResult Execute()
     {
@@ -270,7 +267,7 @@ public sealed class BuyRelicCommand : ReplayCommand
     {
         if (!raw.StartsWith(Prefix))
             return null;
-        return new BuyRelicCommand(raw, raw.Substring(Prefix.Length));
+        return new BuyRelicCommand(raw.Substring(Prefix.Length));
     }
 
     internal static List<MerchantEntry>? GetFakeMerchantEntries(NFakeMerchant merchant)
@@ -347,14 +344,13 @@ public sealed class BuyRelicCommand : ReplayCommand
 /// </summary>
 public sealed class BuyCardRemovalCommand : ReplayCommand
 {
-    private BuyCardRemovalCommand(string raw) : base(raw)
+    public BuyCardRemovalCommand() : base("")
     {
     }
 
-    public override string Describe()
-    {
-        return "buy card removal";
-    }
+    public override string ToString() => "BuyCardRemoval";
+
+    public override string Describe() => "buy card removal";
 
     public override ExecuteResult Execute()
     {
@@ -379,7 +375,7 @@ public sealed class BuyCardRemovalCommand : ReplayCommand
 
     public static BuyCardRemovalCommand? TryParse(string raw)
     {
-        return raw == "BuyCardRemoval" ? new BuyCardRemovalCommand(raw) : null;
+        return raw == "BuyCardRemoval" ? new BuyCardRemovalCommand() : null;
     }
 }
 
@@ -392,17 +388,16 @@ public sealed class BuyPotionCommand : ReplayCommand
     private const string Prefix = "BuyPotion ";
 
 
-    private BuyPotionCommand(string raw, string potionTitle) : base(raw)
+    public BuyPotionCommand(string potionTitle) : base("")
     {
         PotionTitle = potionTitle;
     }
 
     public string PotionTitle { get; }
 
-    public override string Describe()
-    {
-        return $"buy potion '{PotionTitle}'";
-    }
+    public override string ToString() => $"BuyPotion {PotionTitle}";
+
+    public override string Describe() => $"buy potion '{PotionTitle}'";
 
     public override ExecuteResult Execute()
     {
@@ -431,6 +426,6 @@ public sealed class BuyPotionCommand : ReplayCommand
     {
         if (!raw.StartsWith(Prefix))
             return null;
-        return new BuyPotionCommand(raw, raw.Substring(Prefix.Length));
+        return new BuyPotionCommand(raw.Substring(Prefix.Length));
     }
 }

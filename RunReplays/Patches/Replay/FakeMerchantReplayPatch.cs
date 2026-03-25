@@ -3,6 +3,7 @@ using MegaCrit.Sts2.Core.Nodes.Events.Custom;
 
 namespace RunReplays.Patches;
 using RunReplays;
+using RunReplays.Commands;
 
 /// <summary>
 /// Recording and replay patches for the fake merchant event shop.
@@ -27,7 +28,7 @@ public static class FakeMerchantOpenRecordPatch
         if (ReplayEngine.IsActive)
             return;
 
-        PlayerActionBuffer.Record("OpenFakeShop");
+        PlayerActionBuffer.Record(new OpenFakeShopCommand().ToString());
     }
 }
 

@@ -22,10 +22,12 @@ public sealed class TakeChestRelicCommand : ReplayCommand
     public string RelicTitle { get; }
 
 
-    private TakeChestRelicCommand(string raw, string relicTitle) : base(raw)
+    public TakeChestRelicCommand(string relicTitle) : base("")
     {
         RelicTitle = relicTitle;
     }
+
+    public override string ToString() => $"TakeChestRelic {RelicTitle}";
 
     public override string Describe() => $"open chest (relic '{RelicTitle}')";
 
@@ -52,7 +54,7 @@ public sealed class TakeChestRelicCommand : ReplayCommand
     {
         if (!raw.StartsWith(Prefix))
             return null;
-        return new TakeChestRelicCommand(raw, raw.Substring(Prefix.Length));
+        return new TakeChestRelicCommand(raw.Substring(Prefix.Length));
     }
 }
 
@@ -68,10 +70,12 @@ public sealed class NetPickRelicCommand : ReplayCommand
     public int RelicIndex { get; }
 
 
-    private NetPickRelicCommand(string raw, int relicIndex) : base(raw)
+    public NetPickRelicCommand(int relicIndex) : base("")
     {
         RelicIndex = relicIndex;
     }
+
+    public override string ToString() => $"NetPickRelicAction for player 0 index {RelicIndex}";
 
     public override string Describe() => $"pick relic index={RelicIndex}";
 
@@ -94,6 +98,6 @@ public sealed class NetPickRelicCommand : ReplayCommand
         if (!int.TryParse(raw.AsSpan(markerPos + IndexMarker.Length), out int relicIndex))
             return null;
 
-        return new NetPickRelicCommand(raw, relicIndex);
+        return new NetPickRelicCommand(relicIndex);
     }
 }

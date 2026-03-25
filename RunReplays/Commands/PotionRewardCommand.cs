@@ -13,10 +13,12 @@ public class PotionRewardCommand : ReplayCommand
     public string PotionTitle { get; }
 
 
-    private PotionRewardCommand(string raw, string potionTitle) : base(raw)
+    public PotionRewardCommand(string potionTitle) : base("")
     {
         PotionTitle = potionTitle;
     }
+
+    public override string ToString() => $"TakePotionReward: {PotionTitle}";
 
     public override string Describe() => $"claim potion reward '{PotionTitle}'";
 
@@ -44,6 +46,6 @@ public class PotionRewardCommand : ReplayCommand
         if (!raw.StartsWith(Prefix))
             return null;
 
-        return new PotionRewardCommand(raw, raw.Substring(Prefix.Length));
+        return new PotionRewardCommand(raw.Substring(Prefix.Length));
     }
 }

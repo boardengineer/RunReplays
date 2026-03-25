@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.Nodes.Screens;
 
 namespace RunReplays.Patches;
 using RunReplays;
+using RunReplays.Commands;
 using RunReplays.Patches.Record;
 
 
@@ -28,10 +29,7 @@ public static class BattleRewardPatch
         LastCardRewardIndex = -1;
         IsProcessingCardReward = false;
 
-        if (idx >= 0)
-            PlayerActionBuffer.Record($"TakeCardReward[{idx}]: {card.Title}");
-        else
-            PlayerActionBuffer.Record($"TakeCardReward: {card.Title}");
+        PlayerActionBuffer.Record(new CardRewardCommand(card.Title, idx).ToString());
     }
 
     [HarmonyPrefix]
@@ -40,7 +38,7 @@ public static class BattleRewardPatch
     {
         if (ShopPurchaseState.IsPurchasing) return;
 
-        PlayerActionBuffer.Record($"TakeRelicReward: {relic.Title.GetFormattedText()}");
+        PlayerActionBuffer.Record(new RelicRewardCommand(relic.Title.GetFormattedText()).ToString());
     }
 
     [HarmonyPrefix]
@@ -49,7 +47,7 @@ public static class BattleRewardPatch
     {
         if (ShopPurchaseState.IsPurchasing) return;
 
-        PlayerActionBuffer.Record($"TakePotionReward: {potion.Title.GetFormattedText()}");
+        PlayerActionBuffer.Record(new PotionRewardCommand(potion.Title.GetFormattedText()).ToString());
     }
 
     [HarmonyPrefix]
@@ -58,7 +56,7 @@ public static class BattleRewardPatch
     {
         if (ShopPurchaseState.IsPurchasing) return;
 
-        PlayerActionBuffer.Record($"TakeGoldReward: {goldAmount}");
+        PlayerActionBuffer.Record(new GoldRewardCommand(goldAmount).ToString());
     }
 
     [HarmonyPrefix]
@@ -71,9 +69,6 @@ public static class BattleRewardPatch
         LastCardRewardIndex = -1;
         IsProcessingCardReward = false;
 
-        if (idx >= 0)
-            PlayerActionBuffer.Record($"SacrificeCardReward[{idx}]");
-        else
-            PlayerActionBuffer.Record("SacrificeCardReward");
+        PlayerActionBuffer.Record(new SacrificeCardRewardCommand(idx).ToString());
     }
 }

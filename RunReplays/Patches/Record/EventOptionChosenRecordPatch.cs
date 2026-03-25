@@ -4,6 +4,7 @@ using RunReplays.Utils;
 
 namespace RunReplays.Patches;
 using RunReplays;
+using RunReplays.Commands;
 using RunReplays.Patches.Record;
 
 /// <summary>
@@ -47,8 +48,7 @@ public static class EventOptionChosenRecordPatch
         EventSelectionPatch.PendingIndex = null;
 
         PlayerActionBuffer.RecordVerboseOnly($"[EventOption] Chosen — title='{title}' textKey='{textKey}' index={idx}");
-        PlayerActionBuffer.RecordMinimalOnly(idx.HasValue
-            ? $"ChooseEventOption {idx.Value} {textKey}"
-            : $"ChooseEventOption {textKey}");
+        PlayerActionBuffer.RecordMinimalOnly(
+            new ChooseEventOptionCommand(textKey, idx ?? -1).ToString());
     }
 }

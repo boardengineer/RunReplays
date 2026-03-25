@@ -21,12 +21,15 @@ public sealed class CrystalSphereClickCommand : ReplayCommand
     public int Tool { get; }
 
 
-    private CrystalSphereClickCommand(string raw, int x, int y, int tool) : base(raw)
+    public CrystalSphereClickCommand(int x, int y, int tool) : base("")
     {
         X = x;
         Y = y;
         Tool = tool;
     }
+
+    public override string ToString()
+        => $"{Prefix}{X} {Y} {Tool}";
 
     public override string Describe() => $"crystal sphere click ({X},{Y}) tool={Tool}";
 
@@ -79,7 +82,7 @@ public sealed class CrystalSphereClickCommand : ReplayCommand
             && int.TryParse(rest[(sp1 + 1)..sp2], out int y)
             && int.TryParse(rest[(sp2 + 1)..], out int tool))
         {
-            return new CrystalSphereClickCommand(raw, x, y, tool);
+            return new CrystalSphereClickCommand(x, y, tool);
         }
 
         return null;

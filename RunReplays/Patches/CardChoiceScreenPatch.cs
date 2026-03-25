@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.TestSupport;
 
 namespace RunReplays.Patches;
 using RunReplays;
+using RunReplays.Commands;
 
 /// <summary>
 /// Records and replays card selections made via CardSelectCmd.FromChooseACardScreen
@@ -113,10 +114,10 @@ public static class FromChooseACardScreenPatch
             }
         }
 
-        string command = $"SelectCardFromScreen {index}";
+        var cmd = new SelectCardFromScreenCommand(index);
         PlayerActionBuffer.LogToDevConsole(
-            $"[CardChoiceScreenPatch] Recording: {command}");
-        PlayerActionBuffer.Record(command);
+            $"[CardChoiceScreenPatch] Recording: {cmd}");
+        PlayerActionBuffer.Record(cmd.ToString());
 
         return selected!;
     }

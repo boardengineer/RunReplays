@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 
 namespace RunReplays.Patches.Record;
+using RunReplays.Commands;
 
 [HarmonyPatch(typeof(NCardGridSelectionScreen), nameof(NCardGridSelectionScreen.CardsSelected))]
 public static class DeckCardSelectRecordPatch
@@ -57,12 +58,12 @@ public static class DeckCardSelectRecordPatch
         if (DeckRemovalState.PendingRemoval)
         {
             DeckRemovalState.PendingRemoval = false;
-            command = $"RemoveCardFromDeck: {string.Join(" ", indices)}";
+            command = new RemoveCardFromDeckCommand(indices.ToArray()).ToString();
             PlayerActionBuffer.Record(command);
         }
         else
         {
-            command = $"SelectDeckCard {string.Join(" ", indices)}";
+            command = new SelectDeckCardCommand(indices.ToArray()).ToString();
             PlayerActionBuffer.RecordMinimalOnly(command);
         }
 

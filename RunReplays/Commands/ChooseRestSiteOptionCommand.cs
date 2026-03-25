@@ -19,10 +19,12 @@ public class ChooseRestSiteOptionCommand : ReplayCommand
     public string OptionId { get; }
 
 
-    private ChooseRestSiteOptionCommand(string raw, string optionId) : base(raw)
+    public ChooseRestSiteOptionCommand(string optionId) : base("")
     {
         OptionId = optionId;
     }
+
+    public override string ToString() => $"ChooseRestSiteOption {OptionId}";
 
     public override string Describe() => $"choose rest site option '{OptionId}'";
 
@@ -59,7 +61,7 @@ public class ChooseRestSiteOptionCommand : ReplayCommand
             return null;
 
         string optionId = raw.Substring(Prefix.Length);
-        return new ChooseRestSiteOptionCommand(raw, optionId);
+        return new ChooseRestSiteOptionCommand(optionId);
     }
 
     private static async Task SelectAndNotifyRoom(

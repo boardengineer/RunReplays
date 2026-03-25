@@ -27,10 +27,13 @@ public class SelectDeckCardCommand : ReplayCommand
 
     public override bool IsSelectionCommand => true;
 
-    private SelectDeckCardCommand(string raw, int[] deckIndices) : base(raw)
+    public SelectDeckCardCommand(int[] deckIndices) : base("")
     {
         DeckIndices = deckIndices;
     }
+
+    public override string ToString()
+        => $"{Prefix}{string.Join(" ", DeckIndices)}";
 
     public override string Describe()
     {
@@ -77,7 +80,7 @@ public class SelectDeckCardCommand : ReplayCommand
 
         string rest = raw.Substring(Prefix.Length).Trim();
         if (rest.Length == 0)
-            return new SelectDeckCardCommand(raw, System.Array.Empty<int>());
+            return new SelectDeckCardCommand(System.Array.Empty<int>());
 
         var parts = rest.Split(' ');
         var indices = new List<int>(parts.Length);
@@ -88,7 +91,7 @@ public class SelectDeckCardCommand : ReplayCommand
             else
                 return null;
         }
-        return new SelectDeckCardCommand(raw, indices.ToArray());
+        return new SelectDeckCardCommand(indices.ToArray());
     }
 }
 

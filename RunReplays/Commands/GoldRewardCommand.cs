@@ -13,10 +13,12 @@ public class GoldRewardCommand : ReplayCommand
     public int GoldAmount { get; }
 
 
-    private GoldRewardCommand(string raw, int goldAmount) : base(raw)
+    public GoldRewardCommand(int goldAmount) : base("")
     {
         GoldAmount = goldAmount;
     }
+
+    public override string ToString() => $"TakeGoldReward: {GoldAmount}";
 
     public override string Describe() => $"claim gold reward ({GoldAmount})";
 
@@ -45,7 +47,7 @@ public class GoldRewardCommand : ReplayCommand
             return null;
 
         if (int.TryParse(raw.AsSpan(Prefix.Length), out int amount))
-            return new GoldRewardCommand(raw, amount);
+            return new GoldRewardCommand(amount);
 
         return null;
     }
