@@ -38,6 +38,7 @@ public static class ReplayCommandParser
             ?? (ReplayCommand?)TakeChestRelicCommand.TryParse(raw)
             ?? (ReplayCommand?)NetPickRelicCommand.TryParse(raw)
             ?? (ReplayCommand?)CrystalSphereClickCommand.TryParse(raw)
+            ?? (ReplayCommand?)SelectCardFromScreenCommand.TryParse(raw)
             ?? SelectionCommand.TryParse(raw);
     }
 }

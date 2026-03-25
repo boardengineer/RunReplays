@@ -71,8 +71,6 @@ public class SelectionCommand : ReplayCommand
 
     public static SelectionCommand? TryParse(string raw)
     {
-        if (raw.StartsWith("SelectCardFromScreen "))
-            return ParseSingleInt(raw, "SelectCardFromScreen ".Length, SelectionKind.SelectCardFromScreen);
         if (raw.StartsWith("SelectSimpleCard "))
             return ParseSingleInt(raw, "SelectSimpleCard ".Length, SelectionKind.SelectSimpleCard);
         if (raw.StartsWith("UpgradeCard "))

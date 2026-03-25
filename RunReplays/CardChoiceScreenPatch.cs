@@ -59,18 +59,7 @@ public static class FromChooseACardScreenPatch
         SelectorStackDebug.Log("FromChooseACardScreen.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
         if (ReplayEngine.IsActive)
         {
-            // Try front of queue first; if not there, drain interleaved commands
-            // (e.g. relic-triggered card choices where auto-processed actions sit
-            // between TakeRelicReward and SelectCardFromScreen).
-            if (ReplayEngine.PeekSelectCardFromScreen(out _)
-                || ReplayEngine.SkipToSelectCardFromScreen())
-            {
-                _pendingScope = CardSelectCmd.PushSelector(new ReplayChooseACardSelector());
-                SelectorStackDebug.Log("PUSH FromChooseACardScreen");
-                PlayerActionBuffer.LogToDevConsole(
-                    "[CardChoiceScreenPatch] Pushed ReplayChooseACardSelector for FromChooseACardScreen.");
-            }
-            else if (ReplayEngine.PeekCardReward(out string cardTitle, out _))
+            if (ReplayEngine.PeekCardReward(out string cardTitle, out _))
             {
                 // Card reward that uses FromChooseACardScreen (e.g. Morphic Grove).
                 // The TakeCardReward command has the card title — use it to select.
@@ -113,9 +102,7 @@ public static class FromChooseACardScreenPatch
         // the selection — don't also emit SelectCardFromScreen.
         if (BattleRewardPatch.IsProcessingCardReward)
         {
-            PlayerActionBuffer.LogToDevConsole(
-                "[CardChoiceScreenPatch] Suppressed SelectCardFromScreen (card reward context).");
-            return selected!;
+            return selected;
         }
 
         int index = -1;
@@ -166,50 +153,6 @@ public static class CardChoiceScreenSyncPatch
     internal static void FlushIfPending()
     {
     }
-}
-
-// ── Replay selectors ─────────────────────────────────────────────────────────
-
-/// <summary>
-/// ICardSelector that consumes a SelectCardFromScreen command and returns the
-/// card at the recorded 0-based index. Returns empty when index is -1 (skip).
-/// </summary>
-internal sealed class ReplayChooseACardSelector : ICardSelector
-{
-    public Task<IEnumerable<CardModel>> GetSelectedCards(
-        IEnumerable<CardModel> options, int minSelect, int maxSelect)
-    {
-        var scope = FromChooseACardScreenPatch._pendingScope;
-        FromChooseACardScreenPatch._pendingScope = null;
-        scope?.Dispose();
-
-        var optionList = options.ToList();
-
-        if (!ReplayEngine.ConsumeSelectCardFromScreen(out int index))
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                "[ReplayChooseACardSelector] No SelectCardFromScreen command — returning empty.");
-            return Task.FromResult(Enumerable.Empty<CardModel>());
-        }
-
-        if (index >= 0 && index < optionList.Count)
-        {
-            var card = optionList[index];
-            PlayerActionBuffer.LogToDevConsole(
-                $"[ReplayChooseACardSelector] Selected '{card.Title}' at index {index}.");
-            return Task.FromResult<IEnumerable<CardModel>>(new[] { card });
-        }
-
-        // index == -1: player skipped (canSkip = true).
-        PlayerActionBuffer.LogToDevConsole(
-            $"[ReplayChooseACardSelector] Index {index} — returning empty (skip or out of range).");
-        return Task.FromResult(Enumerable.Empty<CardModel>());
-    }
-
-    public CardModel? GetSelectedCardReward(
-        IReadOnlyList<CardCreationResult> options,
-        IReadOnlyList<CardRewardAlternative> alternatives)
-        => null;
 }
 
 /// <summary>

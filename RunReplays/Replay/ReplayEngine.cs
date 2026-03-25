@@ -263,14 +263,6 @@ public static class ReplayEngine
         return true;
     }
 
-    // ── Card plays ────────────────────────────────────────────────────────────
-    //
-    // Recorded by PlayerActionBuffer via PlayCardAction.ToString():
-    //   "PlayCardAction card: {CardModel} index: {CombatCardIndex} targetid: {TargetId}"
-    // TargetId prints as empty string when null.
-
-    private const string CardPlayPrefix       = "PlayCardAction ";
-
     // ── Card rewards ──────────────────────────────────────────────────────────
 
     private const string CardRewardPrefix = "TakeCardReward: ";
@@ -325,67 +317,6 @@ public static class ReplayEngine
             return true;
         }
         optionId = string.Empty;
-        return false;
-    }
-
-    // ── Card choice screen selections ─────────────────────────────────────────
-    //
-    // Recorded by CardChoiceScreenPatch via PlayerChoiceSynchronizer.SyncLocalChoice
-    // when FromChooseACardScreen is active (e.g. Skill Potion, Power Potion,
-    // relic-triggered card choices like Lead Paperweight):
-    //   "SelectCardFromScreen {index}"
-    // index is the 0-based position in the offered card list; -1 means skipped.
-
-    private const string SelectCardFromScreenPrefix = "SelectCardFromScreen ";
-
-    public static bool PeekSelectCardFromScreen(out int index)
-    {
-        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(SelectCardFromScreenPrefix)
-            && int.TryParse(cmd.AsSpan(SelectCardFromScreenPrefix.Length), out index))
-            return true;
-
-        index = -1;
-        return false;
-    }
-
-    /// <summary>
-    /// Drains any interleaved commands that precede the next SelectCardFromScreen
-    /// command, bringing it to the front of the queue.  Used for relic-triggered
-    /// card choices (e.g. Lead Paperweight) where auto-processed actions may sit
-    /// between the relic reward and the card selection.
-    /// Returns true if SelectCardFromScreen is now at the front.
-    /// </summary>
-    public static bool SkipToSelectCardFromScreen()
-    {
-        if (PeekSelectCardFromScreen(out _))
-            return true;
-
-        bool found = false;
-        foreach (string cmd in _pending)
-        {
-            if (cmd.StartsWith(SelectCardFromScreenPrefix))
-            {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found)
-            return false;
-
-        while (_pending.Count > 0 && !PeekSelectCardFromScreen(out _))
-            SignalConsumed(_pending.Dequeue());
-
-        return PeekSelectCardFromScreen(out _);
-    }
-
-    public static bool ConsumeSelectCardFromScreen(out int index)
-    {
-        if (PeekSelectCardFromScreen(out index))
-        {
-            SignalConsumed(_pending.Dequeue());
-            return true;
-        }
         return false;
     }
 
