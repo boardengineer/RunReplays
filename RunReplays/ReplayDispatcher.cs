@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Runs;
 using RunReplays.Commands;
 
 using RunReplays.Patches;
+using RunReplays.Patches.Record;
 using RunReplays.Patches.Replay;
 namespace RunReplays;
 
@@ -143,6 +144,40 @@ public static class ReplayDispatcher
                     TryDispatch();
             }).CallDeferred();
         }
+    }
+
+    /// <summary>Clears the replay queue and resets all patch state.</summary>
+    public static void Clear()
+    {
+        ReplayEngine._pending.Clear();
+        ReplayEngine._recentConsumed.Clear();
+        ReplayEngine._replayActive = false;
+        RestoreGameSpeed();
+        ResetAllPatchState();
+    }
+
+    /// <summary>
+    /// Resets all static state across recording and replay patches so that
+    /// both paths can start cleanly after a stall or cancellation.
+    /// </summary>
+    public static void ResetAllPatchState()
+    {
+        // Recording state
+        BattleRewardPatch.LastCardRewardIndex = -1;
+        BattleRewardPatch.IsProcessingCardReward = false;
+        DeckRemovalState.PendingRemoval = false;
+        ShopPurchaseState.IsPurchasing = false;
+        ShopPurchaseState.PendingLabel = null;
+        EventSelectionPatch.PendingIndex = null;
+        DeckCardSelectRecordPatch.Pending = false;
+        SimpleGridContext.Pending = false;
+        HandCardSelectRecordPatch.SuppressNext = false;
+
+        // Crystal sphere
+        CrystalSphereReplayPatch.PendingTool = null;
+
+        // Dispatcher
+        Reset();
     }
 
     /// <summary>Resets all dispatcher state.  Called on replay start and clear.</summary>

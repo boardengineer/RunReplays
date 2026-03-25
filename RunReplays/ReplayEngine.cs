@@ -16,14 +16,14 @@ namespace RunReplays;
 /// </summary>
 public static class ReplayEngine
 {
-    private static readonly Queue<string> _pending = new();
+    internal static readonly Queue<string> _pending = new();
 
     // ── Overlay context ───────────────────────────────────────────────────────
 
     /// <summary>Fired on the calling thread each time a command is consumed.</summary>
     internal static event Action? ContextChanged;
 
-    private static readonly List<string> _recentConsumed = new(2);
+    internal static readonly List<string> _recentConsumed = new(2);
 
     /// <summary>
     /// Dequeues one command, records it in the recent-history buffer, and
@@ -76,7 +76,7 @@ public static class ReplayEngine
 
     // True only while commands loaded by Load() are still pending.
     // Set false by Clear() so ReplayCompleted is not fired on explicit cancels.
-    private static bool _replayActive;
+    internal static bool _replayActive;
     private static List<string> _loadedCommands = new();
 
     /// <summary>
@@ -152,90 +152,8 @@ public static class ReplayEngine
         }
     }
 
-    public static void Clear()
-    {
-        _pending.Clear();
-        _recentConsumed.Clear();
-        _replayActive = false;
-        ReplayDispatcher.RestoreGameSpeed();
-        ResetAllPatchState();
-    }
-
-    /// <summary>
-    /// Resets all static state across recording and replay patches so that
-    /// both paths can start cleanly after a stall or cancellation.
-    /// </summary>
-    public static void ResetAllPatchState()
-    {
-        // Recording state
-        BattleRewardPatch.LastCardRewardIndex = -1;
-        BattleRewardPatch.IsProcessingCardReward = false;
-        DeckRemovalState.PendingRemoval = false;
-        ShopPurchaseState.IsPurchasing = false;
-        ShopPurchaseState.PendingLabel = null;
-        EventSelectionPatch.PendingIndex = null;
-        DeckCardSelectRecordPatch.Pending = false;
-        SimpleGridContext.Pending = false;
-        HandCardSelectRecordPatch.SuppressNext = false;
-
-        // Crystal sphere
-        CrystalSphereReplayPatch.PendingTool = null;
-
-        // Buffered recording contexts
-        SimpleGridSyncPatch.FlushIfPending();
-
-        // Dispatcher
-        ReplayDispatcher.Reset();
-    }
-
     /// <summary>Returns the next queued command without consuming it.</summary>
     public static bool PeekNext(out string? cmd) => _pending.TryPeek(out cmd);
-
-    /// <summary>
-    /// Returns the command at the given offset from the front (0 = front, 1 = second, etc.)
-    /// without consuming anything.  Returns null if the offset is out of range.
-    /// </summary>
-    public static string? PeekAhead(int offset)
-    {
-        int i = 0;
-        foreach (string cmd in _pending)
-        {
-            if (i == offset)
-                return cmd;
-            i++;
-        }
-        return null;
-    }
-
-    // ── Map node choices ──────────────────────────────────────────────────────
-    //
-    // Recorded by PlayerActionBuffer via MoveToMapCoordAction.ToString():
-    //   "MoveToMapCoordAction {playerId} MapCoord ({col}, {row})"
-
-    private const string MapNodePrefix   = "MoveToMapCoordAction ";
-    private const string MapCoordMarker  = "MapCoord (";
-
-    public static bool PeekMapNode(out int col, out int row)
-    {
-        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(MapNodePrefix))
-        {
-            int markerIdx = cmd.IndexOf(MapCoordMarker, StringComparison.Ordinal);
-            if (markerIdx >= 0)
-            {
-                ReadOnlySpan<char> coords = cmd.AsSpan(markerIdx + MapCoordMarker.Length);
-                // coords = "{col}, {row})"
-                int comma = coords.IndexOf(',');
-                int close = coords.IndexOf(')');
-                if (comma > 0 && close > comma
-                    && int.TryParse(coords[..comma].Trim(), out col)
-                    && int.TryParse(coords[(comma + 1)..close].Trim(), out row))
-                    return true;
-            }
-        }
-        col = -1;
-        row = -1;
-        return false;
-    }
 
     // Temp function as a passtrhough to consume
     public static bool ConsumeAny()

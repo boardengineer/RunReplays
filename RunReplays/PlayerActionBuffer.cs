@@ -117,7 +117,6 @@ public static class PlayerActionBuffer
             if (action is PlayCardAction or UsePotionAction)
             {
                 _pendingPreState = GetBattleStateSummary();
-                SimpleGridSyncPatch.FlushIfPending();
                 return;
             }
 

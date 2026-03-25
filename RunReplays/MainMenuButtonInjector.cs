@@ -40,7 +40,7 @@ public static class MainMenuButtonInjector
     public static void Postfix(NMainMenu __instance)
     {
         // Reset any replay in progress so the game returns to record mode.
-        ReplayEngine.Clear();
+        ReplayDispatcher.Clear();
 
         // Apply manual patches (isolated from PatchAll).
         // Deferred so the dev console is available for diagnostic logging.

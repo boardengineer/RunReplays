@@ -95,8 +95,4 @@ public static class SimpleGridSyncPatch
         PlayerActionBuffer.LogToDevConsole($"[SimpleGridSyncPatch] Recording: {command}");
         PlayerActionBuffer.Record(command);
     }
-
-    internal static void FlushIfPending()
-    {
-    }
 }
