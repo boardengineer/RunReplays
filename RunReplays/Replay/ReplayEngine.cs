@@ -328,38 +328,6 @@ public static class ReplayEngine
         return false;
     }
 
-    // ── Treasure chest relic ──────────────────────────────────────────────────
-
-    private const string TakeChestRelicPrefix = "TakeChestRelic ";
-
-    public static bool PeekTakeChestRelic(out string relicTitle)
-    {
-        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(TakeChestRelicPrefix))
-        {
-            relicTitle = cmd.Substring(TakeChestRelicPrefix.Length);
-            return true;
-        }
-        relicTitle = string.Empty;
-        return false;
-    }
-
-    // Format: "NetPickRelicAction for player {netId} index {relicIndex}"
-    private const string NetPickRelicPrefix = "NetPickRelicAction for player ";
-    private const string NetPickRelicIndexMarker = " index ";
-
-    public static bool PeekNetPickRelicAction(out int relicIndex)
-    {
-        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(NetPickRelicPrefix))
-        {
-            int markerPos = cmd.LastIndexOf(NetPickRelicIndexMarker);
-            if (markerPos >= 0 && int.TryParse(
-                    cmd.AsSpan(markerPos + NetPickRelicIndexMarker.Length), out relicIndex))
-                return true;
-        }
-        relicIndex = -1;
-        return false;
-    }
-
     // ── Card choice screen selections ─────────────────────────────────────────
     //
     // Recorded by CardChoiceScreenPatch via PlayerChoiceSynchronizer.SyncLocalChoice

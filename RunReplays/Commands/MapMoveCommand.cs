@@ -31,7 +31,6 @@ public class MapMoveCommand : ReplayCommand
     {
         Callable.From(() => MapChoiceReplayPatch.AutoSelectMapNode(_activeScreen!, Col, Row)).CallDeferred();
         ReplayDispatcher.MapMoveInFlight = true;
-        TreasureRoomReplayPatch.ActiveRoom = null;
         return ExecuteResult.Ok();
     }
 

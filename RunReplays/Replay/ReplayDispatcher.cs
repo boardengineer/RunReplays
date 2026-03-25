@@ -4,6 +4,7 @@ using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
+using MegaCrit.Sts2.Core.Runs;
 using RunReplays.Commands;
 
 namespace RunReplays;
@@ -298,6 +299,23 @@ public static class ReplayDispatcher
         ++_dispatchGeneration;
         RestoreGameSpeed();
         StartWatchdog();
+        SubscribeToRoomEntered();
+    }
+
+    private static bool _subscribedToRoomEntered;
+
+    private static void SubscribeToRoomEntered()
+    {
+        if (_subscribedToRoomEntered) return;
+        _subscribedToRoomEntered = true;
+        RunManager.Instance.RoomExited += OnRoomExited;
+    }
+
+    private static void OnRoomExited()
+    {
+        if (!ReplayEngine.IsActive) return;
+
+        TreasureRoomReplayPatch.ActiveRoom = null;
     }
 
     /// <summary>

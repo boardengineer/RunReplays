@@ -65,12 +65,6 @@ public static class TreasureRoomReplayPatch
                 return;
 
             ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Treasure);
-
-            if (!ReplayEngine.PeekNetPickRelicAction(out int relicIndex))
-                return;
-
-            PlayerActionBuffer.LogToDevConsole(
-                $"[TreasureRoomReplayPatch] Relic pick pending (index={relicIndex}) — stored for dispatcher.");
             ReplayDispatcher.DispatchNow();
         }
     }
