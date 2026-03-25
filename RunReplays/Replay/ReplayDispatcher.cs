@@ -47,6 +47,31 @@ public static class ReplayDispatcher
         Proceed         = 1 << 10, // NProceedButton._Ready
     }
 
+    /// <summary>
+    /// Screens that have been resolved but should be freed at a safe lifecycle
+    /// point (room exit, turn start) rather than immediately.
+    /// </summary>
+    private static readonly List<Node> _pendingScreenCleanup = new();
+
+    /// <summary>Enqueue a screen node for deferred cleanup.</summary>
+    internal static void EnqueueScreenCleanup(Node screen)
+    {
+        _pendingScreenCleanup.Add(screen);
+    }
+
+    /// <summary>
+    /// Frees all screens queued for cleanup.  Called on room exit and turn start.
+    /// </summary>
+    internal static void DrainScreenCleanup()
+    {
+        foreach (var screen in _pendingScreenCleanup)
+        {
+            if (GodotObject.IsInstanceValid(screen))
+                screen.QueueFree();
+        }
+        _pendingScreenCleanup.Clear();
+    }
+
     private static ReadyState _ready;
     private static bool _paused;
     private static float _delayBetweenCommands = 2.0f;
@@ -303,6 +328,7 @@ public static class ReplayDispatcher
         _actionInFlight = false;
         _lastDispatchTick = System.Environment.TickCount64;
         ++_dispatchGeneration;
+        DrainScreenCleanup();
         RestoreGameSpeed();
         StartWatchdog();
         SubscribeToRoomEntered();
@@ -321,6 +347,7 @@ public static class ReplayDispatcher
     {
         if (!ReplayEngine.IsActive) return;
 
+        DrainScreenCleanup();
         TreasureRoomReplayPatch.ActiveRoom = null;
     }
 

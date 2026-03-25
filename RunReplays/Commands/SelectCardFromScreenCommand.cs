@@ -105,6 +105,7 @@ public static class ChooseACardScreenCapture
         if (tcs == null) return false;
 
         tcs.TrySetResult(cards);
+        ReplayDispatcher.EnqueueScreenCleanup(ActiveScreen);
         ActiveScreen = null;
         return true;
     }

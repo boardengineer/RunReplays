@@ -283,6 +283,7 @@ public static class CardPlayReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
+        ReplayDispatcher.DrainScreenCleanup();
         ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Combat);
 
         ReplayEngine.PeekNext(out string? nextCmd);
