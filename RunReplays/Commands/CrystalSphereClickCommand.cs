@@ -2,6 +2,7 @@ using System;
 using Godot;
 using HarmonyLib;
 
+using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>

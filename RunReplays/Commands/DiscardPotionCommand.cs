@@ -4,6 +4,7 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 
+using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>

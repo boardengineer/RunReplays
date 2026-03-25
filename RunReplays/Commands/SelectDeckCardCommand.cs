@@ -5,6 +5,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 
+using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>

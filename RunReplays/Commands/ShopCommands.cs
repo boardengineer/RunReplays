@@ -3,6 +3,7 @@ using System.Linq;
 using Godot;
 using MegaCrit.Sts2.Core.Entities.Merchant;
 
+using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>

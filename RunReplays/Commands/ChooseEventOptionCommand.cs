@@ -3,6 +3,7 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 
+using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>

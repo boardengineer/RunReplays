@@ -2,6 +2,7 @@ using System.Reflection;
 using Godot;
 using MegaCrit.Sts2.Core.Nodes.Events.Custom;
 
+using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>
