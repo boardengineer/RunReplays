@@ -2,7 +2,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
 using RunReplays.Utils;
 
-namespace RunReplays.Patches;
+namespace RunReplays.Patches.Replay;
 using RunReplays;
 
 [HarmonyPatch(typeof(RestSiteSynchronizer), nameof(RestSiteSynchronizer.BeginRestSite))]

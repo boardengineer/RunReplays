@@ -4,6 +4,7 @@ using RunReplays.Utils;
 
 namespace RunReplays.Patches;
 using RunReplays;
+using RunReplays.Patches.Record;
 
 /// <summary>
 /// Harmony prefix on EventOption.Chosen that logs to the dev console whenever

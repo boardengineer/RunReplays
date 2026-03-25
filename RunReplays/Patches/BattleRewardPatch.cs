@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.Nodes.Screens;
 
 namespace RunReplays.Patches;
 using RunReplays;
+using RunReplays.Patches.Record;
 
 
 [HarmonyPatch(typeof(RewardSynchronizer))]

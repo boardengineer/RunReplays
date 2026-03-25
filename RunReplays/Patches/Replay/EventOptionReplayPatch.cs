@@ -10,7 +10,7 @@ using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using RunReplays.Utils;
 
-namespace RunReplays.Patches;
+namespace RunReplays.Patches.Replay;
 using RunReplays;
 
 [HarmonyPatch(typeof(EventSynchronizer), nameof(EventSynchronizer.BeginEvent))]

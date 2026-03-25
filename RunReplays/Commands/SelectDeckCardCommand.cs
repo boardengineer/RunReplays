@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 
 using RunReplays.Patches;
+using RunReplays.Patches.Replay;
 namespace RunReplays.Commands;
 
 /// <summary>

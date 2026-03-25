@@ -10,7 +10,7 @@ using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
 using MegaCrit.Sts2.Core.Saves.Managers;
 
-namespace RunReplays.Patches;
+namespace RunReplays.Patches.Record;
 using RunReplays;
 
 /// <summary>

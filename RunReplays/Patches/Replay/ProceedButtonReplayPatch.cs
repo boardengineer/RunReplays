@@ -1,7 +1,7 @@
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 
-namespace RunReplays.Patches;
+namespace RunReplays.Patches.Replay;
 
 [HarmonyPatch(typeof(NProceedButton), "_Ready")]
 public static class ProceedButtonReplayPatch

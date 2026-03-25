@@ -3,7 +3,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
 
-namespace RunReplays.Patches;
+namespace RunReplays.Patches.Record;
 using RunReplays;
 
 /// <summary>

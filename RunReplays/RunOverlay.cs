@@ -4,6 +4,7 @@ using Godot;
 using MegaCrit.Sts2.Core.Nodes;
 
 using RunReplays.Patches;
+using RunReplays.Patches.Replay;
 namespace RunReplays;
 
 /// <summary>

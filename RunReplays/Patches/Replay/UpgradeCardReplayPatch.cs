@@ -5,7 +5,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 
-namespace RunReplays.Patches;
+namespace RunReplays.Patches.Replay;
 using RunReplays;
 
 [HarmonyPatch(typeof(NDeckUpgradeSelectScreen), "ShowScreen")]

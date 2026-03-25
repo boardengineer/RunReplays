@@ -2,7 +2,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.RestSite;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
 
-namespace RunReplays.Patches;
+namespace RunReplays.Patches.Record;
 
 [HarmonyPatch(typeof(RestSiteSynchronizer), nameof(RestSiteSynchronizer.ChooseLocalOption))]
 public static class RestSiteRecordPatch

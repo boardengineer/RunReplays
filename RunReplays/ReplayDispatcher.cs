@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Runs;
 using RunReplays.Commands;
 
 using RunReplays.Patches;
+using RunReplays.Patches.Replay;
 namespace RunReplays;
 
 /// <summary>

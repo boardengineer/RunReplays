@@ -1,7 +1,7 @@
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Commands;
 
-namespace RunReplays.Patches;
+namespace RunReplays.Patches.Record;
 using RunReplays;
 
 /// <summary>

@@ -3,6 +3,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 
 using RunReplays.Patches;
+using RunReplays.Patches.Replay;
 namespace RunReplays.Commands;
 
 /// <summary>

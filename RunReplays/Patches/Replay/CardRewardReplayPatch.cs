@@ -2,7 +2,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 using RunReplays.Commands;
 
-namespace RunReplays.Patches;
+namespace RunReplays.Patches.Replay;
 using RunReplays;
 
 [HarmonyPatch(typeof(NCardRewardSelectionScreen), "_Ready")]

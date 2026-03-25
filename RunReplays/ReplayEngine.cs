@@ -5,6 +5,8 @@ using System.Runtime.CompilerServices;
 using Godot;
 
 using RunReplays.Patches;
+using RunReplays.Patches.Record;
+using RunReplays.Patches.Replay;
 namespace RunReplays;
 
 /// <summary>

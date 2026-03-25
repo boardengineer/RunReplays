@@ -2,7 +2,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Merchant;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 
-namespace RunReplays.Patches;
+namespace RunReplays.Patches.Record;
 using RunReplays;
 
 /// <summary>

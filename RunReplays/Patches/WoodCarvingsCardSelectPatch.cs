@@ -17,6 +17,7 @@ using ICardSelector = MegaCrit.Sts2.Core.TestSupport.ICardSelector;
 
 namespace RunReplays.Patches;
 using RunReplays;
+using RunReplays.Patches.Record;
 
 /// <summary>
 /// Records and replays deck card selections made during events that call

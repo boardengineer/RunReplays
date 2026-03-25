@@ -7,7 +7,7 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 
-namespace RunReplays.Patches;
+namespace RunReplays.Patches.Record;
 using RunReplays;
 
 /// <summary>
@@ -16,7 +16,7 @@ using RunReplays;
 /// and records each selected card's deck index into the action buffer.
 /// </summary>
 [HarmonyPatch(typeof(NCardGridSelectionScreen), nameof(NCardGridSelectionScreen.CardsSelected))]
-public static class NDeckUpgradeSelectScreenLogPatch
+public static class NDeckUpgradeSelectScreenRecordPatch
 {
     private static readonly FieldInfo? CardsField =
         typeof(NCardGridSelectionScreen).GetField(

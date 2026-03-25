@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 
 using RunReplays.Patches;
+using RunReplays.Patches.Replay;
 namespace RunReplays.Commands;
 
 /// <summary>

@@ -2,7 +2,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using RunReplays.Commands;
 
-namespace RunReplays.Patches;
+namespace RunReplays.Patches.Replay;
 
 [HarmonyPatch(typeof(NMapScreen), nameof(NMapScreen.SetTravelEnabled))]
 public static class MapChoiceReplayPatch
