@@ -10,8 +10,6 @@ using RunReplays.Commands;
 [HarmonyPatch(typeof(NCardGridSelectionScreen), nameof(NCardGridSelectionScreen.CardsSelected))]
 public static class DeckCardSelectRecordPatch
 {
-    internal static bool Pending;
-
     private static readonly FieldInfo? CardsField =
         typeof(NCardGridSelectionScreen).GetField(
             "_cards", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -21,11 +19,6 @@ public static class DeckCardSelectRecordPatch
     {
         if (__instance is NDeckUpgradeSelectScreen)
             return;
-
-        if (!Pending)
-            return;
-
-        Pending = false;
 
         var deckList =
             CardsField?.GetValue(__instance) as IReadOnlyList<CardModel>;

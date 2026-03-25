@@ -169,7 +169,6 @@ public static class ReplayDispatcher
         ShopPurchaseState.IsPurchasing = false;
         ShopPurchaseState.PendingLabel = null;
         EventSelectionPatch.PendingIndex = null;
-        DeckCardSelectRecordPatch.Pending = false;
         SimpleGridContext.Pending = false;
         HandCardSelectRecordPatch.SuppressNext = false;
 

@@ -27,12 +27,6 @@ public static class FromDeckForRemovalPatch
     {
         DeckRemovalState.PendingRemoval = true;
 
-        // Also set DeckCardSelectContext.Pending here because FromDeckForRemoval
-        // calls FromDeckGeneric internally, and Harmony may not intercept that
-        // intra-class call (the JIT can inline it, bypassing the prefix).
-        if (!ReplayEngine.IsActive)
-            DeckCardSelectRecordPatch.Pending = true;
-
         PlayerActionBuffer.LogToDevConsole("[DeckRemovalRecordPatch] FromDeckForRemoval entered — awaiting CardsSelected.");
     }
 }
