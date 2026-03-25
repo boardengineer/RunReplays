@@ -31,7 +31,7 @@ public static class FromDeckForRemovalPatch
         // calls FromDeckGeneric internally, and Harmony may not intercept that
         // intra-class call (the JIT can inline it, bypassing the prefix).
         if (!ReplayEngine.IsActive)
-            DeckCardSelectContext.Pending = true;
+            DeckCardSelectRecordPatch.Pending = true;
 
         PlayerActionBuffer.LogToDevConsole("[DeckRemovalRecordPatch] FromDeckForRemoval entered — awaiting CardsSelected.");
     }

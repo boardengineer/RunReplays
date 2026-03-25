@@ -1,39 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using HarmonyLib;
-using MegaCrit.Sts2.Core.CardSelection;
-using MegaCrit.Sts2.Core.Commands;
-using MegaCrit.Sts2.Core.Entities.CardRewardAlternatives;
-using MegaCrit.Sts2.Core.Entities.Cards;
-using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
-using ICardSelector = MegaCrit.Sts2.Core.TestSupport.ICardSelector;
 
-namespace RunReplays.Patches;
-using RunReplays;
-using RunReplays.Patches.Record;
+namespace RunReplays.Patches.Record;
 
-internal static class DeckCardSelectContext
-{
-    internal static bool Pending;
-}
-
-
-
-/// <summary>
-/// Intercepts NCardGridSelectionScreen.CardsSelected when DeckCardSelectContext.Pending
-/// is set. Skips NDeckUpgradeSelectScreen instances (handled by NDeckUpgradeSelectScreenLogPatch).
-/// Awaits the result task and records the deck index of each selected card.
-/// </summary>
 [HarmonyPatch(typeof(NCardGridSelectionScreen), nameof(NCardGridSelectionScreen.CardsSelected))]
 public static class DeckCardSelectRecordPatch
 {
+    internal static bool Pending;
+
     private static readonly FieldInfo? CardsField =
         typeof(NCardGridSelectionScreen).GetField(
             "_cards", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -44,12 +21,12 @@ public static class DeckCardSelectRecordPatch
         if (__instance is NDeckUpgradeSelectScreen)
             return;
 
-        if (!DeckCardSelectContext.Pending)
+        if (!Pending)
             return;
 
-        DeckCardSelectContext.Pending = false;
+        Pending = false;
 
-        IReadOnlyList<CardModel>? deckList =
+        var deckList =
             CardsField?.GetValue(__instance) as IReadOnlyList<CardModel>;
 
         TaskHelper.RunSafely(RecordAsync(__result, deckList));
@@ -59,18 +36,18 @@ public static class DeckCardSelectRecordPatch
         Task<IEnumerable<CardModel>> task,
         IReadOnlyList<CardModel>? deckList)
     {
-        IEnumerable<CardModel> selected = await task;
-        List<CardModel> cardList = selected.ToList();
+        var selected = await task;
+        var cardList = selected.ToList();
 
-        string titles = string.Join(", ", cardList.Select(c => $"'{c.Title}'"));
+        var titles = string.Join(", ", cardList.Select(c => $"'{c.Title}'"));
         PlayerActionBuffer.RecordVerboseOnly($"[DeckCardSelect] Selected: [{titles}]");
 
         // Collect all selected indices into a single command so that
         // multi-card selections (e.g. Morphic Grove) are recorded atomically.
         var indices = new List<int>(cardList.Count);
-        foreach (CardModel card in cardList)
+        foreach (var card in cardList)
         {
-            int index = deckList == null ? -1 : deckList.ToList().IndexOf(card);
+            var index = deckList == null ? -1 : deckList.ToList().IndexOf(card);
             indices.Add(index);
         }
 
@@ -88,6 +65,7 @@ public static class DeckCardSelectRecordPatch
             command = $"SelectDeckCard {string.Join(" ", indices)}";
             PlayerActionBuffer.RecordMinimalOnly(command);
         }
+
         PlayerActionBuffer.LogToDevConsole(
             $"[DeckCardSelectPatch] Recorded {command} ({titles}).");
     }

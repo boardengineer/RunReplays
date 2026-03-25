@@ -174,7 +174,7 @@ public static class ReplayEngine
         ShopPurchaseState.IsPurchasing = false;
         ShopPurchaseState.PendingLabel = null;
         EventSelectionPatch.PendingIndex = null;
-        DeckCardSelectContext.Pending = false;
+        DeckCardSelectRecordPatch.Pending = false;
         SimpleGridContext.Pending = false;
         HandCardSelectRecordPatch.SuppressNext = false;
 
