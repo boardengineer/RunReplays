@@ -3,40 +3,21 @@ using MegaCrit.Sts2.Core.Entities.RestSite;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
 
 namespace RunReplays.Patches;
-using RunReplays;
 
-/// <summary>
-/// Harmony prefix on RestSiteSynchronizer.ChooseLocalOption that records the
-/// chosen rest site option into the action buffer.
-///
-/// ChooseLocalOption(int index) is called whenever the local player selects a
-/// rest site option.  GetLocalOptions() returns the current option list so we
-/// can resolve the index to a RestSiteOption and capture its OptionId — a
-/// stable uppercase string identifier (e.g. "HEAL", "SMITH") that is used both
-/// here for recording and by RestSiteReplayPatch for replay execution.
-///
-/// The prefix fires synchronously before the async body, so GetLocalOptions()
-/// still holds the full option list at recording time — the selected option is
-/// only removed after OnSelect() completes inside ChooseOption.
-/// </summary>
 [HarmonyPatch(typeof(RestSiteSynchronizer), nameof(RestSiteSynchronizer.ChooseLocalOption))]
 public static class RestSiteRecordPatch
 {
     [HarmonyPrefix]
     public static void Prefix(RestSiteSynchronizer __instance, int index)
     {
-        System.Collections.Generic.IReadOnlyList<RestSiteOption> options = __instance.GetLocalOptions();
+        IReadOnlyList<RestSiteOption> options = __instance.GetLocalOptions();
 
         if (index < 0 || index >= options.Count)
         {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[RestSiteRecordPatch] ChooseLocalOption index {index} out of range (count={options.Count}).");
             return;
         }
 
         string optionId = options[index].OptionId;
-        PlayerActionBuffer.LogToDevConsole(
-            $"[RestSiteRecordPatch] ChooseLocalOption index={index} optionId='{optionId}'.");
         PlayerActionBuffer.Record($"ChooseRestSiteOption {optionId}");
     }
 }

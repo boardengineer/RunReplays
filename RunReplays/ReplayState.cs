@@ -41,6 +41,11 @@ public static class ReplayState
     public static NFakeMerchant? FakeMerchantInstance { get; set; }
 
     /// <summary>
+    /// The active rest site synchronizer, set by RestSiteReplayPatch postfix.
+    /// </summary>
+    public static RestSiteSynchronizer? ActiveRestSiteSynchronizer { get; set; }
+
+    /// <summary>
     /// Tracks whether a card play is in flight.  Set by the combat patch.
     /// Does NOT trigger immediate dispatch on clear — effects need to settle
     /// first.  <see cref="ReplayDispatcher.NotifyEffectsSettled"/> triggers dispatch after.
@@ -120,6 +125,7 @@ public static class ReplayState
         CardRewardSelectionScreen = null;
         ActiveEventSynchronizer = null;
         FakeMerchantInstance = null;
+        ActiveRestSiteSynchronizer = null;
         CardPlayInFlight = false;
         PotionInFlight = false;
         _actionInFlight = false;
