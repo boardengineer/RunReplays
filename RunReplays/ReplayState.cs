@@ -4,6 +4,7 @@ using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
 using MegaCrit.Sts2.Core.Nodes.Events.Custom;
+using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 
@@ -44,6 +45,11 @@ public static class ReplayState
     /// The active rest site synchronizer, set by RestSiteReplayPatch postfix.
     /// </summary>
     public static RestSiteSynchronizer? ActiveRestSiteSynchronizer { get; set; }
+
+    /// <summary>
+    /// The active merchant room, set by ShopOpenedReplayPatch postfix.
+    /// </summary>
+    public static NMerchantRoom? ActiveMerchantRoom { get; set; }
 
     /// <summary>
     /// Tracks whether a card play is in flight.  Set by the combat patch.
@@ -126,6 +132,7 @@ public static class ReplayState
         ActiveEventSynchronizer = null;
         FakeMerchantInstance = null;
         ActiveRestSiteSynchronizer = null;
+        ActiveMerchantRoom = null;
         CardPlayInFlight = false;
         PotionInFlight = false;
         _actionInFlight = false;
