@@ -31,6 +31,7 @@ public static class EventOptionReplayPatch
     [HarmonyPostfix]
     public static void Postfix(EventSynchronizer __instance, EventModel canonicalEvent)
     {
+        bool isAncient = canonicalEvent is AncientEventModel;
         bool replayActive = ReplayEngine.IsActive;
 
         if (replayActive)
@@ -39,7 +40,9 @@ public static class EventOptionReplayPatch
         RngCheckpointLogger.Log($"Event (BeginEvent '{canonicalEvent.GetType().Name}')");
 
         ReplayEngine.PeekNext(out string? nextCmd);
-        
+        PlayerActionBuffer.LogToDevConsole(
+            $"[EventOptionReplayPatch] BeginEvent — event='{canonicalEvent.GetType().Name}' isAncient={isAncient} replayActive={replayActive} nextCmd='{nextCmd}'");
+
         _activeSynchronizer = __instance;
         ReplayDispatcher.DispatchNow();
     }

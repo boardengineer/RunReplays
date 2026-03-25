@@ -22,6 +22,46 @@ public static class ReplayEngine
 
     private static readonly List<string> _recentConsumed = new(2);
 
+    /// <summary>
+    /// Dequeues one command, records it in the recent-history buffer, and
+    /// fires ContextChanged so the overlay can refresh.
+    /// When the queue empties naturally (all commands consumed), also fires
+    /// ReplayCompleted so callers can restore the action buffer.
+    /// </summary>
+    private static string SignalConsumed(string cmd, [CallerMemberName] string? caller = null)
+    {
+        // PlayerActionBuffer.LogMigrationWarning($"[Queue] {caller}: {cmd[..Math.Min(cmd.Length, 60)]} ({_pending.Count} remaining)");
+
+        if (_recentConsumed.Count >= 2)
+            _recentConsumed.RemoveAt(0);
+        _recentConsumed.Add(cmd);
+        ContextChanged?.Invoke();
+        if (_replayActive && _pending.Count == 0)
+        {
+            // Defer the replay→record transition to the next Godot frame.
+            // This keeps IsActive = true long enough for the last replayed action's
+            // AfterActionExecuted to fire (and be suppressed), preventing it from
+            // being double-recorded into the new log alongside the restored buffer.
+            var commands = _loadedCommands;
+            Callable.From(() =>
+            {
+                // If Clear() was called before this fires, _replayActive is already
+                // false — bail out so ReplayCompleted is not fired spuriously.
+                if (!_replayActive) return;
+                _replayActive = false;
+                ReplayDispatcher.RestoreGameSpeed();
+                ReplayCompleted?.Invoke(commands);
+            }).CallDeferred();
+        }
+
+        // Mark the previous dispatch as complete and re-trigger for the next command.
+        ReplayDispatcher.NotifyConsumed();
+        ReplayDispatcher.TryDispatch();
+
+        return cmd;
+    }
+
+    // ── Replay-completed notification ─────────────────────────────────────────
 
     /// <summary>
     /// Fired when the last queued command is consumed (i.e. the replay finishes
@@ -185,43 +225,41 @@ public static class ReplayEngine
         }
         return null;
     }
-    
+
+    // ── Map node choices ──────────────────────────────────────────────────────
+    //
+    // Recorded by PlayerActionBuffer via MoveToMapCoordAction.ToString():
+    //   "MoveToMapCoordAction {playerId} MapCoord ({col}, {row})"
+
+    private const string MapNodePrefix   = "MoveToMapCoordAction ";
+    private const string MapCoordMarker  = "MapCoord (";
+
+    public static bool PeekMapNode(out int col, out int row)
+    {
+        if (_pending.TryPeek(out string? cmd) && cmd.StartsWith(MapNodePrefix))
+        {
+            int markerIdx = cmd.IndexOf(MapCoordMarker, StringComparison.Ordinal);
+            if (markerIdx >= 0)
+            {
+                ReadOnlySpan<char> coords = cmd.AsSpan(markerIdx + MapCoordMarker.Length);
+                // coords = "{col}, {row})"
+                int comma = coords.IndexOf(',');
+                int close = coords.IndexOf(')');
+                if (comma > 0 && close > comma
+                    && int.TryParse(coords[..comma].Trim(), out col)
+                    && int.TryParse(coords[(comma + 1)..close].Trim(), out row))
+                    return true;
+            }
+        }
+        col = -1;
+        row = -1;
+        return false;
+    }
+
+    // Temp function as a passtrhough to consume
     public static bool ConsumeAny()
     { 
         SignalConsumed(_pending.Dequeue());
         return true;
-    }
-    
-    private static string SignalConsumed(string cmd)
-    {
-        // PlayerActionBuffer.LogMigrationWarning($"[Queue] {caller}: {cmd[..Math.Min(cmd.Length, 60)]} ({_pending.Count} remaining)");
-
-        if (_recentConsumed.Count >= 2)
-            _recentConsumed.RemoveAt(0);
-        _recentConsumed.Add(cmd);
-        ContextChanged?.Invoke();
-        if (_replayActive && _pending.Count == 0)
-        {
-            // Defer the replay→record transition to the next Godot frame.
-            // This keeps IsActive = true long enough for the last replayed action's
-            // AfterActionExecuted to fire (and be suppressed), preventing it from
-            // being double-recorded into the new log alongside the restored buffer.
-            var commands = _loadedCommands;
-            Callable.From(() =>
-            {
-                // If Clear() was called before this fires, _replayActive is already
-                // false — bail out so ReplayCompleted is not fired spuriously.
-                if (!_replayActive) return;
-                _replayActive = false;
-                ReplayDispatcher.RestoreGameSpeed();
-                ReplayCompleted?.Invoke(commands);
-            }).CallDeferred();
-        }
-
-        // Mark the previous dispatch as complete and re-trigger for the next command.
-        ReplayDispatcher.NotifyConsumed();
-        ReplayDispatcher.TryDispatch();
-
-        return cmd;
     }
 }

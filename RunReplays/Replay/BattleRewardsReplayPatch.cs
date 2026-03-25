@@ -12,6 +12,30 @@ using MegaCrit.Sts2.Core.Nodes.Screens;
 
 namespace RunReplays;
 
+/// <summary>
+/// Harmony postfix on NRewardsScreen._Ready that automatically claims reward
+/// buttons in replay order, then proceeds to the map when the next command is
+/// a MoveToMapCoordAction.
+///
+/// Gold rewards are fully handled here: the command is consumed from
+/// ReplayEngine and NRewardButton.GetReward() is invoked so that the game's
+/// own synchronisation logic (SyncLocalObtainedGold) runs normally.
+///
+/// Card rewards are triggered by clicking the card button (also via GetReward),
+/// which opens NCardRewardSelectionScreen. CardRewardReplayPatch then handles
+/// the actual card selection and calls OnCardRewardHandled() when done so that
+/// any subsequent reward buttons or the map transition can be processed.
+///
+/// When no more reward commands remain and the next command is
+/// MoveToMapCoordAction, ProceedFromTerminalRewardsScreen is called to close
+/// the screen and SetTravelEnabled fires MapChoiceReplayPatch.
+///
+/// NRewardButton children are located by walking FindChildren and matching the
+/// reward's runtime type name against "GoldReward" or "CardReward" (walking
+/// the inheritance chain so subtypes are also matched). The type check uses
+/// IsAssignableFrom rather than exact equality because Godot 4 generates
+/// runtime subclasses (e.g. NRewardButton0MegaCrit) for C# node scripts.
+/// </summary>
 [HarmonyPatch(typeof(NRewardsScreen), "_Ready")]
 public static class BattleRewardsReplayPatch
 {

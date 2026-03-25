@@ -30,7 +30,11 @@ public static class ProceedButtonReplayPatch
 
         if (ShopOpenedReplayPatch.IsShopReplayActive)
             return;
-        
+
+        if (!ReplayEngine.PeekMapNode(out _, out _))
+            return;
+
+        Callable.From(OpenMap).CallDeferred();
         ReplayDispatcher.DispatchNow();
     }
 
