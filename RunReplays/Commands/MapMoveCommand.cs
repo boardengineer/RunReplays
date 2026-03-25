@@ -17,7 +17,7 @@ public class MapMoveCommand : ReplayCommand
     public int Col { get; }
     public int Row { get; }
 
-    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.Map;
+    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Map;
 
     private MapMoveCommand(string raw, int col, int row) : base(raw)
     {

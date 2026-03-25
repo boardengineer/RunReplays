@@ -19,7 +19,7 @@ public sealed class CrystalSphereClickCommand : ReplayCommand
     public int Y { get; }
     public int Tool { get; }
 
-    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.CrystalSphere;
+    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.CrystalSphere;
 
     private CrystalSphereClickCommand(string raw, int x, int y, int tool) : base(raw)
     {

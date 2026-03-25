@@ -52,7 +52,7 @@ public static class BattleRewardsReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Rewards);
+        ReplayState.SignalReady(ReplayState.ReadyState.Rewards);
         _activeScreen = __instance;
         ReplayDispatcher.DispatchNow();
     }

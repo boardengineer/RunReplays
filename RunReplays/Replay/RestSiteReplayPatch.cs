@@ -51,7 +51,7 @@ public static class RestSiteReplayPatch
         if (!ReplayEngine.IsActive)
             return;
         
-        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.RestSite);
+        ReplayState.SignalReady(ReplayState.ReadyState.RestSite);
         _activeSynchronizer = __instance;
         ReplayDispatcher.DispatchNow();
     }

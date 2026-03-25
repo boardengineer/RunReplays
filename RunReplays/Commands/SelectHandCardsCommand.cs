@@ -24,7 +24,7 @@ public sealed class SelectHandCardsCommand : ReplayCommand
     /// <summary>Hand-position indices of the selected cards.</summary>
     public int[] HandIndices { get; }
 
-    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.None;
+    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.None;
     public override bool IsSelectionCommand => true;
 
     private SelectHandCardsCommand(string raw, int[] handIndices) : base(raw)

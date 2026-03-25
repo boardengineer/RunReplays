@@ -38,7 +38,7 @@ public static class MapChoiceReplayPatch
         if (!enabled || !__instance.IsTravelEnabled)
             return;
 
-        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Map);
+        ReplayState.SignalReady(ReplayState.ReadyState.Map);
 
         PlayerActionBuffer.LogToDevConsole("[RunReplays] Map is now interactive.");
         RngCheckpointLogger.Log("MapInteractive (SetTravelEnabled)");

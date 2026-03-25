@@ -8,7 +8,7 @@ public class EndTurnCommand : ReplayCommand
 {
     private const string Prefix = "EndPlayerTurnAction ";
 
-    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.Combat;
+    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Combat;
 
     private EndTurnCommand(string raw) : base(raw) { }
 

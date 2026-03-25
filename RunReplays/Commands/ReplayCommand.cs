@@ -46,11 +46,11 @@ public abstract class ReplayCommand
     }
 
     /// <summary>
-    /// The <see cref="ReplayDispatcher.ReadyState"/> flag(s) required before
-    /// this command can execute.  <see cref="ReplayDispatcher.ReadyState.None"/>
+    /// The <see cref="ReplayState.ReadyState"/> flag(s) required before
+    /// this command can execute.  <see cref="ReplayState.ReadyState.None"/>
     /// means the command can execute in any context.
     /// </summary>
-    public abstract ReplayDispatcher.ReadyState RequiredState { get; }
+    public abstract ReplayState.ReadyState RequiredState { get; }
 
     /// <summary>
     /// True for commands consumed inline by ICardSelector implementations

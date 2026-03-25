@@ -122,7 +122,7 @@ public static class CardPlayReplayPatch
         _postEndTurn_savedTurnStartState = null;
 
         // Clear Combat readiness so potion use is blocked until TurnStarted fires.
-        ReplayDispatcher.ClearReady(ReplayDispatcher.ReadyState.Combat);
+        ReplayState.ClearReady(ReplayState.ReadyState.Combat);
 
         SelectorStackDebug.Log("\n=== Battle Start (ActionExecutor ctor) ===");
         LogCardSelectState("ActionExecutor ctor (battle start)");
@@ -283,8 +283,8 @@ public static class CardPlayReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        ReplayDispatcher.DrainScreenCleanup();
-        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Combat);
+        ReplayState.DrainScreenCleanup();
+        ReplayState.SignalReady(ReplayState.ReadyState.Combat);
 
         ReplayEngine.PeekNext(out string? nextCmd);
         SelectorStackDebug.Log(
@@ -369,7 +369,7 @@ public static class CardPlayReplayPatch
         _postEndTurn_savedTurnStartState = null;
 
         // Route back through the dispatcher for the next turn.
-        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Combat);
+        ReplayState.SignalReady(ReplayState.ReadyState.Combat);
     }
 
     // ── Post-action chain trigger (waits for sub-effects to settle) ─────────
@@ -582,7 +582,7 @@ public static class CardPlayReplayPatch
         _postEndTurn_turnEndedReceived = false;
         _postEndTurn_turnStartedReceived = false;
         _postEndTurn_savedTurnStartState = null;
-        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Combat);
-        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Rewards);
+        ReplayState.SignalReady(ReplayState.ReadyState.Combat);
+        ReplayState.SignalReady(ReplayState.ReadyState.Rewards);
     }
 }

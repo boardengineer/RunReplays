@@ -17,7 +17,7 @@ public sealed class RemoveCardFromDeckCommand : ReplayCommand
 
     public int[] DeckIndices { get; }
 
-    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.None;
+    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.None;
     public override bool IsSelectionCommand => true;
 
     private RemoveCardFromDeckCommand(string raw, int[] deckIndices) : base(raw)

@@ -22,7 +22,7 @@ public sealed class SelectCardFromScreenCommand : ReplayCommand
 
     public int Index { get; }
 
-    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.None;
+    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.None;
     public override bool IsSelectionCommand => true;
 
     private SelectCardFromScreenCommand(string raw, int index) : base(raw)
@@ -105,7 +105,7 @@ public static class ChooseACardScreenCapture
         if (tcs == null) return false;
 
         tcs.TrySetResult(cards);
-        ReplayDispatcher.EnqueueScreenCleanup(ActiveScreen);
+        ReplayState.EnqueueScreenCleanup(ActiveScreen);
         ActiveScreen = null;
         return true;
     }

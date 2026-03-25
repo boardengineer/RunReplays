@@ -12,7 +12,7 @@ public class PotionRewardCommand : ReplayCommand
 
     public string PotionTitle { get; }
 
-    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.Rewards;
+    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Rewards;
 
     private PotionRewardCommand(string raw, string potionTitle) : base(raw)
     {

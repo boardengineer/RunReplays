@@ -35,7 +35,7 @@ public static class EventOptionReplayPatch
         bool replayActive = ReplayEngine.IsActive;
 
         if (replayActive)
-            ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Event);
+            ReplayState.SignalReady(ReplayState.ReadyState.Event);
 
         RngCheckpointLogger.Log($"Event (BeginEvent '{canonicalEvent.GetType().Name}')");
 

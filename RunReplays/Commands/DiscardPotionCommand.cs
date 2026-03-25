@@ -17,7 +17,7 @@ public sealed class DiscardPotionCommand : ReplayCommand
 
     public int SlotIndex { get; }
 
-    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.None;
+    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.None;
 
     private DiscardPotionCommand(string raw, int slotIndex) : base(raw)
     {

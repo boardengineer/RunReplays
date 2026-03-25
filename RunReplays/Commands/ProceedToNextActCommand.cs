@@ -10,7 +10,7 @@ public sealed class ProceedToNextActCommand : ReplayCommand
 {
     private const string Prefix = "VoteForMapCoordAction ";
 
-    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.Rewards;
+    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Rewards;
 
     private ProceedToNextActCommand(string raw) : base(raw) { }
 

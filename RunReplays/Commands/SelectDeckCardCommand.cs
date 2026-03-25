@@ -23,7 +23,7 @@ public class SelectDeckCardCommand : ReplayCommand
 
     public int[] DeckIndices { get; }
 
-    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.None;
+    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.None;
     public override bool IsSelectionCommand => true;
 
     private SelectDeckCardCommand(string raw, int[] deckIndices) : base(raw)
@@ -136,7 +136,7 @@ public static class CardGridScreenCapture
         if (tcs == null) return false;
 
         tcs.TrySetResult(cards);
-        ReplayDispatcher.EnqueueScreenCleanup(ActiveScreen);
+        ReplayState.EnqueueScreenCleanup(ActiveScreen);
         ActiveScreen = null;
         return true;
     }

@@ -20,7 +20,7 @@ public sealed class UsePotionCommand : ReplayCommand
     public uint? TargetId { get; }
     public bool InCombat { get; }
 
-    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.None;
+    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.None;
 
     private UsePotionCommand(string raw, uint potionIndex, uint? targetId, bool inCombat) : base(raw)
     {

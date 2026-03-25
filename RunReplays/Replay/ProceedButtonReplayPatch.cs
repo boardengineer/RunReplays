@@ -26,7 +26,7 @@ public static class ProceedButtonReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Proceed);
+        ReplayState.SignalReady(ReplayState.ReadyState.Proceed);
 
         if (ShopOpenedReplayPatch.IsShopReplayActive)
             return;

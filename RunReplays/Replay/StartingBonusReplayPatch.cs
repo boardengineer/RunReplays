@@ -20,6 +20,6 @@ public static class StartingBonusReplayPatch
             return;
 
         if (ReplayEngine.IsActive)
-            ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.StartingBonus);
+            ReplayState.SignalReady(ReplayState.ReadyState.StartingBonus);
     }
 }

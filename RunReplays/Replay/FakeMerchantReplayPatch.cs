@@ -67,7 +67,7 @@ public static class FakeMerchantReplayPatch
 
         ActiveInstance = __instance;
         ShopOpenedReplayPatch.ActiveRoom = null;
-        ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Shop);
+        ReplayState.SignalReady(ReplayState.ReadyState.Shop);
         ReplayDispatcher.DispatchNow();
     }
 

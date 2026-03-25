@@ -17,7 +17,7 @@ public class PlayCardCommand : ReplayCommand
     public uint CombatCardIndex { get; }
     public uint? TargetId { get; }
 
-    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.Combat;
+    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Combat;
 
     private PlayCardCommand(string raw, uint combatCardIndex, uint? targetId) : base(raw)
     {

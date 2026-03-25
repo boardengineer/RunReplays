@@ -23,7 +23,7 @@ public class CardRewardCommand : ReplayCommand
     public string CardTitle { get; }
     public int RewardIndex { get; }
 
-    public override ReplayDispatcher.ReadyState RequiredState => ReplayDispatcher.ReadyState.Rewards;
+    public override ReplayState.ReadyState RequiredState => ReplayState.ReadyState.Rewards;
 
     private CardRewardCommand(string raw, string cardTitle, int rewardIndex) : base(raw)
     {
