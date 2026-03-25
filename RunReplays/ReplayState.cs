@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Godot;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.GameActions;
+using MegaCrit.Sts2.Core.Nodes.Screens;
 
 namespace RunReplays;
 
@@ -11,6 +12,16 @@ namespace RunReplays;
 /// </summary>
 public static class ReplayState
 {
+    /// <summary>
+    /// Tracks whether a card play is in flight.  Set by the combat patch.
+    /// Does NOT trigger immediate dispatch on clear — effects need to settle
+    /// first.  <see cref="ReplayDispatcher.NotifyEffectsSettled"/> triggers dispatch after.
+    /// </summary>
+    /// <summary>
+    /// The currently active rewards screen, set by the BattleRewardsReplayPatch postfix.
+    /// </summary>
+    public static NRewardsScreen? ActiveRewardsScreen { get; set; }
+
     /// <summary>
     /// Tracks whether a card play is in flight.  Set by the combat patch.
     /// Does NOT trigger immediate dispatch on clear — effects need to settle
@@ -87,6 +98,7 @@ public static class ReplayState
     /// <summary>Resets all replay state.  Called on replay start and clear.</summary>
     internal static void Reset()
     {
+        ActiveRewardsScreen = null;
         CardPlayInFlight = false;
         PotionInFlight = false;
         _actionInFlight = false;

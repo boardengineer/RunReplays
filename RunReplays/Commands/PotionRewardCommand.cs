@@ -1,6 +1,5 @@
 using Godot;
 
-using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>
@@ -23,18 +22,18 @@ public class PotionRewardCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        var screen = BattleRewardsReplayPatch._activeScreen;
+        var screen = ReplayState.ActiveRewardsScreen;
         if (screen == null || !screen.IsInsideTree())
             return ExecuteResult.Retry(200);
 
-        Node? potionButton = BattleRewardsReplayPatch.FindRewardButton(screen, "PotionReward");
+        Node? potionButton = CardRewardCommand.FindRewardButton(screen, "PotionReward");
         if (potionButton == null)
         {
             PlayerActionBuffer.LogDispatcher("[PotionReward] Potion reward button not found — skipping.");
             return ExecuteResult.Fail();
         }
 
-        BattleRewardsReplayPatch.InvokeGetReward(potionButton);
+        CardRewardCommand.InvokeGetReward(potionButton);
         PlayerActionBuffer.LogDispatcher($"[PotionReward] Claimed potion reward '{PotionTitle}'.");
 
         return ExecuteResult.Ok();

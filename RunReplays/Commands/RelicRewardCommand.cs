@@ -1,6 +1,5 @@
 using Godot;
 
-using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>
@@ -23,18 +22,18 @@ public class RelicRewardCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        var screen = BattleRewardsReplayPatch._activeScreen;
+        var screen = ReplayState.ActiveRewardsScreen;
         if (screen == null || !screen.IsInsideTree())
             return ExecuteResult.Retry(200);
 
-        Node? relicButton = BattleRewardsReplayPatch.FindRewardButton(screen, "RelicReward");
+        Node? relicButton = CardRewardCommand.FindRewardButton(screen, "RelicReward");
         if (relicButton == null)
         {
             PlayerActionBuffer.LogDispatcher("[RelicReward] Relic reward button not found — skipping.");
             return ExecuteResult.Fail();
         }
 
-        BattleRewardsReplayPatch.InvokeGetReward(relicButton);
+        CardRewardCommand.InvokeGetReward(relicButton);
         PlayerActionBuffer.LogDispatcher($"[RelicReward] Claimed relic reward '{RelicTitle}'.");
 
         return ExecuteResult.Ok();

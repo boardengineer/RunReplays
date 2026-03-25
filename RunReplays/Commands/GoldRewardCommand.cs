@@ -1,6 +1,5 @@
 using Godot;
 
-using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>
@@ -23,18 +22,18 @@ public class GoldRewardCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        var screen = BattleRewardsReplayPatch._activeScreen;
+        var screen = ReplayState.ActiveRewardsScreen;
         if (screen == null || !screen.IsInsideTree())
             return ExecuteResult.Retry(200);
 
-        Node? goldButton = BattleRewardsReplayPatch.FindRewardButton(screen, "GoldReward");
+        Node? goldButton = CardRewardCommand.FindRewardButton(screen, "GoldReward");
         if (goldButton == null)
         {
             PlayerActionBuffer.LogDispatcher("[GoldReward] Gold reward button not found — skipping.");
             return ExecuteResult.Fail();
         }
 
-        BattleRewardsReplayPatch.InvokeGetReward(goldButton);
+        CardRewardCommand.InvokeGetReward(goldButton);
         PlayerActionBuffer.LogDispatcher($"[GoldReward] Claimed gold reward ({GoldAmount}).");
 
         return ExecuteResult.Ok();

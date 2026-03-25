@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.Nodes.Screens;
 
 namespace RunReplays.Patch;
 using RunReplays;
+using RunReplays.Commands;
 
 /// <summary>
 /// Manually patches NRewardButton.GetReward() to track which CardReward
@@ -77,7 +78,7 @@ public static class CardRewardButtonPatcher
         var rewardProp = __instance.GetType()
             .GetProperty("Reward", BindingFlags.Public | BindingFlags.Instance);
         var reward = rewardProp?.GetValue(__instance);
-        if (reward == null || !BattleRewardsReplayPatch.IsRewardOfType(reward, "CardReward"))
+        if (reward == null || !CardRewardCommand.IsRewardOfType(reward, "CardReward"))
         {
             BattleRewardPatch.LastCardRewardIndex = -1;
             return;
@@ -103,9 +104,9 @@ public static class CardRewardButtonPatcher
 
         // Find this button's index among all CardReward buttons.
         int index = 0;
-        foreach (var (button, r) in BattleRewardsReplayPatch.EnumerateRewardButtons(screen))
+        foreach (var (button, r) in CardRewardCommand.EnumerateRewardButtons(screen))
         {
-            if (!BattleRewardsReplayPatch.IsRewardOfType(r, "CardReward"))
+            if (!CardRewardCommand.IsRewardOfType(r, "CardReward"))
                 continue;
             if (ReferenceEquals(button, node))
             {

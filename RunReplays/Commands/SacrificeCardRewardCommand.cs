@@ -95,15 +95,15 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
             return ExecuteResult.Retry(200);
 
         // Step 1: find and click the CardReward button to open the selection screen.
-        var rewardScreen = BattleRewardsReplayPatch._activeScreen;
+        var rewardScreen = ReplayState.ActiveRewardsScreen;
         if (rewardScreen == null || !rewardScreen.IsInsideTree())
             return ExecuteResult.Retry(200);
 
         Node? targetButton = null;
         int cardRewardCount = 0;
-        foreach (var (button, reward) in BattleRewardsReplayPatch.EnumerateRewardButtons(rewardScreen))
+        foreach (var (button, reward) in CardRewardCommand.EnumerateRewardButtons(rewardScreen))
         {
-            if (BattleRewardsReplayPatch.IsRewardOfType(reward, "CardReward"))
+            if (CardRewardCommand.IsRewardOfType(reward, "CardReward"))
             {
                 if (RewardIndex >= 0)
                 {
@@ -123,7 +123,7 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
             return ExecuteResult.Retry(200);
         }
 
-        BattleRewardsReplayPatch.InvokeGetReward(targetButton);
+        CardRewardCommand.InvokeGetReward(targetButton);
         _screenOpened = true;
         return ExecuteResult.Retry(200);
     }

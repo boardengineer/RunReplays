@@ -1,4 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using Godot;
+using MegaCrit.Sts2.Core.Helpers;
+using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Nodes.Screens;
 
 using RunReplays.Patch;
 namespace RunReplays.Commands;
@@ -17,6 +25,11 @@ namespace RunReplays.Commands;
 /// </summary>
 public class CardRewardCommand : ReplayCommand
 {
+    // NRewardButton base type — used for IsAssignableFrom checks.
+    private static readonly Type? NRewardButtonType =
+        typeof(NRewardsScreen).Assembly
+            .GetType("MegaCrit.Sts2.Core.Nodes.Rewards.NRewardButton");
+
     private const string Prefix = "TakeCardReward: ";
     private const string IndexedPrefix = "TakeCardReward[";
     internal static bool waitingForRewardScreenOpen = false;
@@ -39,7 +52,7 @@ public class CardRewardCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        var screen = BattleRewardsReplayPatch._activeScreen;
+        var screen = ReplayState.ActiveRewardsScreen;
         if (screen == null || !screen.IsInsideTree())
         {
             return ExecuteResult.Retry(200);
@@ -65,30 +78,30 @@ public class CardRewardCommand : ReplayCommand
             return ExecuteResult.Retry(200);
         }
 
-        foreach (var (button, reward) in BattleRewardsReplayPatch.EnumerateRewardButtons(screen))
+        foreach (var (button, reward) in CardRewardCommand.EnumerateRewardButtons(screen))
         {
             // Direct path: SpecialCardReward (e.g. stolen cards from Thieving Hopper)
             // adds the card immediately without opening a selection screen.
-            if (BattleRewardsReplayPatch.IsRewardOfType(reward, "SpecialCardReward"))
+            if (CardRewardCommand.IsRewardOfType(reward, "SpecialCardReward"))
             {
-                string? rewardTitle = BattleRewardsReplayPatch.GetRewardCardTitle(reward);
+                string? rewardTitle = CardRewardCommand.GetRewardCardTitle(reward);
                 if (rewardTitle != null && rewardTitle == CardTitle)
                 {
                     PlayerActionBuffer.LogDispatcher($"[CardReward] Claiming SpecialCardReward '{CardTitle}'.");
-                    BattleRewardsReplayPatch.InvokeGetReward(button);
+                    CardRewardCommand.InvokeGetReward(button);
                     waitingForRewardScreenOpen = false;
                     CardRewardReplayPatch.selectionScreen = null;
                     return ExecuteResult.Ok();
                 }
             }
 
-            if (BattleRewardsReplayPatch.IsRewardOfType(reward, "CardReward"))
+            if (CardRewardCommand.IsRewardOfType(reward, "CardReward"))
             {
                 if (RewardIndex >= 0)
                 {
                     if (cardRewardCount == RewardIndex)
                     {
-                        BattleRewardsReplayPatch.InvokeGetReward(button);
+                        CardRewardCommand.InvokeGetReward(button);
                         waitingForRewardScreenOpen = true;
                         return ExecuteResult.Retry(200);
                     }
@@ -105,7 +118,7 @@ public class CardRewardCommand : ReplayCommand
         // will peek the command, auto-select the card, and consume it.
         if (screenButton != null)
         {
-            BattleRewardsReplayPatch.InvokeGetReward(screenButton);
+            CardRewardCommand.InvokeGetReward(screenButton);
             PlayerActionBuffer.LogDispatcher($"[CardReward] Triggered card reward button for '{CardTitle}'.");
             return ExecuteResult.Retry(1000);
         }
@@ -135,5 +148,88 @@ public class CardRewardCommand : ReplayCommand
             return new CardRewardCommand(raw, raw.Substring(Prefix.Length), -1);
 
         return null;
+    }
+
+    internal static void InvokeGetReward(Node button)
+    {
+        MethodInfo? method = button.GetType()
+            .GetMethod("GetReward", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+        if (method == null)
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[RunReplays] Replay: GetReward not found on {button.GetType().Name}.");
+            return;
+        }
+
+        object? result = method.Invoke(button, null);
+        if (result is Task task)
+            TaskHelper.RunSafely(task);
+    }
+
+    /// <summary>
+    /// Yields every (button, reward) pair on the rewards screen.
+    /// </summary>
+    internal static IEnumerable<(Node button, object reward)> EnumerateRewardButtons(Node root)
+    {
+        if (NRewardButtonType == null)
+        {
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] Replay: NRewardButton type not resolved.");
+            yield break;
+        }
+
+        foreach (Node node in root.FindChildren("*", "", owned: false))
+        {
+            if (!NRewardButtonType.IsAssignableFrom(node.GetType()))
+                continue;
+
+            PropertyInfo? rewardProp = node.GetType()
+                .GetProperty("Reward", BindingFlags.Public | BindingFlags.Instance);
+
+            object? reward = rewardProp?.GetValue(node);
+            if (reward != null)
+                yield return (node, reward);
+        }
+    }
+
+    internal static Node? FindRewardButton(Node root, string rewardBaseTypeName)
+    {
+        foreach (var (button, reward) in EnumerateRewardButtons(root))
+        {
+            if (IsRewardOfType(reward, rewardBaseTypeName))
+                return button;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Tries to extract a card title from a reward that carries a single card
+    /// (e.g. SpecialCardReward).  Returns null when the reward type doesn't
+    /// expose a card or reflection fails — callers treat null as "accept any".
+    /// </summary>
+    internal static string? GetRewardCardTitle(object reward)
+    {
+        // Look for a private _card field (SpecialCardReward) or public Card property.
+        var field = reward.GetType().GetField("_card", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (field?.GetValue(reward) is CardModel card)
+            return card.Title;
+
+        var prop = reward.GetType().GetProperty("Card", BindingFlags.Public | BindingFlags.Instance);
+        if (prop?.GetValue(reward) is CardModel card2)
+            return card2.Title;
+
+        return null;
+    }
+
+    internal static bool IsRewardOfType(object? reward, string baseTypeName)
+    {
+        Type? t = reward?.GetType();
+        while (t != null)
+        {
+            if (t.Name == baseTypeName)
+                return true;
+            t = t.BaseType;
+        }
+        return false;
     }
 }
