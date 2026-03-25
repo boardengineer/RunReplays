@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Reflection;
 using Godot;
+using MegaCrit.Sts2.Core.Map;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 
 using RunReplays.Patches;
@@ -12,6 +15,11 @@ public class MapMoveCommand : ReplayCommand
 {
     private const string Prefix = "MoveToMapCoordAction ";
     private const string CoordMarker = "MapCoord (";
+
+    private static readonly FieldInfo? MapPointDictionaryField =
+        typeof(NMapScreen).GetField(
+            "_mapPointDictionary",
+            BindingFlags.NonPublic | BindingFlags.Instance);
 
     internal static NMapScreen? _activeScreen;
     
@@ -29,7 +37,7 @@ public class MapMoveCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        Callable.From(() => MapChoiceReplayPatch.AutoSelectMapNode(_activeScreen!, Col, Row)).CallDeferred();
+        Callable.From(() => AutoSelectMapNode(_activeScreen!, Col, Row)).CallDeferred();
         ReplayDispatcher.MapMoveInFlight = true;
         return ExecuteResult.Ok();
     }
@@ -54,5 +62,23 @@ public class MapMoveCommand : ReplayCommand
         }
 
         return null;
+    }
+
+    internal static void AutoSelectMapNode(NMapScreen screen, int col, int row)
+    {
+        if (MapPointDictionaryField?.GetValue(screen) is not Dictionary<MapCoord, NMapPoint> dict)
+        {
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] MapChoice: could not access map point dictionary.");
+            return;
+        }
+
+        var coord = new MapCoord(col, row);
+        if (!dict.TryGetValue(coord, out NMapPoint? point))
+        {
+            return;
+        }
+
+        CardPlayReplayPatch.InvalidateStaleTimers();
+        screen.OnMapPointSelectedLocally(point);
     }
 }
