@@ -1,7 +1,7 @@
 using Godot;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 
-using RunReplays.Patch;
+using RunReplays.Patches;
 namespace RunReplays.Commands;
 
 /// <summary>

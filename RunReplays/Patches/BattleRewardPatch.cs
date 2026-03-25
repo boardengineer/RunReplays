@@ -6,7 +6,7 @@ using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Multiplayer.Game;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 
-namespace RunReplays.Patch;
+namespace RunReplays.Patches;
 using RunReplays;
 
 

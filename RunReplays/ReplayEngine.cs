@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Godot;
 
-using RunReplays.Patch;
+using RunReplays.Patches;
 namespace RunReplays;
 
 /// <summary>

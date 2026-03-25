@@ -6,7 +6,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Merchant;
 using MegaCrit.Sts2.Core.Nodes.Events.Custom;
 
-namespace RunReplays.Patch;
+namespace RunReplays.Patches;
 using RunReplays;
 
 /// <summary>

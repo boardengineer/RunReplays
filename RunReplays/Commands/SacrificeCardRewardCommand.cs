@@ -6,7 +6,7 @@ using MegaCrit.Sts2.Core.Entities.CardRewardAlternatives;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 
-using RunReplays.Patch;
+using RunReplays.Patches;
 namespace RunReplays.Commands;
 
 /// <summary>

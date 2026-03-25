@@ -15,7 +15,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Debug;
 
-using RunReplays.Patch;
+using RunReplays.Patches;
 namespace RunReplays;
 
 /// <summary>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Godot;
 using MegaCrit.Sts2.Core.Nodes;
 
-using RunReplays.Patch;
+using RunReplays.Patches;
 namespace RunReplays;
 
 /// <summary>

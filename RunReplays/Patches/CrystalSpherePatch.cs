@@ -4,7 +4,7 @@ using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Nodes;
 
-namespace RunReplays.Patch;
+namespace RunReplays.Patches;
 using RunReplays;
 
 /// <summary>

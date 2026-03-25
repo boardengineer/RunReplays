@@ -1,7 +1,7 @@
 using MegaCrit.Sts2.Core.Entities.RestSite;
 using MegaCrit.Sts2.Core.Helpers;
 
-using RunReplays.Patch;
+using RunReplays.Patches;
 namespace RunReplays.Commands;
 
 /// <summary>

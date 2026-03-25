@@ -6,7 +6,7 @@ using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using MegaCrit.Sts2.Core.Runs;
 using RunReplays.Commands;
 
-using RunReplays.Patch;
+using RunReplays.Patches;
 namespace RunReplays;
 
 /// <summary>
