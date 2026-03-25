@@ -40,16 +40,8 @@ public static class MapChoiceReplayPatch
 
         ReplayDispatcher.SignalReady(ReplayDispatcher.ReadyState.Map);
 
-        PlayerActionBuffer.LogToDevConsole("[RunReplays] Map is now interactive.");
         RngCheckpointLogger.Log("MapInteractive (SetTravelEnabled)");
-
         MapMoveCommand._activeScreen = __instance;
-
-        if (!ReplayEngine.PeekMapNode(out int col, out int row))
-        {
-            PlayerActionBuffer.LogToDevConsole("[RunReplays] ReplayEngine failed to peek map node.");
-            return;
-        }
 
         ReplayDispatcher.DispatchNow();
     }
