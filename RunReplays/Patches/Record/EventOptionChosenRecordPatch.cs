@@ -11,7 +11,7 @@ using RunReplays.Patches.Record;
 /// an event option's action is executed, including its title and text key.
 /// </summary>
 [HarmonyPatch(typeof(EventOption), nameof(EventOption.Chosen))]
-public static class EventOptionChosenLogPatch
+public static class EventOptionChosenRecordPatch
 {
     [HarmonyPrefix]
     public static void Prefix(EventOption __instance)

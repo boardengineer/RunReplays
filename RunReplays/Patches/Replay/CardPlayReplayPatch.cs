@@ -122,7 +122,6 @@ public static class CardPlayReplayPatch
         _postEndTurn_turnStartedReceived = false;
         _postEndTurn_savedTurnStartState = null;
 
-        SelectorStackDebug.Log("\n=== Battle Start (ActionExecutor ctor) ===");
         TreasureRoomReplayPatch.ActiveRoom = null;
         RngCheckpointLogger.Log("CombatStart (ActionExecutor ctor)");
     }
@@ -254,12 +253,6 @@ public static class CardPlayReplayPatch
         ReplayDispatcher.TryDispatch();
 
         ReplayEngine.PeekNext(out string? nextCmd);
-        SelectorStackDebug.Log(
-            $"OnTurnStarted: round={combatState.RoundNumber}" +
-            $" dispatching={_dispatching} waitingForEffects={_waitingForEffects}" +
-            $" awaitingEndTurn={_awaitingEndTurnCompletion}" +
-            $" turnStartedSinceEndTurn={_turnStartedSinceLastEndTurn}" +
-            $" nextCmd='{nextCmd ?? "(none)"}'");
 
         _currentCombatState = combatState;
         _turnStartedSinceLastEndTurn = true;
@@ -292,10 +285,6 @@ public static class CardPlayReplayPatch
         if (!ReplayEngine.IsActive)
             return;
 
-        SelectorStackDebug.Log(
-            $"OnTurnEnded: round={combatState.RoundNumber}" +
-            $" awaitingEndTurn={_awaitingEndTurnCompletion}");
-
         if (!_awaitingEndTurnCompletion)
             return;
 
@@ -323,7 +312,6 @@ public static class CardPlayReplayPatch
         if (!_postEndTurn_turnEndedReceived || !_postEndTurn_turnStartedReceived)
             return;
 
-        SelectorStackDebug.Log("TryCompleteEndTurnGate: both signals received — dispatching.");
         // Clear all end-turn state.
         _awaitingEndTurnCompletion = false;
         _dispatching = false;

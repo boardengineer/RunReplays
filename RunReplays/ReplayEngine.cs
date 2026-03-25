@@ -122,8 +122,6 @@ public static class ReplayEngine
 
     public static void Load(IReadOnlyList<string> commands)
     {
-        SelectorStackDebug.Clear();
-        SelectorStackDebug.Log("=== Replay Load ===");
         Utils.RngCheckpointLogger.Clear();
         Utils.RngCheckpointLogger.Log("=== Replay Load ===");
         _pending.Clear();
@@ -179,25 +177,6 @@ public static class ReplayEngine
         DeckCardSelectContext.Pending = false;
         SimpleGridContext.Pending = false;
         HandCardSelectRecordPatch.SuppressNext = false;
-
-        // Replay selector scopes
-        FromChooseACardScreenPatch._pendingScope?.Dispose();
-        FromChooseACardScreenPatch._pendingScope = null;
-        FromDeckGenericPatch._pendingScope?.Dispose();
-        FromDeckGenericPatch._pendingScope = null;
-        FromDeckForEnchantmentPatch._pendingScope?.Dispose();
-        FromDeckForEnchantmentPatch._pendingScope = null;
-        FromDeckForEnchantmentWithFilterPatch._pendingScope?.Dispose();
-        FromDeckForEnchantmentWithFilterPatch._pendingScope = null;
-        FromDeckForEnchantmentWithCardsPatch._pendingScope?.Dispose();
-        FromDeckForEnchantmentWithCardsPatch._pendingScope = null;
-        FromDeckForTransformationPatch._pendingScope?.Dispose();
-        FromDeckForTransformationPatch._pendingScope = null;
-        FromDeckForUpgradePatch._pendingScope?.Dispose();
-        FromDeckForUpgradePatch._pendingScope = null;
-        Commands.HandSelectionCapture.Clear();
-        FromSimpleGridPatch._pendingScope?.Dispose();
-        FromSimpleGridPatch._pendingScope = null;
 
         // Crystal sphere
         CrystalSphereReplayPatch.PendingTool = null;

@@ -51,7 +51,6 @@ public static class FromChooseACardScreenPatch
         _pendingScope?.Dispose();
         _pendingScope = null;
 
-        SelectorStackDebug.Log("FromChooseACardScreen.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
         if (!ReplayEngine.IsActive)
         {
             _recordingCards = cards.ToList();

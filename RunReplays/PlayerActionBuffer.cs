@@ -280,7 +280,6 @@ public static class PlayerActionBuffer
 
         LogToDevConsole(
             $"[PlayerActionBuffer] Replay completed — restored {commands.Count} command(s) to buffer.");
-        SelectorStackDebug.Log("=== ReplayCompleted ===");
         Utils.RngCheckpointLogger.Log("=== ReplayCompleted ===");
     }
 
