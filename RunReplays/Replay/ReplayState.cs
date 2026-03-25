@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.GameActions;
 
 namespace RunReplays;
 
@@ -63,6 +65,54 @@ public static class ReplayState
     }
 
     /// <summary>
+    /// Tracks whether a card play is in flight.  Set by the combat patch.
+    /// Does NOT trigger immediate dispatch on clear — effects need to settle
+    /// first.  <see cref="ReplayDispatcher.NotifyEffectsSettled"/> triggers dispatch after.
+    /// </summary>
+    public static bool CardPlayInFlight { get; set; }
+
+    /// <summary>
+    /// Tracks whether a potion use is in flight.  Set when EnqueueManualUse
+    /// is called, cleared when AfterActionExecuted fires for UsePotionAction.
+    /// Blocks dispatch while the potion animation is playing.
+    /// </summary>
+    public static bool PotionInFlight { get; set; }
+
+    /// <summary>
+    /// True while a game action is executing (between BeforeActionExecuted
+    /// and AfterActionExecuted).  Blocks all non-selection command dispatch.
+    /// </summary>
+    private static bool _actionInFlight;
+    public static bool ActionInFlight => _actionInFlight;
+
+    /// <summary>Force-clears the action-in-flight flag (used by the watchdog).</summary>
+    internal static void ClearActionInFlight() => _actionInFlight = false;
+
+    /// <summary>
+    /// Subscribes to BeforeActionExecuted / AfterActionExecuted on the given
+    /// executor so that <see cref="ActionInFlight"/> tracks action execution.
+    /// Called from the ActionExecutor constructor patch.
+    /// </summary>
+    public static void SubscribeToExecutor(ActionExecutor executor)
+    {
+        executor.BeforeActionExecuted += OnBeforeAction;
+        executor.AfterActionExecuted += OnAfterAction;
+    }
+
+    private static void OnBeforeAction(GameAction action)
+    {
+        if (!ReplayEngine.IsActive) return;
+        _actionInFlight = true;
+    }
+
+    private static void OnAfterAction(GameAction action)
+    {
+        if (!ReplayEngine.IsActive) return;
+        _actionInFlight = false;
+        ReplayDispatcher.TryDispatch();
+    }
+
+    /// <summary>
     /// Screens that have been resolved but should be freed at a safe lifecycle
     /// point (room exit, turn start) rather than immediately.
     /// </summary>
@@ -91,6 +141,9 @@ public static class ReplayState
     internal static void Reset()
     {
         _ready = ReadyState.None;
+        CardPlayInFlight = false;
+        PotionInFlight = false;
+        _actionInFlight = false;
         DrainScreenCleanup();
     }
 }

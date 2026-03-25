@@ -64,12 +64,12 @@ public sealed class UsePotionCommand : ReplayCommand
 
         try
         {
-            ReplayDispatcher.PotionInFlight = true;
+            ReplayState.PotionInFlight = true;
             potion.EnqueueManualUse(target);
         }
         catch (Exception ex)
         {
-            ReplayDispatcher.PotionInFlight = false;
+            ReplayState.PotionInFlight = false;
             PlayerActionBuffer.LogToDevConsole(
                 $"[UsePotionCommand] EnqueueManualUse threw {ex.GetType().Name}: {ex.Message}");
         }

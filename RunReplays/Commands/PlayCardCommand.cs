@@ -63,7 +63,7 @@ public class PlayCardCommand : ReplayCommand
         }
         
         CardPlayReplayPatch._dispatching = true;
-        ReplayDispatcher.CardPlayInFlight = true;
+        ReplayState.CardPlayInFlight = true;
         bool played = card.TryManualPlay(target);
         
         PlayerActionBuffer.LogDispatcher($"Card play returning {played}");

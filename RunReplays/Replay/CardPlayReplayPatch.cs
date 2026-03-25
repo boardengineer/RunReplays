@@ -103,7 +103,7 @@ public static class CardPlayReplayPatch
         CombatManager.Instance.TurnEnded += _turnEndedHandler;
 
         __instance.AfterActionExecuted += OnAfterActionExecuted;
-        ReplayDispatcher.SubscribeToExecutor(__instance);
+        ReplayState.SubscribeToExecutor(__instance);
 
         // Invalidate any pending timer callbacks from the previous battle.
         _battleGeneration++;
@@ -429,7 +429,7 @@ public static class CardPlayReplayPatch
         // and let the dispatcher advance.
         if (!_dispatching && action is UsePotionAction outOfCombatPotion)
         {
-            ReplayDispatcher.PotionInFlight = false;
+            ReplayState.PotionInFlight = false;
             ReplayDispatcher.DispatchNow();
             return;
         }
@@ -445,7 +445,7 @@ public static class CardPlayReplayPatch
 
         if (action is PlayCardAction playCard)
         {
-            ReplayDispatcher.CardPlayInFlight = false;
+            ReplayState.CardPlayInFlight = false;
             RunOverlay.NotifyCardPlayFinished();
             WaitForEffectsThenDispatch();
         }
@@ -456,7 +456,7 @@ public static class CardPlayReplayPatch
         }
         else if (action is UsePotionAction usePotion)
         {
-            ReplayDispatcher.PotionInFlight = false;
+            ReplayState.PotionInFlight = false;
             WaitForEffectsThenDispatch();
         }
     }

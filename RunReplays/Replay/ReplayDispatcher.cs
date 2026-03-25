@@ -56,25 +56,6 @@ public static class ReplayDispatcher
     /// <summary>Whether the stall watchdog timer is running.</summary>
     private static bool _watchdogRunning;
 
-    /// <summary>When true, the dispatcher stops executing commands until unpaused.</summary>
-    public static bool Paused
-    {
-        get => _paused;
-        set
-        {
-            _paused = value;
-            if (!value)
-                TryDispatch();
-        }
-    }
-
-    /// <summary>Delay in seconds between command executions. 0 = immediate.</summary>
-    public static float DelayBetweenCommands
-    {
-        get => _delayBetweenCommands;
-        set => _delayBetweenCommands = Math.Max(0, value);
-    }
-
     /// <summary>
     /// Game speed multiplier during replay. 1.0 = normal, 2.0 = double speed, etc.
     /// Applied via Engine.TimeScale when replay is active.
@@ -108,51 +89,6 @@ public static class ReplayDispatcher
     public static void RestoreGameSpeed()
     {
         Engine.TimeScale = 1.0;
-    }
-
-    /// <summary>
-    /// Tracks whether a card play is in flight.  Set by the combat patch.
-    /// Does NOT trigger immediate dispatch on clear — effects need to settle
-    /// first.  <see cref="NotifyEffectsSettled"/> triggers dispatch after.
-    /// </summary>
-    public static bool CardPlayInFlight { get; set; }
-
-    /// <summary>
-    /// Tracks whether a potion use is in flight.  Set when EnqueueManualUse
-    /// is called, cleared when AfterActionExecuted fires for UsePotionAction.
-    /// Blocks dispatch while the potion animation is playing.
-    /// </summary>
-    public static bool PotionInFlight { get; set; }
-
-    /// <summary>
-    /// True while a game action is executing (between BeforeActionExecuted
-    /// and AfterActionExecuted).  Blocks all non-selection command dispatch.
-    /// </summary>
-    private static bool _actionInFlight;
-    public static bool ActionInFlight => _actionInFlight;
-
-    /// <summary>
-    /// Subscribes to BeforeActionExecuted / AfterActionExecuted on the given
-    /// executor so that <see cref="ActionInFlight"/> tracks action execution.
-    /// Called from the ActionExecutor constructor patch.
-    /// </summary>
-    public static void SubscribeToExecutor(ActionExecutor executor)
-    {
-        executor.BeforeActionExecuted += OnBeforeAction;
-        executor.AfterActionExecuted += OnAfterAction;
-    }
-
-    private static void OnBeforeAction(GameAction action)
-    {
-        if (!ReplayEngine.IsActive) return;
-        _actionInFlight = true;
-    }
-
-    private static void OnAfterAction(GameAction action)
-    {
-        if (!ReplayEngine.IsActive) return;
-        _actionInFlight = false;
-        TryDispatch();
     }
 
     /// <summary>
@@ -221,13 +157,9 @@ public static class ReplayDispatcher
         _paused = false;
         _dispatchInProgress = false;
         _lastDispatchedCmd = null;
-        CardPlayInFlight = false;
-        PotionInFlight = false;
         MapMoveInFlight = false;
-        _actionInFlight = false;
         _lastDispatchTick = System.Environment.TickCount64;
         ++_dispatchGeneration;
-        ReplayState.DrainScreenCleanup();
         RestoreGameSpeed();
         StartWatchdog();
         SubscribeToRoomEntered();
@@ -284,7 +216,7 @@ public static class ReplayDispatcher
             && cmd.StartsWith("MoveToMapCoordAction "))
         {
             // Force map readiness and clear blockers so dispatch can proceed.
-            _actionInFlight = false;
+            ReplayState.ClearActionInFlight();
             MapMoveInFlight = false;
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
@@ -310,11 +242,11 @@ public static class ReplayDispatcher
             return;
 
         // Block dispatch while in-flight operations are pending.
-        if (PotionInFlight || MapMoveInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
+        if (ReplayState.PotionInFlight || MapMoveInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
             return;
 
         // Block while a game action is executing (BeforeAction → AfterAction).
-        if (ActionInFlight && !IsSelectionCommand(cmd))
+        if (ReplayState.ActionInFlight && !IsSelectionCommand(cmd))
             return;
 
         // Selection commands are consumed by ICardSelector implementations when the
@@ -397,7 +329,7 @@ public static class ReplayDispatcher
         if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
             return;
         
-        if ((PotionInFlight || CardPlayInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion || MapMoveInFlight) && !IsSelectionCommand(cmd))
+        if ((ReplayState.PotionInFlight || ReplayState.CardPlayInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion || MapMoveInFlight) && !IsSelectionCommand(cmd))
         {
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
@@ -406,7 +338,7 @@ public static class ReplayDispatcher
         }
 
         // Block while a game action is executing, unless it's a selection command.
-        if (ActionInFlight && !IsSelectionCommand(cmd))
+        if (ReplayState.ActionInFlight && !IsSelectionCommand(cmd))
         {
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
