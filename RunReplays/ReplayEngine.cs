@@ -201,7 +201,6 @@ public static class ReplayEngine
         CrystalSphereReplayPatch.PendingTool = null;
 
         // Buffered recording contexts
-        CardChoiceScreenSyncPatch.FlushIfPending();
         SimpleGridSyncPatch.FlushIfPending();
 
         // Dispatcher

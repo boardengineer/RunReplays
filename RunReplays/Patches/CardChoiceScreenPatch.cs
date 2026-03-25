@@ -33,12 +33,6 @@ using RunReplays;
 /// subsequent action to flush the buffer) are still recorded.  For
 /// potion / card-play actions the normal AfterActionExecuted flush fires first,
 /// making the deferred flush a harmless no-op.
-///
-/// Replay: a ReplayChooseACardSelector is pushed onto the CardSelectCmd selector
-/// stack before FromChooseACardScreen runs, so the game uses replay data instead
-/// of opening the selection UI.  When the next command is a TakeCardReward
-/// (no SelectCardFromScreen in the queue), a ReplayCardRewardChooseSelector is
-/// pushed instead — it picks the card by title and consumes the TakeCardReward.
 /// </summary>
 
 // ── Replay / record entry point ───────────────────────────────────────────────
@@ -127,59 +121,4 @@ public static class FromChooseACardScreenPatch
 
         return selected!;
     }
-}
-
-// ── Recording buffer ─────────────────────────────────────────────────────────
-
-/// <summary>
-/// Holds a pending "SelectCardFromScreen" command until PlayerActionBuffer
-/// flushes it after the triggering action is recorded.
-/// </summary>
-public static class CardChoiceScreenSyncPatch
-{
-    internal static void FlushIfPending()
-    {
-    }
-}
-
-/// <summary>
-/// ICardSelector for card rewards that route through FromChooseACardScreen
-/// (e.g. Morphic Grove).  Picks the card matching the title from the
-/// TakeCardReward command and consumes it.
-/// </summary>
-internal sealed class ReplayCardRewardChooseSelector : ICardSelector
-{
-    private readonly string _expectedTitle;
-
-    public ReplayCardRewardChooseSelector(string expectedTitle)
-        => _expectedTitle = expectedTitle;
-
-    public Task<IEnumerable<CardModel>> GetSelectedCards(
-        IEnumerable<CardModel> options, int minSelect, int maxSelect)
-    {
-        var scope = FromChooseACardScreenPatch._pendingScope;
-        FromChooseACardScreenPatch._pendingScope = null;
-        scope?.Dispose();
-
-        var optionList = options.ToList();
-        var match = optionList.FirstOrDefault(c => c.Title == _expectedTitle);
-
-        if (match != null)
-        {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[ReplayCardRewardChooseSelector] Selected '{match.Title}' by title match.");
-            ReplayDispatcher.DispatchNow();
-            return Task.FromResult<IEnumerable<CardModel>>(new[] { match });
-        }
-
-        PlayerActionBuffer.LogToDevConsole(
-            $"[ReplayCardRewardChooseSelector] Card '{_expectedTitle}' not found in options.");
-        ReplayDispatcher.DispatchNow();
-        return Task.FromResult(Enumerable.Empty<CardModel>());
-    }
-
-    public CardModel? GetSelectedCardReward(
-        IReadOnlyList<CardCreationResult> options,
-        IReadOnlyList<CardRewardAlternative> alternatives)
-        => null;
 }

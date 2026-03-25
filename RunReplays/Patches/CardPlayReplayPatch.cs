@@ -123,39 +123,8 @@ public static class CardPlayReplayPatch
         _postEndTurn_savedTurnStartState = null;
 
         SelectorStackDebug.Log("\n=== Battle Start (ActionExecutor ctor) ===");
-        LogCardSelectState("ActionExecutor ctor (battle start)");
         TreasureRoomReplayPatch.ActiveRoom = null;
         RngCheckpointLogger.Log("CombatStart (ActionExecutor ctor)");
-    }
-
-    internal static void LogCardSelectState(string context)
-    {
-        var stack = SelectorStackField?.GetValue(null) as ICollection;
-        int stackCount = stack?.Count ?? -1;
-        string stackTypes = "";
-        if (stack != null && stackCount > 0)
-        {
-            var types = new System.Collections.Generic.List<string>();
-            foreach (object? item in stack)
-                types.Add(item?.GetType().Name ?? "null");
-            stackTypes = $" [{string.Join(", ", types)}]";
-        }
-
-        bool deckPending = DeckCardSelectContext.Pending;
-        bool hasGenericScope = FromDeckGenericPatch._pendingScope != null;
-        bool hasEnchantScope = FromDeckForEnchantmentPatch._pendingScope != null;
-        bool hasEnchantFilterScope = FromDeckForEnchantmentWithFilterPatch._pendingScope != null;
-        bool hasTransformScope = FromDeckForTransformationPatch._pendingScope != null;
-        bool hasUpgradeScope = FromDeckForUpgradePatch._pendingScope != null;
-        bool hasChoiceScope = FromChooseACardScreenPatch._pendingScope != null;
-        bool hasSimpleGridScope = FromSimpleGridPatch._pendingScope != null;
-
-        PlayerActionBuffer.LogToDevConsole(
-            $"[CardSelectState@{context}] selectorStack.Count={stackCount}{stackTypes}" +
-            $" | DeckPending={deckPending}" +
-            $" | Scopes: Generic={hasGenericScope} Enchant={hasEnchantScope} EnchantFilter={hasEnchantFilterScope}" +
-            $" Transform={hasTransformScope} Upgrade={hasUpgradeScope}" +
-            $" Choice={hasChoiceScope} SimpleGrid={hasSimpleGridScope}");
     }
 
     // ── Player resolution ──────────────────────────────────────────────────────

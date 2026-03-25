@@ -21,7 +21,7 @@ public static class BattleRewardPatch
     public static void ObtainedCard(CardModel card)
     {
         if (ShopPurchaseState.IsPurchasing) return;
-        CardChoiceScreenSyncPatch.FlushIfPending();
+
 
         int idx = LastCardRewardIndex;
         LastCardRewardIndex = -1;
@@ -38,7 +38,7 @@ public static class BattleRewardPatch
     public static void ObtainedRelic(RelicModel relic)
     {
         if (ShopPurchaseState.IsPurchasing) return;
-        CardChoiceScreenSyncPatch.FlushIfPending();
+
         PlayerActionBuffer.Record($"TakeRelicReward: {relic.Title.GetFormattedText()}");
     }
 
@@ -47,7 +47,7 @@ public static class BattleRewardPatch
     public static void ObtainedPotion(PotionModel potion)
     {
         if (ShopPurchaseState.IsPurchasing) return;
-        CardChoiceScreenSyncPatch.FlushIfPending();
+
         PlayerActionBuffer.Record($"TakePotionReward: {potion.Title.GetFormattedText()}");
     }
 
@@ -56,7 +56,7 @@ public static class BattleRewardPatch
     public static void ObtainedGold(int goldAmount)
     {
         if (ShopPurchaseState.IsPurchasing) return;
-        CardChoiceScreenSyncPatch.FlushIfPending();
+
         PlayerActionBuffer.Record($"TakeGoldReward: {goldAmount}");
     }
 
@@ -64,7 +64,7 @@ public static class BattleRewardPatch
     [HarmonyPatch(nameof(RewardSynchronizer.SyncLocalPaelsWingSacrifice))]
     public static void PaelsWingSacrifice(PaelsWing paelsWing)
     {
-        CardChoiceScreenSyncPatch.FlushIfPending();
+
 
         int idx = LastCardRewardIndex;
         LastCardRewardIndex = -1;

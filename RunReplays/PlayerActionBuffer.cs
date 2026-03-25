@@ -108,7 +108,6 @@ public static class PlayerActionBuffer
             // that were buffered but had no subsequent action to flush them.
             if (action is VoteForMapCoordAction)
             {
-                CardChoiceScreenSyncPatch.FlushIfPending();
                 return;
             }
 
@@ -118,12 +117,9 @@ public static class PlayerActionBuffer
             if (action is PlayCardAction or UsePotionAction)
             {
                 _pendingPreState = GetBattleStateSummary();
-                CardChoiceScreenSyncPatch.FlushIfPending();
                 SimpleGridSyncPatch.FlushIfPending();
                 return;
             }
-
-            CardChoiceScreenSyncPatch.FlushIfPending();
 
             string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
             string actionText = action.ToString()!;
@@ -284,7 +280,6 @@ public static class PlayerActionBuffer
 
         LogToDevConsole(
             $"[PlayerActionBuffer] Replay completed — restored {commands.Count} command(s) to buffer.");
-        CardPlayReplayPatch.LogCardSelectState("ReplayCompleted");
         SelectorStackDebug.Log("=== ReplayCompleted ===");
         Utils.RngCheckpointLogger.Log("=== ReplayCompleted ===");
     }
