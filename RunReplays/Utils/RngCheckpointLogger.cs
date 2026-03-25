@@ -6,9 +6,9 @@ using MegaCrit.Sts2.Core.Runs;
 namespace RunReplays.Utils;
 
 /// <summary>
-///     Logs all RunRngSet counters at key checkpoints (event entry, combat start,
-///     rest site, map move, rewards) to identify where RNG diverges between
-///     original play and replay.
+/// Logs all RunRngSet counters at key checkpoints (event entry, combat start,
+/// rest site, map move, rewards) to identify where RNG diverges between
+/// original play and replay.
 /// </summary>
 internal static class RngCheckpointLogger
 {
@@ -21,14 +21,8 @@ internal static class RngCheckpointLogger
     internal static void Clear()
     {
         if (!Enabled) return;
-        try
-        {
-            File.WriteAllText(LogPath, "");
-        }
-        catch
-        {
-            /* ignore */
-        }
+        try { File.WriteAllText(LogPath, ""); }
+        catch { /* ignore */ }
     }
 
     internal static void Log(string checkpoint)
@@ -64,9 +58,6 @@ internal static class RngCheckpointLogger
 
             File.AppendAllText(LogPath, sb.ToString());
         }
-        catch
-        {
-            /* ignore */
-        }
+        catch { /* ignore */ }
     }
 }

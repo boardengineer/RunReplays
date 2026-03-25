@@ -1,15 +1,18 @@
 using MegaCrit.Sts2.Core.Entities.RestSite;
-using RunReplays.Patch;
+using MegaCrit.Sts2.Core.Helpers;
 
+using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>
-///     Choose a rest site option (e.g. HEAL, SMITH).
-///     Recorded as: "ChooseRestSiteOption {optionId}"
+/// Choose a rest site option (e.g. HEAL, SMITH).
+/// Recorded as: "ChooseRestSiteOption {optionId}"
 /// </summary>
 public class ChooseRestSiteOptionCommand : ReplayCommand
 {
     private const string Prefix = "ChooseRestSiteOption ";
+
+    public string OptionId { get; }
 
 
     private ChooseRestSiteOptionCommand(string raw, string optionId) : base(raw)
@@ -17,12 +20,7 @@ public class ChooseRestSiteOptionCommand : ReplayCommand
         OptionId = optionId;
     }
 
-    public string OptionId { get; }
-
-    public override string Describe()
-    {
-        return $"choose rest site option '{OptionId}'";
-    }
+    public override string Describe() => $"choose rest site option '{OptionId}'";
 
     public override ExecuteResult Execute()
     {
@@ -31,20 +29,22 @@ public class ChooseRestSiteOptionCommand : ReplayCommand
             return ExecuteResult.Retry(300);
 
         var options = sync.GetLocalOptions();
-        var index = -1;
+        int index = -1;
         RestSiteOption? chosenOption = null;
-        for (var i = 0; i < options.Count; i++)
+        for (int i = 0; i < options.Count; i++)
+        {
             if (options[i].OptionId == OptionId)
             {
                 index = i;
                 chosenOption = options[i];
                 break;
             }
+        }
 
         if (index == -1 || chosenOption == null)
             return ExecuteResult.Retry(300);
 
-        PlayerActionBuffer.LogDispatcher("Dispatcher path notifying rest site");
+        PlayerActionBuffer.LogDispatcher($"Dispatcher path notifying rest site");
         _ = RestSiteReplayPatch.SelectAndNotifyRoom(sync, index, chosenOption);
         return ExecuteResult.Ok();
     }
@@ -54,7 +54,7 @@ public class ChooseRestSiteOptionCommand : ReplayCommand
         if (!raw.StartsWith(Prefix))
             return null;
 
-        var optionId = raw.Substring(Prefix.Length);
+        string optionId = raw.Substring(Prefix.Length);
         return new ChooseRestSiteOptionCommand(raw, optionId);
     }
 }

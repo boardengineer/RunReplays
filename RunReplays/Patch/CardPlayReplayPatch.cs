@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Godot;
@@ -8,109 +7,87 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Context;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Runs;
 using RunReplays.Utils;
 
 namespace RunReplays.Patch;
+using RunReplays;
 
 /// <summary>
-///     Drives automatic card play and turn-ending during combat replays.
-///     Three triggers are used:
-///     1. CombatManager.TurnStarted — fires at the start of every player turn.
-///     Plays the first card of the turn (or ends it immediately if the next
-///     command is EndPlayerTurnAction with no cards to play first).
-///     2. AfterActionExecuted for PlayCardAction — chains the next card play
-///     after each card executes.  When no more card plays remain, checks
-///     whether the next command is EndPlayerTurnAction and ends the turn.
-///     3. Both paths call TryEndTurn after exhausting card plays.
-///     Subscribed once per run from the ActionExecutor constructor patch.
-///     A static field prevents handler accumulation across multiple runs.
+/// Drives automatic card play and turn-ending during combat replays.
+///
+/// Three triggers are used:
+///
+///   1. CombatManager.TurnStarted — fires at the start of every player turn.
+///      Plays the first card of the turn (or ends it immediately if the next
+///      command is EndPlayerTurnAction with no cards to play first).
+///
+///   2. AfterActionExecuted for PlayCardAction — chains the next card play
+///      after each card executes.  When no more card plays remain, checks
+///      whether the next command is EndPlayerTurnAction and ends the turn.
+///
+///   3. Both paths call TryEndTurn after exhausting card plays.
+///
+/// Subscribed once per run from the ActionExecutor constructor patch.
+/// A static field prevents handler accumulation across multiple runs.
 /// </summary>
-[HarmonyPatch(typeof(ActionExecutor), MethodType.Constructor, typeof(ActionQueueSet))]
+[HarmonyPatch(typeof(ActionExecutor), MethodType.Constructor, new[] { typeof(ActionQueueSet) })]
 public static class CardPlayReplayPatch
 {
-    /// <summary>
-    ///     Number of consecutive quiet frames (no AfterActionExecuted) required
-    ///     before dispatching the next command.  Extra frames allow enemy
-    ///     animations (damage numbers, status effects, deaths) to finish.
-    /// </summary>
-    private const int QuietFramesRequired = 3;
-
     private static Action<CombatState>? _turnStartedHandler;
     private static Action<CombatState>? _turnEndedHandler;
-    internal static CombatState? _currentCombatState;
+    internal static CombatState?         _currentCombatState;
 
     /// <summary>
-    ///     Incremented each time a new battle starts (ActionExecutor ctor).
-    ///     Timer callbacks capture the generation at creation time and become
-    ///     no-ops if it has changed, preventing stale callbacks from a previous
-    ///     battle from corrupting dispatch state.
+    /// Incremented each time a new battle starts (ActionExecutor ctor).
+    /// Timer callbacks capture the generation at creation time and become
+    /// no-ops if it has changed, preventing stale callbacks from a previous
+    /// battle from corrupting dispatch state.
     /// </summary>
     private static int _battleGeneration;
 
     /// <summary>
-    ///     True after TryEndTurn issues PlayerCmd.EndTurn.  Blocks all dispatch
-    ///     until both TurnEnded and TurnStarted have fired (in any order).
+    /// True after TryEndTurn issues PlayerCmd.EndTurn.  Blocks all dispatch
+    /// until both TurnEnded and TurnStarted have fired (in any order).
     /// </summary>
     private static bool _awaitingEndTurnCompletion;
 
+    /// <summary>Exposes _awaitingEndTurnCompletion for the overlay UI.</summary>
+    internal static bool IsAwaitingEndTurnCompletion => _awaitingEndTurnCompletion;
+
     /// <summary>
-    ///     Whether TurnEnded has fired since the last TryEndTurn.
-    ///     Part of the two-signal gate for EndTurn completion.
+    /// Whether TurnEnded has fired since the last TryEndTurn.
+    /// Part of the two-signal gate for EndTurn completion.
     /// </summary>
     private static bool _postEndTurn_turnEndedReceived;
 
     /// <summary>
-    ///     Whether TurnStarted has fired since the last TryEndTurn.
-    ///     Part of the two-signal gate for EndTurn completion.
+    /// Whether TurnStarted has fired since the last TryEndTurn.
+    /// Part of the two-signal gate for EndTurn completion.
     /// </summary>
     private static bool _postEndTurn_turnStartedReceived;
 
     /// <summary>
-    ///     The CombatState from TurnStarted, saved so that when TurnEnded fires
-    ///     second we can still dispatch with the correct state.
+    /// The CombatState from TurnStarted, saved so that when TurnEnded fires
+    /// second we can still dispatch with the correct state.
     /// </summary>
     private static CombatState? _postEndTurn_savedTurnStartState;
 
     /// <summary>
-    ///     Set to true by OnTurnStarted, cleared by TryEndTurn after issuing
-    ///     PlayerCmd.EndTurn.  Prevents consecutive EndTurn commands from being
-    ///     issued without an intervening TurnStarted signal.
+    /// Set to true by OnTurnStarted, cleared by TryEndTurn after issuing
+    /// PlayerCmd.EndTurn.  Prevents consecutive EndTurn commands from being
+    /// issued without an intervening TurnStarted signal.
     /// </summary>
     private static bool _turnStartedSinceLastEndTurn;
 
     private static readonly FieldInfo? SelectorStackField =
         typeof(CardSelectCmd).GetField("_selectorStack", BindingFlags.NonPublic | BindingFlags.Static);
-
-    // ── Turn-start trigger ────────────────────────────────────────────────────
-
-    /// <summary>
-    ///     True while we are actively dispatching commands for the current turn.
-    ///     Prevents OnTurnStarted from starting a second dispatch chain when the
-    ///     previous turn's chain (quiet-frame wait → DispatchNextCombatAction)
-    ///     already handles the transition.
-    /// </summary>
-    internal static bool _dispatching;
-
-    // ── Post-action chain trigger (waits for sub-effects to settle) ─────────
-
-    /// <summary>
-    ///     True while we're waiting for all sub-effects of a card/potion action
-    ///     to finish before dispatching the next replay command.  While waiting,
-    ///     every AfterActionExecuted resets a quiet-frame flag.  Once a full
-    ///     frame passes with no AfterActionExecuted, effects have settled.
-    /// </summary>
-    private static bool _waitingForEffects;
-
-    private static bool _actionFiredThisFrame;
-    private static int _quietFrameCount;
-
-    /// <summary>Exposes _awaitingEndTurnCompletion for the overlay UI.</summary>
-    internal static bool IsAwaitingEndTurnCompletion => IsAwaitingEndTurnCompletion;
 
     [HarmonyPostfix]
     public static void Postfix(ActionExecutor __instance)
@@ -154,24 +131,24 @@ public static class CardPlayReplayPatch
     internal static void LogCardSelectState(string context)
     {
         var stack = SelectorStackField?.GetValue(null) as ICollection;
-        var stackCount = stack?.Count ?? -1;
-        var stackTypes = "";
+        int stackCount = stack?.Count ?? -1;
+        string stackTypes = "";
         if (stack != null && stackCount > 0)
         {
-            var types = new List<string>();
-            foreach (var item in stack)
+            var types = new System.Collections.Generic.List<string>();
+            foreach (object? item in stack)
                 types.Add(item?.GetType().Name ?? "null");
             stackTypes = $" [{string.Join(", ", types)}]";
         }
 
-        var deckPending = DeckCardSelectContext.Pending;
-        var hasGenericScope = FromDeckGenericPatch._pendingScope != null;
-        var hasEnchantScope = FromDeckForEnchantmentPatch._pendingScope != null;
-        var hasEnchantFilterScope = FromDeckForEnchantmentWithFilterPatch._pendingScope != null;
-        var hasTransformScope = FromDeckForTransformationPatch._pendingScope != null;
-        var hasUpgradeScope = FromDeckForUpgradePatch._pendingScope != null;
-        var hasChoiceScope = FromChooseACardScreenPatch._pendingScope != null;
-        var hasSimpleGridScope = FromSimpleGridPatch._pendingScope != null;
+        bool deckPending = DeckCardSelectContext.Pending;
+        bool hasGenericScope = FromDeckGenericPatch._pendingScope != null;
+        bool hasEnchantScope = FromDeckForEnchantmentPatch._pendingScope != null;
+        bool hasEnchantFilterScope = FromDeckForEnchantmentWithFilterPatch._pendingScope != null;
+        bool hasTransformScope = FromDeckForTransformationPatch._pendingScope != null;
+        bool hasUpgradeScope = FromDeckForUpgradePatch._pendingScope != null;
+        bool hasChoiceScope = FromChooseACardScreenPatch._pendingScope != null;
+        bool hasSimpleGridScope = FromSimpleGridPatch._pendingScope != null;
 
         PlayerActionBuffer.LogToDevConsole(
             $"[CardSelectState@{context}] selectorStack.Count={stackCount}{stackTypes}" +
@@ -184,14 +161,13 @@ public static class CardPlayReplayPatch
     // ── Player resolution ──────────────────────────────────────────────────────
 
     /// <summary>
-    ///     Bumps _battleGeneration so all pending timer callbacks from the
-    ///     previous room's battle become no-ops.  Does not touch any other
-    ///     dispatch state.
+    /// Bumps _battleGeneration so all pending timer callbacks from the
+    /// previous room's battle become no-ops.  Does not touch any other
+    /// dispatch state.
     /// </summary>
     internal static void InvalidateStaleTimers()
     {
-        PlayerActionBuffer.LogToDevConsole(
-            $"[RunReplays] InvalidateStaleTimers: gen {_battleGeneration} → {_battleGeneration + 1}");
+        PlayerActionBuffer.LogToDevConsole($"[RunReplays] InvalidateStaleTimers: gen {_battleGeneration} → {_battleGeneration + 1}");
         _battleGeneration++;
         // Clear flags that block OnTurnStarted from starting a new dispatch.
         _dispatching = false;
@@ -200,52 +176,39 @@ public static class CardPlayReplayPatch
     }
 
     /// <summary>
-    ///     Resolves the local player, trying combat state first and falling back
-    ///     to RunManager's RewardSynchronizer for out-of-combat contexts (shop,
-    ///     events, map).
+    /// Resolves the local player, trying combat state first and falling back
+    /// to RunManager's RewardSynchronizer for out-of-combat contexts (shop,
+    /// events, map).
     /// </summary>
     internal static Player? ResolveLocalPlayer()
     {
         Player? player = null;
 
         // 1. Current combat state (set by OnTurnStarted, may persist after combat ends).
-        try
-        {
-            player = LocalContext.GetMe(_currentCombatState);
-        }
-        catch
-        {
-            /* ignore */
-        }
+        try { player = LocalContext.GetMe(_currentCombatState); }
+        catch { /* ignore */ }
 
         player ??= _currentCombatState?.Players.FirstOrDefault();
 
         // 2. Fresh combat state from CombatManager.
         if (player == null)
+        {
             try
             {
                 var combatState = CombatManager.Instance?.DebugOnlyGetState();
                 if (combatState != null)
                 {
-                    try
-                    {
-                        player = LocalContext.GetMe(combatState);
-                    }
-                    catch
-                    {
-                        /* ignore */
-                    }
-
+                    try { player = LocalContext.GetMe(combatState); }
+                    catch { /* ignore */ }
                     player ??= combatState.Players.FirstOrDefault();
                 }
             }
-            catch
-            {
-                /* ignore */
-            }
+            catch { /* ignore */ }
+        }
 
         // 3. Out-of-combat fallback: RewardSynchronizer.LocalPlayer via reflection.
         if (player == null)
+        {
             try
             {
                 var rewardSync = RunManager.Instance?.RewardSynchronizer;
@@ -256,17 +219,15 @@ public static class CardPlayReplayPatch
                     player = prop?.GetValue(rewardSync) as Player;
                 }
             }
-            catch
-            {
-                /* ignore */
-            }
+            catch { /* ignore */ }
+        }
 
         return player;
     }
 
     /// <summary>
-    ///     Returns true when combat is in progress, a local player exists, and
-    ///     the player's hand has been drawn (i.e. cards are available).
+    /// Returns true when combat is in progress, a local player exists, and
+    /// the player's hand has been drawn (i.e. cards are available).
     /// </summary>
     internal static bool IsCombatReady()
     {
@@ -284,14 +245,8 @@ public static class CardPlayReplayPatch
                 return false;
 
             Player? player;
-            try
-            {
-                player = LocalContext.GetMe(state);
-            }
-            catch
-            {
-                player = state.Players.FirstOrDefault();
-            }
+            try { player = LocalContext.GetMe(state); }
+            catch { player = state.Players.FirstOrDefault(); }
 
             if (player == null)
                 return false;
@@ -304,6 +259,16 @@ public static class CardPlayReplayPatch
             return false;
         }
     }
+
+    // ── Turn-start trigger ────────────────────────────────────────────────────
+
+    /// <summary>
+    /// True while we are actively dispatching commands for the current turn.
+    /// Prevents OnTurnStarted from starting a second dispatch chain when the
+    /// previous turn's chain (quiet-frame wait → DispatchNextCombatAction)
+    /// already handles the transition.
+    /// </summary>
+    internal static bool _dispatching;
 
     private static void OnTurnStarted(CombatState combatState)
     {
@@ -319,7 +284,7 @@ public static class CardPlayReplayPatch
         ReplayState.DrainScreenCleanup();
         ReplayDispatcher.TryDispatch();
 
-        ReplayEngine.PeekNext(out var nextCmd);
+        ReplayEngine.PeekNext(out string? nextCmd);
         SelectorStackDebug.Log(
             $"OnTurnStarted: round={combatState.RoundNumber}" +
             $" dispatching={_dispatching} waitingForEffects={_waitingForEffects}" +
@@ -380,9 +345,9 @@ public static class CardPlayReplayPatch
     }
 
     /// <summary>
-    ///     Called by both OnTurnEnded and OnTurnStarted.  When both signals have
-    ///     fired (in any order) after TryEndTurn, clears all end-turn state and
-    ///     dispatches the next turn's commands with a 0.5s delay.
+    /// Called by both OnTurnEnded and OnTurnStarted.  When both signals have
+    /// fired (in any order) after TryEndTurn, clears all end-turn state and
+    /// dispatches the next turn's commands with a 0.5s delay.
     /// </summary>
     private static void TryCompleteEndTurnGate()
     {
@@ -405,7 +370,27 @@ public static class CardPlayReplayPatch
         ReplayDispatcher.TryDispatch();
     }
 
+    // ── Post-action chain trigger (waits for sub-effects to settle) ─────────
 
+    /// <summary>
+    /// True while we're waiting for all sub-effects of a card/potion action
+    /// to finish before dispatching the next replay command.  While waiting,
+    /// every AfterActionExecuted resets a quiet-frame flag.  Once a full
+    /// frame passes with no AfterActionExecuted, effects have settled.
+    /// </summary>
+    private static bool _waitingForEffects;
+    private static bool _actionFiredThisFrame;
+    private static int  _quietFrameCount;
+
+    /// <summary>
+    /// Number of consecutive quiet frames (no AfterActionExecuted) required
+    /// before dispatching the next command.  Extra frames allow enemy
+    /// animations (damage numbers, status effects, deaths) to finish.
+    /// </summary>
+    private const int QuietFramesRequired = 3;
+
+    
+    
     private static void OnAfterActionExecuted(GameAction action)
     {
         PlayerActionBuffer.LogDispatcher("After action executed?");
@@ -415,8 +400,10 @@ public static class CardPlayReplayPatch
         // While waiting for the end-turn to complete, ignore all actions.
         // Only OnTurnStarted (the next player turn) clears this flag.
         if (_awaitingEndTurnCompletion)
+        {
             if (action is PlayCardAction)
-                return;
+            return;
+        }
 
         if (_waitingForEffects)
         {
@@ -431,8 +418,7 @@ public static class CardPlayReplayPatch
         // need to resume reward processing once they complete.
         if (!_dispatching && action is DiscardPotionGameAction)
         {
-            PlayerActionBuffer.LogToDevConsole(
-                "[RunReplays] AfterActionExecuted: DiscardPotionGameAction completed outside combat — resuming rewards.");
+            PlayerActionBuffer.LogToDevConsole("[RunReplays] AfterActionExecuted: DiscardPotionGameAction completed outside combat — resuming rewards.");
             ReplayDispatcher.DispatchNow();
             return;
         }
@@ -450,7 +436,10 @@ public static class CardPlayReplayPatch
         // Without this guard, enemy PlayCardActions during the enemy turn
         // trigger DispatchNextCombatAction, which prematurely consumes the
         // next player EndTurn command and stalls the replay.
-        if (!_dispatching) return;
+        if (!_dispatching)
+        {
+            return;
+        }
 
         if (action is PlayCardAction playCard)
         {
@@ -460,8 +449,7 @@ public static class CardPlayReplayPatch
         }
         else if (action is DiscardPotionGameAction discardPotion)
         {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[RunReplays] AfterActionExecuted: DiscardPotionGameAction completed ({discardPotion}).");
+            PlayerActionBuffer.LogToDevConsole($"[RunReplays] AfterActionExecuted: DiscardPotionGameAction completed ({discardPotion}).");
             WaitForEffectsThenDispatch();
         }
         else if (action is UsePotionAction usePotion)
@@ -530,19 +518,28 @@ public static class CardPlayReplayPatch
         _dispatching = false;
         ReplayDispatcher.NotifyEffectsSettled();
     }
-
+    
     internal static bool TryEndTurn()
     {
-        if (_waitingForEffects) return false;
+        if (_waitingForEffects)
+        {
+            return false; 
+        }
 
         // Don't issue EndTurn unless we've received a TurnStarted since the
         // last one — prevents consecutive EndTurns without the game advancing.
-        if (!_turnStartedSinceLastEndTurn) return false;
+        if (!_turnStartedSinceLastEndTurn)
+        {
+            return false;
+        }
 
         // Wait until combat is in progress and a player is available.
-        if (!CombatManager.Instance.IsInProgress || ResolveLocalPlayer() == null) return false;
+        if (!CombatManager.Instance.IsInProgress || ResolveLocalPlayer() == null)
+        {
+            return false;
+        }
 
-        var player = ResolveLocalPlayer()!;
+        Player player = ResolveLocalPlayer()!;
 
         // Block all further dispatch until both TurnEnded and TurnStarted fire.
         _awaitingEndTurnCompletion = true;
@@ -551,7 +548,7 @@ public static class CardPlayReplayPatch
         _postEndTurn_turnStartedReceived = false;
         _postEndTurn_savedTurnStartState = null;
 
-        PlayerCmd.EndTurn(player, false);
+        PlayerCmd.EndTurn(player, canBackOut: false);
 
         // If combat ended (enemy killed during the turn, before end-turn),
         // TurnEnded/TurnStarted may never fire.  Check immediately and
@@ -564,7 +561,7 @@ public static class CardPlayReplayPatch
 
         // Timer fallback: if the gate hasn't completed after 5 seconds,
         // force-clear it (handles edge cases where signals are lost).
-        var gateGen = _battleGeneration;
+        int gateGen = _battleGeneration;
         NGame.Instance!.GetTree()!.CreateTimer(5.0).Connect(
             "timeout", Callable.From(() =>
             {

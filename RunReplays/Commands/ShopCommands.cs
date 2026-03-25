@@ -2,24 +2,20 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using MegaCrit.Sts2.Core.Entities.Merchant;
-using RunReplays.Patch;
 
+using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>
-///     Opens the shop inventory.
-///     Recorded as: "OpenShop"
+/// Opens the shop inventory.
+/// Recorded as: "OpenShop"
 /// </summary>
 public sealed class OpenShopCommand : ReplayCommand
 {
-    private OpenShopCommand(string raw) : base(raw)
-    {
-    }
 
-    public override string Describe()
-    {
-        return "open shop";
-    }
+    private OpenShopCommand(string raw) : base(raw) { }
+
+    public override string Describe() => "open shop";
 
     public override ExecuteResult Execute()
     {
@@ -33,18 +29,18 @@ public sealed class OpenShopCommand : ReplayCommand
     }
 
     public static OpenShopCommand? TryParse(string raw)
-    {
-        return raw == "OpenShop" ? new OpenShopCommand(raw) : null;
-    }
+        => raw == "OpenShop" ? new OpenShopCommand(raw) : null;
 }
 
 /// <summary>
-///     Buys a card from the shop.
-///     Recorded as: "BuyCard {title}"
+/// Buys a card from the shop.
+/// Recorded as: "BuyCard {title}"
 /// </summary>
 public sealed class BuyCardCommand : ReplayCommand
 {
     private const string Prefix = "BuyCard ";
+
+    public string CardTitle { get; }
 
 
     private BuyCardCommand(string raw, string cardTitle) : base(raw)
@@ -52,12 +48,7 @@ public sealed class BuyCardCommand : ReplayCommand
         CardTitle = cardTitle;
     }
 
-    public string CardTitle { get; }
-
-    public override string Describe()
-    {
-        return $"buy card '{CardTitle}'";
-    }
+    public override string Describe() => $"buy card '{CardTitle}'";
 
     public override ExecuteResult Execute()
     {
@@ -91,12 +82,14 @@ public sealed class BuyCardCommand : ReplayCommand
 }
 
 /// <summary>
-///     Buys a relic from the shop.
-///     Recorded as: "BuyRelic {title}"
+/// Buys a relic from the shop.
+/// Recorded as: "BuyRelic {title}"
 /// </summary>
 public sealed class BuyRelicCommand : ReplayCommand
 {
     private const string Prefix = "BuyRelic ";
+
+    public string RelicTitle { get; }
 
 
     private BuyRelicCommand(string raw, string relicTitle) : base(raw)
@@ -104,12 +97,7 @@ public sealed class BuyRelicCommand : ReplayCommand
         RelicTitle = relicTitle;
     }
 
-    public string RelicTitle { get; }
-
-    public override string Describe()
-    {
-        return $"buy relic '{RelicTitle}'";
-    }
+    public override string Describe() => $"buy relic '{RelicTitle}'";
 
     public override ExecuteResult Execute()
     {
@@ -134,7 +122,7 @@ public sealed class BuyRelicCommand : ReplayCommand
             PlayerActionBuffer.LogMigrationWarning($"[BuyRelic] Relic '{RelicTitle}' not found — skipping.");
             return ExecuteResult.Ok();
         }
-
+        
         ShopOpenedReplayPatch.InvokePurchase(entry);
         return ExecuteResult.Ok();
     }
@@ -148,22 +136,19 @@ public sealed class BuyRelicCommand : ReplayCommand
 }
 
 /// <summary>
-///     Buys card removal from the shop.
-///     Recorded as: "BuyCardRemoval"
-///     Card removal opens an async deck selection UI.  Execute triggers the purchase
-///     and sets CardRemovalInProgress so the existing ShopCardRemovalCompleted/Failed
-///     patches resume the shop loop after the selection finishes.
+/// Buys card removal from the shop.
+/// Recorded as: "BuyCardRemoval"
+///
+/// Card removal opens an async deck selection UI.  Execute triggers the purchase
+/// and sets CardRemovalInProgress so the existing ShopCardRemovalCompleted/Failed
+/// patches resume the shop loop after the selection finishes.
 /// </summary>
 public sealed class BuyCardRemovalCommand : ReplayCommand
 {
-    private BuyCardRemovalCommand(string raw) : base(raw)
-    {
-    }
 
-    public override string Describe()
-    {
-        return "buy card removal";
-    }
+    private BuyCardRemovalCommand(string raw) : base(raw) { }
+
+    public override string Describe() => "buy card removal";
 
     public override ExecuteResult Execute()
     {
@@ -189,18 +174,18 @@ public sealed class BuyCardRemovalCommand : ReplayCommand
     }
 
     public static BuyCardRemovalCommand? TryParse(string raw)
-    {
-        return raw == "BuyCardRemoval" ? new BuyCardRemovalCommand(raw) : null;
-    }
+        => raw == "BuyCardRemoval" ? new BuyCardRemovalCommand(raw) : null;
 }
 
 /// <summary>
-///     Buys a potion from the shop.
-///     Recorded as: "BuyPotion {title}"
+/// Buys a potion from the shop.
+/// Recorded as: "BuyPotion {title}"
 /// </summary>
 public sealed class BuyPotionCommand : ReplayCommand
 {
     private const string Prefix = "BuyPotion ";
+
+    public string PotionTitle { get; }
 
 
     private BuyPotionCommand(string raw, string potionTitle) : base(raw)
@@ -208,12 +193,7 @@ public sealed class BuyPotionCommand : ReplayCommand
         PotionTitle = potionTitle;
     }
 
-    public string PotionTitle { get; }
-
-    public override string Describe()
-    {
-        return $"buy potion '{PotionTitle}'";
-    }
+    public override string Describe() => $"buy potion '{PotionTitle}'";
 
     public override ExecuteResult Execute()
     {

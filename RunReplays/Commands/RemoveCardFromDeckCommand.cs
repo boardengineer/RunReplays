@@ -4,28 +4,29 @@ using MegaCrit.Sts2.Core.Models;
 namespace RunReplays.Commands;
 
 /// <summary>
-///     Remove a card from the deck (shop card removal, events, etc.).
-///     Recorded as: "RemoveCardFromDeck: {deckIndex}"
-///     Uses the same CardGridScreenCapture as SelectDeckCardCommand — waits for the
-///     NCardGridSelectionScreen to appear, maps the recorded index to a card in
-///     the screen's _cards list, and resolves _completionSource directly.
+/// Remove a card from the deck (shop card removal, events, etc.).
+/// Recorded as: "RemoveCardFromDeck: {deckIndex}"
+///
+/// Uses the same CardGridScreenCapture as SelectDeckCardCommand — waits for the
+/// NCardGridSelectionScreen to appear, maps the recorded index to a card in
+/// the screen's _cards list, and resolves _completionSource directly.
 /// </summary>
 public sealed class RemoveCardFromDeckCommand : ReplayCommand
 {
     private const string Prefix = "RemoveCardFromDeck: ";
+
+    public int[] DeckIndices { get; }
+
+    public override bool IsSelectionCommand => true;
 
     private RemoveCardFromDeckCommand(string raw, int[] deckIndices) : base(raw)
     {
         DeckIndices = deckIndices;
     }
 
-    public int[] DeckIndices { get; }
-
-    public override bool IsSelectionCommand => true;
-
     public override string Describe()
     {
-        var idxStr = DeckIndices.Length > 0 ? string.Join(", ", DeckIndices) : "(none)";
+        string idxStr = DeckIndices.Length > 0 ? string.Join(", ", DeckIndices) : "(none)";
         return $"remove card from deck indices=[{idxStr}]";
     }
 
@@ -39,16 +40,21 @@ public sealed class RemoveCardFromDeckCommand : ReplayCommand
         if (cards == null)
             return ExecuteResult.Retry(300);
 
-        foreach (var idx in DeckIndices)
+        foreach (int idx in DeckIndices)
+        {
             if (idx < 0 || idx >= cards.Count)
             {
                 PlayerActionBuffer.LogMigrationWarning(
                     $"[RemoveCardFromDeck] Index {idx} out of range (count={cards.Count}) — retrying.");
                 return ExecuteResult.Retry(300);
             }
+        }
 
         var selected = new List<CardModel>();
-        foreach (var idx in DeckIndices) selected.Add(cards[idx]);
+        foreach (int idx in DeckIndices)
+        {
+            selected.Add(cards[idx]);
+        }
 
         CardGridScreenCapture.ResolveSelection(selected);
         return ExecuteResult.Ok();
@@ -59,17 +65,19 @@ public sealed class RemoveCardFromDeckCommand : ReplayCommand
         if (!raw.StartsWith(Prefix))
             return null;
 
-        var rest = raw.Substring(Prefix.Length).Trim();
+        string rest = raw.Substring(Prefix.Length).Trim();
         if (rest.Length == 0)
             return null;
 
         var parts = rest.Split(' ');
         var indices = new List<int>(parts.Length);
         foreach (var part in parts)
-            if (int.TryParse(part, out var idx))
+        {
+            if (int.TryParse(part, out int idx))
                 indices.Add(idx);
             else
                 return null;
+        }
         return new RemoveCardFromDeckCommand(raw, indices.ToArray());
     }
 }

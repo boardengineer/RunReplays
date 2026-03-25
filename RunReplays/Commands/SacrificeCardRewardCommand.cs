@@ -5,20 +5,21 @@ using Godot;
 using MegaCrit.Sts2.Core.Entities.CardRewardAlternatives;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
-using RunReplays.Patch;
 
+using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>
-///     Sacrifices a card reward (Pael's Wing) instead of picking a card.
-///     Recorded as: "SacrificeCardReward[{index}]" (indexed) or "SacrificeCardReward" (legacy).
-///     Execution flow:
-///     1. Wait for the rewards screen to be active.
-///     2. Find the CardReward button at the recorded index and invoke GetReward()
-///     to open NCardRewardSelectionScreen.
-///     3. Wait for the selection screen to appear (captured by CardRewardReplayPatch).
-///     4. Find the sacrifice alternative in the screen's _extraOptions, invoke
-///     OnSelect() then OnAlternateRewardSelected() to dismiss the screen.
+/// Sacrifices a card reward (Pael's Wing) instead of picking a card.
+/// Recorded as: "SacrificeCardReward[{index}]" (indexed) or "SacrificeCardReward" (legacy).
+///
+/// Execution flow:
+///   1. Wait for the rewards screen to be active.
+///   2. Find the CardReward button at the recorded index and invoke GetReward()
+///      to open NCardRewardSelectionScreen.
+///   3. Wait for the selection screen to appear (captured by CardRewardReplayPatch).
+///   4. Find the sacrifice alternative in the screen's _extraOptions, invoke
+///      OnSelect() then OnAlternateRewardSelected() to dismiss the screen.
 /// </summary>
 public sealed class SacrificeCardRewardCommand : ReplayCommand
 {
@@ -34,6 +35,8 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
             "OnAlternateRewardSelected",
             BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 
+    public int RewardIndex { get; }
+
     /// <summary>True once we've opened the card reward screen and are waiting for the selection screen.</summary>
     private static bool _screenOpened;
 
@@ -43,11 +46,9 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
         RewardIndex = rewardIndex;
     }
 
-    public int RewardIndex { get; }
-
     public override string Describe()
     {
-        var indexStr = RewardIndex >= 0 ? $" (pack {RewardIndex})" : "";
+        string indexStr = RewardIndex >= 0 ? $" (pack {RewardIndex})" : "";
         return $"sacrifice card reward{indexStr}";
     }
 
@@ -69,17 +70,18 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
 
             CardRewardAlternative? sacrifice = null;
             foreach (var alt in extras)
-                if (alt.OptionId.Contains("sacrifice", StringComparison.OrdinalIgnoreCase)
-                    || alt.OptionId.Contains("pael", StringComparison.OrdinalIgnoreCase))
+            {
+                if (alt.OptionId.Contains("sacrifice", System.StringComparison.OrdinalIgnoreCase)
+                    || alt.OptionId.Contains("pael", System.StringComparison.OrdinalIgnoreCase))
                 {
                     sacrifice = alt;
                     break;
                 }
-
+            }
             sacrifice ??= extras[0];
 
             TaskHelper.RunSafely(sacrifice.OnSelect());
-
+            
             OnAlternateRewardSelectedMethod?.Invoke(screen, new object[] { sacrifice.AfterSelected });
 
             CardRewardReplayPatch.selectionScreen = null;
@@ -98,8 +100,9 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
             return ExecuteResult.Retry(200);
 
         Node? targetButton = null;
-        var cardRewardCount = 0;
+        int cardRewardCount = 0;
         foreach (var (button, reward) in BattleRewardsReplayPatch.EnumerateRewardButtons(rewardScreen))
+        {
             if (BattleRewardsReplayPatch.IsRewardOfType(reward, "CardReward"))
             {
                 if (RewardIndex >= 0)
@@ -111,11 +114,14 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
                 {
                     targetButton ??= button;
                 }
-
                 cardRewardCount++;
             }
+        }
 
-        if (targetButton == null) return ExecuteResult.Retry(200);
+        if (targetButton == null)
+        {
+            return ExecuteResult.Retry(200);
+        }
 
         BattleRewardsReplayPatch.InvokeGetReward(targetButton);
         _screenOpened = true;
@@ -126,12 +132,14 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
     {
         if (raw.StartsWith(IndexedPrefix))
         {
-            var closeBracket = raw.IndexOf(']', IndexedPrefix.Length);
+            int closeBracket = raw.IndexOf(']', IndexedPrefix.Length);
             if (closeBracket > IndexedPrefix.Length
                 && int.TryParse(
                     raw.AsSpan(IndexedPrefix.Length, closeBracket - IndexedPrefix.Length),
-                    out var idx))
+                    out int idx))
+            {
                 return new SacrificeCardRewardCommand(raw, idx);
+            }
         }
 
         if (raw == Cmd)

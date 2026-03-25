@@ -5,12 +5,14 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Nodes;
 
 namespace RunReplays.Patch;
+using RunReplays;
 
 /// <summary>
-///     Crystal Sphere minigame recording and replay support.
-///     These patches are applied manually (not via [HarmonyPatch]) to avoid
-///     crashing PatchAll() if the Crystal Sphere types cannot be resolved.
-///     Call <see cref="CrystalSphereManualPatcher.Apply" /> after PatchAll().
+/// Crystal Sphere minigame recording and replay support.
+///
+/// These patches are applied manually (not via [HarmonyPatch]) to avoid
+/// crashing PatchAll() if the Crystal Sphere types cannot be resolved.
+/// Call <see cref="CrystalSphereManualPatcher.Apply"/> after PatchAll().
 /// </summary>
 public static class CrystalSphereManualPatcher
 {
@@ -30,8 +32,7 @@ public static class CrystalSphereManualPatcher
             var screenType = AccessTools.TypeByName(
                 "MegaCrit.Sts2.Core.Nodes.Events.Custom.CrystalSphere.NCrystalSphereScreen");
 
-            PlayerActionBuffer.LogToDevConsole(
-                $"[CrystalSphere] minigameType={minigameType?.FullName ?? "NULL"} screenType={screenType?.FullName ?? "NULL"}");
+            PlayerActionBuffer.LogToDevConsole($"[CrystalSphere] minigameType={minigameType?.FullName ?? "NULL"} screenType={screenType?.FullName ?? "NULL"}");
 
             if (minigameType != null)
             {
@@ -42,7 +43,7 @@ public static class CrystalSphereManualPatcher
                     var prefix = new HarmonyMethod(
                         typeof(CrystalSphereCellClickedPatch),
                         nameof(CrystalSphereCellClickedPatch.Prefix));
-                    harmony.Patch(cellClicked, prefix);
+                    harmony.Patch(cellClicked, prefix: prefix);
                     PlayerActionBuffer.LogToDevConsole("[CrystalSphere] Patched CellClicked OK.");
                 }
             }
@@ -76,7 +77,7 @@ public static class CrystalSphereCellClickedPatch
     {
         if (CrystalSphereReplayPatch.PendingTool.HasValue)
         {
-            var tool = CrystalSphereReplayPatch.PendingTool.Value;
+            int tool = CrystalSphereReplayPatch.PendingTool.Value;
             CrystalSphereReplayPatch.PendingTool = null;
 
             var prop = AccessTools.Property(__instance.GetType(), "CrystalSphereTool");
@@ -87,10 +88,10 @@ public static class CrystalSphereCellClickedPatch
         if (ReplayEngine.IsActive)
             return;
 
-        var toolVal = Convert.ToInt32(
+        int toolVal = Convert.ToInt32(
             Traverse.Create(__instance).Property("CrystalSphereTool").GetValue());
-        var x = Traverse.Create(__0).Property("X").GetValue<int>();
-        var y = Traverse.Create(__0).Property("Y").GetValue<int>();
+        int x = Traverse.Create(__0).Property("X").GetValue<int>();
+        int y = Traverse.Create(__0).Property("Y").GetValue<int>();
 
         PlayerActionBuffer.Record($"CrystalSphereClick {x} {y} {toolVal}");
     }
@@ -100,7 +101,6 @@ public static class CrystalSphereCellClickedPatch
 
 public static class CrystalSphereReplayPatch
 {
-    private const int MaxProceedRetries = 30;
     internal static int? PendingTool;
 
     internal static GodotObject? ActiveScreen;
@@ -153,18 +153,17 @@ public static class CrystalSphereReplayPatch
                 var entity = Traverse.Create(child).Property("Entity").GetValue();
                 if (entity == null) continue;
 
-                var cx = Traverse.Create(entity).Property("X").GetValue<int>();
-                var cy = Traverse.Create(entity).Property("Y").GetValue<int>();
+                int cx = Traverse.Create(entity).Property("X").GetValue<int>();
+                int cy = Traverse.Create(entity).Property("Y").GetValue<int>();
                 if (cx == x && cy == y)
-                    return child;
+                    return (GodotObject)child;
             }
-            catch
-            {
-            }
+            catch { }
         }
-
         return null;
     }
+
+    private const int MaxProceedRetries = 30;
 
     internal static void ScheduleProceed(GodotObject screen)
     {
@@ -188,8 +187,8 @@ public static class CrystalSphereReplayPatch
         if (proceedBtn != null)
         {
             var isEnabledProp = proceedBtn.GetType().GetProperty("IsEnabled");
-            var isEnabled = isEnabledProp != null
-                            && (bool)isEnabledProp.GetValue(proceedBtn)!;
+            bool isEnabled = isEnabledProp != null
+                && (bool)isEnabledProp.GetValue(proceedBtn)!;
 
             if (isEnabled)
             {

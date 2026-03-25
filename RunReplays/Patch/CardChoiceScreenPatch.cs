@@ -6,35 +6,43 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.CardRewardAlternatives;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Models;
+using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.TestSupport;
 
 namespace RunReplays.Patch;
+using RunReplays;
 
 /// <summary>
-///     Records and replays card selections made via CardSelectCmd.FromChooseACardScreen
-///     (e.g. Skill Potion, Power Potion, Lead Paperweight relic, Morphic Grove).
-///     Command format:  "SelectCardFromScreen {index}"
-///     The index is the 0-based position in the card list offered to the player.
-///     -1 means the player skipped (canSkip = true and no card chosen).
-///     When the selection is part of a card reward (e.g. Morphic Grove uses
-///     FromChooseACardScreen instead of the normal NCardRewardSelectionScreen),
-///     the SelectCardFromScreen recording is suppressed — the TakeCardReward
-///     command already captures the selection by card title.
-///     Recording: the Postfix wraps the returned Task so that when the player's
-///     selection completes, the chosen card's index is buffered.  A deferred flush
-///     is also scheduled so that relic-triggered selections (which have no
-///     subsequent action to flush the buffer) are still recorded.  For
-///     potion / card-play actions the normal AfterActionExecuted flush fires first,
-///     making the deferred flush a harmless no-op.
-///     Replay: a ReplayChooseACardSelector is pushed onto the CardSelectCmd selector
-///     stack before FromChooseACardScreen runs, so the game uses replay data instead
-///     of opening the selection UI.  When the next command is a TakeCardReward
-///     (no SelectCardFromScreen in the queue), a ReplayCardRewardChooseSelector is
-///     pushed instead — it picks the card by title and consumes the TakeCardReward.
+/// Records and replays card selections made via CardSelectCmd.FromChooseACardScreen
+/// (e.g. Skill Potion, Power Potion, Lead Paperweight relic, Morphic Grove).
+///
+/// Command format:  "SelectCardFromScreen {index}"
+/// The index is the 0-based position in the card list offered to the player.
+/// -1 means the player skipped (canSkip = true and no card chosen).
+///
+/// When the selection is part of a card reward (e.g. Morphic Grove uses
+/// FromChooseACardScreen instead of the normal NCardRewardSelectionScreen),
+/// the SelectCardFromScreen recording is suppressed — the TakeCardReward
+/// command already captures the selection by card title.
+///
+/// Recording: the Postfix wraps the returned Task so that when the player's
+/// selection completes, the chosen card's index is buffered.  A deferred flush
+/// is also scheduled so that relic-triggered selections (which have no
+/// subsequent action to flush the buffer) are still recorded.  For
+/// potion / card-play actions the normal AfterActionExecuted flush fires first,
+/// making the deferred flush a harmless no-op.
+///
+/// Replay: a ReplayChooseACardSelector is pushed onto the CardSelectCmd selector
+/// stack before FromChooseACardScreen runs, so the game uses replay data instead
+/// of opening the selection UI.  When the next command is a TakeCardReward
+/// (no SelectCardFromScreen in the queue), a ReplayCardRewardChooseSelector is
+/// pushed instead — it picks the card by title and consumes the TakeCardReward.
 /// </summary>
 
 // ── Replay / record entry point ───────────────────────────────────────────────
+
 [HarmonyPatch(typeof(CardSelectCmd), nameof(CardSelectCmd.FromChooseACardScreen))]
 public static class FromChooseACardScreenPatch
 {
@@ -50,12 +58,15 @@ public static class FromChooseACardScreenPatch
         _pendingScope = null;
 
         SelectorStackDebug.Log("FromChooseACardScreen.Prefix called (IsActive=" + ReplayEngine.IsActive + ")");
-        if (!ReplayEngine.IsActive) _recordingCards = cards.ToList();
+        if (!ReplayEngine.IsActive)
+        {
+            _recordingCards = cards.ToList();
+        }
     }
 
     /// <summary>
-    ///     Wraps the Task returned by FromChooseACardScreen so that when the
-    ///     player's selection completes we can compute the index and buffer it.
+    /// Wraps the Task returned by FromChooseACardScreen so that when the
+    /// player's selection completes we can compute the index and buffer it.
     /// </summary>
     [HarmonyPostfix]
     public static void Postfix(ref Task<CardModel> __result)
@@ -76,33 +87,40 @@ public static class FromChooseACardScreenPatch
 
         // When the selection is part of a card reward, TakeCardReward records
         // the selection — don't also emit SelectCardFromScreen.
-        if (BattleRewardPatch.IsProcessingCardReward) return selected;
+        if (BattleRewardPatch.IsProcessingCardReward)
+        {
+            return selected;
+        }
 
-        var index = -1;
+        int index = -1;
 
         if (selected != null)
         {
-            for (var i = 0; i < cardList.Count; i++)
+            for (int i = 0; i < cardList.Count; i++)
+            {
                 if (ReferenceEquals(cardList[i], selected))
                 {
                     index = i;
                     break;
                 }
+            }
 
             // Fallback: match by title if reference equality fails.
             if (index < 0)
             {
                 var title = selected.Title;
-                for (var i = 0; i < cardList.Count; i++)
+                for (int i = 0; i < cardList.Count; i++)
+                {
                     if (cardList[i].Title == title)
                     {
                         index = i;
                         break;
                     }
+                }
             }
         }
 
-        var command = $"SelectCardFromScreen {index}";
+        string command = $"SelectCardFromScreen {index}";
         PlayerActionBuffer.LogToDevConsole(
             $"[CardChoiceScreenPatch] Recording: {command}");
         PlayerActionBuffer.Record(command);
@@ -114,8 +132,8 @@ public static class FromChooseACardScreenPatch
 // ── Recording buffer ─────────────────────────────────────────────────────────
 
 /// <summary>
-///     Holds a pending "SelectCardFromScreen" command until PlayerActionBuffer
-///     flushes it after the triggering action is recorded.
+/// Holds a pending "SelectCardFromScreen" command until PlayerActionBuffer
+/// flushes it after the triggering action is recorded.
 /// </summary>
 public static class CardChoiceScreenSyncPatch
 {
@@ -125,18 +143,16 @@ public static class CardChoiceScreenSyncPatch
 }
 
 /// <summary>
-///     ICardSelector for card rewards that route through FromChooseACardScreen
-///     (e.g. Morphic Grove).  Picks the card matching the title from the
-///     TakeCardReward command and consumes it.
+/// ICardSelector for card rewards that route through FromChooseACardScreen
+/// (e.g. Morphic Grove).  Picks the card matching the title from the
+/// TakeCardReward command and consumes it.
 /// </summary>
 internal sealed class ReplayCardRewardChooseSelector : ICardSelector
 {
     private readonly string _expectedTitle;
 
     public ReplayCardRewardChooseSelector(string expectedTitle)
-    {
-        _expectedTitle = expectedTitle;
-    }
+        => _expectedTitle = expectedTitle;
 
     public Task<IEnumerable<CardModel>> GetSelectedCards(
         IEnumerable<CardModel> options, int minSelect, int maxSelect)
@@ -165,7 +181,5 @@ internal sealed class ReplayCardRewardChooseSelector : ICardSelector
     public CardModel? GetSelectedCardReward(
         IReadOnlyList<CardCreationResult> options,
         IReadOnlyList<CardRewardAlternative> alternatives)
-    {
-        return null;
-    }
+        => null;
 }

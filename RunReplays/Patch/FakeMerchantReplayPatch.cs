@@ -1,23 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Merchant;
 using MegaCrit.Sts2.Core.Nodes.Events.Custom;
 
 namespace RunReplays.Patch;
+using RunReplays;
 
 /// <summary>
-///     Recording and replay patches for the fake merchant event shop.
-///     The fake merchant event (NFakeMerchant) has its own OpenInventory method
-///     separate from the regular NMerchantRoom.  When the player clicks the
-///     merchant character, OnMerchantOpened fires, which calls OpenInventory.
-///     Recording: prefix on NFakeMerchant.OpenInventory records "OpenFakeShop".
-///     Replay:    postfix on NFakeMerchant.AfterRoomIsLoaded signals shop readiness
-///     so the dispatcher can execute OpenFakeShopCommand and BuyRelicCommand.
+/// Recording and replay patches for the fake merchant event shop.
+///
+/// The fake merchant event (NFakeMerchant) has its own OpenInventory method
+/// separate from the regular NMerchantRoom.  When the player clicks the
+/// merchant character, OnMerchantOpened fires, which calls OpenInventory.
+///
+/// Recording: prefix on NFakeMerchant.OpenInventory records "OpenFakeShop".
+/// Replay:    postfix on NFakeMerchant.AfterRoomIsLoaded signals shop readiness
+///            so the dispatcher can execute OpenFakeShopCommand and BuyRelicCommand.
 /// </summary>
 
 // ── Record when the fake merchant shop is opened ─────────────────────────────
+
 [HarmonyPatch(typeof(NFakeMerchant), "OpenInventory")]
 public static class FakeMerchantOpenRecordPatch
 {
@@ -38,6 +43,8 @@ public static class FakeMerchantReplayPatch
 {
     internal static NFakeMerchant? ActiveInstance;
 
+    internal static bool IsActive => ActiveInstance != null;
+
     internal static readonly MethodInfo? OpenInventoryMethod =
         typeof(NFakeMerchant).GetMethod("OpenInventory",
             BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
@@ -53,8 +60,6 @@ public static class FakeMerchantReplayPatch
             .GetType("MegaCrit.Sts2.Core.Models.Events.FakeMerchant")
             ?.GetField("_inventory", BindingFlags.NonPublic | BindingFlags.Instance);
 
-    internal static bool IsActive => ActiveInstance != null;
-
     [HarmonyPostfix]
     public static void Postfix(NFakeMerchant __instance)
     {
@@ -63,22 +68,22 @@ public static class FakeMerchantReplayPatch
 
         ActiveInstance = __instance;
         ShopOpenedReplayPatch.ActiveRoom = null;
-        ReplayDispatcher.DispatchNow();
+                ReplayDispatcher.DispatchNow();
     }
 
     internal static List<MerchantEntry>? GetEntries(NFakeMerchant merchant)
     {
         const BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic
-                                                    | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
+                              | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
 
-        var eventModel = EventField?.GetValue(merchant);
+        object? eventModel = EventField?.GetValue(merchant);
         if (eventModel == null)
         {
             PlayerActionBuffer.LogToDevConsole("[FakeMerchantReplayPatch] _event field is null.");
             return null;
         }
 
-        var inventory = InventoryField?.GetValue(eventModel);
+        object? inventory = InventoryField?.GetValue(eventModel);
         if (inventory == null)
         {
             PlayerActionBuffer.LogToDevConsole("[FakeMerchantReplayPatch] _inventory field is null.");
@@ -89,42 +94,30 @@ public static class FakeMerchantReplayPatch
         foreach (var field in inventory.GetType().GetFields(bf))
         {
             object? value;
-            try
-            {
-                value = field.GetValue(inventory);
-            }
-            catch
-            {
-                continue;
-            }
+            try { value = field.GetValue(inventory); }
+            catch { continue; }
 
             if (value is IEnumerable enumerable)
-                foreach (var item in enumerable)
+                foreach (object? item in enumerable)
                     if (item is MerchantEntry e)
                         all.Add(e);
-                    else if (value is MerchantEntry single)
-                        all.Add(single);
+            else if (value is MerchantEntry single)
+                all.Add(single);
         }
 
         foreach (var prop in inventory.GetType().GetProperties(bf))
         {
             if (prop.GetIndexParameters().Length > 0) continue;
             object? value;
-            try
-            {
-                value = prop.GetValue(inventory);
-            }
-            catch
-            {
-                continue;
-            }
+            try { value = prop.GetValue(inventory); }
+            catch { continue; }
 
             if (value is IEnumerable enumerable)
-                foreach (var item in enumerable)
+                foreach (object? item in enumerable)
                     if (item is MerchantEntry e && !all.Contains(e))
                         all.Add(e);
-                    else if (value is MerchantEntry single && !all.Contains(single))
-                        all.Add(single);
+            else if (value is MerchantEntry single && !all.Contains(single))
+                all.Add(single);
         }
 
         return all.Count > 0 ? all : null;

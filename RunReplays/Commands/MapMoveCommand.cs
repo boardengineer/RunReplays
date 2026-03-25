@@ -1,13 +1,12 @@
-using System;
 using Godot;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
-using RunReplays.Patch;
 
+using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>
-///     Navigate to a map node at the given column and row.
-///     Recorded as: "MoveToMapCoordAction {playerId} MapCoord ({col}, {row})"
+/// Navigate to a map node at the given column and row.
+/// Recorded as: "MoveToMapCoordAction {playerId} MapCoord ({col}, {row})"
 /// </summary>
 public class MapMoveCommand : ReplayCommand
 {
@@ -15,6 +14,9 @@ public class MapMoveCommand : ReplayCommand
     private const string CoordMarker = "MapCoord (";
 
     internal static NMapScreen? _activeScreen;
+    
+    public int Col { get; }
+    public int Row { get; }
 
 
     private MapMoveCommand(string raw, int col, int row) : base(raw)
@@ -23,13 +25,7 @@ public class MapMoveCommand : ReplayCommand
         Row = row;
     }
 
-    public int Col { get; }
-    public int Row { get; }
-
-    public override string Describe()
-    {
-        return $"navigate to map node col={Col} row={Row}";
-    }
+    public override string Describe() => $"navigate to map node col={Col} row={Row}";
 
     public override ExecuteResult Execute()
     {
@@ -43,17 +39,19 @@ public class MapMoveCommand : ReplayCommand
         if (!raw.StartsWith(Prefix))
             return null;
 
-        var markerIdx = raw.IndexOf(CoordMarker, StringComparison.Ordinal);
+        int markerIdx = raw.IndexOf(CoordMarker, System.StringComparison.Ordinal);
         if (markerIdx < 0)
             return null;
 
-        var coords = raw.AsSpan(markerIdx + CoordMarker.Length);
-        var comma = coords.IndexOf(',');
-        var close = coords.IndexOf(')');
+        ReadOnlySpan<char> coords = raw.AsSpan(markerIdx + CoordMarker.Length);
+        int comma = coords.IndexOf(',');
+        int close = coords.IndexOf(')');
         if (comma > 0 && close > comma
-                      && int.TryParse(coords[..comma].Trim(), out var col)
-                      && int.TryParse(coords[(comma + 1)..close].Trim(), out var row))
+            && int.TryParse(coords[..comma].Trim(), out int col)
+            && int.TryParse(coords[(comma + 1)..close].Trim(), out int row))
+        {
             return new MapMoveCommand(raw, col, row);
+        }
 
         return null;
     }

@@ -3,15 +3,18 @@ using MegaCrit.Sts2.Core.Entities.Merchant;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 
 namespace RunReplays.Patch;
+using RunReplays;
 
 /// <summary>
-///     Shared state for shop purchase recording.
-///     IsPurchasing: suppresses duplicate SyncLocalObtained* recordings in
-///     BattleRewardPatch while a merchant purchase is in progress.
-///     PendingLabel: the Buy* string captured in the OnTryPurchaseWrapper prefix,
-///     before ClearAfterPurchase() nulls out the entry's item reference.
-///     Written by InvokePurchaseCompleted (on success) or cleared by
-///     InvokePurchaseFailed (on failure).
+/// Shared state for shop purchase recording.
+///
+/// IsPurchasing: suppresses duplicate SyncLocalObtained* recordings in
+///   BattleRewardPatch while a merchant purchase is in progress.
+///
+/// PendingLabel: the Buy* string captured in the OnTryPurchaseWrapper prefix,
+///   before ClearAfterPurchase() nulls out the entry's item reference.
+///   Written by InvokePurchaseCompleted (on success) or cleared by
+///   InvokePurchaseFailed (on failure).
 /// </summary>
 internal static class ShopPurchaseState
 {
@@ -20,17 +23,21 @@ internal static class ShopPurchaseState
 }
 
 /// <summary>
-///     Recording patches for merchant shop interactions.
-///     Item details (card title etc.) are read in the OnTryPurchaseWrapper PREFIX
-///     because ClearAfterPurchase() nulls the entry's item reference before
-///     InvokePurchaseCompleted fires.
-///     InvokePurchaseCompleted prefix writes the captured label and clears state.
-///     InvokePurchaseFailed prefix clears state so the flag never stays stuck.
-///     MerchantCardRemovalEntry overrides OnTryPurchaseWrapper with an extra
-///     parameter and is therefore given its own prefix patch.
+/// Recording patches for merchant shop interactions.
+///
+/// Item details (card title etc.) are read in the OnTryPurchaseWrapper PREFIX
+/// because ClearAfterPurchase() nulls the entry's item reference before
+/// InvokePurchaseCompleted fires.
+///
+/// InvokePurchaseCompleted prefix writes the captured label and clears state.
+/// InvokePurchaseFailed prefix clears state so the flag never stays stuck.
+///
+/// MerchantCardRemovalEntry overrides OnTryPurchaseWrapper with an extra
+/// parameter and is therefore given its own prefix patch.
 /// </summary>
 
 // ── Open shop ─────────────────────────────────────────────────────────────────
+
 [HarmonyPatch(typeof(NMerchantRoom), nameof(NMerchantRoom.OpenInventory))]
 public static class ShopOpenRecordPatch
 {
@@ -57,17 +64,14 @@ public static class ShopPurchaseStartPatch
     {
         // Record immediately so the command appears in the log as soon as
         // the player clicks.  If the purchase fails, UndoLast removes it.
-        var label = __instance switch
+        string? label = __instance switch
         {
-            MerchantCardEntry card => card.CreationResult?.Card?.Title is string t
-                ? $"BuyCard {t}"
-                : null,
-            MerchantRelicEntry relic => relic.Model != null
-                ? $"BuyRelic {relic.Model.Title.GetFormattedText()}"
-                : null,
+            MerchantCardEntry card     => card.CreationResult?.Card?.Title is string t
+                                             ? $"BuyCard {t}" : null,
+            MerchantRelicEntry relic   => relic.Model  != null
+                                             ? $"BuyRelic {relic.Model.Title.GetFormattedText()}"  : null,
             MerchantPotionEntry potion => potion.Model != null
-                ? $"BuyPotion {potion.Model.Title.GetFormattedText()}"
-                : null,
+                                             ? $"BuyPotion {potion.Model.Title.GetFormattedText()}" : null,
             _ => null
         };
         if (label != null)

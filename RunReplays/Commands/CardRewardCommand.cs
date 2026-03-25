@@ -1,16 +1,16 @@
-using System;
 using Godot;
-using RunReplays.Patch;
 
+using RunReplays.Patch;
 namespace RunReplays.Commands;
 
 /// <summary>
-///     Takes a card reward from the rewards screen.
-///     Recorded as: "TakeCardReward[{index}]: {title}" (indexed) or "TakeCardReward: {title}" (legacy)
-///     Two execution paths:
-///     - Direct: a non-CardReward button (e.g. SpecialCardReward) that adds the card
+/// Takes a card reward from the rewards screen.
+/// Recorded as: "TakeCardReward[{index}]: {title}" (indexed) or "TakeCardReward: {title}" (legacy)
+///
+/// Two execution paths:
+///   - Direct: a non-CardReward button (e.g. SpecialCardReward) that adds the card
 ///     immediately without opening a selection screen.  Consumed here, returns Ok().
-///     - Screen: the normal CardReward button opens NCardRewardSelectionScreen.
+///   - Screen: the normal CardReward button opens NCardRewardSelectionScreen.
 ///     The command stays in the queue for CardRewardReplayPatch to peek and consume
 ///     after the player's card is auto-selected.  Returns Retry() as a safety net;
 ///     the retry is typically pre-empted by OnCardRewardHandled → DispatchNow().
@@ -19,7 +19,10 @@ public class CardRewardCommand : ReplayCommand
 {
     private const string Prefix = "TakeCardReward: ";
     private const string IndexedPrefix = "TakeCardReward[";
-    internal static bool waitingForRewardScreenOpen;
+    internal static bool waitingForRewardScreenOpen = false;
+
+    public string CardTitle { get; }
+    public int RewardIndex { get; }
 
 
     private CardRewardCommand(string raw, string cardTitle, int rewardIndex) : base(raw)
@@ -28,34 +31,39 @@ public class CardRewardCommand : ReplayCommand
         RewardIndex = rewardIndex;
     }
 
-    public string CardTitle { get; }
-    public int RewardIndex { get; }
-
     public override string Describe()
     {
-        var indexStr = RewardIndex >= 0 ? $" (pack {RewardIndex})" : "";
+        string indexStr = RewardIndex >= 0 ? $" (pack {RewardIndex})" : "";
         return $"take card reward '{CardTitle}'{indexStr}";
     }
 
     public override ExecuteResult Execute()
     {
         var screen = BattleRewardsReplayPatch._activeScreen;
-        if (screen == null || !screen.IsInsideTree()) return ExecuteResult.Retry(200);
+        if (screen == null || !screen.IsInsideTree())
+        {
+            return ExecuteResult.Retry(200);
+        }
 
         // Scan reward buttons for a direct card reward (e.g. SpecialCardReward)
         // that matches by title and can be claimed without a selection screen.
         Node? screenButton = null;
-        var cardRewardCount = 0;
+        int cardRewardCount = 0;
 
         if (CardRewardReplayPatch.selectionScreen != null)
+        {
             if (CardRewardReplayPatch.SelectCard(CardTitle))
             {
                 waitingForRewardScreenOpen = false;
                 CardRewardReplayPatch.selectionScreen = null;
                 return ExecuteResult.Ok();
             }
+        }
 
-        if (waitingForRewardScreenOpen) return ExecuteResult.Retry(200);
+        if (waitingForRewardScreenOpen)
+        {
+            return ExecuteResult.Retry(200);
+        }
 
         foreach (var (button, reward) in BattleRewardsReplayPatch.EnumerateRewardButtons(screen))
         {
@@ -63,7 +71,7 @@ public class CardRewardCommand : ReplayCommand
             // adds the card immediately without opening a selection screen.
             if (BattleRewardsReplayPatch.IsRewardOfType(reward, "SpecialCardReward"))
             {
-                var rewardTitle = BattleRewardsReplayPatch.GetRewardCardTitle(reward);
+                string? rewardTitle = BattleRewardsReplayPatch.GetRewardCardTitle(reward);
                 if (rewardTitle != null && rewardTitle == CardTitle)
                 {
                     PlayerActionBuffer.LogDispatcher($"[CardReward] Claiming SpecialCardReward '{CardTitle}'.");
@@ -89,7 +97,6 @@ public class CardRewardCommand : ReplayCommand
                 {
                     screenButton ??= button;
                 }
-
                 cardRewardCount++;
             }
         }
@@ -112,13 +119,13 @@ public class CardRewardCommand : ReplayCommand
         // Indexed format: "TakeCardReward[N]: CardTitle"
         if (raw.StartsWith(IndexedPrefix))
         {
-            var closeBracket = raw.IndexOf("]: ", StringComparison.Ordinal);
+            int closeBracket = raw.IndexOf("]: ", System.StringComparison.Ordinal);
             if (closeBracket >= 0
                 && int.TryParse(
                     raw.AsSpan(IndexedPrefix.Length, closeBracket - IndexedPrefix.Length),
-                    out var idx))
+                    out int idx))
             {
-                var title = raw.Substring(closeBracket + "]: ".Length);
+                string title = raw.Substring(closeBracket + "]: ".Length);
                 return new CardRewardCommand(raw, title, idx);
             }
         }
