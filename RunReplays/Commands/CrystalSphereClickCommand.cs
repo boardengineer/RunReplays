@@ -59,10 +59,6 @@ public sealed class CrystalSphereClickCommand : ReplayCommand
         PlayerActionBuffer.LogToDevConsole($"[CrystalSphereClick] Clicking cell ({X},{Y}) tool={Tool}.");
         CrystalSphereReplayPatch.OnCellClicked.Invoke(screen, new object[] { target });
 
-        // If no more crystal sphere clicks follow, schedule the proceed button.
-        if (!ReplayEngine.PeekCrystalSphereClick(out _, out _, out _))
-            CrystalSphereReplayPatch.ScheduleProceed(screen);
-
         return ExecuteResult.Ok();
     }
 

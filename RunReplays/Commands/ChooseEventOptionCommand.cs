@@ -46,13 +46,7 @@ public class ChooseEventOptionCommand : ReplayCommand
         // PROCEED before a map move — consume and advance.
         if (TextKey.Contains("PROCEED", System.StringComparison.OrdinalIgnoreCase))
         {
-            var pending = ReplayEngine.PeekAhead(1);
-            if (pending != null && pending.StartsWith("MoveToMapCoordAction "))
-            {
-                TaskHelper.RunSafely(NEventRoom.Proceed());
-                ScheduleFollowUp();
-                return ExecuteResult.Ok();
-            }
+            return ExecuteResult.Ok();
         }
 
         // Find the matching option.
