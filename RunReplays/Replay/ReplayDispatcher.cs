@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.GameActions;
@@ -23,6 +24,11 @@ namespace RunReplays;
 /// </summary>
 public static class ReplayDispatcher
 {
+    public static void Load(IReadOnlyList<string> commands)
+    {
+        ReplayEngine.Load(commands);
+    }
+
     /// <summary>Categories of game readiness, set by Harmony postfixes.</summary>
     [Flags]
     public enum ReadyState

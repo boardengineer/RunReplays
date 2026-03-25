@@ -574,7 +574,7 @@ public static class RunReplayMenu
         // as the new run reaches each decision point.
         string[] lines   = File.ReadAllLines(entry.MinimalLogPath);
         var      commands = lines.Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith('#')).ToList();
-        ReplayRunner.Load(commands);
+        ReplayDispatcher.Load(commands);
         ReplayEngine.ActiveSeed = entry.Seed;
 
         // Resolve the character model by matching the stored entry string against
@@ -636,7 +636,7 @@ public static class RunReplayMenu
         }
 
         var remainingCommands = allCommands.Skip(skipCount).ToList();
-        ReplayRunner.Load(remainingCommands);
+        ReplayDispatcher.Load(remainingCommands);
         ReplayEngine.ActiveSeed = target.Seed;
 
         GD.Print($"[RunReplays] Starting replay from floor {startFrom.Floor}: " +

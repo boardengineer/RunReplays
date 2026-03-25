@@ -9,7 +9,7 @@ namespace RunReplays;
 /// <summary>
 /// Raw command queue for an active replay.
 /// Exposes typed Peek helpers for each command kind; consumption and logging
-/// are handled by ReplayRunner, which calls these methods and proxies results.
+/// are handled by ReplayDispatcher, which calls these methods and proxies results.
 /// </summary>
 public static class ReplayEngine
 {
