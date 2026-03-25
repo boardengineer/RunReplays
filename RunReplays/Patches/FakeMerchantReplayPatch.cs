@@ -43,8 +43,6 @@ public static class FakeMerchantReplayPatch
 {
     internal static NFakeMerchant? ActiveInstance;
 
-    internal static bool IsActive => ActiveInstance != null;
-
     internal static readonly MethodInfo? OpenInventoryMethod =
         typeof(NFakeMerchant).GetMethod("OpenInventory",
             BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);

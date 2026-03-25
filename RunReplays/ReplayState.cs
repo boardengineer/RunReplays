@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Godot;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.GameActions;
+using MegaCrit.Sts2.Core.Multiplayer.Game;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 
@@ -27,6 +28,11 @@ public static class ReplayState
     /// The card reward selection screen, set by CardRewardReplayPatch postfix.
     /// </summary>
     public static NCardRewardSelectionScreen? CardRewardSelectionScreen { get; set; }
+
+    /// <summary>
+    /// The active event synchronizer, set by EventOptionReplayPatch postfix.
+    /// </summary>
+    public static EventSynchronizer? ActiveEventSynchronizer { get; set; }
 
     /// <summary>
     /// Tracks whether a card play is in flight.  Set by the combat patch.
@@ -106,6 +112,7 @@ public static class ReplayState
     {
         ActiveRewardsScreen = null;
         CardRewardSelectionScreen = null;
+        ActiveEventSynchronizer = null;
         CardPlayInFlight = false;
         PotionInFlight = false;
         _actionInFlight = false;

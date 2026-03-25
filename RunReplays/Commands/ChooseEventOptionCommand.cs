@@ -31,7 +31,7 @@ public class ChooseEventOptionCommand : ReplayCommand
     {
         PlayerActionBuffer.LogDispatcher($"Should be executing event command?");
         
-        var sync = EventOptionReplayPatch._activeSynchronizer;
+        var sync = ReplayState.ActiveEventSynchronizer;
         if (sync == null)
             return ExecuteResult.Retry(300);
 
