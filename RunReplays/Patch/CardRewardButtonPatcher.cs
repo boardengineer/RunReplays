@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 
@@ -46,8 +47,8 @@ public static class CardRewardButtonPatcher
             }
 
             var prefix = new HarmonyMethod(
-                typeof(BattleRewardPatch),
-                nameof(BattleRewardPatch.GetRewardPrefix));
+                typeof(CardRewardButtonPatcher),
+                nameof(GetRewardPrefix));
 
             harmony.Patch(getReward, prefix: prefix);
             PlayerActionBuffer.LogToDevConsole(
@@ -58,5 +59,61 @@ public static class CardRewardButtonPatcher
             PlayerActionBuffer.LogToDevConsole(
                 $"[CardRewardButtonPatcher] Manual patching FAILED: {ex}");
         }
+    }
+
+    /// <summary>
+    /// Harmony prefix for NRewardButton.GetReward().
+    /// When a CardReward-type button is clicked (during recording, not
+    /// replay), computes its 0-based index among all CardReward buttons
+    /// on the parent NRewardsScreen and stores it in
+    /// <see cref="BattleRewardPatch.LastCardRewardIndex"/>.
+    /// </summary>
+    public static void GetRewardPrefix(object __instance)
+    {
+        // During replay the index comes from the log, not from button clicks.
+        if (ReplayEngine.IsActive) return;
+
+        // Check whether the reward on this button is a regular CardReward.
+        var rewardProp = __instance.GetType()
+            .GetProperty("Reward", BindingFlags.Public | BindingFlags.Instance);
+        var reward = rewardProp?.GetValue(__instance);
+        if (reward == null || !BattleRewardsReplayPatch.IsRewardOfType(reward, "CardReward"))
+        {
+            BattleRewardPatch.LastCardRewardIndex = -1;
+            return;
+        }
+
+        BattleRewardPatch.IsProcessingCardReward = true;
+
+        // Walk up the tree to find the NRewardsScreen ancestor.
+        Node node = (Node)__instance;
+        Node? current = node.GetParent();
+        NRewardsScreen? screen = null;
+        while (current != null)
+        {
+            if (current is NRewardsScreen s) { screen = s; break; }
+            current = current.GetParent();
+        }
+
+        if (screen == null)
+        {
+            BattleRewardPatch.LastCardRewardIndex = -1;
+            return;
+        }
+
+        // Find this button's index among all CardReward buttons.
+        int index = 0;
+        foreach (var (button, r) in BattleRewardsReplayPatch.EnumerateRewardButtons(screen))
+        {
+            if (!BattleRewardsReplayPatch.IsRewardOfType(r, "CardReward"))
+                continue;
+            if (ReferenceEquals(button, node))
+            {
+                BattleRewardPatch.LastCardRewardIndex = index;
+                return;
+            }
+            index++;
+        }
+        BattleRewardPatch.LastCardRewardIndex = -1;
     }
 }
