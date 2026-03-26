@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Godot;
 using HarmonyLib;
@@ -34,21 +32,17 @@ public sealed class SelectCardFromScreenCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        PlayerActionBuffer.LogMigrationWarning("hand select 1");
         var screen = ChooseACardScreenCapture.ActiveScreen;
         if (screen == null)
             return ExecuteResult.Retry(300);
-        PlayerActionBuffer.LogMigrationWarning("hand select 2");
-
-        PlayerActionBuffer.LogMigrationWarning("hand select 3");
+        
         if (Index < 0)
         {
             ChooseACardScreenCapture.EmitSkip(screen);
             ChooseACardScreenCapture.ActiveScreen = null;
             return ExecuteResult.Ok();
         }
-        PlayerActionBuffer.LogMigrationWarning("hand select 4");
-
+        
         var holder = CardGridScreenCapture.FindCardHolderByIndex(screen, Index);
         if (holder == null)
             return ExecuteResult.Retry(300);
@@ -105,12 +99,10 @@ public static class ChooseACardScreenCapture
     {
         if (!ReplayEngine.IsActive) return;
         ActiveScreen = __instance;
-        PlayerActionBuffer.LogDispatcher(
-            $"[ChooseACardCapture] Screen captured: {__instance.GetType().Name}");
-        Callable.From(ReplayDispatcher.DispatchNow).CallDeferred();
+        Callable.From(ReplayDispatcher.TryDispatch).CallDeferred();
     }
 
-    internal static void SelectHolder(NChooseACardSelectionScreen screen, Godot.Node holder)
+    internal static void SelectHolder(NChooseACardSelectionScreen screen, Node holder)
     {
         SelectHolderMethod?.Invoke(screen, new object[] { holder });
     }
@@ -118,14 +110,14 @@ public static class ChooseACardScreenCapture
     internal static void ConfirmSelection(NChooseACardSelectionScreen screen, IEnumerable<CardModel> cards)
     {
         var tcs = CompletionSourceField?.GetValue(screen)
-            as System.Threading.Tasks.TaskCompletionSource<IEnumerable<CardModel>>;
+            as TaskCompletionSource<IEnumerable<CardModel>>;
         tcs?.TrySetResult(cards);
     }
 
     internal static void EmitSkip(NChooseACardSelectionScreen screen)
     {
         var tcs = CompletionSourceField?.GetValue(screen)
-            as System.Threading.Tasks.TaskCompletionSource<IEnumerable<CardModel>>;
+            as TaskCompletionSource<IEnumerable<CardModel>>;
         tcs?.TrySetResult(Array.Empty<CardModel>());
     }
 
