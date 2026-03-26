@@ -75,6 +75,14 @@ public abstract class ReplayCommand
     public abstract string Describe();
 
     /// <summary>
+    /// Default ToString returns <see cref="RawText"/> so that commands without
+    /// an explicit override still produce a usable string representation.
+    /// Subclasses should override to reconstruct the canonical format from
+    /// their typed properties.
+    /// </summary>
+    public override string ToString() => RawText;
+
+    /// <summary>
     /// Executes this command against the game API.  Called by the dispatcher
     /// after readiness and timing checks pass.
     /// </summary>

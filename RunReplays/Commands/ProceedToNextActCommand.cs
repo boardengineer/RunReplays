@@ -10,8 +10,14 @@ public sealed class ProceedToNextActCommand : ReplayCommand
 {
     private const string Prefix = "VoteForMapCoordAction ";
 
+    public string Arguments { get; }
 
-    private ProceedToNextActCommand(string raw) : base(raw) { }
+    private ProceedToNextActCommand(string raw, string arguments) : base(raw)
+    {
+        Arguments = arguments;
+    }
+
+    public override string ToString() => $"{Prefix}{Arguments}";
 
     public override string Describe() => "proceed to next act";
 
@@ -22,5 +28,5 @@ public sealed class ProceedToNextActCommand : ReplayCommand
     }
 
     public static ProceedToNextActCommand? TryParse(string raw)
-        => raw.StartsWith(Prefix) ? new ProceedToNextActCommand(raw) : null;
+        => raw.StartsWith(Prefix) ? new ProceedToNextActCommand(raw, raw.Substring(Prefix.Length)) : null;
 }

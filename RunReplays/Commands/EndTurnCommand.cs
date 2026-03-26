@@ -10,8 +10,14 @@ public class EndTurnCommand : ReplayCommand
 {
     private const string Prefix = "EndPlayerTurnAction ";
 
+    public string Arguments { get; }
 
-    private EndTurnCommand(string raw) : base(raw) { }
+    private EndTurnCommand(string raw, string arguments) : base(raw)
+    {
+        Arguments = arguments;
+    }
+
+    public override string ToString() => $"{Prefix}{Arguments}";
 
     public override string Describe() => "end player turn";
 
@@ -31,6 +37,6 @@ public class EndTurnCommand : ReplayCommand
     {
         if (!raw.StartsWith(Prefix))
             return null;
-        return new EndTurnCommand(raw);
+        return new EndTurnCommand(raw, raw.Substring(Prefix.Length));
     }
 }

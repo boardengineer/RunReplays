@@ -121,6 +121,19 @@ public static class PlayerActionBuffer
                 return;
             }
 
+            // MoveToMapCoordAction — record our simplified format instead of the
+            // game's verbose "MoveToMapCoordAction {P} MapCoord ({col}, {row})".
+            if (action is MoveToMapCoordAction mapAction)
+            {
+                var destField = typeof(MoveToMapCoordAction).GetField(
+                    "_destination", BindingFlags.NonPublic | BindingFlags.Instance);
+                if (destField?.GetValue(mapAction) is MegaCrit.Sts2.Core.Map.MapCoord dest)
+                {
+                    Record(new MapMoveCommand(dest.col).ToString());
+                    return;
+                }
+            }
+
             string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
             string actionText = action.ToString()!;
 

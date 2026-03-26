@@ -16,15 +16,20 @@ public class PlayCardCommand : ReplayCommand
     private const string IndexMarker = " index: ";
     private const string TargetMarker = " targetid: ";
 
+    public string CardDescription { get; }
     public uint CombatCardIndex { get; }
     public uint? TargetId { get; }
 
 
-    private PlayCardCommand(string raw, uint combatCardIndex, uint? targetId) : base(raw)
+    private PlayCardCommand(string raw, string cardDescription, uint combatCardIndex, uint? targetId) : base(raw)
     {
+        CardDescription = cardDescription;
         CombatCardIndex = combatCardIndex;
         TargetId = targetId;
     }
+
+    public override string ToString()
+        => $"{Prefix}card: {CardDescription}{IndexMarker}{CombatCardIndex}{TargetMarker}{TargetId}";
 
     public override string Describe()
     {
@@ -96,6 +101,16 @@ public class PlayCardCommand : ReplayCommand
         if (targetStr.Length > 0 && uint.TryParse(targetStr, out uint tid))
             targetId = tid;
 
-        return new PlayCardCommand(raw, combatCardIndex, targetId);
+        // Extract card description between "card: " and the index marker
+        const string cardMarker = "card: ";
+        int cardStart = raw.IndexOf(cardMarker, Prefix.Length, System.StringComparison.Ordinal);
+        string cardDescription = "";
+        if (cardStart >= 0)
+        {
+            cardStart += cardMarker.Length;
+            cardDescription = raw.Substring(cardStart, indexIdx - cardStart);
+        }
+
+        return new PlayCardCommand(raw, cardDescription, combatCardIndex, targetId);
     }
 }

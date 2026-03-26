@@ -26,6 +26,20 @@ public class SelectionCommand : ReplayCommand
 
     public override bool IsSelectionCommand => true;
 
+    public override string ToString()
+    {
+        string prefix = Kind switch
+        {
+            SelectionKind.SelectSimpleCard => "SelectSimpleCard",
+            SelectionKind.UpgradeCard => "UpgradeCard",
+            SelectionKind.SelectCardFromScreen => "SelectCardFromScreen",
+            _ => "Selection",
+        };
+        return Indices.Length == 1
+            ? $"{prefix} {Indices[0]}"
+            : $"{prefix} {string.Join(" ", Indices)}";
+    }
+
     private SelectionCommand(string raw, SelectionKind kind, int[] indices) : base(raw)
     {
         Kind = kind;

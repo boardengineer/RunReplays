@@ -17,13 +17,18 @@ public sealed class DiscardPotionCommand : ReplayCommand
     private const string Prefix = "NetDiscardPotionGameAction for player ";
     private const string SlotMarker = " potion slot: ";
 
+    public string PlayerInfo { get; }
     public int SlotIndex { get; }
 
 
-    private DiscardPotionCommand(string raw, int slotIndex) : base(raw)
+    private DiscardPotionCommand(string raw, string playerInfo, int slotIndex) : base(raw)
     {
+        PlayerInfo = playerInfo;
         SlotIndex = slotIndex;
     }
+
+    public override string ToString()
+        => $"{Prefix}{PlayerInfo}{SlotMarker}{SlotIndex}";
 
     public override string Describe() => $"discard potion slot={SlotIndex}";
 
@@ -71,6 +76,9 @@ public sealed class DiscardPotionCommand : ReplayCommand
         if (!int.TryParse(slotSpan, out int slotIndex))
             return null;
 
-        return new DiscardPotionCommand(raw, slotIndex);
+        // Extract the player info between the prefix and the slot marker
+        string playerInfo = raw.Substring(Prefix.Length, markerPos - Prefix.Length);
+
+        return new DiscardPotionCommand(raw, playerInfo, slotIndex);
     }
 }

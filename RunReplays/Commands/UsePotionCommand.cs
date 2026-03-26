@@ -20,17 +20,24 @@ public sealed class UsePotionCommand : ReplayCommand
     private const string TargetMarker = " target: ";
     private const string CombatMarker = " combat: ";
 
+    public string PotionDescription { get; }
     public uint PotionIndex { get; }
     public uint? TargetId { get; }
+    public string TargetDescription { get; }
     public bool InCombat { get; }
 
 
-    private UsePotionCommand(string raw, uint potionIndex, uint? targetId, bool inCombat) : base(raw)
+    private UsePotionCommand(string raw, string potionDescription, uint potionIndex, uint? targetId, string targetDescription, bool inCombat) : base(raw)
     {
+        PotionDescription = potionDescription;
         PotionIndex = potionIndex;
         TargetId = targetId;
+        TargetDescription = targetDescription;
         InCombat = inCombat;
     }
+
+    public override string ToString()
+        => $"{Prefix}{PotionDescription}{IndexMarker}{PotionIndex}{TargetMarker}{TargetId} ({TargetDescription}){CombatMarker}{InCombat}";
 
     public override string Describe()
     {
@@ -125,9 +132,18 @@ public sealed class UsePotionCommand : ReplayCommand
         if (targetSpan.Length > 0 && uint.TryParse(targetSpan, out uint tid))
             targetId = tid;
 
+        // Extract creature name between "(" and ")" after the target id
+        string targetDescription = "";
+        int closeParenIdx = raw.IndexOf(')', openParenIdx + 2);
+        if (closeParenIdx > openParenIdx)
+            targetDescription = raw.Substring(openParenIdx + 2, closeParenIdx - openParenIdx - 2);
+
         var combatSpan = raw.AsSpan(combatIdx + CombatMarker.Length).Trim();
         bool inCombat = combatSpan.Equals("True", StringComparison.OrdinalIgnoreCase);
 
-        return new UsePotionCommand(raw, potionIndex, targetId, inCombat);
+        // Extract potion description (netId + potionName) between prefix and index marker
+        string potionDescription = raw.Substring(Prefix.Length, indexIdx - Prefix.Length);
+
+        return new UsePotionCommand(raw, potionDescription, potionIndex, targetId, targetDescription, inCombat);
     }
 }

@@ -146,21 +146,6 @@ public static class ReplayEngine
     /// <summary>Returns the next queued command without consuming it.</summary>
     public static bool PeekNext(out ReplayCommand? cmd) => _pending.TryPeek(out cmd);
 
-    /// <summary>Peek the next command as a raw string (for legacy callers).</summary>
-    public static bool PeekMapNode(out int col, out int row)
-    {
-        col = row = 0;
-        if (!_pending.TryPeek(out var cmd))
-            return false;
-        if (cmd is MapMoveCommand map)
-        {
-            col = map.Col;
-            row = map.Row;
-            return true;
-        }
-        return false;
-    }
-
     public static bool ConsumeAny()
     {
         SignalConsumed(_pending.Dequeue());
