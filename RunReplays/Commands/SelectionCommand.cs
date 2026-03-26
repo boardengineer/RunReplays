@@ -54,17 +54,18 @@ public class SelectionCommand : ReplayCommand
         if (cards == null)
             return ExecuteResult.Retry(300);
 
+        var selected = new List<CardModel>();
         foreach (int idx in Indices)
         {
             if (idx < 0 || idx >= cards.Count)
                 return ExecuteResult.Retry(300);
+
+            CardGridScreenCapture.ClickCard(screen, cards[idx]);
+            selected.Add(cards[idx]);
         }
 
-        var selected = new List<CardModel>();
-        foreach (int idx in Indices)
-            selected.Add(cards[idx]);
-
-        CardGridScreenCapture.ResolveSelection(selected);
+        CardGridScreenCapture.ConfirmSelection(screen, selected);
+        CardGridScreenCapture.ActiveScreen = null;
         return ExecuteResult.Ok();
     }
 

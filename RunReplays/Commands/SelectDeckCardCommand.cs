@@ -51,6 +51,7 @@ public class SelectDeckCardCommand : ReplayCommand
         if (cards == null)
             return ExecuteResult.Retry(300);
 
+        var selected = new List<CardModel>();
         foreach (int idx in DeckIndices)
         {
             if (idx < 0 || idx >= cards.Count)
@@ -59,17 +60,15 @@ public class SelectDeckCardCommand : ReplayCommand
                     $"[SelectDeckCard] Index {idx} out of range (count={cards.Count}) — retrying.");
                 return ExecuteResult.Retry(300);
             }
-        }
 
-        var selected = new List<CardModel>();
-        foreach (int idx in DeckIndices)
-        {
+            CardGridScreenCapture.ClickCard(screen, cards[idx]);
             selected.Add(cards[idx]);
             PlayerActionBuffer.LogToDevConsole(
-                $"[SelectDeckCard] Selected '{cards[idx].Title}' at index {idx}.");
+                $"[SelectDeckCard] Clicked card '{cards[idx].Title}' at index {idx}.");
         }
 
-        CardGridScreenCapture.ResolveSelection(selected);
+        CardGridScreenCapture.ConfirmSelection(screen, selected);
+        CardGridScreenCapture.ActiveScreen = null;
         return ExecuteResult.Ok();
     }
 
@@ -97,11 +96,7 @@ public class SelectDeckCardCommand : ReplayCommand
 
 /// <summary>
 /// Captures NCardGridSelectionScreen instances when they enter the scene tree
-/// and provides helpers to resolve their _completionSource directly.
-///
-/// _completionSource is a protected TaskCompletionSource on NCardGridSelectionScreen.
-/// CardsSelected() just awaits it. By calling SetResult ourselves, we bypass
-/// the normal UI selection flow entirely.
+/// and provides helpers to simulate card clicks.
 /// </summary>
 [HarmonyPatch(typeof(NCardGridSelectionScreen), nameof(NCardGridSelectionScreen.CardsSelected))]
 public static class CardGridScreenCapture
@@ -109,6 +104,10 @@ public static class CardGridScreenCapture
     internal static readonly FieldInfo? CardsField =
         typeof(NCardGridSelectionScreen).GetField(
             "_cards", BindingFlags.NonPublic | BindingFlags.Instance);
+
+    private static readonly MethodInfo? OnCardClickedMethod =
+        typeof(NCardGridSelectionScreen).GetMethod(
+            "OnCardClicked", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
     private static readonly FieldInfo? CompletionSourceField =
         typeof(NCardGridSelectionScreen).GetField(
@@ -128,21 +127,40 @@ public static class CardGridScreenCapture
     }
 
     /// <summary>
-    /// Resolves the captured screen's _completionSource with the given cards,
-    /// causing CardsSelected() to return immediately with our selection.
+    /// Invokes OnCardClicked on the screen with the given card, simulating
+    /// a player clicking that card in the grid.
     /// </summary>
-    internal static bool ResolveSelection(IEnumerable<CardModel> cards)
+    internal static void ClickCard(NCardGridSelectionScreen screen, CardModel card)
     {
-        if (ActiveScreen == null) return false;
+        OnCardClickedMethod?.Invoke(screen, new object[] { card });
+    }
 
-        var tcs = CompletionSourceField?.GetValue(ActiveScreen)
-            as TaskCompletionSource<IEnumerable<CardModel>>;
-        if (tcs == null) return false;
+    /// <summary>
+    /// Resolves the screen's _completionSource with the given cards,
+    /// confirming the selection and causing CardsSelected() to return.
+    /// </summary>
+    internal static void ConfirmSelection(NCardGridSelectionScreen screen, IEnumerable<CardModel> cards)
+    {
+        var tcs = CompletionSourceField?.GetValue(screen)
+            as System.Threading.Tasks.TaskCompletionSource<IEnumerable<CardModel>>;
+        tcs?.TrySetResult(cards);
+    }
 
-        tcs.TrySetResult(cards);
-        ReplayState.EnqueueScreenCleanup(ActiveScreen);
-        ActiveScreen = null;
-        return true;
+    /// <summary>
+    /// Finds the Nth card holder child in the screen (nodes with a CardModel property).
+    /// </summary>
+    internal static Godot.Node? FindCardHolderByIndex(Godot.Node screen, int index)
+    {
+        int count = 0;
+        foreach (Godot.Node node in screen.FindChildren("*", "", owned: false))
+        {
+            var prop = node.GetType().GetProperty(
+                "CardModel", BindingFlags.Public | BindingFlags.Instance);
+            if (prop?.GetValue(node) is not CardModel) continue;
+            if (count == index) return node;
+            count++;
+        }
+        return null;
     }
 
     internal static void Clear()

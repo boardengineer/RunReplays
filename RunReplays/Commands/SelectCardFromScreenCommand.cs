@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading.Tasks;
+using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
@@ -12,9 +12,6 @@ namespace RunReplays.Commands;
 /// Select a card from a choose-a-card screen (Power Potion, Attack Potion, etc.).
 /// Recorded as: "SelectCardFromScreen {index}"
 /// Index -1 means skip (no card selected).
-///
-/// Uses ChooseACardScreenCapture to resolve the selection, mirroring
-/// the CardGridScreenCapture pattern used by SelectDeckCardCommand.
 /// </summary>
 public sealed class SelectCardFromScreenCommand : ReplayCommand
 {
@@ -37,24 +34,37 @@ public sealed class SelectCardFromScreenCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
+        PlayerActionBuffer.LogMigrationWarning("hand select 1");
         var screen = ChooseACardScreenCapture.ActiveScreen;
         if (screen == null)
             return ExecuteResult.Retry(300);
+        PlayerActionBuffer.LogMigrationWarning("hand select 2");
 
-        var cards = ChooseACardScreenCapture.CardsField?.GetValue(screen) as IReadOnlyList<CardModel>;
-        if (cards == null)
-            return ExecuteResult.Retry(300);
-
+        PlayerActionBuffer.LogMigrationWarning("hand select 3");
         if (Index < 0)
         {
-            ChooseACardScreenCapture.ResolveSelection(Array.Empty<CardModel>());
+            ChooseACardScreenCapture.EmitSkip(screen);
+            ChooseACardScreenCapture.ActiveScreen = null;
             return ExecuteResult.Ok();
         }
+        PlayerActionBuffer.LogMigrationWarning("hand select 4");
 
-        if (Index >= cards.Count)
+        var holder = CardGridScreenCapture.FindCardHolderByIndex(screen, Index);
+        if (holder == null)
             return ExecuteResult.Retry(300);
 
-        ChooseACardScreenCapture.ResolveSelection(new[] { cards[Index] });
+        CardModel? cardModel = holder.GetType()
+            .GetProperty("CardModel", BindingFlags.Public | BindingFlags.Instance)
+            ?.GetValue(holder) as CardModel;
+        
+
+        PlayerActionBuffer.LogDispatcher(
+            $"[SelectCardFromScreen] Selecting card '{cardModel?.Title}' at index {Index}.");
+
+        ChooseACardScreenCapture.SelectHolder(screen, holder);
+        if (cardModel != null)
+            ChooseACardScreenCapture.ConfirmSelection(screen, new[] { cardModel });
+        ChooseACardScreenCapture.ActiveScreen = null;
         return ExecuteResult.Ok();
     }
 
@@ -71,16 +81,18 @@ public sealed class SelectCardFromScreenCommand : ReplayCommand
 }
 
 /// <summary>
-/// Captures NChooseACardSelectionScreen instances when CardsSelected is called
-/// and provides helpers to resolve their _completionSource directly.
-/// Mirrors CardGridScreenCapture for NCardGridSelectionScreen.
+/// Captures NChooseACardSelectionScreen instances when CardsSelected is called.
 /// </summary>
 [HarmonyPatch(typeof(NChooseACardSelectionScreen), nameof(NChooseACardSelectionScreen.CardsSelected))]
 public static class ChooseACardScreenCapture
 {
-    internal static readonly FieldInfo? CardsField =
+    private static readonly MethodInfo? SelectHolderMethod =
+        typeof(NChooseACardSelectionScreen).GetMethod(
+            "SelectHolder", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+    private static readonly FieldInfo? SkipButtonField =
         typeof(NChooseACardSelectionScreen).GetField(
-            "_cards", BindingFlags.NonPublic | BindingFlags.Instance);
+            "_skipButton", BindingFlags.NonPublic | BindingFlags.Instance);
 
     private static readonly FieldInfo? CompletionSourceField =
         typeof(NChooseACardSelectionScreen).GetField(
@@ -95,21 +107,26 @@ public static class ChooseACardScreenCapture
         ActiveScreen = __instance;
         PlayerActionBuffer.LogDispatcher(
             $"[ChooseACardCapture] Screen captured: {__instance.GetType().Name}");
-        ReplayDispatcher.DispatchNow();
+        Callable.From(ReplayDispatcher.DispatchNow).CallDeferred();
     }
 
-    internal static bool ResolveSelection(IEnumerable<CardModel> cards)
+    internal static void SelectHolder(NChooseACardSelectionScreen screen, Godot.Node holder)
     {
-        if (ActiveScreen == null) return false;
+        SelectHolderMethod?.Invoke(screen, new object[] { holder });
+    }
 
-        var tcs = CompletionSourceField?.GetValue(ActiveScreen)
-            as TaskCompletionSource<IEnumerable<CardModel>>;
-        if (tcs == null) return false;
+    internal static void ConfirmSelection(NChooseACardSelectionScreen screen, IEnumerable<CardModel> cards)
+    {
+        var tcs = CompletionSourceField?.GetValue(screen)
+            as System.Threading.Tasks.TaskCompletionSource<IEnumerable<CardModel>>;
+        tcs?.TrySetResult(cards);
+    }
 
-        tcs.TrySetResult(cards);
-        ReplayState.EnqueueScreenCleanup(ActiveScreen);
-        ActiveScreen = null;
-        return true;
+    internal static void EmitSkip(NChooseACardSelectionScreen screen)
+    {
+        var tcs = CompletionSourceField?.GetValue(screen)
+            as System.Threading.Tasks.TaskCompletionSource<IEnumerable<CardModel>>;
+        tcs?.TrySetResult(Array.Empty<CardModel>());
     }
 
     internal static void Clear()

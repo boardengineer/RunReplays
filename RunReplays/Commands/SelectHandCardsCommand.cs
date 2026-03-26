@@ -48,32 +48,23 @@ public sealed class SelectHandCardsCommand : ReplayCommand
         if (hand == null)
             return ExecuteResult.Retry(100);
 
-        var tcs = HandSelectionCapture.CompletionSourceField?.GetValue(hand)
-            as TaskCompletionSource<IEnumerable<CardModel>>;
-        if (tcs == null || tcs.Task.IsCompleted)
+        var holders = HandSelectionCapture.GetHolders(hand);
+        if (holders == null)
             return ExecuteResult.Retry(100);
 
-        // Get the player's hand cards to map indices.
-        var combatState = CombatManager.Instance?.DebugOnlyGetState();
-        if (combatState == null)
-            return ExecuteResult.Retry(100);
-
-        var player = LocalContext.GetMe(combatState)
-                     ?? combatState.Players.FirstOrDefault();
-        var handCards = player?.PlayerCombatState?.Hand?.Cards;
-        if (handCards == null)
-            return ExecuteResult.Retry(100);
-
-        var selected = new List<CardModel>();
         foreach (int idx in HandIndices)
         {
-            if (idx >= 0 && idx < handCards.Count)
+            if (idx < 0 || idx >= holders.Count)
             {
-                selected.Add(handCards[idx]);
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[SelectHandCards] Index {idx} out of range (count={holders.Count}) — retrying.");
+                return ExecuteResult.Retry(100);
             }
+
+            HandSelectionCapture.PressHolder(hand, holders[idx]);
         }
 
-        tcs.TrySetResult(selected);
+        HandSelectionCapture.ConfirmSelection(hand);
         HandSelectionCapture.ActiveHand = null;
         return ExecuteResult.Ok();
     }
@@ -107,19 +98,22 @@ public sealed class SelectHandCardsCommand : ReplayCommand
 
 /// <summary>
 /// Captures NPlayerHand instances when they enter card selection mode
-/// and provides reflection access to resolve the selection directly.
-///
-/// NPlayerHand.SelectCards creates a _selectionCompletionSource that drives
-/// the selection UI.  By resolving it ourselves (TrySetResult), we bypass
-/// the UI entirely — matching the pattern used by CardGridScreenCapture
-/// for deck card selection.
+/// and provides helpers to simulate card selection and confirmation.
 /// </summary>
 [HarmonyPatch(typeof(NPlayerHand), nameof(NPlayerHand.SelectCards))]
 public static class HandSelectionCapture
 {
-    internal static readonly FieldInfo? CompletionSourceField =
-        typeof(NPlayerHand).GetField(
-            "_selectionCompletionSource", BindingFlags.NonPublic | BindingFlags.Instance);
+    private static readonly MethodInfo? OnHolderPressedMethod =
+        typeof(NPlayerHand).GetMethod(
+            "OnHolderPressed", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+    private static readonly MethodInfo? OnConfirmMethod =
+        typeof(NPlayerHand).GetMethod(
+            "OnSelectModeConfirmButtonPressed", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+    private static readonly PropertyInfo? HoldersProp =
+        typeof(NPlayerHand).GetProperty(
+            "Holders", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
     internal static NPlayerHand? ActiveHand;
 
@@ -129,6 +123,21 @@ public static class HandSelectionCapture
         if (!ReplayEngine.IsActive) return;
         ActiveHand = __instance;
         ReplayDispatcher.DispatchNow();
+    }
+
+    internal static IReadOnlyList<Godot.Node>? GetHolders(NPlayerHand hand)
+    {
+        return HoldersProp?.GetValue(hand) as IReadOnlyList<Godot.Node>;
+    }
+
+    internal static void PressHolder(NPlayerHand hand, Godot.Node holder)
+    {
+        OnHolderPressedMethod?.Invoke(hand, new object[] { holder });
+    }
+
+    internal static void ConfirmSelection(NPlayerHand hand)
+    {
+        OnConfirmMethod?.Invoke(hand, new object?[] { null });
     }
 
     internal static void Clear()

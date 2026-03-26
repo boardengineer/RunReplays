@@ -43,6 +43,7 @@ public sealed class RemoveCardFromDeckCommand : ReplayCommand
         if (cards == null)
             return ExecuteResult.Retry(300);
 
+        var selected = new List<CardModel>();
         foreach (int idx in DeckIndices)
         {
             if (idx < 0 || idx >= cards.Count)
@@ -51,15 +52,13 @@ public sealed class RemoveCardFromDeckCommand : ReplayCommand
                     $"[RemoveCardFromDeck] Index {idx} out of range (count={cards.Count}) — retrying.");
                 return ExecuteResult.Retry(300);
             }
-        }
 
-        var selected = new List<CardModel>();
-        foreach (int idx in DeckIndices)
-        {
+            CardGridScreenCapture.ClickCard(screen, cards[idx]);
             selected.Add(cards[idx]);
         }
 
-        CardGridScreenCapture.ResolveSelection(selected);
+        CardGridScreenCapture.ConfirmSelection(screen, selected);
+        CardGridScreenCapture.ActiveScreen = null;
         return ExecuteResult.Ok();
     }
 
