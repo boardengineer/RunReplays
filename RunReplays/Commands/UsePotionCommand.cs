@@ -1,7 +1,9 @@
 using System;
+using Godot;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Nodes;
 
 using RunReplays.Patches;
 using RunReplays.Patches.Replay;
@@ -36,8 +38,19 @@ public sealed class UsePotionCommand : ReplayCommand
         return $"use potion slot={PotionIndex}{target} combat={InCombat}";
     }
 
+    public override bool BlocksDuringCombatStartup => true;
+
     public override ExecuteResult Execute()
     {
+        // Wait until the game is in the play phase before using a combat potion.
+        // Using it too early (e.g. during combat intro at high speed) breaks the UI.
+        if (InCombat)
+        {
+            var combat = MegaCrit.Sts2.Core.Combat.CombatManager.Instance;
+            if (combat == null || !combat.IsPlayPhase)
+                return ExecuteResult.Retry(200);
+        }
+
         Player? player = CardPlayReplayPatch.ResolveLocalPlayer();
         if (player == null)
         {
@@ -65,7 +78,12 @@ public sealed class UsePotionCommand : ReplayCommand
 
         try
         {
-            ReplayState.PotionInFlight = true;
+            // Only block dispatch for in-combat potions where AfterActionExecuted
+            // will fire via the ActionExecutor subscription.  Out-of-combat potions
+            // (e.g. used before TurnStarted) may not have an ActionExecutor yet.
+            if (InCombat)
+                ReplayState.PotionInFlight = true;
+
             potion.EnqueueManualUse(target);
         }
         catch (Exception ex)
