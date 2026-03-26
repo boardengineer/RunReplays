@@ -19,6 +19,7 @@ public class TakeCardCommand : ReplayCommand
 {
     private const string Prefix = "TakeCard ";
     private const string SacrificeKeyword = "sacrifice";
+    private const string SkipKeyword = "skip";
 
     private static readonly FieldInfo? ExtraOptionsField =
         typeof(NCardRewardSelectionScreen).GetField(
@@ -31,28 +32,32 @@ public class TakeCardCommand : ReplayCommand
 
     public int CardIndex { get; }
     public bool IsSacrifice { get; }
+    public bool IsSkip { get; }
 
     public TakeCardCommand(int cardIndex) : base("")
     {
         CardIndex = cardIndex;
-        IsSacrifice = false;
     }
 
-    private TakeCardCommand(bool sacrifice) : base("")
+    private TakeCardCommand(bool sacrifice, bool skip) : base("")
     {
         CardIndex = -1;
-        IsSacrifice = true;
+        IsSacrifice = sacrifice;
+        IsSkip = skip;
     }
 
-    public static TakeCardCommand Sacrifice() => new(sacrifice: true);
+    public static TakeCardCommand Sacrifice() => new(sacrifice: true, skip: false);
+    public static TakeCardCommand Skip() => new(sacrifice: false, skip: true);
 
     public override string ToString()
-        => IsSacrifice ? $"{Prefix}{SacrificeKeyword}" : $"{Prefix}{CardIndex}";
+        => IsSacrifice ? $"{Prefix}{SacrificeKeyword}"
+         : IsSkip ? $"{Prefix}{SkipKeyword}"
+         : $"{Prefix}{CardIndex}";
 
     public override string Describe()
-        => IsSacrifice
-            ? "sacrifice card reward"
-            : $"take card [{CardIndex}]" + (Comment != null ? $" ({Comment})" : "");
+        => IsSacrifice ? "sacrifice card reward"
+         : IsSkip ? "skip card reward"
+         : $"take card [{CardIndex}]" + (Comment != null ? $" ({Comment})" : "");
 
     public override ExecuteResult Execute()
     {
@@ -62,6 +67,9 @@ public class TakeCardCommand : ReplayCommand
 
         if (IsSacrifice)
             return ExecuteSacrifice(screen);
+
+        if (IsSkip)
+            return ExecuteSkip(screen);
 
         return ExecuteSelectCard(screen);
     }
@@ -78,6 +86,44 @@ public class TakeCardCommand : ReplayCommand
 
         holder.EmitSignal("Pressed", holder);
         PlayerActionBuffer.LogDispatcher($"[TakeCard] Selected card [{CardIndex}].");
+        ReplayState.CardRewardSelectionScreen = null;
+        ReplayDispatcher.DispatchNow();
+        return ExecuteResult.Ok();
+    }
+
+    private ExecuteResult ExecuteSkip(NCardRewardSelectionScreen screen)
+    {
+        var extras = ExtraOptionsField?.GetValue(screen)
+            as IReadOnlyList<CardRewardAlternative>;
+
+        // Find the skip option (AfterSelected == DismissScreenAndKeepReward).
+        CardRewardAlternative? skipAlt = null;
+        if (extras != null)
+        {
+            foreach (var alt in extras)
+            {
+                if (alt.AfterSelected == MegaCrit.Sts2.Core.Entities.Rewards.PostAlternateCardRewardAction.DismissScreenAndKeepReward)
+                {
+                    skipAlt = alt;
+                    break;
+                }
+            }
+        }
+
+        if (skipAlt != null)
+        {
+            TaskHelper.RunSafely(skipAlt.OnSelect());
+            OnAlternateRewardSelectedMethod?.Invoke(screen, new object[] { skipAlt.AfterSelected });
+        }
+        else
+        {
+            // Fallback: dismiss with KeepReward directly.
+            OnAlternateRewardSelectedMethod?.Invoke(screen, new object[]
+            {
+                MegaCrit.Sts2.Core.Entities.Rewards.PostAlternateCardRewardAction.DismissScreenAndKeepReward
+            });
+        }
+
         ReplayState.CardRewardSelectionScreen = null;
         ReplayDispatcher.DispatchNow();
         return ExecuteResult.Ok();
@@ -124,6 +170,9 @@ public class TakeCardCommand : ReplayCommand
 
         if (rest.Equals(SacrificeKeyword, System.StringComparison.OrdinalIgnoreCase))
             return TakeCardCommand.Sacrifice();
+
+        if (rest.Equals(SkipKeyword, System.StringComparison.OrdinalIgnoreCase))
+            return TakeCardCommand.Skip();
 
         if (int.TryParse(rest, out int index))
             return new TakeCardCommand(index);
