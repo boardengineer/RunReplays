@@ -15,6 +15,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Debug;
 
+using RunReplays.Commands;
 using RunReplays.Patches;
 namespace RunReplays;
 
@@ -264,13 +265,14 @@ public static class PlayerActionBuffer
     /// contains all actions (replayed + new) rather than only the new ones.
     /// The overlay's recent-entry display is also refreshed.
     /// </summary>
-    private static void OnReplayCompleted(IReadOnlyList<string> commands)
+    private static void OnReplayCompleted(IReadOnlyList<ReplayCommand> commands)
     {
-        var verboseEntries = commands.Select(c => ("REPLAY", c)).ToList();
-        Restore(verboseEntries, commands);
+        var stringCommands = commands.Select(c => c.ToString()!).ToList();
+        var verboseEntries = stringCommands.Select(c => ("REPLAY", c)).ToList();
+        Restore(verboseEntries, stringCommands);
 
         // Strip " || state" suffix for overlay display.
-        var displayEntries = commands.Select(c =>
+        var displayEntries = stringCommands.Select(c =>
         {
             int sep = c.IndexOf(StateSeparator, StringComparison.Ordinal);
             return sep >= 0 ? c[..sep] : c;

@@ -26,7 +26,7 @@ public static class ReplayDispatcher
     }
 
     private static bool _paused;
-    private static float _delayBetweenCommands = 2.0f;
+    private static float _delayBetweenCommands = 1.0f;
     /// <summary>
     /// True while a dispatched command is executing (between ExecuteNext and
     /// the command being consumed from the queue).  Prevents re-dispatch of
@@ -38,7 +38,7 @@ public static class ReplayDispatcher
     /// The command string that was last dispatched.  Used to detect when the
     /// queue front has changed (i.e. the previous command was consumed).
     /// </summary>
-    private static string? _lastDispatchedCmd;
+    private static ReplayCommand? _lastDispatchedCmd;
 
     /// <summary>
     /// Incremented each time a dispatch is scheduled.  Timer callbacks compare
@@ -217,6 +217,7 @@ public static class ReplayDispatcher
         if (!ReplayEngine.IsActive) return;
 
         ReplayState.DrainScreenCleanup();
+        ReplayState.ActiveEventSynchronizer = null;
         TreasureRoomReplayPatch.ActiveRoom = null;
     }
 
@@ -250,8 +251,8 @@ public static class ReplayDispatcher
         long elapsed = System.Environment.TickCount64 - _lastDispatchTick;
 
         if (elapsed >= 5000
-            && ReplayEngine.PeekNext(out string? cmd) && cmd != null
-            && cmd.StartsWith("MoveToMapCoordAction "))
+            && ReplayEngine.PeekNext(out ReplayCommand? cmd) && cmd != null
+            && cmd is MapMoveCommand)
         {
             // Force-clear blockers so dispatch can proceed.
             ReplayState.ClearActionInFlight();
@@ -275,7 +276,7 @@ public static class ReplayDispatcher
         if (!ReplayEngine.IsActive || _paused)
             return;
 
-        if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
+        if (!ReplayEngine.PeekNext(out ReplayCommand? cmd) || cmd == null)
             return;
 
         // Block dispatch while in-flight operations are pending.
@@ -283,7 +284,7 @@ public static class ReplayDispatcher
             return;
 
         // Block while a game action is executing (BeforeAction → AfterAction).
-        if (ReplayState.ActionInFlight && !IsSelectionCommand(cmd))
+        if (ReplayState.ActionInFlight && !cmd.IsSelectionCommand)
             return;
 
         // Selection commands are consumed by ICardSelector implementations when the
@@ -291,7 +292,7 @@ public static class ReplayDispatcher
         // The dispatcher does not touch them — the selector consumes the command,
         // NotifyConsumed fires, and the dispatcher advances to the next command.
         // Re-check periodically so dispatch resumes promptly after consumption.
-        if (IsSelectionCommand(cmd) && !cmd.StartsWith("SelectHandCards"))
+        if (cmd.IsSelectionCommand && cmd is not SelectHandCardsCommand)
         {
             int selGen = _dispatchGeneration;
             NGame.Instance?.GetTree()?.CreateTimer(0.3f).Connect(
@@ -353,10 +354,10 @@ public static class ReplayDispatcher
         if (!ReplayEngine.IsActive || _paused)
             return;
 
-        if (!ReplayEngine.PeekNext(out string? cmd) || cmd == null)
+        if (!ReplayEngine.PeekNext(out ReplayCommand? cmd) || cmd == null)
             return;
-        
-        if ((ReplayState.PotionInFlight || ReplayState.CardPlayInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion || MapMoveInFlight) && !IsSelectionCommand(cmd))
+
+        if ((ReplayState.PotionInFlight || ReplayState.CardPlayInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion || MapMoveInFlight) && !cmd.IsSelectionCommand)
         {
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
@@ -365,7 +366,7 @@ public static class ReplayDispatcher
         }
 
         // Block while a game action is executing, unless it's a selection command.
-        if (ReplayState.ActionInFlight && !IsSelectionCommand(cmd))
+        if (ReplayState.ActionInFlight && !cmd.IsSelectionCommand)
         {
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
@@ -374,54 +375,36 @@ public static class ReplayDispatcher
 
         _lastDispatchTick = System.Environment.TickCount64;
 
-        ReplayCommand? parsed = ReplayCommandParser.TryParse(cmd);
-        if (parsed != null)
+        var result = cmd.Execute();
+        if (result.Success)
         {
-            var result = parsed.Execute();
-            if (result.Success)
-            {
-                ReplayEngine.ConsumeAny();
-                _dispatchInProgress = false;
-                _lastDispatchedCmd = null;
-                int gen = ++_dispatchGeneration;
-                NGame.Instance?.GetTree()?.CreateTimer(0.5f).Connect(
-                    "timeout", Callable.From(() =>
-                    {
-                        if (_dispatchGeneration == gen)
-                            TryDispatch();
-                    }));
-                return;
-            }
-            if (result.RetryDelayMs > 0)
-            {
-                _dispatchInProgress = false;
-                _lastDispatchedCmd = null;
-                int gen = ++_dispatchGeneration;
-                NGame.Instance?.GetTree()?.CreateTimer(result.RetryDelayMs / 1000f).Connect(
-                    "timeout", Callable.From(() =>
-                    {
-                        if (_dispatchGeneration == gen)
-                            TryDispatch();
-                    }));
-                return;
-            }
+            ReplayEngine.ConsumeAny();
+            _dispatchInProgress = false;
+            _lastDispatchedCmd = null;
+            int gen = ++_dispatchGeneration;
+            NGame.Instance?.GetTree()?.CreateTimer(0.5f).Connect(
+                "timeout", Callable.From(() =>
+                {
+                    if (_dispatchGeneration == gen)
+                        TryDispatch();
+                }));
+            return;
+        }
+        if (result.RetryDelayMs > 0)
+        {
+            _dispatchInProgress = false;
+            _lastDispatchedCmd = null;
+            int gen = ++_dispatchGeneration;
+            NGame.Instance?.GetTree()?.CreateTimer(result.RetryDelayMs / 1000f).Connect(
+                "timeout", Callable.From(() =>
+                {
+                    if (_dispatchGeneration == gen)
+                        TryDispatch();
+                }));
+            return;
         }
 
         PlayerActionBuffer.LogMigrationWarning($"[Dispatcher] Unrecognised command: {cmd}");
-    }
-
-    /// <summary>
-    /// Returns true for card selection commands that are consumed inline by
-    /// ICardSelector implementations, not by the dispatcher.
-    /// </summary>
-    private static bool IsSelectionCommand(string cmd)
-    {
-        return cmd.StartsWith("SelectCardFromScreen ")
-            || cmd.StartsWith("SelectDeckCard ")
-            || cmd.StartsWith("SelectHandCards")
-            || cmd.StartsWith("SelectSimpleCard ")
-            || cmd.StartsWith("RemoveCardFromDeck: ")
-            || cmd.StartsWith("UpgradeCard ");
     }
 
 }

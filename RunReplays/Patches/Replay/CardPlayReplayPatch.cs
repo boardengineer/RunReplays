@@ -14,6 +14,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Runs;
+using RunReplays.Commands;
 using RunReplays.Utils;
 
 namespace RunReplays.Patches.Replay;
@@ -252,7 +253,7 @@ public static class CardPlayReplayPatch
         ReplayState.DrainScreenCleanup();
         ReplayDispatcher.TryDispatch();
 
-        ReplayEngine.PeekNext(out string? nextCmd);
+        ReplayEngine.PeekNext(out ReplayCommand? nextCmd);
 
         _currentCombatState = combatState;
         _turnStartedSinceLastEndTurn = true;
