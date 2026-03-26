@@ -397,10 +397,9 @@ public static class CardPlayRecordPatch
         if (!NetCombatCardDb.Instance.TryGetCardId(__instance, out uint cardId))
             return;
 
-        string targetStr = target?.CombatId?.ToString() ?? "";
-        string actionText = $"PlayCardAction card: {__instance} index: {cardId} targetid: {targetStr}";
-
-        PlayerActionBuffer.RecordCardPlayEarly(actionText);
+        uint? targetId = target?.CombatId;
+        var cmd = new PlayCardCommand(cardId, targetId) { Comment = __instance.ToString() };
+        PlayerActionBuffer.RecordCardPlayEarly(cmd.ToLogString());
     }
 }
 

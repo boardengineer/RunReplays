@@ -32,6 +32,32 @@ ChooseEventOption {index} {textKey}
 ChooseEventOption {textKey}
 ```
 
+## PlayCard
+
+Play a card from the hand during combat.
+
+```
+PlayCard {combatCardIndex}
+PlayCard {combatCardIndex} {targetId}
+```
+
+- `combatCardIndex` — per-combat unique card instance ID assigned by `NetCombatCardDb`, not a hand position. Each card receives a stable uint ID when it enters combat; the ID persists for the entire fight.
+- `targetId` — creature combat ID of the target (omitted for untargeted cards)
+
+The card name is stored as a comment for readability.
+
+**Example:**
+```
+PlayCard 55419292 # CARD.DEFEND_IRONCLAD
+PlayCard 24294472 1 # CARD.BASH
+PlayCard 10155926 2 # CARD.STRIKE_IRONCLAD
+```
+
+**Legacy format** (still parsed):
+```
+PlayCardAction card: {cardDescription} index: {combatCardIndex} targetid: {targetId}
+```
+
 ## MoveToMapCoord
 
 Navigate to a map node at the given column. The row is derived at execution time from the player's current position (current row + 1).
