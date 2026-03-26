@@ -163,7 +163,6 @@ public static class ReplayDispatcher
     public static void ResetAllPatchState()
     {
         // Recording state
-        BattleRewardPatch.LastCardRewardIndex = -1;
         BattleRewardPatch.IsProcessingCardReward = false;
         DeckRemovalState.PendingRemoval = false;
         ShopPurchaseState.IsPurchasing = false;

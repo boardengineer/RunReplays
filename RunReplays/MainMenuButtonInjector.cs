@@ -151,29 +151,12 @@ public static class MainMenuButtonInjector
 
     /// <summary>
     /// Harmony prefix for NRewardButton.GetReward().
-    /// When a CardReward-type button is clicked (during recording, not
-    /// replay), computes its 0-based index among all CardReward buttons
-    /// on the parent NRewardsScreen and stores it in
-    /// <see cref="BattleRewardPatch.LastCardRewardIndex"/>.
+    /// Records a ClaimReward command with the button's index on the rewards screen.
     /// </summary>
     public static void GetRewardPrefix(object __instance)
     {
-        // During replay the index comes from the log, not from button clicks.
         if (ReplayEngine.IsActive) return;
 
-        // Check whether the reward on this button is a regular CardReward.
-        var rewardProp = __instance.GetType()
-            .GetProperty("Reward", BindingFlags.Public | BindingFlags.Instance);
-        var reward = rewardProp?.GetValue(__instance);
-        if (reward == null || !CardRewardCommand.IsRewardOfType(reward, "CardReward"))
-        {
-            BattleRewardPatch.LastCardRewardIndex = -1;
-            return;
-        }
-
-        BattleRewardPatch.IsProcessingCardReward = true;
-
-        // Walk up the tree to find the NRewardsScreen ancestor.
         Node node = (Node)__instance;
         Node? current = node.GetParent();
         NRewardsScreen? screen = null;
@@ -183,25 +166,22 @@ public static class MainMenuButtonInjector
             current = current.GetParent();
         }
 
-        if (screen == null)
-        {
-            BattleRewardPatch.LastCardRewardIndex = -1;
-            return;
-        }
+        if (screen == null) return;
 
-        // Find this button's index among all CardReward buttons.
+        // Find this button's index among all reward buttons.
         int index = 0;
-        foreach (var (button, r) in CardRewardCommand.EnumerateRewardButtons(screen))
+        foreach (var (button, reward) in ClaimRewardCommand.EnumerateRewardButtons(screen))
         {
-            if (!CardRewardCommand.IsRewardOfType(r, "CardReward"))
-                continue;
             if (ReferenceEquals(button, node))
             {
-                BattleRewardPatch.LastCardRewardIndex = index;
+                var cmd = new ClaimRewardCommand(index)
+                {
+                    Comment = ClaimRewardCommand.DescribeReward(reward)
+                };
+                PlayerActionBuffer.Record(cmd.ToLogString());
                 return;
             }
             index++;
         }
-        BattleRewardPatch.LastCardRewardIndex = -1;
     }
 }

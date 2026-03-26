@@ -58,6 +58,62 @@ PlayCard 10155926 2 # CARD.STRIKE_IRONCLAD
 PlayCardAction card: {cardDescription} index: {combatCardIndex} targetid: {targetId}
 ```
 
+## ClaimReward
+
+Click a reward button on the rewards screen by index. Handles gold, relic, potion, and card rewards. For card rewards, this opens the card selection screen — a `TakeCard` command follows.
+
+```
+ClaimReward {index}
+```
+
+- `index` — 0-based index among all reward buttons currently on the screen
+
+The reward type and description are stored as a comment for readability.
+
+**Example:**
+```
+ClaimReward 0 # GoldReward: 25
+ClaimReward 1 # RelicReward: Vajra
+ClaimReward 2 # PotionReward: Fire Potion
+ClaimReward 1 # CardReward
+```
+
+**Legacy formats** (still parsed):
+```
+TakeGoldReward: {amount}
+TakeRelicReward: {title}
+TakePotionReward: {title}
+TakeCardReward[{index}]: {cardTitle}
+TakeCardReward: {cardTitle}
+```
+
+## TakeCard
+
+Select a card from the card reward selection screen, or sacrifice (Pael's Wing). Follows a `ClaimReward` that opened the card selection screen.
+
+```
+TakeCard {index}
+TakeCard sacrifice
+```
+
+- `index` — 0-based index of the card holder in the selection screen
+- `sacrifice` — triggers Pael's Wing sacrifice instead of picking a card
+
+The card title or sacrifice option is stored as a comment for readability.
+
+**Example:**
+```
+TakeCard 0 # Bash
+TakeCard 2 # Inflame
+TakeCard sacrifice # sacrifice
+```
+
+**Legacy formats** (still parsed):
+```
+SacrificeCardReward[{index}]
+SacrificeCardReward
+```
+
 ## MoveToMapCoord
 
 Navigate to a map node at the given column. The row is derived at execution time from the player's current position (current row + 1).
