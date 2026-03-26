@@ -99,7 +99,7 @@ public static class ChooseACardScreenCapture
     {
         if (!ReplayEngine.IsActive) return;
         ActiveScreen = __instance;
-        Callable.From(ReplayDispatcher.TryDispatch).CallDeferred();
+        Callable.From(ReplayDispatcher.DispatchNow).CallDeferred();
     }
 
     internal static void SelectHolder(NChooseACardSelectionScreen screen, Node holder)
