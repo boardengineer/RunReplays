@@ -113,6 +113,15 @@ public static class ReplayEngine
             int sepIdx = raw.IndexOf(StateSeparator, StringComparison.Ordinal);
             string cmdText = sepIdx >= 0 ? raw[..sepIdx] : raw;
 
+            // Strip inline comment: "CommandText # comment"
+            string? comment = null;
+            int commentIdx = cmdText.IndexOf(" # ", StringComparison.Ordinal);
+            if (commentIdx >= 0)
+            {
+                comment = cmdText[(commentIdx + 3)..];
+                cmdText = cmdText[..commentIdx];
+            }
+
             ReplayCommand? parsed = ReplayCommandParser.TryParse(cmdText);
             if (parsed == null)
             {
@@ -121,6 +130,7 @@ public static class ReplayEngine
                 continue;
             }
 
+            parsed.Comment = comment;
             _loadedCommands.Add(parsed);
             _pending.Enqueue(parsed);
         }

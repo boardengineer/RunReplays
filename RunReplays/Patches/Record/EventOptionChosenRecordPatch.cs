@@ -48,7 +48,7 @@ public static class EventOptionChosenRecordPatch
         EventSelectionPatch.PendingIndex = null;
 
         PlayerActionBuffer.RecordVerboseOnly($"[EventOption] Chosen — title='{title}' textKey='{textKey}' index={idx}");
-        PlayerActionBuffer.RecordMinimalOnly(
-            new ChooseEventOptionCommand(textKey, idx ?? -1).ToString());
+        var cmd = new ChooseEventOptionCommand(idx ?? -1) { Comment = textKey };
+        PlayerActionBuffer.RecordMinimalOnly(cmd.ToLogString());
     }
 }

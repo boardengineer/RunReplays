@@ -40,10 +40,23 @@ public abstract class ReplayCommand
     /// <summary>The original raw command string from the replay log.</summary>
     public string RawText { get; }
 
+    /// <summary>
+    /// Optional inline comment from the replay log, delimited by " # ".
+    /// Preserved through load/save but not parsed as part of the command.
+    /// </summary>
+    public string? Comment { get; set; }
+
     protected ReplayCommand(string rawText)
     {
         RawText = rawText;
     }
+
+    /// <summary>
+    /// Returns the command string with its comment appended (if any).
+    /// Use this when writing to the replay log.
+    /// </summary>
+    public string ToLogString()
+        => Comment != null ? $"{ToString()} # {Comment}" : ToString()!;
 
     /// <summary>
     /// True for commands consumed inline by ICardSelector implementations

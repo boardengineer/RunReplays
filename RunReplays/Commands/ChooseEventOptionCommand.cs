@@ -3,39 +3,38 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 
-using RunReplays.Patches;
 namespace RunReplays.Commands;
 
 /// <summary>
-/// Choose an event option by text key and optional recorded index.
-/// Recorded as: "ChooseEventOption {index} {textKey}" (new format)
-///          or: "ChooseEventOption {textKey}" (legacy format)
+/// Choose an event option by index.
+/// Recorded as: "ChooseEventOption {index} # {textKey}" (current format)
+/// Legacy:      "ChooseEventOption {index} {textKey}" or "ChooseEventOption {textKey}"
+///
+/// Index -1 represents PROCEED (event finished or about to transition).
+/// The text key is stored as a comment for human readability only.
 /// </summary>
 public class ChooseEventOptionCommand : ReplayCommand
 {
     private const string Prefix = "ChooseEventOption ";
+    private const int ProceedIndex = -1;
 
-    public string TextKey { get; }
     public int RecordedIndex { get; }
 
-
-    public ChooseEventOptionCommand(string textKey, int recordedIndex) : base("")
+    public ChooseEventOptionCommand(int recordedIndex) : base("")
     {
-        TextKey = textKey;
         RecordedIndex = recordedIndex;
     }
 
-    public override string ToString()
-        => RecordedIndex >= 0
-            ? $"{Prefix}{RecordedIndex} {TextKey}"
-            : $"{Prefix}{TextKey}";
+    public override string ToString() => $"{Prefix}{RecordedIndex}";
 
-    public override string Describe() => $"choose event option '{TextKey}'";
+    public override string Describe()
+        => RecordedIndex == ProceedIndex
+            ? "proceed from event"
+            : $"choose event option index={RecordedIndex}" +
+              (Comment != null ? $" ({Comment})" : "");
 
     public override ExecuteResult Execute()
     {
-        PlayerActionBuffer.LogDispatcher($"Should be executing event command?");
-        
         var sync = ReplayState.ActiveEventSynchronizer;
         if (sync == null)
             return ExecuteResult.Retry(300);
@@ -48,43 +47,18 @@ public class ChooseEventOptionCommand : ReplayCommand
             return ExecuteResult.Ok();
         }
 
-        // PROCEED before a map move — consume and advance.
-        if (TextKey.Contains("PROCEED", System.StringComparison.OrdinalIgnoreCase))
-        {
+        // PROCEED sentinel — consume and advance.
+        if (RecordedIndex == ProceedIndex)
             return ExecuteResult.Ok();
-        }
 
-        // Find the matching option.
         if (sync.Events.Count == 0)
             return ExecuteResult.Retry(300);
 
         var options = sync.Events[0].CurrentOptions;
-        int index = -1;
-
-        // Try recorded index first.
-        if (RecordedIndex >= 0 && RecordedIndex < options.Count
-            && options[RecordedIndex].TextKey == TextKey)
-        {
-            index = RecordedIndex;
-        }
-        else
-        {
-            for (int i = 0; i < options.Count; i++)
-            {
-                if (options[i].TextKey == TextKey)
-                {
-                    index = i;
-                    break;
-                }
-            }
-        }
-
-        if (index < 0)
+        if (RecordedIndex < 0 || RecordedIndex >= options.Count)
             return ExecuteResult.Retry(300);
 
-        sync.ChooseLocalOption(index);
-
-        // After the option is chosen, wait before checking if more event options follow.
+        sync.ChooseLocalOption(RecordedIndex);
         ScheduleFollowUp();
         return ExecuteResult.Ok();
     }
@@ -94,7 +68,7 @@ public class ChooseEventOptionCommand : ReplayCommand
         NGame.Instance!.GetTree()!.CreateTimer(0.5).Connect(
             "timeout", Callable.From(() =>
             {
-                                ReplayDispatcher.DispatchNow();
+                ReplayDispatcher.DispatchNow();
             }));
     }
 
@@ -105,12 +79,17 @@ public class ChooseEventOptionCommand : ReplayCommand
 
         string rest = raw.Substring(Prefix.Length);
 
-        // New format: "ChooseEventOption {index} {textKey}"
-        int space = rest.IndexOf(' ');
-        if (space >= 0 && int.TryParse(rest.AsSpan(0, space), out int idx))
-            return new ChooseEventOptionCommand(rest.Substring(space + 1), idx);
+        // Current format: "ChooseEventOption {index}"
+        if (int.TryParse(rest.Trim(), out int idx))
+            return new ChooseEventOptionCommand(idx);
 
-        // Legacy format: "ChooseEventOption {textKey}"
-        return new ChooseEventOptionCommand(rest, -1);
+        // Legacy format: "ChooseEventOption {index} {textKey}"
+        int space = rest.IndexOf(' ');
+        if (space >= 0 && int.TryParse(rest.AsSpan(0, space), out int legacyIdx))
+            return new ChooseEventOptionCommand(legacyIdx) { Comment = rest.Substring(space + 1) };
+
+        // Oldest legacy: "ChooseEventOption {textKey}" — no index, can't replay by index
+        // Store textKey as comment, use -1 as fallback
+        return new ChooseEventOptionCommand(ProceedIndex) { Comment = rest };
     }
 }
