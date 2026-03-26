@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Godot;
 using MegaCrit.Sts2.Core.Nodes;
 
+using RunReplays.Commands;
+using RunReplays.Patches;
+using RunReplays.Patches.Replay;
 namespace RunReplays;
 
 /// <summary>
@@ -233,15 +236,15 @@ internal static class RunOverlay
         if (_titleLabel != null)
             _titleLabel.Text = "▶ REPLAY";
 
-        ReplayEngine.GetReplayContext(out var prev, out string? current, out var next);
+        ReplayEngine.GetReplayContext(out var prev, out ReplayCommand? current, out var next);
 
         // 5 display slots: [prev-2, prev-1, current, next+1, next+2]
         string?[] slots = new string?[LineCount];
-        slots[0] = prev.Count >= 2 ? prev[0] : null;
-        slots[1] = prev.Count >= 1 ? prev[prev.Count - 1] : null;
-        slots[2] = current;
-        slots[3] = next.Count >= 1 ? next[0] : null;
-        slots[4] = next.Count >= 2 ? next[1] : null;
+        slots[0] = prev.Count >= 2 ? prev[0]?.ToString() : null;
+        slots[1] = prev.Count >= 1 ? prev[prev.Count - 1]?.ToString() : null;
+        slots[2] = current?.ToString();
+        slots[3] = next.Count >= 1 ? next[0]?.ToString() : null;
+        slots[4] = next.Count >= 2 ? next[1]?.ToString() : null;
 
         // Detect in-flight commands: the last consumed command may still be
         // executing (EndTurn awaiting TurnStarted, or card play awaiting
@@ -251,10 +254,10 @@ internal static class RunOverlay
         if (prev.Count > 0)
         {
             if (CardPlayReplayPatch.IsAwaitingEndTurnCompletion
-                && prev[^1].StartsWith("EndPlayerTurnAction "))
+                && prev[^1] is EndTurnCommand)
                 lastConsumedInProgress = true;
             else if (_cardPlayInProgress
-                && prev[^1].StartsWith("PlayCardAction "))
+                && prev[^1] is PlayCardCommand)
                 lastConsumedInProgress = true;
         }
 
@@ -270,7 +273,7 @@ internal static class RunOverlay
                 // Last consumed slot that is still executing → yellow.
                 bool isInFlight = lastConsumedInProgress
                     && slots[i] != null
-                    && slots[i] == prev[^1];
+                    && slots[i] == prev[^1]?.ToString();
                 lbl.Modulate = isInFlight ? InProgressColor : CompletedColor;
             }
             else if (i == 2)

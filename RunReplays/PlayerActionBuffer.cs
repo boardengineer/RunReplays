@@ -15,6 +15,8 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Debug;
 
+using RunReplays.Commands;
+using RunReplays.Patches;
 namespace RunReplays;
 
 /// <summary>
@@ -48,6 +50,7 @@ public static class PlayerActionBuffer
     /// </summary>
     private static string? _pendingPreState;
 
+
     [HarmonyPostfix]
     public static void Postfix(ActionExecutor __instance)
     {
@@ -79,7 +82,16 @@ public static class PlayerActionBuffer
             BattleRewardPatch.IsProcessingCardReward = false;
 
             if (action is UsePotionAction)
-                RecordCardPlayEarly(action.ToString()!);
+            {
+                var text = action.ToString()!;
+                // Potions that open a card selection screen (Power Potion,
+                // Colorless Potion, Attack Potion, Gambler's Brew, etc.)
+                // fire a second UsePotionAction with an empty potion name
+                // after the selection resolves.  Skip that duplicate.
+                if (!text.Contains("POTION."))
+                    return;
+                RecordCardPlayEarly(text);
+            }
         };
 
         __instance.AfterActionExecuted += action =>
@@ -97,7 +109,6 @@ public static class PlayerActionBuffer
             // that were buffered but had no subsequent action to flush them.
             if (action is VoteForMapCoordAction)
             {
-                CardChoiceScreenSyncPatch.FlushIfPending();
                 return;
             }
 
@@ -107,13 +118,8 @@ public static class PlayerActionBuffer
             if (action is PlayCardAction or UsePotionAction)
             {
                 _pendingPreState = GetBattleStateSummary();
-                CardChoiceScreenSyncPatch.FlushIfPending();
-                CardEffectDeckSelectContext.FlushIfPending();
-                SimpleGridSyncPatch.FlushIfPending();
                 return;
             }
-
-            CardChoiceScreenSyncPatch.FlushIfPending();
 
             string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
             string actionText = action.ToString()!;
@@ -259,13 +265,14 @@ public static class PlayerActionBuffer
     /// contains all actions (replayed + new) rather than only the new ones.
     /// The overlay's recent-entry display is also refreshed.
     /// </summary>
-    private static void OnReplayCompleted(IReadOnlyList<string> commands)
+    private static void OnReplayCompleted(IReadOnlyList<ReplayCommand> commands)
     {
-        var verboseEntries = commands.Select(c => ("REPLAY", c)).ToList();
-        Restore(verboseEntries, commands);
+        var stringCommands = commands.Select(c => c.ToString()!).ToList();
+        var verboseEntries = stringCommands.Select(c => ("REPLAY", c)).ToList();
+        Restore(verboseEntries, stringCommands);
 
         // Strip " || state" suffix for overlay display.
-        var displayEntries = commands.Select(c =>
+        var displayEntries = stringCommands.Select(c =>
         {
             int sep = c.IndexOf(StateSeparator, StringComparison.Ordinal);
             return sep >= 0 ? c[..sep] : c;
@@ -274,17 +281,7 @@ public static class PlayerActionBuffer
 
         LogToDevConsole(
             $"[PlayerActionBuffer] Replay completed — restored {commands.Count} command(s) to buffer.");
-        CardPlayReplayPatch.LogCardSelectState("ReplayCompleted");
-        SelectorStackDebug.Log("=== ReplayCompleted ===");
         Utils.RngCheckpointLogger.Log("=== ReplayCompleted ===");
-    }
-
-    /// <summary>
-    /// Verbose snapshot: each entry prefixed with its timestamp.
-    /// </summary>
-    public static IReadOnlyList<string> Snapshot()
-    {
-        return new List<string>(_verboseEntries.Select(e => $"[{e.Timestamp}] {e.Action}"));
     }
 
     /// <summary>
@@ -315,6 +312,23 @@ public static class PlayerActionBuffer
 
     [System.Diagnostics.Conditional("RUNREPLAYS_VERBOSE")]
     internal static void LogToDevConsole(string entry)
+    {
+        WriteToDevConsole(entry);
+    }
+
+    [System.Diagnostics.Conditional("RUNREPLAYS_DISPATCHER")]
+    internal static void LogDispatcher(string entry)
+    {
+        WriteToDevConsole(entry);
+    }
+
+    [System.Diagnostics.Conditional("RUNREPLAYS_MIGRATION")]
+    internal static void LogMigrationWarning(string entry)
+    {
+        WriteToDevConsole(entry);
+    }
+
+    private static void WriteToDevConsole(string entry)
     {
         // Check the backing field directly to avoid the InvalidOperationException
         // that NDevConsole.Instance throws when the console hasn't been created yet.

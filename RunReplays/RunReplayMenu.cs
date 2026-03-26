@@ -91,6 +91,28 @@ public static class RunReplayMenu
         overlayCheck.Toggled += on => RunOverlay.OverlayVisible = on;
         vbox.AddChild(overlayCheck);
 
+        // ── Replay speed slider ──────────────────────────────────────────
+        var speedRow = new HBoxContainer();
+        speedRow.AddThemeConstantOverride("separation", 8);
+        vbox.AddChild(speedRow);
+
+        var speedLabel = new Label();
+        speedLabel.Text = $"Replay Speed: {ReplayDispatcher.GameSpeed:0.0}x";
+        speedRow.AddChild(speedLabel);
+
+        var speedSlider = new HSlider();
+        speedSlider.MinValue = 0.5;
+        speedSlider.MaxValue = 10.0;
+        speedSlider.Step = 0.5;
+        speedSlider.Value = ReplayDispatcher.GameSpeed;
+        speedSlider.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+        speedSlider.ValueChanged += val =>
+        {
+            ReplayDispatcher.GameSpeed = (float)val;
+            speedLabel.Text = $"Replay Speed: {val:0.0}x";
+        };
+        speedRow.AddChild(speedSlider);
+
         vbox.AddChild(new HSeparator());
 
         // ── Replay list ───────────────────────────────────────────────────────
@@ -114,6 +136,64 @@ public static class RunReplayMenu
         vbox.AddChild(backBtn);
 
         return root;
+    }
+
+    // ── Auto-play ──────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Automatically launches a replay matching the given target string.
+    /// Format: "SEED" to replay the highest floor, or "SEED:floor_N" for a
+    /// specific floor.
+    /// </summary>
+    internal static void AutoPlay(string target)
+    {
+        string seed;
+        int? targetFloor = null;
+
+        int colonIdx = target.IndexOf(':');
+        if (colonIdx >= 0)
+        {
+            seed = target[..colonIdx];
+            string floorPart = target[(colonIdx + 1)..];
+            if (floorPart.StartsWith("floor_") &&
+                int.TryParse(floorPart["floor_".Length..], out int f))
+                targetFloor = f;
+            else
+                GD.PrintErr($"[RunReplays] AutoPlay: invalid floor specifier '{floorPart}', replaying highest floor.");
+        }
+        else
+        {
+            seed = target;
+        }
+
+        var entries = LoadEntries()
+            .Where(e => string.Equals(e.Seed, seed, StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(e => e.Floor)
+            .ToList();
+
+        if (entries.Count == 0)
+        {
+            GD.PrintErr($"[RunReplays] AutoPlay: no replays found for seed '{seed}'.");
+            return;
+        }
+
+        ReplayEntry entry;
+        if (targetFloor.HasValue)
+        {
+            entry = entries.FirstOrDefault(e => e.Floor == targetFloor.Value)!;
+            if (entry == null)
+            {
+                GD.PrintErr($"[RunReplays] AutoPlay: no replay found for seed '{seed}' floor {targetFloor.Value}.");
+                return;
+            }
+        }
+        else
+        {
+            entry = entries.First();
+        }
+
+        GD.Print($"[RunReplays] AutoPlay: launching seed={entry.Seed} floor={entry.Floor}");
+        StartReplay(entry);
     }
 
     // ── List population ───────────────────────────────────────────────────────
@@ -494,7 +574,7 @@ public static class RunReplayMenu
         // as the new run reaches each decision point.
         string[] lines   = File.ReadAllLines(entry.MinimalLogPath);
         var      commands = lines.Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith('#')).ToList();
-        ReplayRunner.Load(commands);
+        ReplayDispatcher.Load(commands);
         ReplayEngine.ActiveSeed = entry.Seed;
 
         // Resolve the character model by matching the stored entry string against
@@ -556,7 +636,7 @@ public static class RunReplayMenu
         }
 
         var remainingCommands = allCommands.Skip(skipCount).ToList();
-        ReplayRunner.Load(remainingCommands);
+        ReplayDispatcher.Load(remainingCommands);
         ReplayEngine.ActiveSeed = target.Seed;
 
         GD.Print($"[RunReplays] Starting replay from floor {startFrom.Floor}: " +
