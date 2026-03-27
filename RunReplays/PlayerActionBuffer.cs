@@ -90,7 +90,13 @@ public static class PlayerActionBuffer
                 // after the selection resolves.  Skip that duplicate.
                 if (!text.Contains("POTION."))
                     return;
-                RecordCardPlayEarly(text);
+
+                // Parse the legacy format to extract slot and target, re-record as UsePotion.
+                var parsed = UsePotionCommand.TryParse(text);
+                if (parsed != null)
+                    RecordCardPlayEarly(parsed.ToLogString());
+                else
+                    RecordCardPlayEarly(text);
             }
         };
 

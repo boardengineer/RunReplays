@@ -1,48 +1,43 @@
 using System;
-using Godot;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Nodes;
 
-using RunReplays.Patches;
 using RunReplays.Patches.Replay;
 namespace RunReplays.Commands;
 
 /// <summary>
 /// Use a potion from the player's potion belt.
-/// Recorded as: "UsePotionAction {netId} {potionName} index: {potionIndex} target: {targetId} ({creatureName}) combat: {bool}"
+/// Recorded as: "UsePotion {slotIndex} {targetId} # {potionName}"
+///          or: "UsePotion {slotIndex} # {potionName}" (no target)
+/// Legacy:      "UsePotionAction {netId} {potionName} index: {slot} target: {tid} ({name}) combat: {bool}"
 /// </summary>
 public sealed class UsePotionCommand : ReplayCommand
 {
-    private const string Prefix = "UsePotionAction ";
-    private const string IndexMarker = " index: ";
-    private const string TargetMarker = " target: ";
-    private const string CombatMarker = " combat: ";
+    private const string Prefix = "UsePotion ";
+    private const string LegacyPrefix = "UsePotionAction ";
+    private const string LegacyIndexMarker = " index: ";
+    private const string LegacyTargetMarker = " target: ";
+    private const string LegacyCombatMarker = " combat: ";
 
-    public string PotionDescription { get; }
     public uint PotionIndex { get; }
     public uint? TargetId { get; }
-    public string TargetDescription { get; }
-    public bool InCombat { get; }
 
-
-    private UsePotionCommand(string raw, string potionDescription, uint potionIndex, uint? targetId, string targetDescription, bool inCombat) : base(raw)
+    public UsePotionCommand(uint potionIndex, uint? targetId = null) : base("")
     {
-        PotionDescription = potionDescription;
         PotionIndex = potionIndex;
         TargetId = targetId;
-        TargetDescription = targetDescription;
-        InCombat = inCombat;
     }
 
     public override string ToString()
-        => $"{Prefix}{PotionDescription}{IndexMarker}{PotionIndex}{TargetMarker}{TargetId} ({TargetDescription}){CombatMarker}{InCombat}";
+        => TargetId.HasValue
+            ? $"{Prefix}{PotionIndex} {TargetId.Value}"
+            : $"{Prefix}{PotionIndex}";
 
     public override string Describe()
     {
         string target = TargetId.HasValue ? $" targeting id={TargetId}" : "";
-        return $"use potion slot={PotionIndex}{target} combat={InCombat}";
+        return $"use potion slot={PotionIndex}{target}";
     }
 
     public override bool BlocksDuringCombatStartup => true;
@@ -50,13 +45,9 @@ public sealed class UsePotionCommand : ReplayCommand
     public override ExecuteResult Execute()
     {
         // Wait until the game is in the play phase before using a combat potion.
-        // Using it too early (e.g. during combat intro at high speed) breaks the UI.
-        if (InCombat)
-        {
-            var combat = MegaCrit.Sts2.Core.Combat.CombatManager.Instance;
-            if (combat == null || !combat.IsPlayPhase)
-                return ExecuteResult.Retry(200);
-        }
+        var combat = MegaCrit.Sts2.Core.Combat.CombatManager.Instance;
+        if (combat != null && !combat.IsPlayPhase)
+            return ExecuteResult.Retry(200);
 
         Player? player = CardPlayReplayPatch.ResolveLocalPlayer();
         if (player == null)
@@ -76,19 +67,15 @@ public sealed class UsePotionCommand : ReplayCommand
         if (TargetId.HasValue)
         {
             target = CardPlayReplayPatch._currentCombatState?.GetCreature(TargetId);
-            PlayerActionBuffer.LogToDevConsole(
-                $"[UsePotionCommand] Resolved target id={TargetId} → {(target == null ? "null" : target.ToString())}.");
         }
 
-        if (!InCombat && target == null)
+        // Default to self when no target is specified.
+        if (target == null)
             target = player.Creature;
 
         try
         {
-            // Only block dispatch for in-combat potions where AfterActionExecuted
-            // will fire via the ActionExecutor subscription.  Out-of-combat potions
-            // (e.g. used before TurnStarted) may not have an ActionExecutor yet.
-            if (InCombat)
+            if (combat != null)
                 ReplayState.PotionInFlight = true;
 
             potion.EnqueueManualUse(target);
@@ -105,45 +92,59 @@ public sealed class UsePotionCommand : ReplayCommand
 
     public static UsePotionCommand? TryParse(string raw)
     {
-        if (!raw.StartsWith(Prefix))
+        // New format: "UsePotion {slot}" or "UsePotion {slot} {target}"
+        if (raw.StartsWith(Prefix) && !raw.StartsWith(LegacyPrefix))
+        {
+            var parts = raw.Substring(Prefix.Length).Trim().Split(' ');
+            if (parts.Length >= 1 && uint.TryParse(parts[0], out uint slot))
+            {
+                uint? target = null;
+                if (parts.Length >= 2 && uint.TryParse(parts[1], out uint tid))
+                    target = tid;
+                return new UsePotionCommand(slot, target);
+            }
+            return null;
+        }
+
+        // Legacy: "UsePotionAction {netId} {potionName} index: {slot} target: {tid} (...) combat: {bool}"
+        if (!raw.StartsWith(LegacyPrefix))
             return null;
 
-        int combatIdx = raw.LastIndexOf(CombatMarker, StringComparison.Ordinal);
+        int combatIdx = raw.LastIndexOf(LegacyCombatMarker, StringComparison.Ordinal);
         if (combatIdx < 0) return null;
 
-        int targetIdx = raw.LastIndexOf(TargetMarker, combatIdx, StringComparison.Ordinal);
+        int targetIdx = raw.LastIndexOf(LegacyTargetMarker, combatIdx, StringComparison.Ordinal);
         if (targetIdx < 0) return null;
 
-        int indexIdx = raw.LastIndexOf(IndexMarker, targetIdx, StringComparison.Ordinal);
+        int indexIdx = raw.LastIndexOf(LegacyIndexMarker, targetIdx, StringComparison.Ordinal);
         if (indexIdx < 0) return null;
 
         var indexSpan = raw.AsSpan(
-            indexIdx + IndexMarker.Length,
-            targetIdx - indexIdx - IndexMarker.Length).Trim();
+            indexIdx + LegacyIndexMarker.Length,
+            targetIdx - indexIdx - LegacyIndexMarker.Length).Trim();
         if (!uint.TryParse(indexSpan, out uint potionIndex)) return null;
 
-        int openParenIdx = raw.IndexOf(" (", targetIdx + TargetMarker.Length, StringComparison.Ordinal);
-        if (openParenIdx < 0) return null;
-
         uint? targetId = null;
-        var targetSpan = raw.AsSpan(
-            targetIdx + TargetMarker.Length,
-            openParenIdx - targetIdx - TargetMarker.Length).Trim();
-        if (targetSpan.Length > 0 && uint.TryParse(targetSpan, out uint tid))
-            targetId = tid;
+        int openParenIdx = raw.IndexOf(" (", targetIdx + LegacyTargetMarker.Length, StringComparison.Ordinal);
+        if (openParenIdx >= 0)
+        {
+            var targetSpan = raw.AsSpan(
+                targetIdx + LegacyTargetMarker.Length,
+                openParenIdx - targetIdx - LegacyTargetMarker.Length).Trim();
+            if (targetSpan.Length > 0 && uint.TryParse(targetSpan, out uint tid) && tid != 0)
+                targetId = tid;
+        }
 
-        // Extract creature name between "(" and ")" after the target id
-        string targetDescription = "";
-        int closeParenIdx = raw.IndexOf(')', openParenIdx + 2);
-        if (closeParenIdx > openParenIdx)
-            targetDescription = raw.Substring(openParenIdx + 2, closeParenIdx - openParenIdx - 2);
+        // Extract potion name for comment
+        string? potionName = null;
+        int potionStart = raw.IndexOf("POTION.", StringComparison.Ordinal);
+        if (potionStart >= 0)
+        {
+            int potionEnd = raw.IndexOf(' ', potionStart);
+            if (potionEnd > potionStart)
+                potionName = raw.Substring(potionStart, potionEnd - potionStart);
+        }
 
-        var combatSpan = raw.AsSpan(combatIdx + CombatMarker.Length).Trim();
-        bool inCombat = combatSpan.Equals("True", StringComparison.OrdinalIgnoreCase);
-
-        // Extract potion description (netId + potionName) between prefix and index marker
-        string potionDescription = raw.Substring(Prefix.Length, indexIdx - Prefix.Length);
-
-        return new UsePotionCommand(raw, potionDescription, potionIndex, targetId, targetDescription, inCombat);
+        return new UsePotionCommand(potionIndex, targetId) { Comment = potionName };
     }
 }
