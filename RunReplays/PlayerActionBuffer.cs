@@ -103,12 +103,17 @@ public static class PlayerActionBuffer
                 || action is ReadyToBeginEnemyTurnAction)
                 return;
 
-            // VoteForMapCoordAction is not recorded, but it is the first action
-            // after the rewards screen closes.  Flush any pending card-choice
-            // commands from relic-triggered selections (e.g. Lead Paperweight)
-            // that were buffered but had no subsequent action to flush them.
+            // VoteForMapCoordAction is not recorded for map moves, but IS
+            // recorded for act transitions.  Check if it's an act change.
             if (action is VoteForMapCoordAction)
             {
+                // Act-change votes have no map destination — they use
+                // ActChangeSynchronizer. Record as NextAct.
+                string voteStr = action.ToString()!;
+                if (!voteStr.Contains("MapCoord"))
+                {
+                    Record(new ProceedToNextActCommand().ToString()!);
+                }
                 return;
             }
 
