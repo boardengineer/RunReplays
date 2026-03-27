@@ -217,3 +217,200 @@ TakeChestRelic # Venerable Tea Set
 ```
 NetPickRelicAction for player {netId} index {relicIndex}
 ```
+
+## ProceedToNextAct
+
+Advance to the next act after the boss fight.
+
+```
+ProceedToNextAct
+```
+
+No parameters.
+
+**Legacy formats** (still parsed):
+```
+NextAct
+VoteForMapCoordAction {playerId}
+```
+
+## ChooseRestSiteOption
+
+Choose a rest site option (e.g. heal, upgrade a card).
+
+```
+ChooseRestSiteOption {optionId}
+```
+
+- `optionId` — the option identifier (e.g. `HEAL`, `SMITH`)
+
+**Example:**
+```
+ChooseRestSiteOption HEAL
+ChooseRestSiteOption SMITH
+```
+
+## UsePotion
+
+Use a potion from the player's potion belt.
+
+```
+UsePotion {slotIndex}
+UsePotion {slotIndex} {targetId}
+```
+
+- `slotIndex` — 0-based index into the potion belt
+- `targetId` — creature combat ID of the target (omitted for self/untargeted potions)
+
+The potion name is stored as a comment for readability.
+
+**Example:**
+```
+UsePotion 0 # POTION.CLARITY
+UsePotion 0 1 # POTION.FIRE_POTION
+UsePotion 1 # POTION.STRENGTH_POTION
+```
+
+**Legacy format** (still parsed):
+```
+UsePotionAction {netId} {potionName} ({instanceId}) index: {slotIndex} target: {targetId} ({creatureName}) combat: {inCombat}
+```
+
+## SelectGridCard
+
+Select one or more cards from a grid selection screen (deck selection, card removal, upgrade, simple grid picks).
+
+```
+SelectGridCard {idx0} {idx1} ...
+```
+
+- `idx0`, `idx1`, ... — 0-based indices into the screen's `_cards` list
+
+**Example:**
+```
+SelectGridCard 5
+SelectGridCard 3 7
+```
+
+**Legacy formats** (still parsed):
+```
+SelectDeckCard {idx...}
+RemoveCardFromDeck: {idx...}
+SelectSimpleCard {idx}
+UpgradeCard {idx}
+```
+
+## SelectHandCards
+
+Select one or more cards from the player's hand (e.g. for discard effects like Touch of Insanity).
+
+```
+SelectHandCards {idx0} {idx1} ...
+SelectHandCards
+```
+
+- `idx0`, `idx1`, ... — 0-based hand position indices
+- Empty (no indices) — no cards selected
+
+**Example:**
+```
+SelectHandCards 0 2
+SelectHandCards 1
+SelectHandCards
+```
+
+## SelectCardFromScreen
+
+Select a card from a choose-a-card screen (e.g. Power Potion, Attack Potion).
+
+```
+SelectCardFromScreen {index}
+```
+
+- `index` — 0-based index of the card in the selection screen
+- `-1` — skip (no card selected)
+
+**Example:**
+```
+SelectCardFromScreen 0
+SelectCardFromScreen 2
+SelectCardFromScreen -1
+```
+
+## OpenShop
+
+Open the merchant shop inventory.
+
+```
+OpenShop
+```
+
+No parameters.
+
+## OpenFakeShop
+
+Open the fake merchant event shop inventory.
+
+```
+OpenFakeShop
+```
+
+No parameters.
+
+## BuyCard
+
+Buy a card from the shop.
+
+```
+BuyCard {title}
+```
+
+- `title` — the card's title
+
+**Example:**
+```
+BuyCard Shrug It Off
+BuyCard Inflame
+```
+
+## BuyRelic
+
+Buy a relic from the shop.
+
+```
+BuyRelic {title}
+```
+
+- `title` — the relic's title
+
+**Example:**
+```
+BuyRelic Vajra
+BuyRelic Brimstone
+```
+
+## BuyPotion
+
+Buy a potion from the shop.
+
+```
+BuyPotion {title}
+```
+
+- `title` — the potion's title
+
+**Example:**
+```
+BuyPotion Fire Potion
+BuyPotion Strength Potion
+```
+
+## BuyCardRemoval
+
+Buy card removal from the shop. Opens the deck selection screen — a `SelectGridCard` command follows.
+
+```
+BuyCardRemoval
+```
+
+No parameters.
