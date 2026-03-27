@@ -61,12 +61,6 @@ ChooseEventOption 1 # EVENT_SLIPPERY_BRIDGE_OPTION_2
 ChooseEventOption -1 # PROCEED
 ```
 
-**Legacy formats** (still parsed):
-```
-ChooseEventOption {index} {textKey}
-ChooseEventOption {textKey}
-```
-
 ## PlayCard
 
 Play a card from the hand during combat.
@@ -88,11 +82,6 @@ PlayCard 24294472 1 # CARD.BASH
 PlayCard 10155926 2 # CARD.STRIKE_IRONCLAD
 ```
 
-**Legacy format** (still parsed):
-```
-PlayCardAction card: {cardDescription} index: {combatCardIndex} targetid: {targetId}
-```
-
 ## ClaimReward
 
 Click a reward button on the rewards screen by index. Handles gold, relic, potion, and card rewards. For card rewards, this opens the card selection screen — a `TakeCard` command follows.
@@ -111,15 +100,6 @@ ClaimReward 0 # GoldReward: 25
 ClaimReward 1 # RelicReward: Vajra
 ClaimReward 2 # PotionReward: Fire Potion
 ClaimReward 1 # CardReward
-```
-
-**Legacy formats** (still parsed):
-```
-TakeGoldReward: {amount}
-TakeRelicReward: {title}
-TakePotionReward: {title}
-TakeCardReward[{index}]: {cardTitle}
-TakeCardReward: {cardTitle}
 ```
 
 ## TakeCard
@@ -143,12 +123,6 @@ TakeCard 2 # Inflame
 TakeCard sacrifice # sacrifice
 ```
 
-**Legacy formats** (still parsed):
-```
-SacrificeCardReward[{index}]
-SacrificeCardReward
-```
-
 ## EndTurn
 
 End the player's turn during combat.
@@ -163,11 +137,6 @@ No parameters. The original game action details are stored as a comment for read
 ```
 EndTurn # EndPlayerTurnAction for player 1 round 3
 EndTurn
-```
-
-**Legacy format** (still parsed):
-```
-EndPlayerTurnAction for player {playerId} round {round}
 ```
 
 ## DiscardPotion
@@ -186,11 +155,6 @@ DiscardPotion 0
 DiscardPotion 1
 ```
 
-**Legacy format** (still parsed):
-```
-NetDiscardPotionGameAction for player {netId} potion slot: {slotIndex}
-```
-
 ## MoveToMapCoord
 
 Navigate to a map node at the given column. The row is derived at execution time from the player's current position (current row + 1).
@@ -205,11 +169,6 @@ MoveToMapCoord {col}
 ```
 MoveToMapCoord 2
 MoveToMapCoord 0
-```
-
-**Legacy format** (still parsed):
-```
-MoveToMapCoordAction {playerId} MapCoord ({col}, {row})
 ```
 
 ## OpenChest
@@ -228,11 +187,6 @@ OpenChest # Venerable Tea Set
 OpenChest # Runic Pyramid
 ```
 
-**Legacy format** (still parsed):
-```
-TakeChestRelic {relicTitle}
-```
-
 ## TakeChestRelic
 
 Pick the relic from an opened treasure chest. Always follows an `OpenChest` command.
@@ -248,11 +202,6 @@ No parameters — treasure chests offer one relic, always at index 0. The relic 
 TakeChestRelic # Venerable Tea Set
 ```
 
-**Legacy format** (still parsed):
-```
-NetPickRelicAction for player {netId} index {relicIndex}
-```
-
 ## ProceedToNextAct
 
 Advance to the next act after the boss fight.
@@ -262,12 +211,6 @@ ProceedToNextAct
 ```
 
 No parameters.
-
-**Legacy formats** (still parsed):
-```
-NextAct
-VoteForMapCoordAction {playerId}
-```
 
 ## ChooseRestSiteOption
 
@@ -306,11 +249,6 @@ UsePotion 0 1 # POTION.FIRE_POTION
 UsePotion 1 # POTION.STRENGTH_POTION
 ```
 
-**Legacy format** (still parsed):
-```
-UsePotionAction {netId} {potionName} ({instanceId}) index: {slotIndex} target: {targetId} ({creatureName}) combat: {inCombat}
-```
-
 ## SelectGridCard
 
 Select one or more cards from a grid selection screen (deck selection, card removal, upgrade, simple grid picks).
@@ -325,14 +263,6 @@ SelectGridCard {idx0} {idx1} ...
 ```
 SelectGridCard 5
 SelectGridCard 3 7
-```
-
-**Legacy formats** (still parsed):
-```
-SelectDeckCard {idx...}
-RemoveCardFromDeck: {idx...}
-SelectSimpleCard {idx}
-UpgradeCard {idx}
 ```
 
 ## SelectHandCards
