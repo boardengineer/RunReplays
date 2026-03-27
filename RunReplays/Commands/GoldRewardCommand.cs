@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 
 namespace RunReplays.Commands;
@@ -28,14 +29,15 @@ public class GoldRewardCommand : ReplayCommand
         if (screen == null || !screen.IsInsideTree())
             return ExecuteResult.Retry(200);
 
-        Node? goldButton = CardRewardCommand.FindRewardButton(screen, "GoldReward");
-        if (goldButton == null)
+        var match = ClaimRewardCommand.EnumerateRewardButtons(screen)
+            .FirstOrDefault(x => ClaimRewardCommand.IsRewardOfType(x.reward, "GoldReward"));
+        if (match.button == null)
         {
             PlayerActionBuffer.LogDispatcher("[GoldReward] Gold reward button not found — skipping.");
             return ExecuteResult.Fail();
         }
 
-        CardRewardCommand.InvokeGetReward(goldButton);
+        ClaimRewardCommand.InvokeGetReward(match.button);
         PlayerActionBuffer.LogDispatcher($"[GoldReward] Claimed gold reward ({GoldAmount}).");
 
         return ExecuteResult.Ok();

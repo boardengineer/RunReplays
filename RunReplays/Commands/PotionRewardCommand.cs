@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 
 namespace RunReplays.Commands;
@@ -28,14 +29,15 @@ public class PotionRewardCommand : ReplayCommand
         if (screen == null || !screen.IsInsideTree())
             return ExecuteResult.Retry(200);
 
-        Node? potionButton = CardRewardCommand.FindRewardButton(screen, "PotionReward");
-        if (potionButton == null)
+        var match = ClaimRewardCommand.EnumerateRewardButtons(screen)
+            .FirstOrDefault(x => ClaimRewardCommand.IsRewardOfType(x.reward, "PotionReward"));
+        if (match.button == null)
         {
             PlayerActionBuffer.LogDispatcher("[PotionReward] Potion reward button not found — skipping.");
             return ExecuteResult.Fail();
         }
 
-        CardRewardCommand.InvokeGetReward(potionButton);
+        ClaimRewardCommand.InvokeGetReward(match.button);
         PlayerActionBuffer.LogDispatcher($"[PotionReward] Claimed potion reward '{PotionTitle}'.");
 
         return ExecuteResult.Ok();

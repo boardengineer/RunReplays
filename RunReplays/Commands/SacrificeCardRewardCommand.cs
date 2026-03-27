@@ -106,9 +106,9 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
 
         Node? targetButton = null;
         int cardRewardCount = 0;
-        foreach (var (button, reward) in CardRewardCommand.EnumerateRewardButtons(rewardScreen))
+        foreach (var (button, reward) in ClaimRewardCommand.EnumerateRewardButtons(rewardScreen))
         {
-            if (CardRewardCommand.IsRewardOfType(reward, "CardReward"))
+            if (ClaimRewardCommand.IsRewardOfType(reward, "CardReward"))
             {
                 if (RewardIndex >= 0)
                 {
@@ -128,7 +128,7 @@ public sealed class SacrificeCardRewardCommand : ReplayCommand
             return ExecuteResult.Retry(200);
         }
 
-        CardRewardCommand.InvokeGetReward(targetButton);
+        ClaimRewardCommand.InvokeGetReward(targetButton);
         _screenOpened = true;
         return ExecuteResult.Retry(200);
     }

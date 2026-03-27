@@ -45,18 +45,14 @@ public static class DeckCardSelectRecordPatch
             indices.Add(index);
         }
 
-        // When a deck removal is pending (Empty Cage, Cook, etc.), record as
-        // a single combined RemoveCardFromDeck command.
-        string command;
+        string command = new SelectGridCardCommand(indices.ToArray()).ToString();
         if (DeckRemovalState.PendingRemoval)
         {
             DeckRemovalState.PendingRemoval = false;
-            command = new RemoveCardFromDeckCommand(indices.ToArray()).ToString();
             PlayerActionBuffer.Record(command);
         }
         else
         {
-            command = new SelectDeckCardCommand(indices.ToArray()).ToString();
             PlayerActionBuffer.RecordMinimalOnly(command);
         }
 

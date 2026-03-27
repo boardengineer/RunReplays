@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 
 namespace RunReplays.Commands;
@@ -28,14 +29,15 @@ public class RelicRewardCommand : ReplayCommand
         if (screen == null || !screen.IsInsideTree())
             return ExecuteResult.Retry(200);
 
-        Node? relicButton = CardRewardCommand.FindRewardButton(screen, "RelicReward");
-        if (relicButton == null)
+        var match = ClaimRewardCommand.EnumerateRewardButtons(screen)
+            .FirstOrDefault(x => ClaimRewardCommand.IsRewardOfType(x.reward, "RelicReward"));
+        if (match.button == null)
         {
             PlayerActionBuffer.LogDispatcher("[RelicReward] Relic reward button not found — skipping.");
             return ExecuteResult.Fail();
         }
 
-        CardRewardCommand.InvokeGetReward(relicButton);
+        ClaimRewardCommand.InvokeGetReward(match.button);
         PlayerActionBuffer.LogDispatcher($"[RelicReward] Claimed relic reward '{RelicTitle}'.");
 
         return ExecuteResult.Ok();

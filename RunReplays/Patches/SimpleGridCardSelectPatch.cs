@@ -91,8 +91,8 @@ public static class SimpleGridSyncPatch
             index = -1;
         }
 
-        string command = $"SelectSimpleCard {index}";
-        PlayerActionBuffer.LogToDevConsole($"[SimpleGridSyncPatch] Recording: {command}");
-        PlayerActionBuffer.Record(command);
+        var cmd = new RunReplays.Commands.SelectGridCardCommand(new[] { index });
+        PlayerActionBuffer.LogToDevConsole($"[SimpleGridSyncPatch] Recording: {cmd}");
+        PlayerActionBuffer.Record(cmd.ToString()!);
     }
 }

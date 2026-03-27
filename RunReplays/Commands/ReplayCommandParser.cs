@@ -22,13 +22,11 @@ public static class ReplayCommandParser
             ?? (ReplayCommand?)TakeCardCommand.TryParse(raw)
             // Legacy reward commands (old log format)
             ?? (ReplayCommand?)GoldRewardCommand.TryParse(raw)
-            ?? (ReplayCommand?)CardRewardCommand.TryParse(raw)
             ?? (ReplayCommand?)RelicRewardCommand.TryParse(raw)
             ?? (ReplayCommand?)PotionRewardCommand.TryParse(raw)
             ?? (ReplayCommand?)SacrificeCardRewardCommand.TryParse(raw)
-            ?? (ReplayCommand?)SelectDeckCardCommand.TryParse(raw)
+            ?? (ReplayCommand?)SelectGridCardCommand.TryParse(raw)
             ?? (ReplayCommand?)SelectHandCardsCommand.TryParse(raw)
-            ?? (ReplayCommand?)RemoveCardFromDeckCommand.TryParse(raw)
             ?? (ReplayCommand?)OpenShopCommand.TryParse(raw)
             ?? (ReplayCommand?)OpenFakeShopCommand.TryParse(raw)
             ?? (ReplayCommand?)BuyCardCommand.TryParse(raw)
@@ -41,7 +39,6 @@ public static class ReplayCommandParser
             ?? (ReplayCommand?)OpenChestCommand.TryParse(raw)
             ?? (ReplayCommand?)TakeChestRelicCommand.TryParse(raw)
             ?? (ReplayCommand?)CrystalSphereClickCommand.TryParse(raw)
-            ?? (ReplayCommand?)SelectCardFromScreenCommand.TryParse(raw)
-            ?? SelectionCommand.TryParse(raw);
+            ?? (ReplayCommand?)SelectCardFromScreenCommand.TryParse(raw);
     }
 }
