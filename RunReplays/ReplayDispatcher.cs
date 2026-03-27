@@ -26,6 +26,7 @@ public static class ReplayDispatcher
     }
 
     private static bool _paused;
+    private static bool _stepping;
     public static bool Paused
     {
         get => _paused;
@@ -34,6 +35,16 @@ public static class ReplayDispatcher
             _paused = value;
             if (!value) TryDispatch();
         }
+    }
+
+    /// <summary>
+    /// Executes a single command while paused, then re-pauses.
+    /// </summary>
+    public static void Step()
+    {
+        if (!_paused) Paused = true;
+        _stepping = true;
+        DispatchNow();
     }
     private static float _delayBetweenCommands = 1.0f;
     /// <summary>
@@ -382,8 +393,13 @@ public static class ReplayDispatcher
         if (ReplayEngine.IsActive && Engine.TimeScale != _gameSpeed)
             Engine.TimeScale = _gameSpeed;
 
-        if (!ReplayEngine.IsActive || _paused)
+        if (!ReplayEngine.IsActive)
             return;
+
+        if (_paused && !_stepping)
+            return;
+
+        _stepping = false;
 
         if (!ReplayEngine.PeekNext(out ReplayCommand? cmd) || cmd == null)
             return;

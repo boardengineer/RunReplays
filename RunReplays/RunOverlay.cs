@@ -33,6 +33,7 @@ internal static class RunOverlay
     // Control bar elements (replay mode only).
     private static Control?  _controlBar;
     private static Button?   _pauseButton;
+    private static Button?   _stepButton;
     private static Button?   _stopButton;
     private static Label?    _speedLabel;
 
@@ -191,6 +192,14 @@ internal static class RunOverlay
             Callable.From(OnSpeedUp));
         controlHbox.AddChild(speedUp);
 
+        _stepButton = new Button();
+        _stepButton.Text = "⏭ Step";
+        _stepButton.AddThemeFontSizeOverride("font_size", FontSize);
+        _stepButton.Visible = false;
+        _stepButton.Connect(BaseButton.SignalName.Pressed,
+            Callable.From(OnStepPressed));
+        controlHbox.AddChild(_stepButton);
+
         _stopButton = new Button();
         _stopButton.Text = "⏹ Stop";
         _stopButton.AddThemeFontSizeOverride("font_size", FontSize);
@@ -230,6 +239,13 @@ internal static class RunOverlay
         RefreshControls();
     }
 
+    private static void OnStepPressed()
+    {
+        ReplayDispatcher.Step();
+        Callable.From(RefreshDisplay).CallDeferred();
+        Callable.From(RefreshControls).CallDeferred();
+    }
+
     private static void OnStopPressed()
     {
         ReplayDispatcher.StopAndRecord();
@@ -246,6 +262,8 @@ internal static class RunOverlay
             _pauseButton.Text = isPaused ? "▶ Play" : "⏸ Pause";
         if (_speedLabel != null)
             _speedLabel.Text = $"{ReplayDispatcher.GameSpeed:0.0}x";
+        if (_stepButton != null)
+            _stepButton.Visible = isActive && isPaused;
         if (_stopButton != null)
             _stopButton.Visible = isActive && isPaused;
         if (_controlBar != null)
