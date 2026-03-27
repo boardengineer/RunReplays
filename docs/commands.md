@@ -6,6 +6,41 @@ Lines starting with `#` are header comments. Commands support inline comments de
 ChooseEventOption 0 # ANCIENT_GOLDEN_COMPASS_OPTION
 ```
 
+## Table of Contents
+
+**Combat**
+- [PlayCard](#playcard) — play a card from hand
+- [EndTurn](#endturn) — end the player's turn
+- [UsePotion](#usepotion) — use a potion
+- [DiscardPotion](#discardpotion) — discard a potion
+- [SelectHandCards](#selecthandcards) — select cards from hand
+- [SelectGridCard](#selectgridcard) — select cards from a grid screen
+- [SelectCardFromScreen](#selectcardfromscreen) — select a card from a choose-a-card screen
+
+**Map & Navigation**
+- [MoveToMapCoord](#movetomapcoord) — navigate to a map node
+- [ProceedToNextAct](#proceedtonextact) — advance to the next act
+- [ChooseRestSiteOption](#chooserestsiteoption) — choose a rest site option
+
+**Events**
+- [ChooseEventOption](#chooseeventoption) — select an event option
+
+**Rewards**
+- [ClaimReward](#claimreward) — click a reward button
+- [TakeCard](#takecard) — select a card from the card reward screen
+
+**Treasure**
+- [OpenChest](#openchest) — open a treasure chest
+- [TakeChestRelic](#takechestrelic) — pick the relic from the chest
+
+**Shop**
+- [OpenShop](#openshop) — open the shop
+- [OpenFakeShop](#openfakeshop) — open the fake merchant shop
+- [BuyCard](#buycard) — buy a card
+- [BuyRelic](#buyrelic) — buy a relic
+- [BuyPotion](#buypotion) — buy a potion
+- [BuyCardRemoval](#buycardremoval) — buy card removal
+
 ## ChooseEventOption
 
 Select an event option by index.
