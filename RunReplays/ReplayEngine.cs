@@ -63,7 +63,16 @@ public static class ReplayEngine
     internal static event Action<IReadOnlyList<ReplayCommand>>? ReplayCompleted;
 
     internal static bool _replayActive;
-    private static List<ReplayCommand> _loadedCommands = new();
+    internal static List<ReplayCommand> _loadedCommands = new();
+
+    /// <summary>
+    /// Fires ReplayCompleted with the given commands. Used by StopAndRecord
+    /// to restore consumed commands to the action buffer.
+    /// </summary>
+    internal static void FireReplayCompleted(IReadOnlyList<ReplayCommand> commands)
+    {
+        ReplayCompleted?.Invoke(commands);
+    }
 
     /// <summary>
     /// Returns up to 2 recently consumed commands (prev), the current front of

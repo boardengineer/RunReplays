@@ -155,6 +155,29 @@ public static class ReplayDispatcher
         }
     }
 
+    /// <summary>
+    /// Stops the replay mid-flight and transitions to recording mode.
+    /// Restores already-consumed commands to the action buffer so the
+    /// next save log contains the full history.
+    /// </summary>
+    public static void StopAndRecord()
+    {
+        // Calculate consumed commands: _loadedCommands minus what's still in _pending.
+        var loaded = ReplayEngine._loadedCommands;
+        int remaining = ReplayEngine._pending.Count;
+        int consumed = loaded.Count - remaining;
+
+        if (consumed > 0)
+        {
+            var consumedCommands = loaded.GetRange(0, consumed);
+            // Fire ReplayCompleted with only the consumed portion so the buffer
+            // gets the commands that were actually replayed.
+            ReplayEngine.FireReplayCompleted(consumedCommands);
+        }
+
+        Clear();
+    }
+
     /// <summary>Clears the replay queue and resets all patch state.</summary>
     public static void Clear()
     {

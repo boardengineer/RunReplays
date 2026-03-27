@@ -33,6 +33,7 @@ internal static class RunOverlay
     // Control bar elements (replay mode only).
     private static Control?  _controlBar;
     private static Button?   _pauseButton;
+    private static Button?   _stopButton;
     private static Label?    _speedLabel;
 
     /// <summary>
@@ -190,6 +191,14 @@ internal static class RunOverlay
             Callable.From(OnSpeedUp));
         controlHbox.AddChild(speedUp);
 
+        _stopButton = new Button();
+        _stopButton.Text = "⏹ Stop";
+        _stopButton.AddThemeFontSizeOverride("font_size", FontSize);
+        _stopButton.Visible = false;
+        _stopButton.Connect(BaseButton.SignalName.Pressed,
+            Callable.From(OnStopPressed));
+        controlHbox.AddChild(_stopButton);
+
         RefreshDisplay();
         RefreshControls();
     }
@@ -221,14 +230,26 @@ internal static class RunOverlay
         RefreshControls();
     }
 
+    private static void OnStopPressed()
+    {
+        ReplayDispatcher.StopAndRecord();
+        RefreshControls();
+        RefreshDisplay();
+    }
+
     private static void RefreshControls()
     {
+        bool isActive = ReplayEngine.IsActive;
+        bool isPaused = ReplayDispatcher.Paused;
+
         if (_pauseButton != null)
-            _pauseButton.Text = ReplayDispatcher.Paused ? "▶ Play" : "⏸ Pause";
+            _pauseButton.Text = isPaused ? "▶ Play" : "⏸ Pause";
         if (_speedLabel != null)
             _speedLabel.Text = $"{ReplayDispatcher.GameSpeed:0.0}x";
+        if (_stopButton != null)
+            _stopButton.Visible = isActive && isPaused;
         if (_controlBar != null)
-            _controlBar.Visible = ReplayEngine.IsActive;
+            _controlBar.Visible = isActive;
     }
 
     // ── Card play progress tracking ─────────────────────────────────────────
