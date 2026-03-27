@@ -121,8 +121,15 @@ public static class PlayerActionBuffer
                 return;
             }
 
-            // MoveToMapCoordAction — record our simplified format instead of the
-            // game's verbose "MoveToMapCoordAction {P} MapCoord ({col}, {row})".
+            // EndPlayerTurnAction — record simplified format.
+            if (action is EndPlayerTurnAction endTurn)
+            {
+                var cmd = new EndTurnCommand { Comment = action.ToString() };
+                Record(cmd.ToLogString());
+                return;
+            }
+
+            // MoveToMapCoordAction — record our simplified format.
             if (action is MoveToMapCoordAction mapAction)
             {
                 var destField = typeof(MoveToMapCoordAction).GetField(
@@ -280,7 +287,7 @@ public static class PlayerActionBuffer
     /// </summary>
     private static void OnReplayCompleted(IReadOnlyList<ReplayCommand> commands)
     {
-        var stringCommands = commands.Select(c => c.ToString()!).ToList();
+        var stringCommands = commands.Select(c => c.ToLogString()).ToList();
         var verboseEntries = stringCommands.Select(c => ("REPLAY", c)).ToList();
         Restore(verboseEntries, stringCommands);
 

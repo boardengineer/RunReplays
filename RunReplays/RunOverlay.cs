@@ -240,11 +240,11 @@ internal static class RunOverlay
 
         // 5 display slots: [prev-2, prev-1, current, next+1, next+2]
         string?[] slots = new string?[LineCount];
-        slots[0] = prev.Count >= 2 ? prev[0]?.ToString() : null;
-        slots[1] = prev.Count >= 1 ? prev[prev.Count - 1]?.ToString() : null;
-        slots[2] = current?.ToString();
-        slots[3] = next.Count >= 1 ? next[0]?.ToString() : null;
-        slots[4] = next.Count >= 2 ? next[1]?.ToString() : null;
+        slots[0] = prev.Count >= 2 ? prev[0]?.ToLogString() : null;
+        slots[1] = prev.Count >= 1 ? prev[prev.Count - 1]?.ToLogString() : null;
+        slots[2] = current?.ToLogString();
+        slots[3] = next.Count >= 1 ? next[0]?.ToLogString() : null;
+        slots[4] = next.Count >= 2 ? next[1]?.ToLogString() : null;
 
         // Detect in-flight commands: the last consumed command may still be
         // executing (EndTurn awaiting TurnStarted, or card play awaiting
@@ -273,7 +273,7 @@ internal static class RunOverlay
                 // Last consumed slot that is still executing → yellow.
                 bool isInFlight = lastConsumedInProgress
                     && slots[i] != null
-                    && slots[i] == prev[^1]?.ToString();
+                    && slots[i] == prev[^1]?.ToLogString();
                 lbl.Modulate = isInFlight ? InProgressColor : CompletedColor;
             }
             else if (i == 2)
