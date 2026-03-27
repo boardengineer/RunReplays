@@ -11,13 +11,10 @@ namespace RunReplays.Commands;
 /// <summary>
 /// Discard a potion from the player's potion belt.
 /// Recorded as: "DiscardPotion {slotIndex}"
-/// Legacy:      "NetDiscardPotionGameAction for player {netId} potion slot: {slotIndex}"
 /// </summary>
 public sealed class DiscardPotionCommand : ReplayCommand
 {
     private const string Prefix = "DiscardPotion ";
-    private const string LegacyPrefix = "NetDiscardPotionGameAction for player ";
-    private const string LegacySlotMarker = " potion slot: ";
 
     public int SlotIndex { get; }
 
@@ -61,28 +58,11 @@ public sealed class DiscardPotionCommand : ReplayCommand
 
     public static DiscardPotionCommand? TryParse(string raw)
     {
-        // New format: "DiscardPotion {slotIndex}"
-        if (raw.StartsWith(Prefix) && !raw.StartsWith(LegacyPrefix))
-        {
-            if (int.TryParse(raw.AsSpan(Prefix.Length).Trim(), out int slot))
-                return new DiscardPotionCommand(slot);
+        if (!raw.StartsWith(Prefix))
             return null;
-        }
 
-        // Legacy: "NetDiscardPotionGameAction for player {id} potion slot: {slot}"
-        if (raw.StartsWith(LegacyPrefix))
-        {
-            int markerPos = raw.LastIndexOf(LegacySlotMarker);
-            if (markerPos < 0) return null;
-
-            var afterMarker = raw.AsSpan(markerPos + LegacySlotMarker.Length);
-            int spaceIdx = afterMarker.IndexOf(' ');
-            var slotSpan = spaceIdx >= 0 ? afterMarker[..spaceIdx] : afterMarker;
-
-            if (int.TryParse(slotSpan, out int slotIndex))
-                return new DiscardPotionCommand(slotIndex);
-        }
-
+        if (int.TryParse(raw.AsSpan(Prefix.Length).Trim(), out int slot))
+            return new DiscardPotionCommand(slot);
         return null;
     }
 }

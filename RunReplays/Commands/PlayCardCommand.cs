@@ -9,14 +9,10 @@ namespace RunReplays.Commands;
 /// <summary>
 /// Play a card from the hand.
 /// Recorded as: "PlayCard {combatCardIndex} {targetId} # {cardDescription}"
-/// Legacy:      "PlayCardAction card: {cardDescription} index: {combatCardIndex} targetid: {targetId}"
 /// </summary>
 public class PlayCardCommand : ReplayCommand
 {
     private const string Prefix = "PlayCard ";
-    private const string LegacyPrefix = "PlayCardAction ";
-    private const string LegacyIndexMarker = " index: ";
-    private const string LegacyTargetMarker = " targetid: ";
 
     public uint CombatCardIndex { get; }
     public uint? TargetId { get; }
@@ -81,52 +77,17 @@ public class PlayCardCommand : ReplayCommand
 
     public static PlayCardCommand? TryParse(string raw)
     {
-        // New format: "PlayCard {combatCardIndex}" or "PlayCard {combatCardIndex} {targetId}"
-        if (raw.StartsWith(Prefix) && !raw.StartsWith(LegacyPrefix))
+        if (!raw.StartsWith(Prefix))
+            return null;
+
+        var parts = raw.Substring(Prefix.Length).Trim().Split(' ');
+        if (parts.Length >= 1 && uint.TryParse(parts[0], out uint cardIdx))
         {
-            var parts = raw.Substring(Prefix.Length).Trim().Split(' ');
-            if (parts.Length >= 1 && uint.TryParse(parts[0], out uint cardIdx))
-            {
-                uint? target = null;
-                if (parts.Length >= 2 && uint.TryParse(parts[1], out uint tid))
-                    target = tid;
-                return new PlayCardCommand(cardIdx, target);
-            }
-            return null;
+            uint? target = null;
+            if (parts.Length >= 2 && uint.TryParse(parts[1], out uint tid))
+                target = tid;
+            return new PlayCardCommand(cardIdx, target);
         }
-
-        // Legacy format: "PlayCardAction card: {desc} index: {idx} targetid: {tid}"
-        if (!raw.StartsWith(LegacyPrefix))
-            return null;
-
-        int targetIdx = raw.LastIndexOf(LegacyTargetMarker, System.StringComparison.Ordinal);
-        int indexIdx = raw.LastIndexOf(LegacyIndexMarker, System.StringComparison.Ordinal);
-
-        if (targetIdx < 0 || indexIdx < 0 || indexIdx >= targetIdx)
-            return null;
-
-        var indexStr = raw.AsSpan(
-            indexIdx + LegacyIndexMarker.Length,
-            targetIdx - indexIdx - LegacyIndexMarker.Length).Trim();
-
-        if (!uint.TryParse(indexStr, out uint combatCardIndex))
-            return null;
-
-        uint? targetId = null;
-        var targetStr = raw.AsSpan(targetIdx + LegacyTargetMarker.Length).Trim();
-        if (targetStr.Length > 0 && uint.TryParse(targetStr, out uint legacyTid))
-            targetId = legacyTid;
-
-        // Extract card description for comment
-        const string cardMarker = "card: ";
-        int cardStart = raw.IndexOf(cardMarker, LegacyPrefix.Length, System.StringComparison.Ordinal);
-        string? cardDescription = null;
-        if (cardStart >= 0)
-        {
-            cardStart += cardMarker.Length;
-            cardDescription = raw.Substring(cardStart, indexIdx - cardStart).Trim();
-        }
-
-        return new PlayCardCommand(combatCardIndex, targetId) { Comment = cardDescription };
+        return null;
     }
 }

@@ -5,11 +5,8 @@ namespace RunReplays.Commands;
 
 /// <summary>
 /// Select one or more cards from a grid selection screen (NCardGridSelectionScreen).
-/// Unified command for deck selection, card removal, upgrade, and simple grid picks.
 ///
 /// Recorded as: "SelectGridCard {idx0} {idx1} ..."
-/// Legacy:      "SelectDeckCard {idx...}", "RemoveCardFromDeck: {idx...}",
-///              "SelectSimpleCard {idx}", "UpgradeCard {idx}"
 /// </summary>
 public class SelectGridCardCommand : ReplayCommand
 {
@@ -60,21 +57,10 @@ public class SelectGridCardCommand : ReplayCommand
 
     public static SelectGridCardCommand? TryParse(string raw)
     {
-        // New format: "SelectGridCard {idx0} {idx1} ..."
-        if (raw.StartsWith(Prefix))
-            return ParseIndices(raw, Prefix.Length);
+        if (!raw.StartsWith(Prefix))
+            return null;
 
-        // Legacy formats
-        if (raw.StartsWith("SelectDeckCard "))
-            return ParseIndices(raw, "SelectDeckCard ".Length);
-        if (raw.StartsWith("RemoveCardFromDeck: "))
-            return ParseIndices(raw, "RemoveCardFromDeck: ".Length);
-        if (raw.StartsWith("SelectSimpleCard "))
-            return ParseIndices(raw, "SelectSimpleCard ".Length);
-        if (raw.StartsWith("UpgradeCard "))
-            return ParseIndices(raw, "UpgradeCard ".Length);
-
-        return null;
+        return ParseIndices(raw, Prefix.Length);
     }
 
     private static SelectGridCardCommand? ParseIndices(string raw, int prefixLen)

@@ -7,8 +7,7 @@ namespace RunReplays.Commands;
 
 /// <summary>
 /// Choose an event option by index.
-/// Recorded as: "ChooseEventOption {index} # {textKey}" (current format)
-/// Legacy:      "ChooseEventOption {index} {textKey}" or "ChooseEventOption {textKey}"
+/// Recorded as: "ChooseEventOption {index} # {textKey}"
 ///
 /// Index -1 represents PROCEED (event finished or about to transition).
 /// The text key is stored as a comment for human readability only.
@@ -77,19 +76,11 @@ public class ChooseEventOptionCommand : ReplayCommand
         if (!raw.StartsWith(Prefix))
             return null;
 
-        string rest = raw.Substring(Prefix.Length);
+        string rest = raw.Substring(Prefix.Length).Trim();
 
-        // Current format: "ChooseEventOption {index}"
-        if (int.TryParse(rest.Trim(), out int idx))
+        if (int.TryParse(rest, out int idx))
             return new ChooseEventOptionCommand(idx);
 
-        // Legacy format: "ChooseEventOption {index} {textKey}"
-        int space = rest.IndexOf(' ');
-        if (space >= 0 && int.TryParse(rest.AsSpan(0, space), out int legacyIdx))
-            return new ChooseEventOptionCommand(legacyIdx) { Comment = rest.Substring(space + 1) };
-
-        // Oldest legacy: "ChooseEventOption {textKey}" — no index, can't replay by index
-        // Store textKey as comment, use -1 as fallback
-        return new ChooseEventOptionCommand(ProceedIndex) { Comment = rest };
+        return null;
     }
 }

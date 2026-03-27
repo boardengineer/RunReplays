@@ -10,7 +10,6 @@ namespace RunReplays.Commands;
 /// <summary>
 /// Open the treasure chest.
 /// Recorded as: "OpenChest # {relicTitle}"
-/// Legacy:      "TakeChestRelic {relicTitle}"
 ///
 /// Emits the chest button's Released signal to trigger OpenChest().
 /// A TakeChestRelic command follows to pick the relic.
@@ -18,7 +17,6 @@ namespace RunReplays.Commands;
 public sealed class OpenChestCommand : ReplayCommand
 {
     private const string Prefix = "OpenChest";
-    private const string LegacyPrefix = "TakeChestRelic ";
 
     public OpenChestCommand() : base("") { }
 
@@ -46,13 +44,8 @@ public sealed class OpenChestCommand : ReplayCommand
 
     public static OpenChestCommand? TryParse(string raw)
     {
-        // New format: "OpenChest"
         if (raw == Prefix)
             return new OpenChestCommand();
-
-        // Legacy: "TakeChestRelic {relicTitle}"
-        if (raw.StartsWith(LegacyPrefix))
-            return new OpenChestCommand { Comment = raw.Substring(LegacyPrefix.Length) };
 
         return null;
     }
@@ -61,15 +54,12 @@ public sealed class OpenChestCommand : ReplayCommand
 /// <summary>
 /// Pick the relic from the opened treasure chest.
 /// Recorded as: "TakeChestRelic"
-/// Legacy:      "NetPickRelicAction for player {netId} index {relicIndex}"
 ///
 /// Always picks relic at index 0 (treasure chests offer one relic).
 /// </summary>
 public sealed class TakeChestRelicCommand : ReplayCommand
 {
     private const string Cmd = "TakeChestRelic";
-    private const string LegacyPrefix = "NetPickRelicAction for player ";
-    private const string LegacyIndexMarker = " index ";
 
     public TakeChestRelicCommand() : base("") { }
 
@@ -87,17 +77,8 @@ public sealed class TakeChestRelicCommand : ReplayCommand
 
     public static TakeChestRelicCommand? TryParse(string raw)
     {
-        // New format: "TakeChestRelic"
         if (raw == Cmd)
             return new TakeChestRelicCommand();
-
-        // Legacy: "NetPickRelicAction for player {id} index {idx}"
-        if (raw.StartsWith(LegacyPrefix))
-        {
-            int markerPos = raw.LastIndexOf(LegacyIndexMarker);
-            if (markerPos >= 0)
-                return new TakeChestRelicCommand();
-        }
 
         return null;
     }

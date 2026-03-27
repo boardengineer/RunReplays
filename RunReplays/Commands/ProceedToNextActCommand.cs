@@ -4,14 +4,11 @@ namespace RunReplays.Commands;
 
 /// <summary>
 /// Proceed to the next act after the boss fight.
-/// Recorded as: "NextAct"
-/// Legacy:      "VoteForMapCoordAction {playerId}"
+/// Recorded as: "ProceedToNextAct"
 /// </summary>
 public sealed class ProceedToNextActCommand : ReplayCommand
 {
     private const string Cmd = "ProceedToNextAct";
-    private const string LegacyCmd = "NextAct";
-    private const string LegacyPrefix = "VoteForMapCoordAction ";
 
     public ProceedToNextActCommand() : base("") { }
 
@@ -27,10 +24,7 @@ public sealed class ProceedToNextActCommand : ReplayCommand
 
     public static ProceedToNextActCommand? TryParse(string raw)
     {
-        if (raw == Cmd || raw == LegacyCmd)
-            return new ProceedToNextActCommand();
-
-        if (raw.StartsWith(LegacyPrefix))
+        if (raw == Cmd)
             return new ProceedToNextActCommand();
 
         return null;

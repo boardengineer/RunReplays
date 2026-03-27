@@ -11,7 +11,6 @@ namespace RunReplays.Commands;
 /// <summary>
 /// Navigate to a map node at the given column.
 /// Recorded as: "MoveToMapCoord {col}"
-/// Legacy:      "MoveToMapCoordAction {playerId} MapCoord ({col}, {row})"
 ///
 /// The row is derived at execution time from the player's current map position
 /// (CurrentMapCoord.row + 1), since map travel always advances one row.
@@ -19,8 +18,6 @@ namespace RunReplays.Commands;
 public class MapMoveCommand : ReplayCommand
 {
     private const string Prefix = "MoveToMapCoord ";
-    private const string LegacyPrefix = "MoveToMapCoordAction ";
-    private const string LegacyCoordMarker = "MapCoord (";
 
     private static readonly FieldInfo? MapPointDictionaryField =
         typeof(NMapScreen).GetField(
@@ -54,33 +51,13 @@ public class MapMoveCommand : ReplayCommand
 
     public static MapMoveCommand? TryParse(string raw)
     {
-        // New format: "MoveToMapCoord {col}"
-        if (raw.StartsWith(Prefix) && !raw.StartsWith(LegacyPrefix))
-        {
-            // Handle both "MoveToMapCoord {col}" and "MoveToMapCoord {col} {row}" (row ignored)
-            var parts = raw.Substring(Prefix.Length).Trim().Split(' ');
-            if (parts.Length >= 1 && int.TryParse(parts[0], out int col))
-                return new MapMoveCommand(col);
+        if (!raw.StartsWith(Prefix))
             return null;
-        }
 
-        // Legacy format: "MoveToMapCoordAction {playerId} MapCoord ({col}, {row})"
-        if (raw.StartsWith(LegacyPrefix))
-        {
-            int markerIdx = raw.IndexOf(LegacyCoordMarker, System.StringComparison.Ordinal);
-            if (markerIdx < 0)
-                return null;
-
-            System.ReadOnlySpan<char> coords = raw.AsSpan(markerIdx + LegacyCoordMarker.Length);
-            int comma = coords.IndexOf(',');
-            int close = coords.IndexOf(')');
-            if (comma > 0 && close > comma
-                && int.TryParse(coords[..comma].Trim(), out int col))
-            {
-                return new MapMoveCommand(col);
-            }
-        }
-
+        // Handle both "MoveToMapCoord {col}" and "MoveToMapCoord {col} {row}" (row ignored)
+        var parts = raw.Substring(Prefix.Length).Trim().Split(' ');
+        if (parts.Length >= 1 && int.TryParse(parts[0], out int col))
+            return new MapMoveCommand(col);
         return null;
     }
 
