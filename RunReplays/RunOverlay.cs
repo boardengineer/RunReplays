@@ -30,6 +30,11 @@ internal static class RunOverlay
     private static Label?       _titleLabel;
     private static Label[]      _lineLabels = new Label[LineCount];
 
+    // Control bar elements (replay mode only).
+    private static Control?  _controlBar;
+    private static Button?   _pauseButton;
+    private static Label?    _speedLabel;
+
     /// <summary>
     /// Controls whether the overlay is visible. Persists across runs within
     /// the same session. Toggled from the Run Replays menu.
@@ -112,6 +117,7 @@ internal static class RunOverlay
         root.MouseFilter = Control.MouseFilterEnum.Ignore;
         _canvas.AddChild(root);
 
+
         // ── Panel anchored to the top-right corner ────────────────────────────
         var panel = new PanelContainer();
         panel.AnchorLeft   = 1f;
@@ -147,7 +153,82 @@ internal static class RunOverlay
             vbox.AddChild(lbl);
         }
 
+        // ── Control bar (play/pause + speed) ────────────────────────────────
+        vbox.AddChild(new HSeparator());
+
+        var controlHbox = new HBoxContainer();
+        controlHbox.AddThemeConstantOverride("separation", 8);
+        controlHbox.MouseFilter = Control.MouseFilterEnum.Stop;
+        vbox.AddChild(controlHbox);
+        _controlBar = controlHbox;
+
+        _pauseButton = new Button();
+        _pauseButton.Text = "⏸ Pause";
+        _pauseButton.AddThemeFontSizeOverride("font_size", FontSize);
+        _pauseButton.CustomMinimumSize = new Vector2(90, 0);
+        _pauseButton.Connect(BaseButton.SignalName.Pressed,
+            Callable.From(OnPausePressed));
+        controlHbox.AddChild(_pauseButton);
+
+        var speedDown = new Button();
+        speedDown.Text = "◀";
+        speedDown.AddThemeFontSizeOverride("font_size", FontSize);
+        speedDown.Connect(BaseButton.SignalName.Pressed,
+            Callable.From(OnSpeedDown));
+        controlHbox.AddChild(speedDown);
+
+        _speedLabel = new Label();
+        _speedLabel.AddThemeFontSizeOverride("font_size", FontSize);
+        _speedLabel.CustomMinimumSize = new Vector2(50, 0);
+        _speedLabel.HorizontalAlignment = HorizontalAlignment.Center;
+        controlHbox.AddChild(_speedLabel);
+
+        var speedUp = new Button();
+        speedUp.Text = "▶";
+        speedUp.AddThemeFontSizeOverride("font_size", FontSize);
+        speedUp.Connect(BaseButton.SignalName.Pressed,
+            Callable.From(OnSpeedUp));
+        controlHbox.AddChild(speedUp);
+
         RefreshDisplay();
+        RefreshControls();
+    }
+
+    // ── Control bar handlers ─────────────────────────────────────────────────
+
+    private static void OnPausePressed()
+    {
+        bool wasPaused = ReplayDispatcher.Paused;
+        ReplayDispatcher.Paused = !wasPaused;
+
+        if (!wasPaused)
+            Godot.Engine.TimeScale = 1.0;
+        else
+            ReplayDispatcher.ApplyGameSpeed();
+
+        RefreshControls();
+    }
+
+    private static void OnSpeedDown()
+    {
+        ReplayDispatcher.GameSpeed = Math.Max(1f, ReplayDispatcher.GameSpeed - 1f);
+        RefreshControls();
+    }
+
+    private static void OnSpeedUp()
+    {
+        ReplayDispatcher.GameSpeed = Math.Min(10f, ReplayDispatcher.GameSpeed + 1f);
+        RefreshControls();
+    }
+
+    private static void RefreshControls()
+    {
+        if (_pauseButton != null)
+            _pauseButton.Text = ReplayDispatcher.Paused ? "▶ Play" : "⏸ Pause";
+        if (_speedLabel != null)
+            _speedLabel.Text = $"{ReplayDispatcher.GameSpeed:0.0}x";
+        if (_controlBar != null)
+            _controlBar.Visible = ReplayEngine.IsActive;
     }
 
     // ── Card play progress tracking ─────────────────────────────────────────
@@ -197,6 +278,8 @@ internal static class RunOverlay
             RefreshReplay();
         else
             RefreshRecording();
+
+        RefreshControls();
     }
 
     private static void RefreshRecording()
@@ -292,3 +375,4 @@ internal static class RunOverlay
     private static string Truncate(string s) =>
         s.Length <= 68 ? s : s[..65] + "...";
 }
+

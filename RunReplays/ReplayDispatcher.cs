@@ -26,6 +26,15 @@ public static class ReplayDispatcher
     }
 
     private static bool _paused;
+    public static bool Paused
+    {
+        get => _paused;
+        set
+        {
+            _paused = value;
+            if (!value) TryDispatch();
+        }
+    }
     private static float _delayBetweenCommands = 1.0f;
     /// <summary>
     /// True while a dispatched command is executing (between ExecuteNext and
