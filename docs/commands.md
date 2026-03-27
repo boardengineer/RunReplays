@@ -176,3 +176,44 @@ MoveToMapCoord 0
 ```
 MoveToMapCoordAction {playerId} MapCoord ({col}, {row})
 ```
+
+## OpenChest
+
+Open a treasure chest. Always followed by a `TakeChestRelic` command.
+
+```
+OpenChest
+```
+
+The expected relic title is stored as a comment for readability.
+
+**Example:**
+```
+OpenChest # Venerable Tea Set
+OpenChest # Runic Pyramid
+```
+
+**Legacy format** (still parsed):
+```
+TakeChestRelic {relicTitle}
+```
+
+## TakeChestRelic
+
+Pick the relic from an opened treasure chest. Always follows an `OpenChest` command.
+
+```
+TakeChestRelic
+```
+
+No parameters — treasure chests offer one relic, always at index 0. The relic title is stored as a comment for readability.
+
+**Example:**
+```
+TakeChestRelic # Venerable Tea Set
+```
+
+**Legacy format** (still parsed):
+```
+NetPickRelicAction for player {netId} index {relicIndex}
+```

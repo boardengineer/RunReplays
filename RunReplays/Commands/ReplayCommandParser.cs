@@ -38,8 +38,8 @@ public static class ReplayCommandParser
             ?? (ReplayCommand?)UsePotionCommand.TryParse(raw)
             ?? (ReplayCommand?)DiscardPotionCommand.TryParse(raw)
             ?? (ReplayCommand?)ProceedToNextActCommand.TryParse(raw)
+            ?? (ReplayCommand?)OpenChestCommand.TryParse(raw)
             ?? (ReplayCommand?)TakeChestRelicCommand.TryParse(raw)
-            ?? (ReplayCommand?)NetPickRelicCommand.TryParse(raw)
             ?? (ReplayCommand?)CrystalSphereClickCommand.TryParse(raw)
             ?? (ReplayCommand?)SelectCardFromScreenCommand.TryParse(raw)
             ?? SelectionCommand.TryParse(raw);
