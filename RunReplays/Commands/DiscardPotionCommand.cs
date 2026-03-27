@@ -10,25 +10,23 @@ namespace RunReplays.Commands;
 
 /// <summary>
 /// Discard a potion from the player's potion belt.
-/// Recorded as: "NetDiscardPotionGameAction for player {netId} potion slot: {slotIndex}"
+/// Recorded as: "DiscardPotion {slotIndex}"
+/// Legacy:      "NetDiscardPotionGameAction for player {netId} potion slot: {slotIndex}"
 /// </summary>
 public sealed class DiscardPotionCommand : ReplayCommand
 {
-    private const string Prefix = "NetDiscardPotionGameAction for player ";
-    private const string SlotMarker = " potion slot: ";
+    private const string Prefix = "DiscardPotion ";
+    private const string LegacyPrefix = "NetDiscardPotionGameAction for player ";
+    private const string LegacySlotMarker = " potion slot: ";
 
-    public string PlayerInfo { get; }
     public int SlotIndex { get; }
 
-
-    private DiscardPotionCommand(string raw, string playerInfo, int slotIndex) : base(raw)
+    public DiscardPotionCommand(int slotIndex) : base("")
     {
-        PlayerInfo = playerInfo;
         SlotIndex = slotIndex;
     }
 
-    public override string ToString()
-        => $"{Prefix}{PlayerInfo}{SlotMarker}{SlotIndex}";
+    public override string ToString() => $"{Prefix}{SlotIndex}";
 
     public override string Describe() => $"discard potion slot={SlotIndex}";
 
@@ -63,22 +61,28 @@ public sealed class DiscardPotionCommand : ReplayCommand
 
     public static DiscardPotionCommand? TryParse(string raw)
     {
-        if (!raw.StartsWith(Prefix))
+        // New format: "DiscardPotion {slotIndex}"
+        if (raw.StartsWith(Prefix) && !raw.StartsWith(LegacyPrefix))
+        {
+            if (int.TryParse(raw.AsSpan(Prefix.Length).Trim(), out int slot))
+                return new DiscardPotionCommand(slot);
             return null;
+        }
 
-        int markerPos = raw.LastIndexOf(SlotMarker);
-        if (markerPos < 0) return null;
+        // Legacy: "NetDiscardPotionGameAction for player {id} potion slot: {slot}"
+        if (raw.StartsWith(LegacyPrefix))
+        {
+            int markerPos = raw.LastIndexOf(LegacySlotMarker);
+            if (markerPos < 0) return null;
 
-        var afterMarker = raw.AsSpan(markerPos + SlotMarker.Length);
-        int spaceIdx = afterMarker.IndexOf(' ');
-        var slotSpan = spaceIdx >= 0 ? afterMarker[..spaceIdx] : afterMarker;
+            var afterMarker = raw.AsSpan(markerPos + LegacySlotMarker.Length);
+            int spaceIdx = afterMarker.IndexOf(' ');
+            var slotSpan = spaceIdx >= 0 ? afterMarker[..spaceIdx] : afterMarker;
 
-        if (!int.TryParse(slotSpan, out int slotIndex))
-            return null;
+            if (int.TryParse(slotSpan, out int slotIndex))
+                return new DiscardPotionCommand(slotIndex);
+        }
 
-        // Extract the player info between the prefix and the slot marker
-        string playerInfo = raw.Substring(Prefix.Length, markerPos - Prefix.Length);
-
-        return new DiscardPotionCommand(raw, playerInfo, slotIndex);
+        return null;
     }
 }

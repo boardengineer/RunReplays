@@ -129,6 +129,22 @@ public static class PlayerActionBuffer
                 return;
             }
 
+            // NetDiscardPotionGameAction — record simplified format.
+            // It's a struct so can't pattern-match from GameAction; check ToString prefix.
+            {
+                string actionStr = action.ToString()!;
+                if (actionStr.StartsWith("NetDiscardPotionGameAction"))
+                {
+                    // Parse slot from the legacy format string.
+                    var parsed = DiscardPotionCommand.TryParse(actionStr);
+                    if (parsed != null)
+                    {
+                        Record(parsed.ToString()!);
+                        return;
+                    }
+                }
+            }
+
             // MoveToMapCoordAction — record our simplified format.
             if (action is MoveToMapCoordAction mapAction)
             {

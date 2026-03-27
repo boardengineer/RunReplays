@@ -114,6 +114,48 @@ SacrificeCardReward[{index}]
 SacrificeCardReward
 ```
 
+## EndTurn
+
+End the player's turn during combat.
+
+```
+EndTurn
+```
+
+No parameters. The original game action details are stored as a comment for readability.
+
+**Example:**
+```
+EndTurn # EndPlayerTurnAction for player 1 round 3
+EndTurn
+```
+
+**Legacy format** (still parsed):
+```
+EndPlayerTurnAction for player {playerId} round {round}
+```
+
+## DiscardPotion
+
+Discard a potion from the player's potion belt.
+
+```
+DiscardPotion {slotIndex}
+```
+
+- `slotIndex` — 0-based index into the potion belt
+
+**Example:**
+```
+DiscardPotion 0
+DiscardPotion 1
+```
+
+**Legacy format** (still parsed):
+```
+NetDiscardPotionGameAction for player {netId} potion slot: {slotIndex}
+```
+
 ## MoveToMapCoord
 
 Navigate to a map node at the given column. The row is derived at execution time from the player's current position (current row + 1).
