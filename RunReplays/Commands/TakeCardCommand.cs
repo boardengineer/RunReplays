@@ -21,6 +21,10 @@ public class TakeCardCommand : ReplayCommand
     private const string SacrificeKeyword = "sacrifice";
     private const string SkipKeyword = "skip";
 
+    private static readonly FieldInfo? CardRowField =
+        typeof(NCardRewardSelectionScreen).GetField(
+            "_cardRow", BindingFlags.NonPublic | BindingFlags.Instance);
+
     private static readonly FieldInfo? ExtraOptionsField =
         typeof(NCardRewardSelectionScreen).GetField(
             "_extraOptions", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -76,14 +80,30 @@ public class TakeCardCommand : ReplayCommand
 
     private ExecuteResult ExecuteSelectCard(NCardRewardSelectionScreen screen)
     {
-        var holder = CardGridScreenCapture.FindCardHolderByIndex(screen, CardIndex);
-        if (holder == null)
+        var cardRow = CardRowField?.GetValue(screen) as Godot.Node;
+        if (cardRow == null)
+            return ExecuteResult.Retry(200);
+
+        // Collect card holders sorted by X position for correct visual order.
+        var holders = new List<Godot.Control>();
+        foreach (Godot.Node child in cardRow.GetChildren())
+        {
+            if (child is not Godot.Control ctrl) continue;
+            var prop = child.GetType().GetProperty(
+                "CardModel", BindingFlags.Public | BindingFlags.Instance);
+            if (prop?.GetValue(child) is MegaCrit.Sts2.Core.Models.CardModel)
+                holders.Add(ctrl);
+        }
+        holders.Sort((a, b) => a.Position.X.CompareTo(b.Position.X));
+
+        if (CardIndex < 0 || CardIndex >= holders.Count)
         {
             PlayerActionBuffer.LogMigrationWarning(
-                $"[TakeCard] Card holder at index {CardIndex} not found — retrying.");
+                $"[TakeCard] Index {CardIndex} out of range (count={holders.Count}) — retrying.");
             return ExecuteResult.Retry(200);
         }
 
+        var holder = holders[CardIndex];
         holder.EmitSignal("Pressed", holder);
         PlayerActionBuffer.LogDispatcher($"[TakeCard] Selected card [{CardIndex}].");
         ReplayState.CardRewardSelectionScreen = null;
