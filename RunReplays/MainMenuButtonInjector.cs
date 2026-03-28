@@ -103,6 +103,7 @@ public static class MainMenuButtonInjector
     private static readonly (string seed, string floor, string[] files)[] BundledReplays =
     {
         ("LFKFUEPCRA", "floor_49", new[] { "actions.sts2replay", "run.save" }),
+        ("F67ZPV6R17", "floor_45", new[] { "actions.sts2replay", "run.save" }),
     };
 
     private static void ExtractBundledReplay()

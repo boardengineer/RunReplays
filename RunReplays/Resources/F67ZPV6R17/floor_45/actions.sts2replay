@@ -1,0 +1,805 @@
+# Character: SILENT
+# Seed: F67ZPV6R17
+# Ascension: 1
+# Game: v0.99.1
+# Mod: 0.1.0
+ChooseEventOption 2 # NEOW.pages.INITIAL.options.PRECARIOUS_SHEARS
+SelectGridCard 5 6
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+PlayCard 3 # CARD.SURVIVOR (47297870)
+SelectHandCards 3
+PlayCard 5 # CARD.DEFEND_SILENT (5922227)
+PlayCard 6 1 # CARD.STRIKE_SILENT (53300044)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 1 # CARD.NEUTRALIZE (22336347)
+PlayCard 9 # CARD.DEFEND_SILENT (66809403)
+PlayCard 2 1 # CARD.STRIKE_SILENT (35081480)
+PlayCard 6 1 # CARD.STRIKE_SILENT (53300044)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 4 1 # CARD.STRIKE_SILENT (23027646)
+PlayCard 1 1 # CARD.STRIKE_SILENT (56093725)
+PlayCard 0 1 # CARD.STRIKE_SILENT (58428419)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 0 1 # CARD.STRIKE_SILENT (58428419)
+PlayCard 6 1 # CARD.STRIKE_SILENT (53300044)
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # CardReward
+TakeCard 0 # Backflip
+MoveToMapCoord 3
+PlayCard 1 # CARD.BACKFLIP (16308692)
+PlayCard 8 1 # CARD.NEUTRALIZE (48734297)
+PlayCard 7 1 # CARD.STRIKE_SILENT (65067245)
+PlayCard 6 1 # CARD.STRIKE_SILENT (66882017)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 1 # CARD.STRIKE_SILENT (66882017)
+PlayCard 5 1 # CARD.STRIKE_SILENT (29800956)
+PlayCard 9 1 # CARD.STRIKE_SILENT (35955494)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 8 1 # CARD.NEUTRALIZE (48734297)
+PlayCard 1 # CARD.BACKFLIP (16308692)
+PlayCard 10 # CARD.SURVIVOR (55163998)
+SelectHandCards 1
+PlayCard 7 1 # CARD.STRIKE_SILENT (65067245)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 6 1 # CARD.STRIKE_SILENT (66882017)
+PlayCard 5 1 # CARD.STRIKE_SILENT (29800956)
+PlayCard 9 1 # CARD.STRIKE_SILENT (35955494)
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Haze
+MoveToMapCoord 2
+ChooseEventOption 1 # BYRDONIS_NEST.pages.INITIAL.options.TAKE
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+ChooseEventOption 0 # THE_LEGENDS_WERE_TRUE.pages.INITIAL.options.NAB_THE_MAP
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+ChooseRestSiteOption HATCH
+MoveToMapCoord 2
+OpenChest
+TakeChestRelic # Eternal Feather
+MoveToMapCoord 2
+PlayCard 5 1 # CARD.NEUTRALIZE (19668325)
+PlayCard 0 1 # CARD.BYRD_SWOOP (18368357)
+PlayCard 1 1 # CARD.STRIKE_SILENT (31097487)
+PlayCard 3 # CARD.BACKFLIP (35868512)
+PlayCard 7 1 # CARD.STRIKE_SILENT (49630470)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 11 # CARD.DEFEND_SILENT (13311295)
+PlayCard 12 1 # CARD.STRIKE_SILENT (52692797)
+PlayCard 9 1 # CARD.STRIKE_SILENT (60645165)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 1 1 # CARD.STRIKE_SILENT (31097487)
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # CardReward
+TakeCard 2 # Prepared
+MoveToMapCoord 2
+PlayCard 4 # CARD.BACKFLIP (50973214)
+PlayCard 2 # CARD.SURVIVOR (66909658)
+SelectHandCards 5
+PlayCard 1 1 # CARD.BYRD_SWOOP (14890946)
+PlayCard 6 1 # CARD.STRIKE_SILENT (35189699)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.PREPARED (17705082)
+SelectHandCards 3
+PlayCard 10 1 # CARD.STRIKE_SILENT (25128015)
+PlayCard 14 2 # CARD.NEUTRALIZE (45536956)
+PlayCard 11 # CARD.DEFEND_SILENT (24825543)
+PlayCard 12 2 # CARD.STRIKE_SILENT (22103301)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 1 2 # CARD.BYRD_SWOOP (14890946)
+PlayCard 6 2 # CARD.STRIKE_SILENT (35189699)
+PlayCard 3 2 # CARD.STRIKE_SILENT (65316014)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 0 2 # CARD.STRIKE_SILENT (16567630)
+ClaimReward 0 # GoldReward: 13
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Prepared
+MoveToMapCoord 3
+OpenChest
+TakeChestRelic # Happy Flower
+MoveToMapCoord 3
+PlayCard 2 # CARD.PREPARED (42595989)
+SelectHandCards 6
+PlayCard 1 # CARD.PREPARED (34559049)
+SelectHandCards 4
+PlayCard 4 # CARD.BACKFLIP (27723121)
+PlayCard 10 1 # CARD.NEUTRALIZE (56086797)
+PlayCard 5 1 # CARD.STRIKE_SILENT (48181497)
+PlayCard 3 1 # CARD.STRIKE_SILENT (47819589)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 14 1 # CARD.BYRD_SWOOP (27577508)
+PlayCard 13 # CARD.DEFEND_SILENT (17977248)
+PlayCard 12 1 # CARD.STRIKE_SILENT (46736714)
+PlayCard 15 1 # CARD.STRIKE_SILENT (46870983)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 1 # CARD.PREPARED (34559049)
+SelectHandCards 1
+PlayCard 0 # CARD.DEFEND_SILENT (18752975)
+PlayCard 13 # CARD.DEFEND_SILENT (17977248)
+PlayCard 12 1 # CARD.STRIKE_SILENT (46736714)
+PlayCard 11 1 # CARD.STRIKE_SILENT (35019130)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 4 # CARD.BACKFLIP (27723121)
+PlayCard 14 1 # CARD.BYRD_SWOOP (27577508)
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Backflip
+MoveToMapCoord 3
+ChooseEventOption 0 # ROOM_FULL_OF_CHEESE.pages.INITIAL.options.GORGE
+SelectGridCard 0 2
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+ChooseEventOption 0 # BRAIN_LEECH.pages.INITIAL.options.SHARE_KNOWLEDGE
+SelectGridCard 3
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+OpenShop
+BuyRelic Punch Dagger
+SelectGridCard 7
+MoveToMapCoord 3
+PlayCard 1 # CARD.PREPARED (421381)
+SelectHandCards 2
+PlayCard 0 # CARD.PREPARED (7503360)
+SelectHandCards 3
+PlayCard 5 1 # CARD.STRIKE_SILENT (13219687)
+PlayCard 8 1 # CARD.STRIKE_SILENT (40584762)
+PlayCard 4 1 # CARD.STRIKE_SILENT (38751556)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 11 # CARD.BACKFLIP (58391498)
+PlayCard 13 # CARD.PREPARED (32090930)
+SelectHandCards 1
+PlayCard 9 1 # CARD.NEUTRALIZE (29718539)
+PlayCard 15 # CARD.SURVIVOR (49228522)
+SelectHandCards 2
+PlayCard 14 1 # CARD.STRIKE_SILENT (20382916)
+PlayCard 12 1 # CARD.BYRD_SWOOP (55761442)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 0 # CARD.PREPARED (7503360)
+SelectHandCards 1
+PlayCard 19 # CARD.BACKFLIP (60480619)
+PlayCard 12 1 # CARD.BYRD_SWOOP (55761442)
+PlayCard 9 1 # CARD.NEUTRALIZE (29718539)
+PlayCard 4 1 # CARD.STRIKE_SILENT (38751556)
+PlayCard 15 # CARD.SURVIVOR (49228522)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 5 1 # CARD.STRIKE_SILENT (13219687)
+PlayCard 8 1 # CARD.STRIKE_SILENT (40584762)
+ClaimReward 0 # GoldReward: 44
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Hidden Daggers
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 13
+MoveToMapCoord 3
+PlayCard 4 # CARD.BACKFLIP (13836186)
+PlayCard 7 # CARD.PREPARED (20250029)
+SelectHandCards 4
+PlayCard 8 # CARD.PREPARED (48032538)
+SelectHandCards 5
+PlayCard 10 # CARD.PREPARED (65430359)
+SelectHandCards 4 6
+PlayCard 1 1 # CARD.NEUTRALIZE (36841401)
+PlayCard 2 1 # CARD.STRIKE_SILENT (63137158)
+PlayCard 3 1 # CARD.STRIKE_SILENT (31363515)
+PlayCard 0 # CARD.SURVIVOR (48832731)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 17 # CARD.BACKFLIP (64407656)
+PlayCard 14 # CARD.HIDDEN_DAGGERS (60293010)
+SelectHandCards 1 0
+PlayCard 16 # CARD.RICOCHET (51895648)
+PlayCard 19 1 # CARD.BYRD_SWOOP (49637679)
+PlayCard 21 1 # CARD.SHIV (35886478)
+PlayCard 22 1 # CARD.SHIV (37396145)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 4 # CARD.BACKFLIP (13836186)
+PlayCard 8 # CARD.PREPARED (48032538)
+SelectHandCards 5
+PlayCard 6 # CARD.DEFEND_SILENT (46989245)
+PlayCard 2 1 # CARD.STRIKE_SILENT (63137158)
+PlayCard 14 # CARD.HIDDEN_DAGGERS (60293010)
+PlayCard 24 1 # CARD.SHIV (22202226)
+PlayCard 23 1 # CARD.SHIV (64144161)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 10 # CARD.PREPARED (65430359)
+SelectHandCards 1 2
+PlayCard 17 # CARD.BACKFLIP (64407656)
+PlayCard 1 1 # CARD.NEUTRALIZE (36841401)
+PlayCard 13 1 # CARD.STRIKE_SILENT (51438466)
+PlayCard 18 1 # CARD.STRIKE_SILENT (42797999)
+PlayCard 0 # CARD.SURVIVOR (48832731)
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 7 # CARD.PREPARED (20250029)
+SelectHandCards 4
+PlayCard 8 # CARD.PREPARED (48032538)
+SelectHandCards 3
+PlayCard 19 1 # CARD.BYRD_SWOOP (49637679)
+PlayCard 3 1 # CARD.STRIKE_SILENT (31363515)
+PlayCard 9 # CARD.DEFEND_SILENT (29639661)
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 4 # CARD.BACKFLIP (13836186)
+PlayCard 0 # CARD.SURVIVOR (48832731)
+SelectHandCards 2
+PlayCard 1 1 # CARD.NEUTRALIZE (36841401)
+PlayCard 20 1 # CARD.STRIKE_SILENT (44085927)
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 16 # CARD.RICOCHET (51895648)
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # CardReward
+TakeCard 1 # Adrenaline
+ProceedToNextAct
+MoveToMapCoord 3
+ChooseEventOption 0 # DARV.pages.INITIAL.options.PANDORAS_BOX
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 5
+PlayCard 1 # CARD.BACKFLIP (17077320)
+PlayCard 8 # CARD.PREPARED (18131472)
+SelectHandCards 3
+PlayCard 9 1 # CARD.BYRD_SWOOP (28965527)
+PlayCard 7 # CARD.ACROBATICS (54210391)
+SelectHandCards 6
+PlayCard 10 # CARD.BACKFLIP (59363156)
+PlayCard 14 # CARD.HIDDEN_DAGGERS (48932017)
+SelectHandCards 1 3
+PlayCard 23 1 # CARD.SHIV (28383934)
+PlayCard 15 # CARD.ADRENALINE (37734971)
+PlayCard 16 # CARD.PREPARED (4070426)
+SelectHandCards 8 6
+PlayCard 3 # CARD.DAGGER_SPRAY (41085719)
+PlayCard 18 1 # CARD.NEUTRALIZE (61269088)
+PlayCard 22 1 # CARD.SHIV (30992631)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 5
+OpenShop
+BuyCard Adrenaline
+BuyCardRemoval
+SelectGridCard 18
+MoveToMapCoord 5
+PlayCard 4 # CARD.ADRENALINE (39395987)
+PlayCard 7 # CARD.PREPARED (64189903)
+SelectHandCards 2 5
+PlayCard 3 # CARD.ACROBATICS (41660034)
+SelectHandCards 7
+PlayCard 8 # CARD.ADRENALINE (40838223)
+PlayCard 11 # CARD.SURVIVOR (41838351)
+SelectHandCards 6
+PlayCard 10 1 # CARD.NEUTRALIZE (19561786)
+PlayCard 13 1 # CARD.MALAISE (33463294)
+PlayCard 0 1 # CARD.BYRD_SWOOP (50872089)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 21 # CARD.BACKFLIP (44602390)
+PlayCard 7 # CARD.PREPARED (64189903)
+SelectHandCards 5 0
+PlayCard 3 # CARD.ACROBATICS (41660034)
+SelectHandCards 5
+PlayCard 16 # CARD.BACKFLIP (34224014)
+PlayCard 5 # CARD.PREPARED (19019566)
+SelectHandCards 5
+PlayCard 18 # CARD.PREPARED (20681739)
+SelectHandCards 4
+PlayCard 10 1 # CARD.NEUTRALIZE (19561786)
+PlayCard 6 # CARD.STORM_OF_STEEL (36958373)
+PlayCard 24 1 # CARD.SHIV (11609734)
+PlayCard 23 1 # CARD.SHIV (4145839)
+PlayCard 22 1 # CARD.SHIV (38474663)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 11 # CARD.SURVIVOR (41838351)
+SelectHandCards 2
+PlayCard 0 1 # CARD.BYRD_SWOOP (50872089)
+PlayCard 1 # CARD.DAGGER_SPRAY (55195618)
+ClaimReward 0 # GoldReward: 12
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 5
+ChooseEventOption 0 # SLIPPERY_BRIDGE.pages.INITIAL.options.OVERCOME
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 5
+PlayCard 1 # CARD.ACROBATICS (19818512)
+SelectHandCards 4
+PlayCard 7 # CARD.PREPARED (36592453)
+SelectHandCards 3
+PlayCard 3 # CARD.ADRENALINE (61795646)
+PlayCard 0 # CARD.ADRENALINE (54397840)
+PlayCard 10 # CARD.HIDDEN_DAGGERS (33679446)
+SelectHandCards 7 5
+PlayCard 25 1 # CARD.SHIV (18813936)
+PlayCard 26 1 # CARD.SHIV (22572729)
+PlayCard 8 # CARD.BACKFLIP (60896623)
+PlayCard 16 # CARD.PREPARED (33793687)
+SelectHandCards 0
+PlayCard 9 1 # CARD.BYRD_SWOOP (11198701)
+PlayCard 6 # CARD.BACKFLIP (18978909)
+PlayCard 18 # CARD.PREPARED (52934112)
+SelectHandCards 2 4
+PlayCard 11 # CARD.SURVIVOR (34679565)
+SelectHandCards 0
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 14 # CARD.RICOCHET (48470466)
+PlayCard 20 # CARD.BLADE_DANCE (59804678)
+PlayCard 36 1 # CARD.SHIV (19639609)
+PlayCard 35 1 # CARD.SHIV (10208794)
+PlayCard 34 1 # CARD.SHIV (34510318)
+PlayCard 19 # CARD.FLICK_FLACK (6644964)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 16 # CARD.PREPARED (33793687)
+SelectHandCards 0
+PlayCard 10 # CARD.HIDDEN_DAGGERS (33679446)
+SelectHandCards 1 2
+UsePotion 0 # POTION.CLARITY
+PlayCard 42 1 # CARD.SHIV (21812127)
+PlayCard 41 1 # CARD.SHIV (11919552)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+UsePotion 2 # POTION.SHACKLING_POTION
+PlayCard 18 # CARD.PREPARED (52934112)
+SelectHandCards 5 0
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 1 # CARD.ACROBATICS (19818512)
+SelectHandCards 7
+PlayCard 16 # CARD.PREPARED (33793687)
+SelectHandCards 7
+PlayCard 9 1 # CARD.BYRD_SWOOP (11198701)
+PlayCard 8 # CARD.BACKFLIP (60896623)
+PlayCard 2 # CARD.DAGGER_SPRAY (44148885)
+PlayCard 6 # CARD.BACKFLIP (18978909)
+PlayCard 10 # CARD.HIDDEN_DAGGERS (33679446)
+SelectHandCards 5 4
+EndTurn # EndPlayerTurnAction for player 1 round 5
+ClaimReward 0 # GoldReward: 41
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 4
+ChooseRestSiteOption SMITH
+SelectGridCard 13
+MoveToMapCoord 3
+PlayCard 4 # CARD.ACROBATICS (41473976)
+SelectHandCards 4
+PlayCard 8 # CARD.PREPARED (51421892)
+SelectHandCards 9 6
+PlayCard 10 # CARD.DAGGER_SPRAY (4423749)
+PlayCard 2 1 # CARD.NEUTRALIZE (7140060)
+PlayCard 3 # CARD.PREPARED (64260543)
+SelectHandCards 0
+PlayCard 7 1 # CARD.BYRD_SWOOP (35539705)
+PlayCard 11 # CARD.BACKFLIP (39813749)
+PlayCard 14 # CARD.ADRENALINE (33194309)
+PlayCard 17 # CARD.ADRENALINE (39460791)
+PlayCard 15 # CARD.PREPARED (30313332)
+SelectHandCards 6
+PlayCard 1 # CARD.BACKFLIP (45532582)
+PlayCard 8 # CARD.PREPARED (51421892)
+SelectHandCards 7 6
+PlayCard 16 # CARD.HIDDEN_DAGGERS (4384532)
+SelectHandCards 2 3
+PlayCard 21 1 # CARD.SHIV (27199977)
+PlayCard 22 2 # CARD.SHIV (13942943)
+PlayCard 6 # CARD.SURVIVOR (3948856)
+SelectHandCards 2
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 5 # CARD.FLICK_FLACK (37721464)
+PlayCard 10 # CARD.DAGGER_SPRAY (4423749)
+ClaimReward 0 # GoldReward: 39
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Hand Trick+
+MoveToMapCoord 3
+OpenChest
+TakeChestRelic # War Paint
+MoveToMapCoord 3
+PlayCard 3 # CARD.ACROBATICS (52729307)
+SelectHandCards 4
+PlayCard 9 # CARD.ADRENALINE (1644229)
+PlayCard 6 1 # CARD.BYRD_SWOOP (53394767)
+PlayCard 10 # CARD.HIDDEN_DAGGERS (14798065)
+SelectHandCards 3 1
+PlayCard 22 1 # CARD.SHIV (46544093)
+PlayCard 21 1 # CARD.SHIV (10643062)
+PlayCard 11 # CARD.ADRENALINE (66073721)
+PlayCard 13 1 # CARD.NEUTRALIZE (50371214)
+PlayCard 12 # CARD.BLADE_DANCE (57792584)
+PlayCard 25 1 # CARD.SHIV (20141993)
+PlayCard 24 1 # CARD.SHIV (49326023)
+PlayCard 23 1 # CARD.SHIV (55965231)
+PlayCard 8 # CARD.BACKFLIP (30008853)
+PlayCard 17 # CARD.PREPARED (41493754)
+SelectHandCards 0 3
+PlayCard 7 # CARD.BACKFLIP (10790857)
+PlayCard 20 # CARD.PREPARED (49957924)
+SelectHandCards 5
+PlayCard 15 # CARD.PREPARED (53536556)
+SelectHandCards 1
+PlayCard 17 # CARD.PREPARED (41493754)
+SelectHandCards 4 1
+PlayCard 3 # CARD.ACROBATICS (52729307)
+SelectHandCards 4
+PlayCard 8 # CARD.BACKFLIP (30008853)
+PlayCard 6 1 # CARD.BYRD_SWOOP (53394767)
+PlayCard 10 # CARD.HIDDEN_DAGGERS (14798065)
+SelectHandCards 2 1
+PlayCard 27 1 # CARD.SHIV (52857050)
+PlayCard 26 1 # CARD.SHIV (2019466)
+PlayCard 13 1 # CARD.NEUTRALIZE (50371214)
+PlayCard 4 # CARD.FLICK_FLACK (4801717)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 17 # CARD.PREPARED (41493754)
+SelectHandCards 2 0
+PlayCard 8 # CARD.BACKFLIP (30008853)
+PlayCard 6 1 # CARD.BYRD_SWOOP (53394767)
+PlayCard 20 # CARD.PREPARED (49957924)
+SelectHandCards 0
+PlayCard 7 # CARD.BACKFLIP (10790857)
+PlayCard 16 # CARD.SHADOWMELD (12066957)
+PlayCard 3 # CARD.ACROBATICS (52729307)
+SelectHandCards 3
+ClaimReward 0 # GoldReward: 35
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 4
+ChooseRestSiteOption SMITH
+SelectGridCard 5
+MoveToMapCoord 4
+PlayCard 6 # CARD.ADRENALINE (52620910)
+PlayCard 1 # CARD.PREPARED (63428649)
+SelectHandCards 4
+PlayCard 7 # CARD.ACROBATICS (3826144)
+SelectHandCards 8
+PlayCard 10 # CARD.HAND_TRICK (37795849)
+SelectHandCards 2
+PlayCard 9 # CARD.BACKFLIP (41482241)
+PlayCard 8 # CARD.ADRENALINE (34435299)
+PlayCard 2 1 # CARD.BYRD_SWOOP (33986932)
+PlayCard 11 # CARD.PREPARED (4618326)
+SelectHandCards 1 6
+PlayCard 18 # CARD.WELL_LAID_PLANS (25906726)
+PlayCard 20 # CARD.PREPARED (18070038)
+SelectHandCards 5 7
+EndTurn # EndPlayerTurnAction for player 1 round 1
+SelectHandCards 4
+PlayCard 7 # CARD.ACROBATICS (3826144)
+SelectHandCards 4
+PlayCard 1 # CARD.PREPARED (63428649)
+SelectHandCards 4
+PlayCard 9 # CARD.BACKFLIP (41482241)
+PlayCard 3 # CARD.BACKFLIP (37446940)
+PlayCard 19 # CARD.SURVIVOR (31833943)
+SelectHandCards 4
+EndTurn # EndPlayerTurnAction for player 1 round 2
+SelectHandCards 0
+PlayCard 20 # CARD.PREPARED (18070038)
+SelectHandCards 7 2
+PlayCard 11 # CARD.PREPARED (4618326)
+SelectHandCards 2 1
+PlayCard 2 1 # CARD.BYRD_SWOOP (33986932)
+PlayCard 10 # CARD.HAND_TRICK (37795849)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+SelectHandCards 0
+PlayCard 9 # CARD.BACKFLIP (41482241)
+PlayCard 3 # CARD.BACKFLIP (37446940)
+PlayCard 20 # CARD.PREPARED (18070038)
+SelectHandCards 7 6
+PlayCard 7 # CARD.ACROBATICS (3826144)
+SelectHandCards 9
+ClaimReward 0 # GoldReward: 44
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Ricochet
+MoveToMapCoord 4
+OpenShop
+BuyCard Abrasive
+BuyCard Corrosive Wave
+BuyRelic Sturdy Clamp
+BuyCard Hidden Gem
+BuyCardRemoval
+SelectGridCard 18
+MoveToMapCoord 3
+PlayCard 6 # CARD.HIDDEN_GEM (58193424) || Hand: [Backflip, Hidden Daggers+, Flick-Flack, Prepared, Storm of Steel+, Byrd Swoop, Hidden Gem] Enemies: [Infested Prism 191/200]
+PlayCard 3 # CARD.PREPARED (10942440) || Hand: [Backflip, Hidden Daggers+, Flick-Flack, Prepared, Storm of Steel+, Byrd Swoop] Enemies: [Infested Prism 191/200]
+SelectHandCards 2
+PlayCard 7 # CARD.CORROSIVE_WAVE (53978772) || Hand: [Backflip, Hidden Daggers+, Storm of Steel+, Byrd Swoop, Corrosive Wave] Enemies: [Infested Prism 184/200]
+PlayCard 0 # CARD.BACKFLIP (62244903) || Hand: [Backflip, Hidden Daggers+, Storm of Steel+, Byrd Swoop] Enemies: [Infested Prism 184/200]
+PlayCard 1 # CARD.HIDDEN_DAGGERS (23333217) || Hand: [Hidden Daggers+, Storm of Steel+, Byrd Swoop, Haze, Ricochet] Enemies: [Infested Prism 184/200]
+SelectHandCards 3 2
+PlayCard 25 1 # CARD.SHIV (29720589) || Hand: [Storm of Steel+, Byrd Swoop, Shiv+, Shiv+] Enemies: [Infested Prism 172/200]
+PlayCard 24 1 # CARD.SHIV (49805199) || Hand: [Storm of Steel+, Byrd Swoop, Shiv+] Enemies: [Infested Prism 166/200]
+PlayCard 5 1 # CARD.BYRD_SWOOP (13922476)
+PlayCard 10 # CARD.SURVIVOR (24730963) || Hand: [Storm of Steel+, Survivor] Enemies: [Infested Prism 146/200]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 12 # CARD.ACROBATICS (57051014) || Hand: [Prepared+, Acrobatics+, Well-Laid Plans, Abrasive, Blade Dance] Enemies: [Infested Prism 133/200]
+SelectHandCards 2
+PlayCard 19 # CARD.ADRENALINE (1552324) || Hand: [Prepared+, Well-Laid Plans, Blade Dance, Ricochet, Adrenaline, Shadowmeld, Adrenaline] Enemies: [Infested Prism 133/200]
+PlayCard 20 1 # CARD.NEUTRALIZE (13970916) || Hand: [Prepared+, Well-Laid Plans, Blade Dance, Ricochet, Adrenaline, Shadowmeld, Neutralize, Backflip] Enemies: [Infested Prism 133/200]
+PlayCard 17 # CARD.ADRENALINE (7475704) || Hand: [Prepared+, Well-Laid Plans, Blade Dance, Ricochet, Adrenaline, Shadowmeld, Backflip] Enemies: [Infested Prism 130/200]
+PlayCard 23 # CARD.PREPARED (51359927) || Hand: [Prepared+, Well-Laid Plans, Blade Dance, Ricochet, Shadowmeld, Backflip, Hand Trick+, Prepared+] Enemies: [Infested Prism 130/200]
+SelectHandCards 7 3
+PlayCard 6 # CARD.HIDDEN_GEM (58193424) || Hand: [Prepared+, Well-Laid Plans, Blade Dance, Shadowmeld, Backflip, Hand Trick+, Hidden Gem] Enemies: [Infested Prism 118/200]
+PlayCard 21 # CARD.BACKFLIP (58629387) || Hand: [Prepared+, Well-Laid Plans, Blade Dance, Shadowmeld, Backflip, Hand Trick+] Enemies: [Infested Prism 118/200]
+PlayCard 7 # CARD.CORROSIVE_WAVE (53978772) || Hand: [Prepared+, Well-Laid Plans, Blade Dance, Shadowmeld, Hand Trick+, Corrosive Wave, Byrd Swoop] Enemies: [Infested Prism 118/200]
+PlayCard 11 # CARD.PREPARED (21252082) || Hand: [Prepared+, Well-Laid Plans, Blade Dance, Shadowmeld, Hand Trick+, Byrd Swoop] Enemies: [Infested Prism 118/200]
+SelectHandCards 0 2
+SelectHandCards 5 0
+SelectHandCards 5 6
+PlayCard 12 # CARD.ACROBATICS (57051014) || Hand: [Hand Trick+, Byrd Swoop, Survivor, Acrobatics+, Backflip] Enemies: [Infested Prism 79/200]
+SelectHandCards 2
+PlayCard 3 # CARD.PREPARED (10942440) || Hand: [Hand Trick+, Byrd Swoop, Backflip, Prepared, Neutralize, Hidden Daggers+, Prepared+] Enemies: [Infested Prism 79/200]
+SelectHandCards 1
+PlayCard 6 # CARD.HIDDEN_GEM (58193424) || Hand: [Hand Trick+, Backflip, Neutralize, Hidden Daggers+, Prepared+, Hidden Gem] Enemies: [Infested Prism 79/200]
+PlayCard 11 # CARD.PREPARED (21252082) || Hand: [Hand Trick+, Backflip, Neutralize, Hidden Daggers+, Prepared+] Enemies: [Infested Prism 79/200]
+SelectHandCards 5 0
+SelectHandCards 5 0
+SelectHandCards 5 2
+PlayCard 23 # CARD.PREPARED (51359927) || Hand: [Neutralize, Hidden Daggers+, Corrosive Wave, Prepared+] Enemies: [Infested Prism 20/200]
+SelectHandCards 3 2
+PlayCard 1 # CARD.HIDDEN_DAGGERS (23333217) || Hand: [Neutralize, Hidden Daggers+, Well-Laid Plans] Enemies: [Infested Prism 8/200]
+PlayCard 27 1 # CARD.SHIV (56348120) || Hand: [Shiv+, Shiv+] Enemies: [Infested Prism 8/200]
+PlayCard 26 1 # CARD.SHIV (61994436) || Hand: [Shiv+] Enemies: [Infested Prism 2/200]
+ClaimReward 0 # GoldReward: 44
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 4
+ChooseRestSiteOption SMITH
+SelectGridCard 15
+MoveToMapCoord 3
+PlayCard 0 # CARD.HIDDEN_GEM (3445484) || Hand: [Hidden Gem+, Storm of Steel+, Abrasive, Corrosive Wave, Shadowmeld, Prepared+, Ricochet+] Enemies: [Knowledge Demon 370/379]
+PlayCard 5 # CARD.PREPARED (45460488) || Hand: [Storm of Steel+, Abrasive, Corrosive Wave, Shadowmeld, Prepared+, Ricochet+] Enemies: [Knowledge Demon 370/379]
+SelectHandCards 4 1
+PlayCard 8 # CARD.ACROBATICS (56026382) || Hand: [Storm of Steel+, Corrosive Wave, Shadowmeld, Prepared, Acrobatics+] Enemies: [Knowledge Demon 355/379]
+SelectHandCards 5
+PlayCard 7 # CARD.PREPARED (58420936) || Hand: [Storm of Steel+, Corrosive Wave, Shadowmeld, Prepared, Backflip, Neutralize+, Byrd Swoop] Enemies: [Knowledge Demon 355/379]
+SelectHandCards 0
+PlayCard 9 # CARD.BACKFLIP (34475393) || Hand: [Corrosive Wave, Shadowmeld, Backflip, Neutralize+, Byrd Swoop, Hidden Daggers+] Enemies: [Knowledge Demon 355/379]
+PlayCard 15 # CARD.ADRENALINE (45103245) || Hand: [Corrosive Wave, Shadowmeld, Neutralize+, Byrd Swoop, Hidden Daggers+, Blade Dance, Adrenaline] Enemies: [Knowledge Demon 355/379]
+PlayCard 16 # CARD.ADRENALINE (3276023) || Hand: [Corrosive Wave, Shadowmeld, Neutralize+, Byrd Swoop, Hidden Daggers+, Blade Dance, Adrenaline, Survivor] Enemies: [Knowledge Demon 355/379]
+PlayCard 13 # CARD.HIDDEN_DAGGERS (36182523) || Hand: [Corrosive Wave, Shadowmeld, Neutralize+, Byrd Swoop, Hidden Daggers+, Blade Dance, Survivor, Backflip, Well-Laid Plans, Flick-Flack] Enemies: [Knowledge Demon 355/379]
+SelectHandCards 8 1
+PlayCard 24 1 # CARD.SHIV (58793888) || Hand: [Corrosive Wave, Neutralize+, Byrd Swoop, Blade Dance, Survivor, Backflip, Well-Laid Plans, Shiv+, Shiv+] Enemies: [Knowledge Demon 348/379]
+PlayCard 25 1 # CARD.SHIV (62986458) || Hand: [Corrosive Wave, Neutralize+, Byrd Swoop, Blade Dance, Survivor, Backflip, Well-Laid Plans, Shiv+] Enemies: [Knowledge Demon 342/379]
+PlayCard 18 # CARD.BACKFLIP (64031349) || Hand: [Corrosive Wave, Neutralize+, Byrd Swoop, Blade Dance, Survivor, Backflip, Well-Laid Plans] Enemies: [Knowledge Demon 336/379]
+PlayCard 17 # CARD.SURVIVOR (29484215) || Hand: [Corrosive Wave, Neutralize+, Byrd Swoop, Blade Dance, Survivor, Well-Laid Plans, Hand Trick+, Ricochet] Enemies: [Knowledge Demon 336/379]
+SelectHandCards 6
+PlayCard 12 1 # CARD.BYRD_SWOOP (33846442) || Hand: [Corrosive Wave, Neutralize+, Byrd Swoop, Blade Dance, Well-Laid Plans, Hand Trick+] Enemies: [Knowledge Demon 168/379]
+PlayCard 11 1 # CARD.NEUTRALIZE (41043418) || Hand: [Corrosive Wave, Neutralize+, Blade Dance, Well-Laid Plans, Hand Trick+] Enemies: [Knowledge Demon 154/379]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+SelectCardFromScreen 0
+PlayCard 23 # CARD.PREPARED (6657497) || Hand: [Prepared+, Blade Dance, Well-Laid Plans, Hidden Daggers+, Byrd Swoop] Enemies: [Knowledge Demon 146/379]
+SelectHandCards 5 1
+PlayCard 5 # CARD.PREPARED (45460488) || Hand: [Blade Dance, Hidden Daggers+, Byrd Swoop, Prepared+] Enemies: [Knowledge Demon 146/379]
+SelectHandCards 4 0
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # PotionReward
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Hidden Daggers+, Byrd Swoop, Storm of Steel+] Enemies: []
+MoveToMapCoord 3
+ChooseEventOption 2 # NONUPEIPE.pages.INITIAL.options.DELICATE_FROND
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+UsePotion 0 # POTION.TOUCH_OF_INSANITY
+SelectHandCards 4
+UsePotion 2 # POTION.RADIANT_TINCTURE
+UsePotion 1 # POTION.STRENGTH_POTION
+PlayCard 2 # CARD.ADRENALINE (37059331)
+PlayCard 4 # CARD.HIDDEN_GEM (49015844)
+PlayCard 7 # CARD.CORROSIVE_WAVE (30635005)
+PlayCard 8 # CARD.PREPARED (7279591)
+SelectHandCards 5
+PlayCard 6 # CARD.STORM_OF_STEEL (10860429)
+PlayCard 27 1 # CARD.SHIV (12134744)
+PlayCard 26 1 # CARD.SHIV (56469709)
+PlayCard 25 1 # CARD.SHIV (42662934)
+PlayCard 24 1 # CARD.SHIV (14807348)
+PlayCard 10 # CARD.BLADE_DANCE (52776026)
+PlayCard 30 1 # CARD.SHIV (53577824)
+PlayCard 29 1 # CARD.SHIV (32617720)
+PlayCard 28 1 # CARD.SHIV (55773514)
+PlayCard 11 # CARD.RICOCHET (5222188)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 13 # CARD.ADRENALINE (20344054)
+PlayCard 12 # CARD.PREPARED (46999693)
+SelectHandCards 6 1
+PlayCard 14 # CARD.ACROBATICS (48878760)
+SelectHandCards 7
+ClaimReward 0 # GoldReward: 14
+ClaimReward 0 # CardReward
+TakeCard 1 # Acrobatics+
+MoveToMapCoord 3
+UsePotion 0 # POTION.POWER_POTION
+SelectCardFromScreen 2
+PlayCard 25 # CARD.AFTERIMAGE (20690922)
+UsePotion 1 # POTION.BLOCK_POTION
+UsePotion 2 # POTION.EXPLOSIVE_AMPOULE
+PlayCard 4 # CARD.PREPARED (29441671)
+SelectHandCards 5 3
+PlayCard 2 # CARD.HAND_TRICK (19419080)
+SelectHandCards 4
+PlayCard 1 # CARD.PREPARED (2157675)
+SelectHandCards 3
+PlayCard 11 # CARD.SURVIVOR (45940049)
+SelectHandCards 0
+PlayCard 10 # CARD.BACKFLIP (12560990)
+PlayCard 7 1 # CARD.BYRD_SWOOP (55250863)
+PlayCard 5 # CARD.STORM_OF_STEEL (63648450)
+PlayCard 28 2 # CARD.SHIV (66492071)
+PlayCard 27 2 # CARD.SHIV (42022242)
+PlayCard 26 2 # CARD.SHIV (32593390)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+ClaimReward 0 # GoldReward: 20
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+DiscardPotion 0
+TakeCard skip # skip
+MoveToMapCoord 3
+OpenFakeShop
+BuyRelic Venerable Tea Set???
+BuyRelic Mango???
+BuyRelic Happy Flower???
+BuyRelic Lee's Waffle???
+BuyRelic Blood Vial???
+MoveToMapCoord 3
+PlayCard 5 # CARD.PREPARED (18751819)
+SelectHandCards 4 0
+PlayCard 2 # CARD.ADRENALINE (61703279)
+PlayCard 9 # CARD.ACROBATICS (20143115)
+SelectHandCards 7
+PlayCard 13 # CARD.HIDDEN_GEM (21629437)
+PlayCard 11 # CARD.ADRENALINE (20979642)
+PlayCard 3 # CARD.PREPARED (18458602)
+SelectHandCards 7 9
+PlayCard 6 # CARD.PREPARED (34548651)
+SelectHandCards 7
+PlayCard 7 # CARD.BACKFLIP (42502409)
+PlayCard 21 2 # CARD.BYRD_SWOOP (478327)
+PlayCard 20 # CARD.CORROSIVE_WAVE (52248930)
+PlayCard 17 # CARD.BACKFLIP (42601569)
+PlayCard 23 # CARD.HIDDEN_DAGGERS (38744504)
+SelectHandCards 5 4
+PlayCard 26 3 # CARD.SHIV (6040023)
+PlayCard 25 4 # CARD.SHIV (5355312)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+ClaimReward 0 # GoldReward: 15
+DiscardPotion 0
+DiscardPotion 1
+DiscardPotion 2
+ClaimReward 1 # CardReward
+TakeCard 0 # Calculated Gamble+
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 13
+MoveToMapCoord 3
+PlayCard 2 # CARD.CORROSIVE_WAVE (37957211)
+PlayCard 4 # CARD.ADRENALINE (54635264)
+PlayCard 7 # CARD.HIDDEN_GEM (33551333)
+PlayCard 6 # CARD.ADRENALINE (63380249)
+PlayCard 11 # CARD.PREPARED (13223443)
+SelectHandCards 4 1
+PlayCard 3 # CARD.ACROBATICS (6070584)
+SelectHandCards 7
+PlayCard 14 # CARD.PREPARED (43322795)
+SelectHandCards 2 3
+SelectHandCards 3 4
+SelectHandCards 9 3
+SelectHandCards 9 0
+PlayCard 18 # CARD.BACKFLIP (34819582)
+PlayCard 11 # CARD.PREPARED (13223443)
+SelectHandCards 8 0
+PlayCard 22 # CARD.CALCULATED_GAMBLE (12710404)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+DiscardPotion 0
+DiscardPotion 2
+DiscardPotion 1
+ClaimReward 0 # GoldReward: 37
+ClaimReward 1 # RelicReward
+ClaimReward 1 # CardReward
+TakeCard 1 # Reflex+
+MoveToMapCoord 2
+OpenChest
+TakeChestRelic # Mercury Hourglass
+MoveToMapCoord 1
+PlayCard 2 # CARD.BACKFLIP (3492413)
+PlayCard 1 # CARD.HIDDEN_DAGGERS (15301126)
+SelectHandCards 4 6
+PlayCard 28 1 # CARD.SHIV (56712855)
+PlayCard 27 1 # CARD.SHIV (42497929)
+PlayCard 7 # CARD.BLADE_DANCE (65092823)
+PlayCard 31 1 # CARD.SHIV (36931642)
+PlayCard 30 1 # CARD.SHIV (41062800)
+PlayCard 29 1 # CARD.SHIV (46879596)
+PlayCard 3 1 # CARD.BYRD_SWOOP (31431721)
+PlayCard 4 1 # CARD.NEUTRALIZE (14450035)
+PlayCard 5 # CARD.SURVIVOR (62941452)
+SelectHandCards 1
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 # CARD.HIDDEN_GEM (6701519)
+PlayCard 13 # CARD.ACROBATICS (53569212)
+SelectHandCards 2
+PlayCard 11 # CARD.PREPARED (60313671)
+SelectHandCards 1
+PlayCard 18 # CARD.ADRENALINE (32140072)
+PlayCard 20 # CARD.ADRENALINE (53209058)
+PlayCard 23 # CARD.CORROSIVE_WAVE (480164)
+PlayCard 17 # CARD.ACROBATICS (18484200)
+SelectHandCards 7
+PlayCard 0 # CARD.HAND_TRICK (53895908)
+SelectHandCards 4
+PlayCard 16 # CARD.PREPARED (61706123)
+SelectHandCards 9 8
+PlayCard 22 # CARD.PREPARED (14966432)
+SelectHandCards 7 6
+PlayCard 11 # CARD.PREPARED (60313671)
+SelectHandCards 1
+PlayCard 21 # CARD.CALCULATED_GAMBLE (9119477)
+PlayCard 1 # CARD.HIDDEN_DAGGERS (15301126)
+SelectHandCards 0 2
+PlayCard 33 1 # CARD.SHIV (27058866)
+PlayCard 32 1 # CARD.SHIV (51357231)
+PlayCard 3 1 # CARD.BYRD_SWOOP (31431721)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # PotionReward
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard 0 # Blade Dance+
+MoveToMapCoord 2
+PlayCard 5 # CARD.BACKFLIP (25010453) || Hand: [Well-Laid Plans, Reflex+, Ricochet+, Blade Dance, Backflip, Backflip, Flick-Flack] Enemies: [Mecha Knight 288/300]
+PlayCard 4 # CARD.BACKFLIP (10235479) || Hand: [Well-Laid Plans, Reflex+, Ricochet+, Blade Dance, Backflip, Flick-Flack, Shadowmeld, Corrosive Wave] Enemies: [Mecha Knight 288/300]
+PlayCard 8 # CARD.CORROSIVE_WAVE (46118139) || Hand: [Well-Laid Plans, Reflex+, Ricochet+, Blade Dance, Flick-Flack, Shadowmeld, Corrosive Wave, Blade Dance+, Prepared+] Enemies: [Mecha Knight 288/300]
+PlayCard 10 # CARD.PREPARED (44581818) || Hand: [Well-Laid Plans, Reflex+, Ricochet+, Blade Dance, Flick-Flack, Shadowmeld, Blade Dance+, Prepared+] Enemies: [Mecha Knight 288/300]
+SelectHandCards 1 2
+PlayCard 14 # CARD.HIDDEN_DAGGERS (40884442) || Hand: [Well-Laid Plans, Blade Dance, Flick-Flack, Shadowmeld, Blade Dance+, Prepared, Hidden Gem+, Abrasive+, Hidden Daggers+, Prepared+] Enemies: [Mecha Knight 273/300]
+SelectHandCards 7 2
+PlayCard 29 1 # CARD.SHIV (10441608) || Hand: [Well-Laid Plans, Blade Dance, Shadowmeld, Blade Dance+, Prepared, Hidden Gem+, Prepared+, Shiv+, Shiv+] Enemies: [Mecha Knight 266/300]
+PlayCard 28 1 # CARD.SHIV (37910706) || Hand: [Well-Laid Plans, Blade Dance, Shadowmeld, Blade Dance+, Prepared, Hidden Gem+, Prepared+, Shiv+] Enemies: [Mecha Knight 260/300]
+PlayCard 15 # CARD.PREPARED (32415659) || Hand: [Well-Laid Plans, Blade Dance, Shadowmeld, Blade Dance+, Prepared, Hidden Gem+, Prepared+, Calculated Gamble+] Enemies: [Mecha Knight 254/300]
+SelectHandCards 1 0
+PlayCard 17 # CARD.ADRENALINE (8422751) || Hand: [Shadowmeld, Blade Dance+, Prepared, Hidden Gem+, Calculated Gamble+, Adrenaline, Byrd Swoop] Enemies: [Mecha Knight 254/300]
+PlayCard 12 # CARD.HIDDEN_GEM (54357538) || Hand: [Shadowmeld, Blade Dance+, Prepared, Hidden Gem+, Calculated Gamble+, Byrd Swoop, Acrobatics+, Hand Trick+] Enemies: [Mecha Knight 254/300]
+PlayCard 16 # CARD.CALCULATED_GAMBLE (23305482) || Hand: [Shadowmeld, Blade Dance+, Prepared, Calculated Gamble+, Byrd Swoop, Acrobatics+, Hand Trick+] Enemies: [Mecha Knight 254/300]
+PlayCard 25 # CARD.ADRENALINE (22960683) || Hand: [Ricochet, Storm of Steel+, Neutralize+, Acrobatics+, Adrenaline, Survivor] Enemies: [Mecha Knight 254/300]
+PlayCard 12 # CARD.HIDDEN_GEM (54357538) || Hand: [Ricochet, Storm of Steel+, Neutralize+, Acrobatics+, Survivor, Haze, Blade Dance, Ricochet+, Shadowmeld, Hidden Gem+] Enemies: [Mecha Knight 254/300]
+PlayCard 23 1 # CARD.NEUTRALIZE (34252149) || Hand: [Ricochet, Storm of Steel+, Neutralize+, Acrobatics+, Survivor, Haze, Blade Dance, Ricochet+, Shadowmeld] Enemies: [Mecha Knight 254/300]
+PlayCard 24 # CARD.ACROBATICS (39833889) || Hand: [Ricochet, Storm of Steel+, Acrobatics+, Survivor, Haze, Blade Dance, Ricochet+, Shadowmeld] Enemies: [Mecha Knight 250/300]
+SelectHandCards 0
+PlayCard 18 1 # CARD.BYRD_SWOOP (8695899) || Hand: [Storm of Steel+, Survivor, Haze, Blade Dance, Ricochet+, Shadowmeld, Byrd Swoop, Hidden Daggers+, Acrobatics+] Enemies: [Mecha Knight 238/300]
+PlayCard 14 # CARD.HIDDEN_DAGGERS (40884442) || Hand: [Storm of Steel+, Survivor, Haze, Blade Dance, Ricochet+, Shadowmeld, Hidden Daggers+, Acrobatics+] Enemies: [Mecha Knight 224/300]
+SelectHandCards 2 4
+PlayCard 30 1 # CARD.SHIV (63680471) || Hand: [Storm of Steel+, Survivor, Blade Dance, Shadowmeld, Acrobatics+, Shiv+, Shiv+] Enemies: [Mecha Knight 209/300]
+PlayCard 31 1 # CARD.SHIV (65658790) || Hand: [Storm of Steel+, Survivor, Blade Dance, Shadowmeld, Acrobatics+, Shiv+] Enemies: [Mecha Knight 203/300]
+PlayCard 19 # CARD.ACROBATICS (11154231) || Hand: [Storm of Steel+, Survivor, Blade Dance, Shadowmeld, Acrobatics+, Backflip] Enemies: [Mecha Knight 197/300]
+SelectHandCards 7
+PlayCard 15 # CARD.PREPARED (32415659) || Hand: [Storm of Steel+, Survivor, Blade Dance, Shadowmeld, Backflip, Prepared, Prepared+, Prepared+] Enemies: [Mecha Knight 197/300]
+SelectHandCards 7 8
+PlayCard 11 # CARD.PREPARED (65692050) || Hand: [Storm of Steel+, Survivor, Blade Dance, Shadowmeld, Backflip, Prepared, Prepared+, Well-Laid Plans, Blade Dance+, Corrosive Wave] Enemies: [Mecha Knight 190/300]
+SelectHandCards 0
+PlayCard 10 # CARD.PREPARED (44581818) || Hand: [Survivor, Blade Dance, Shadowmeld, Backflip, Prepared+, Well-Laid Plans, Blade Dance+, Corrosive Wave, Backflip] Enemies: [Mecha Knight 190/300]
+SelectHandCards 0 1
+PlayCard 14 # CARD.HIDDEN_DAGGERS (40884442) || Hand: [Shadowmeld, Backflip, Well-Laid Plans, Blade Dance+, Corrosive Wave, Backflip, Reflex+, Hidden Daggers+] Enemies: [Mecha Knight 190/300]
+SelectHandCards 6 2
+PlayCard 18 1 # CARD.BYRD_SWOOP (8695899) || Hand: [Shadowmeld, Backflip, Blade Dance+, Corrosive Wave, Backflip, Neutralize+, Hand Trick+, Ricochet+, Ricochet, Byrd Swoop] Enemies: [Mecha Knight 190/300]
+PlayCard 23 1 # CARD.NEUTRALIZE (34252149) || Hand: [Shadowmeld, Backflip, Blade Dance+, Corrosive Wave, Backflip, Neutralize+, Hand Trick+, Ricochet+, Ricochet] Enemies: [Mecha Knight 176/300]
+PlayCard 4 # CARD.BACKFLIP (10235479) || Hand: [Shadowmeld, Backflip, Blade Dance+, Corrosive Wave, Backflip, Hand Trick+, Ricochet+, Ricochet] Enemies: [Mecha Knight 172/300]
+PlayCard 24 # CARD.ACROBATICS (39833889) || Hand: [Shadowmeld, Backflip, Blade Dance+, Corrosive Wave, Hand Trick+, Ricochet+, Ricochet, Acrobatics+, Storm of Steel+] Enemies: [Mecha Knight 172/300]
+SelectHandCards 6
+EndTurn # EndPlayerTurnAction for player 1 round 1
+ClaimReward 0 # GoldReward: 37
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Backflip
+MoveToMapCoord 3
+ChooseEventOption 1 # THE_FUTURE_OF_POTIONS.pages.INITIAL.options.POTION
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
