@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Context;
+using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Combat;
+using RunReplays.Patches.Replay;
 
 namespace RunReplays.Commands;
 
@@ -44,27 +45,41 @@ public sealed class SelectHandCardsCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        var hand = HandSelectionCapture.ActiveHand;
-        if (hand == null)
+        var nHand = HandSelectionCapture.ActiveHand;
+        if (nHand == null)
             return ExecuteResult.Retry(100);
 
-        var holders = HandSelectionCapture.GetHolders(hand);
-        if (holders == null)
+        // Use the canonical Hand.Cards list (same list recording indexed into).
+        var combatState = CombatManager.Instance?.DebugOnlyGetState();
+        var player = LocalContext.GetMe(combatState!)
+                     ?? combatState?.Players.FirstOrDefault();
+        var handCards = player?.PlayerCombatState?.Hand?.Cards;
+        if (handCards == null)
             return ExecuteResult.Retry(100);
 
         foreach (int idx in HandIndices)
         {
-            if (idx < 0 || idx >= holders.Count)
+            if (idx < 0 || idx >= handCards.Count)
             {
                 PlayerActionBuffer.LogToDevConsole(
-                    $"[SelectHandCards] Index {idx} out of range (count={holders.Count}) — retrying.");
+                    $"[SelectHandCards] Index {idx} out of range (count={handCards.Count}) — retrying.");
                 return ExecuteResult.Retry(100);
             }
 
-            HandSelectionCapture.PressHolder(hand, holders[idx]);
+            // Get the card model, then find its UI holder.
+            var cardModel = handCards[idx];
+            var holder = nHand.GetCardHolder(cardModel);
+            if (holder == null)
+            {
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[SelectHandCards] No holder for card '{cardModel.Title}' at index {idx} — retrying.");
+                return ExecuteResult.Retry(100);
+            }
+
+            HandSelectionCapture.PressHolder(nHand, holder);
         }
 
-        HandSelectionCapture.ConfirmSelection(hand);
+        HandSelectionCapture.ConfirmSelection(nHand);
         HandSelectionCapture.ActiveHand = null;
         return ExecuteResult.Ok();
     }
@@ -113,7 +128,7 @@ public static class HandSelectionCapture
 
     private static readonly PropertyInfo? HoldersProp =
         typeof(NPlayerHand).GetProperty(
-            "Holders", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            "ActiveHolders", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
     internal static NPlayerHand? ActiveHand;
 
