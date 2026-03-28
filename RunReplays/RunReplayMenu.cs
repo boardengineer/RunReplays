@@ -215,17 +215,6 @@ public static class RunReplayMenu
         var sampleEntries = entries.Where(e => e.IsSample).ToList();
         var userEntries = entries.Where(e => !e.IsSample).ToList();
 
-        if (sampleEntries.Count > 0)
-        {
-            var sampleHeader = new Label();
-            sampleHeader.Text = "Samples";
-            sampleHeader.AddThemeFontSizeOverride("font_size", 16);
-            sampleHeader.HorizontalAlignment = HorizontalAlignment.Center;
-            list.AddChild(sampleHeader);
-
-            PopulateGroups(list, root, sampleEntries);
-        }
-
         if (userEntries.Count > 0)
         {
             var userHeader = new Label();
@@ -235,6 +224,17 @@ public static class RunReplayMenu
             list.AddChild(userHeader);
 
             PopulateGroups(list, root, userEntries);
+        }
+
+        if (sampleEntries.Count > 0)
+        {
+            var sampleHeader = new Label();
+            sampleHeader.Text = "Samples";
+            sampleHeader.AddThemeFontSizeOverride("font_size", 16);
+            sampleHeader.HorizontalAlignment = HorizontalAlignment.Center;
+            list.AddChild(sampleHeader);
+
+            PopulateGroups(list, root, sampleEntries);
         }
     }
 

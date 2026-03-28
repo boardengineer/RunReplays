@@ -91,12 +91,43 @@ public static class PlayerActionBuffer
                 if (!text.Contains("POTION."))
                     return;
 
-                // Parse the legacy format to extract slot and target, re-record as UsePotion.
-                var parsed = UsePotionCommand.TryParse(text);
-                if (parsed != null)
-                    RecordCardPlayEarly(parsed.ToLogString());
+                // Extract slot, target, and potion name from the game's format:
+                // "UsePotionAction {netId} {POTION.NAME} ({id}) index: {slot} target: {target} ({creature}) combat: {bool}"
+                const string idxMark = " index: ";
+                const string tgtMark = " target: ";
+                int idxPos = text.IndexOf(idxMark);
+                int tgtPos = text.IndexOf(tgtMark);
+                if (idxPos >= 0 && tgtPos > idxPos)
+                {
+                    var slotSpan = text.AsSpan(idxPos + idxMark.Length, tgtPos - idxPos - idxMark.Length).Trim();
+                    uint.TryParse(slotSpan, out uint slot);
+
+                    uint? target = null;
+                    int parenPos = text.IndexOf(" (", tgtPos + tgtMark.Length);
+                    if (parenPos > tgtPos)
+                    {
+                        var tgtSpan = text.AsSpan(tgtPos + tgtMark.Length, parenPos - tgtPos - tgtMark.Length).Trim();
+                        if (uint.TryParse(tgtSpan, out uint tid) && tid != 0)
+                            target = tid;
+                    }
+
+                    // Extract potion name for comment.
+                    string? potionName = null;
+                    int potionStart = text.IndexOf("POTION.");
+                    if (potionStart >= 0)
+                    {
+                        int potionEnd = text.IndexOf(' ', potionStart);
+                        if (potionEnd > potionStart)
+                            potionName = text.Substring(potionStart, potionEnd - potionStart);
+                    }
+
+                    var cmd = new UsePotionCommand(slot, target) { Comment = potionName };
+                    RecordCardPlayEarly(cmd.ToLogString());
+                }
                 else
+                {
                     RecordCardPlayEarly(text);
+                }
             }
         };
 
@@ -146,12 +177,18 @@ public static class PlayerActionBuffer
                 string actionStr = action.ToString()!;
                 if (actionStr.StartsWith("NetDiscardPotionGameAction"))
                 {
-                    // Parse slot from the legacy format string.
-                    var parsed = DiscardPotionCommand.TryParse(actionStr);
-                    if (parsed != null)
+                    const string slotMarker = " potion slot: ";
+                    int markerPos = actionStr.IndexOf(slotMarker);
+                    if (markerPos >= 0)
                     {
-                        Record(parsed.ToString()!);
-                        return;
+                        var afterMarker = actionStr.AsSpan(markerPos + slotMarker.Length);
+                        int spaceIdx = afterMarker.IndexOf(' ');
+                        var slotSpan = spaceIdx >= 0 ? afterMarker[..spaceIdx] : afterMarker;
+                        if (int.TryParse(slotSpan, out int slot))
+                        {
+                            Record(new DiscardPotionCommand(slot).ToString()!);
+                            return;
+                        }
                     }
                 }
             }
