@@ -140,19 +140,13 @@ public static class PlayerActionBuffer
                 || action is ReadyToBeginEnemyTurnAction)
                 return;
 
-            // VoteForMapCoordAction is not recorded for map moves, but IS
-            // recorded for act transitions.  Check if it's an act change.
+            // VoteForMapCoordAction is used for both map node votes and act transitions.
+            // Map votes have a _destination (MapCoord); act transitions have null.
+            // VoteForMapCoordAction — skip entirely. Map moves are recorded
+            // from MoveToMapCoordAction; act transitions are recorded from
+            // ActChangeSynchronizer.SetLocalPlayerReady (see ProceedToNextActRecordPatch).
             if (action is VoteForMapCoordAction)
-            {
-                // Act-change votes have no map destination — they use
-                // ActChangeSynchronizer. Record as NextAct.
-                string voteStr = action.ToString()!;
-                if (!voteStr.Contains("MapCoord"))
-                {
-                    Record(new ProceedToNextActCommand().ToString()!);
-                }
                 return;
-            }
 
             // PlayCardAction is recorded early from EnqueueManualPlay.
             // UsePotionAction is recorded early from BeforeActionExecuted.
@@ -194,6 +188,7 @@ public static class PlayerActionBuffer
             }
 
             // MoveToMapCoordAction — record our simplified format.
+            // Skip if this follows an act transition (already recorded as ProceedToNextAct).
             if (action is MoveToMapCoordAction mapAction)
             {
                 var destField = typeof(MoveToMapCoordAction).GetField(
