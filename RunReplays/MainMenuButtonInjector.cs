@@ -47,6 +47,9 @@ public static class MainMenuButtonInjector
         Callable.From(CrystalSphereManualPatcher.Apply).CallDeferred();
         Callable.From(ApplyCardRewardButtonPatch).CallDeferred();
 
+        // Ensure bundled replay log exists in the user's log directory.
+        ExtractBundledReplay();
+
         // The container holding all vertical menu buttons.
         // Uses the Godot unique-name accessor ("%MainMenuTextButtons").
         var buttonContainer = __instance.GetNode<Control>("%MainMenuTextButtons");
@@ -93,6 +96,54 @@ public static class MainMenuButtonInjector
     {
         var menu = RunReplayMenu.Create(mainMenu);
         mainMenu.AddChild(menu);
+    }
+
+    // ── Bundled replay extraction ────────────────────────────────────────────
+
+    private static readonly (string seed, string floor, string[] files)[] BundledReplays =
+    {
+        ("LFKFUEPCRA", "floor_49", new[] { "actions.sts2replay", "run.save" }),
+    };
+
+    private static void ExtractBundledReplay()
+    {
+        try
+        {
+            string logsRoot = Path.Combine(OS.GetUserDataDir(), "RunReplays", "samples");
+            var assembly = Assembly.GetExecutingAssembly();
+
+            foreach (var (seed, floor, files) in BundledReplays)
+            {
+                string targetDir = Path.Combine(logsRoot, seed, floor);
+
+                // Skip if the directory already has the replay log.
+                if (File.Exists(Path.Combine(targetDir, "actions.sts2replay")))
+                    continue;
+
+                Directory.CreateDirectory(targetDir);
+
+                foreach (string fileName in files)
+                {
+                    string resourceName = $"RunReplays.Resources.{seed}.{floor}.{fileName}";
+                    using var stream = assembly.GetManifestResourceStream(resourceName);
+                    if (stream == null)
+                    {
+                        GD.PrintErr($"[RunReplays] Bundled resource not found: {resourceName}");
+                        continue;
+                    }
+
+                    string targetPath = Path.Combine(targetDir, fileName);
+                    using var fileStream = File.Create(targetPath);
+                    stream.CopyTo(fileStream);
+                }
+
+                GD.Print($"[RunReplays] Extracted bundled replay: {seed}/{floor}");
+            }
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[RunReplays] Failed to extract bundled replay: {ex}");
+        }
     }
 
     // ── CardRewardButton manual patch ───────────────────────────────────────────

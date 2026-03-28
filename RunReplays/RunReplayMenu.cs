@@ -45,7 +45,8 @@ public static class RunReplayMenu
         int Ascension,
         DateTime SavedAt,
         string MinimalLogPath,
-        string? SavePath);
+        string? SavePath,
+        bool IsSample = false);
 
     public static Control Create(NMainMenu mainMenu)
     {
@@ -211,6 +212,34 @@ public static class RunReplayMenu
             return;
         }
 
+        var sampleEntries = entries.Where(e => e.IsSample).ToList();
+        var userEntries = entries.Where(e => !e.IsSample).ToList();
+
+        if (sampleEntries.Count > 0)
+        {
+            var sampleHeader = new Label();
+            sampleHeader.Text = "Samples";
+            sampleHeader.AddThemeFontSizeOverride("font_size", 16);
+            sampleHeader.HorizontalAlignment = HorizontalAlignment.Center;
+            list.AddChild(sampleHeader);
+
+            PopulateGroups(list, root, sampleEntries);
+        }
+
+        if (userEntries.Count > 0)
+        {
+            var userHeader = new Label();
+            userHeader.Text = "Recorded Runs";
+            userHeader.AddThemeFontSizeOverride("font_size", 16);
+            userHeader.HorizontalAlignment = HorizontalAlignment.Center;
+            list.AddChild(userHeader);
+
+            PopulateGroups(list, root, userEntries);
+        }
+    }
+
+    private static void PopulateGroups(VBoxContainer list, Control root, List<ReplayEntry> entries)
+    {
         // Group by seed; within each group order floors highest-first.
         // Groups themselves are ordered by the most recent save in each group.
         var groups = entries
@@ -353,13 +382,22 @@ public static class RunReplayMenu
 
     private static List<ReplayEntry> LoadEntries()
     {
-        string logsRoot = Path.Combine(OS.GetUserDataDir(), "RunReplays", "logs");
         var entries = new List<ReplayEntry>();
+        string baseDir = Path.Combine(OS.GetUserDataDir(), "RunReplays");
 
-        if (!Directory.Exists(logsRoot))
-            return entries;
+        ScanDirectory(Path.Combine(baseDir, "logs"), isSample: false, entries);
+        ScanDirectory(Path.Combine(baseDir, "samples"), isSample: true, entries);
 
-        foreach (string seedDir in Directory.GetDirectories(logsRoot))
+        // Newest saves at the top of the list.
+        return [.. entries.OrderByDescending(e => e.SavedAt)];
+    }
+
+    private static void ScanDirectory(string root, bool isSample, List<ReplayEntry> entries)
+    {
+        if (!Directory.Exists(root))
+            return;
+
+        foreach (string seedDir in Directory.GetDirectories(root))
         {
             foreach (string floorDir in Directory.GetDirectories(seedDir))
             {
@@ -371,8 +409,6 @@ public static class RunReplayMenu
                 if (!int.TryParse(dirName.Substring("floor_".Length), out int floor))
                     continue;
 
-                // Find the minimal/replay log: prefer actions.sts2replay,
-                // then actions.minimal.log, then legacy timestamped *.minimal.log.
                 string? latestMinimal = Path.Combine(floorDir, "actions.sts2replay");
                 if (!File.Exists(latestMinimal))
                     latestMinimal = Path.Combine(floorDir, "actions.minimal.log");
@@ -385,7 +421,6 @@ public static class RunReplayMenu
                 if (latestMinimal == null)
                     continue;
 
-                // Verbose log is optional — used only for header metadata.
                 string? latestVerbose = Path.Combine(floorDir, "actions.verbose.log");
                 if (!File.Exists(latestVerbose))
                     latestVerbose = Directory
@@ -393,13 +428,10 @@ public static class RunReplayMenu
                         .OrderByDescending(f => f)
                         .FirstOrDefault();
 
-                // Parse header for seed, character, date from verbose if available,
-                // otherwise extract from the minimal log header comments.
                 var (seed, characterId, savedAt) = latestVerbose != null
                     ? ReadVerboseHeader(latestVerbose)
                     : ReadMinimalHeader(latestMinimal);
 
-                // Check for save backup.
                 string fixedSave = Path.Combine(floorDir, "run.save");
                 string? legacySave = latestVerbose != null
                     ? latestVerbose[..^".verbose.log".Length] + ".save" : null;
@@ -408,12 +440,9 @@ public static class RunReplayMenu
 
                 int ascension = ReadMinimalHeaderAscension(latestMinimal);
 
-                entries.Add(new ReplayEntry(seed, characterId, floor, ascension, savedAt, latestMinimal, savePath));
+                entries.Add(new ReplayEntry(seed, characterId, floor, ascension, savedAt, latestMinimal, savePath, isSample));
             }
         }
-
-        // Newest saves at the top of the list.
-        return [.. entries.OrderByDescending(e => e.SavedAt)];
     }
 
     /// <summary>

@@ -19,6 +19,11 @@
       <PackageReference Include="Lib.Harmony" Version="2.4.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\LFKFUEPCRA\floor_49\actions.sts2replay" />
+      <EmbeddedResource Include="Resources\LFKFUEPCRA\floor_49\run.save" />
+    </ItemGroup>
+
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
       <Exec Command=":: For Windows&#xA;xcopy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\&quot; /Y" />
     </Target>

@@ -1,0 +1,602 @@
+# Character: IRONCLAD
+# Seed: LFKFUEPCRA
+# Ascension: 1
+# Game: v0.99.1
+# Mod: 0.1.0
+ChooseEventOption 2 # NEOW.pages.INITIAL.options.LEAFY_POULTICE
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+PlayCard 0 # CARD.BATTLE_TRANCE (61433652)
+PlayCard 4 2 # CARD.BASH (10355241)
+PlayCard 6 # CARD.COLOSSUS (33468158)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 5 2 # CARD.STRIKE_IRONCLAD (26088305)
+PlayCard 1 2 # CARD.STRIKE_IRONCLAD (16031958)
+PlayCard 7 # CARD.DEFEND_IRONCLAD (32777967)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 0 # CARD.BATTLE_TRANCE (61433652)
+PlayCard 4 1 # CARD.BASH (10355241)
+PlayCard 6 # CARD.COLOSSUS (33468158)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 5 1 # CARD.STRIKE_IRONCLAD (26088305)
+PlayCard 1 1 # CARD.STRIKE_IRONCLAD (16031958)
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Inflame
+MoveToMapCoord 1
+ChooseEventOption 1 # BRAIN_LEECH.pages.INITIAL.options.RIP
+ClaimReward 0 # CardReward
+TakeCard 2 # Fisticuffs
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+PlayCard 3 # CARD.INFLAME (5765048)
+PlayCard 4 # CARD.DEFEND_IRONCLAD (51885436)
+PlayCard 1 # CARD.COLOSSUS (39839389)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 # CARD.BATTLE_TRANCE (44193551)
+PlayCard 9 1 # CARD.BASH (62197645)
+PlayCard 6 1 # CARD.FISTICUFFS (41970824)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 6 1 # CARD.FISTICUFFS (41970824)
+PlayCard 7 1 # CARD.STRIKE_IRONCLAD (42193096)
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard 0 # Rampage
+MoveToMapCoord 1
+ChooseEventOption 0 # THIS_OR_THAT.pages.INITIAL.options.PLAIN
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+ChooseEventOption 1 # TEA_MASTER.pages.INITIAL.options.EMBER_TEA
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+PlayCard 4 # CARD.BATTLE_TRANCE (16890297)
+PlayCard 1 2 # CARD.BASH (1219897)
+PlayCard 7 2 # CARD.RAMPAGE (32104778)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 12 # CARD.INFLAME (63864418)
+PlayCard 10 1 # CARD.STRIKE_IRONCLAD (50498719)
+PlayCard 9 1 # CARD.STRIKE_IRONCLAD (50350211)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 7 1 # CARD.RAMPAGE (32104778)
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # CardReward
+TakeCard 2 # Setup Strike
+MoveToMapCoord 0
+PlayCard 2 # CARD.BATTLE_TRANCE (33413201)
+PlayCard 1 # CARD.INFLAME (48451820)
+PlayCard 5 1 # CARD.SETUP_STRIKE (64815331)
+PlayCard 6 1 # CARD.FISTICUFFS (46467075)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 1 # CARD.RAMPAGE (51630653)
+PlayCard 10 # CARD.COLOSSUS (62022695)
+PlayCard 12 # CARD.DEFEND_IRONCLAD (57782392)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 2 # CARD.BATTLE_TRANCE (33413201)
+PlayCard 5 1 # CARD.SETUP_STRIKE (64815331)
+PlayCard 10 # CARD.COLOSSUS (62022695)
+PlayCard 3 # CARD.DEFEND_IRONCLAD (32283360)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 6 1 # CARD.FISTICUFFS (46467075)
+PlayCard 9 1 # CARD.RAMPAGE (51630653)
+PlayCard 0 1 # CARD.STRIKE_IRONCLAD (5383535)
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 5 1 # CARD.SETUP_STRIKE (64815331)
+PlayCard 7 1 # CARD.STRIKE_IRONCLAD (15550496)
+PlayCard 4 1 # CARD.STRIKE_IRONCLAD (22114784)
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 2 # CARD.BATTLE_TRANCE (33413201)
+PlayCard 9 1 # CARD.RAMPAGE (51630653)
+ClaimReward 0 # GoldReward: 43
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Cruelty
+MoveToMapCoord 0
+OpenShop
+BuyCardRemoval
+SelectGridCard 4
+MoveToMapCoord 0
+OpenChest # Venerable Tea Set
+TakeChestRelic
+MoveToMapCoord 0
+ChooseRestSiteOption SMITH
+SelectGridCard 9
+MoveToMapCoord 1
+PlayCard 4 # CARD.INFLAME (154861)
+PlayCard 1 1 # CARD.SETUP_STRIKE (16478246)
+PlayCard 2 2 # CARD.FISTICUFFS (14086488)
+PlayCard 3 3 # CARD.STRIKE_IRONCLAD (59669530)
+PlayCard 0 4 # CARD.STRIKE_IRONCLAD (54026699)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 5 # CARD.BATTLE_TRANCE (1393755)
+PlayCard 6 2 # CARD.RAMPAGE (12543795)
+PlayCard 7 4 # CARD.STRIKE_IRONCLAD (45785296)
+PlayCard 11 4 # CARD.STRIKE_IRONCLAD (18053240)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 1 3 # CARD.SETUP_STRIKE (16478246)
+PlayCard 0 3 # CARD.STRIKE_IRONCLAD (54026699)
+PlayCard 13 # CARD.DEFEND_IRONCLAD (53026298)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 2 1 # CARD.FISTICUFFS (14086488)
+PlayCard 11 1 # CARD.STRIKE_IRONCLAD (18053240)
+ClaimReward 0 # GoldReward: 40
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 0
+OpenShop
+BuyCard Shrug It Off
+MoveToMapCoord 0
+PlayCard 4 # CARD.BATTLE_TRANCE (23212425)
+PlayCard 1 # CARD.INFLAME (28385106)
+PlayCard 7 # CARD.CRUELTY (10424394)
+PlayCard 3 2 # CARD.FISTICUFFS (17492239)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 12 2 # CARD.SETUP_STRIKE (27574951)
+PlayCard 10 2 # CARD.RAMPAGE (16082016)
+PlayCard 8 2 # CARD.STRIKE_IRONCLAD (26710687)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 4 # CARD.BATTLE_TRANCE (23212425)
+PlayCard 5 1 # CARD.STRIKE_IRONCLAD (7585236)
+PlayCard 3 1 # CARD.FISTICUFFS (17492239)
+PlayCard 8 1 # CARD.STRIKE_IRONCLAD (26710687)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 10 1 # CARD.RAMPAGE (16082016)
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # CardReward
+TakeCard 2 # Breakthrough
+MoveToMapCoord 0
+OpenChest # Regal Pillow
+TakeChestRelic
+MoveToMapCoord 0
+ChooseRestSiteOption SMITH
+SelectGridCard 10
+MoveToMapCoord 3
+PlayCard 1 # CARD.INFLAME (26896809)
+PlayCard 2 1 # CARD.BASH (40744692)
+PlayCard 3 1 # CARD.STRIKE_IRONCLAD (31157916)
+PlayCard 4 1 # CARD.STRIKE_IRONCLAD (11985793)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.CRUELTY (19032449)
+PlayCard 7 1 # CARD.SETUP_STRIKE (13491040)
+PlayCard 8 1 # CARD.FISTICUFFS (54310499)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 13 # CARD.BATTLE_TRANCE (49411271)
+PlayCard 8 1 # CARD.FISTICUFFS (54310499)
+PlayCard 15 1 # CARD.RAMPAGE (42890046)
+PlayCard 11 # CARD.SHRUG_IT_OFF (65233366)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 7 1 # CARD.SETUP_STRIKE (13491040)
+PlayCard 4 1 # CARD.STRIKE_IRONCLAD (11985793)
+PlayCard 6 1 # CARD.STRIKE_IRONCLAD (31325166)
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 7 1 # CARD.SETUP_STRIKE (13491040)
+PlayCard 4 1 # CARD.STRIKE_IRONCLAD (11985793)
+PlayCard 5 1 # CARD.STRIKE_IRONCLAD (40763276)
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 2 1 # CARD.BASH (40744692)
+PlayCard 6 1 # CARD.STRIKE_IRONCLAD (31325166)
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 8 1 # CARD.FISTICUFFS (54310499)
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # CardReward
+TakeCard 2 # Cruelty
+ProceedToNextAct
+MoveToMapCoord 3
+ChooseEventOption 0 # TEZCATARA.pages.INITIAL.options.VERY_HOT_COCOA
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 6
+PlayCard 1 # CARD.BATTLE_TRANCE (34798223)
+PlayCard 6 # CARD.BREAKTHROUGH (61092388)
+PlayCard 4 1 # CARD.FISTICUFFS (754227)
+PlayCard 2 # CARD.COLOSSUS (44748554)
+PlayCard 5 # CARD.DEFEND_IRONCLAD (6788043)
+PlayCard 7 1 # CARD.STRIKE_IRONCLAD (12960583)
+PlayCard 3 1 # CARD.STRIKE_IRONCLAD (83803)
+PlayCard 0 1 # CARD.STRIKE_IRONCLAD (11323009)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.SHRUG_IT_OFF (43174328)
+PlayCard 13 2 # CARD.RAMPAGE (257432)
+PlayCard 11 2 # CARD.STRIKE_IRONCLAD (7459718)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 1 # CARD.BATTLE_TRANCE (34798223)
+PlayCard 15 1 # CARD.SETUP_STRIKE (20852055)
+PlayCard 14 2 # CARD.BASH (2316895)
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 6
+OpenShop
+BuyCardRemoval
+SelectGridCard 4
+BuyCard Production
+MoveToMapCoord 6
+PlayCard 0 # CARD.SHRUG_IT_OFF (39090449)
+PlayCard 3 1 # CARD.RAMPAGE (42779510)
+PlayCard 5 1 # CARD.STRIKE_IRONCLAD (42588277)
+PlayCard 4 # CARD.CRUELTY (49471273)
+PlayCard 2 1 # CARD.STRIKE_IRONCLAD (12209819)
+PlayCard 1 # CARD.DEFEND_IRONCLAD (16269727)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 1 # CARD.BASH (24755071)
+PlayCard 8 # CARD.INFLAME (42559347)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 11 # CARD.BATTLE_TRANCE (21469047)
+PlayCard 16 # CARD.PRODUCTION (39316380)
+PlayCard 12 1 # CARD.SETUP_STRIKE (59003695)
+PlayCard 5 1 # CARD.STRIKE_IRONCLAD (42588277)
+PlayCard 15 # CARD.CRUELTY (64020810)
+PlayCard 14 1 # CARD.STRIKE_IRONCLAD (14569963)
+PlayCard 13 # CARD.BREAKTHROUGH (61271208)
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # PotionReward
+ClaimReward 1 # SpecialCardReward
+DiscardPotion 0
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Setup Strike
+MoveToMapCoord 6
+PlayCard 3 # CARD.SHRUG_IT_OFF (4293414)
+PlayCard 0 1 # CARD.SETUP_STRIKE (37932984)
+PlayCard 4 # CARD.CRUELTY (38640734)
+PlayCard 2 # CARD.DEFEND_IRONCLAD (52672829)
+PlayCard 5 1 # CARD.STRIKE_IRONCLAD (12222293)
+PlayCard 1 1 # CARD.STRIKE_IRONCLAD (5852536)
+UsePotion 0 # POTION.CLARITY
+PlayCard 6 1 # CARD.STRIKE_IRONCLAD (42891781)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 7 # CARD.PRODUCTION (50481709)
+PlayCard 11 # CARD.COLOSSUS (28250869)
+UsePotion 1 # POTION.BOTTLED_POTENTIAL
+PlayCard 3 # CARD.SHRUG_IT_OFF (4293414)
+PlayCard 13 # CARD.INFLAME (6619062)
+PlayCard 0 1 # CARD.SETUP_STRIKE (37932984)
+PlayCard 9 1 # CARD.RAMPAGE (62486613)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 17 # CARD.BATTLE_TRANCE (8234169)
+PlayCard 15 1 # CARD.BASH (66382015)
+PlayCard 14 1 # CARD.FISTICUFFS (59571562)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 9 1 # CARD.RAMPAGE (62486613)
+ClaimReward 0 # GoldReward: 13
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 6
+PlayCard 2 # CARD.SHRUG_IT_OFF (52287349)
+PlayCard 5 1 # CARD.BASH (66751636)
+PlayCard 0 1 # CARD.SETUP_STRIKE (13073090)
+PlayCard 1 1 # CARD.RAMPAGE (50548948)
+PlayCard 3 # CARD.CRUELTY (824094)
+PlayCard 4 # CARD.DEFEND_IRONCLAD (7416848)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 # CARD.BATTLE_TRANCE (45391461)
+PlayCard 12 # CARD.PRODUCTION (52829747)
+PlayCard 13 # CARD.CRUELTY (5705676)
+PlayCard 11 1 # CARD.SETUP_STRIKE (5869971)
+PlayCard 9 # CARD.BREAKTHROUGH (5043495)
+PlayCard 7 1 # CARD.STRIKE_IRONCLAD (38173472)
+PlayCard 6 1 # CARD.STRIKE_IRONCLAD (63893820)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 16 # CARD.INFLAME (65797511)
+PlayCard 14 2 # CARD.FISTICUFFS (51351089)
+PlayCard 15 2 # CARD.STRIKE_IRONCLAD (59506617)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 0 2 # CARD.SETUP_STRIKE (13073090)
+PlayCard 7 2 # CARD.STRIKE_IRONCLAD (38173472)
+PlayCard 9 # CARD.BREAKTHROUGH (5043495)
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Stomp
+MoveToMapCoord 5
+UsePotion 1 # POTION.STRENGTH_POTION
+PlayCard 1 3 # CARD.BASH (28862519)
+PlayCard 4 # CARD.COLOSSUS (35702114)
+PlayCard 0 # CARD.CRUELTY (47946189)
+PlayCard 2 3 # CARD.STRIKE_IRONCLAD (58436081)
+PlayCard 3 2 # CARD.STRIKE_IRONCLAD (56162684)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.INFLAME (16279695)
+PlayCard 8 # CARD.BREAKTHROUGH (31635016)
+UsePotion 0 # POTION.SWIFT_POTION
+PlayCard 12 # CARD.PRODUCTION (56738241)
+PlayCard 11 1 # CARD.SETUP_STRIKE (43586951)
+PlayCard 10 # CARD.SHRUG_IT_OFF (12299535)
+PlayCard 13 # CARD.STOMP (40882127)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 16 # CARD.BATTLE_TRANCE (6735116)
+PlayCard 8 # CARD.BREAKTHROUGH (31635016)
+ClaimReward 0 # GoldReward: 40
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Taunt
+MoveToMapCoord 4
+ChooseRestSiteOption SMITH
+ChooseRestSiteOption SMITH
+SelectGridCard 17
+MoveToMapCoord 3
+OpenChest # Amethyst Aubergine
+TakeChestRelic
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 14
+MoveToMapCoord 3
+ChooseEventOption 1 # SLIPPERY_BRIDGE.pages.INITIAL.options.HOLD_ON_0
+ChooseEventOption 1 # SLIPPERY_BRIDGE.pages.HOLD_ON_0.options.HOLD_ON_1
+ChooseEventOption 0 # SLIPPERY_BRIDGE.pages.INITIAL.options.OVERCOME
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 4
+ChooseEventOption 0 # WELCOME_TO_WONGOS.pages.INITIAL.options.BARGAIN_BIN
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+ChooseEventOption 0 # STONE_OF_ALL_TIME.pages.INITIAL.options.LIFT
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+PlayCard 2 # CARD.SHRUG_IT_OFF (66670917)
+PlayCard 5 # CARD.INFLAME (16281174)
+PlayCard 4 # CARD.COLOSSUS (31635181)
+PlayCard 1 1 # CARD.FISTICUFFS (29777501)
+PlayCard 0 1 # CARD.STRIKE_IRONCLAD (48047853)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.PRODUCTION (50585538)
+PlayCard 10 # CARD.CRUELTY (52616663)
+PlayCard 6 1 # CARD.SETUP_STRIKE (12312845)
+PlayCard 8 1 # CARD.SETUP_STRIKE (57816398)
+PlayCard 7 # CARD.STOMP (43706746)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 14 # CARD.CRUELTY (9935588)
+PlayCard 12 1 # CARD.TAUNT (34091345)
+PlayCard 13 1 # CARD.STRIKE_IRONCLAD (38386656)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 17 # CARD.BATTLE_TRANCE (62395376)
+PlayCard 1 1 # CARD.FISTICUFFS (29777501)
+PlayCard 18 1 # CARD.RAMPAGE (24687474)
+PlayCard 13 1 # CARD.STRIKE_IRONCLAD (38386656)
+PlayCard 7 # CARD.STOMP (43706746)
+ClaimReward 0 # GoldReward: 17
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Pillage
+MoveToMapCoord 3
+ChooseRestSiteOption HEAL
+MoveToMapCoord 3
+PlayCard 2 # CARD.BATTLE_TRANCE (12976259)
+PlayCard 5 # CARD.PRODUCTION (64452114)
+PlayCard 4 1 # CARD.SETUP_STRIKE (44444048)
+PlayCard 0 1 # CARD.SETUP_STRIKE (37442902)
+PlayCard 6 # CARD.CRUELTY (43198117)
+PlayCard 7 1 # CARD.STRIKE_IRONCLAD (53238739)
+PlayCard 3 1 # CARD.STRIKE_IRONCLAD (49677470)
+PlayCard 1 # CARD.BREAKTHROUGH (1441806)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+SelectCardFromScreen 0
+PlayCard 8 1 # CARD.RAMPAGE (9386603)
+PlayCard 9 1 # CARD.STRIKE_IRONCLAD (17370568)
+PlayCard 10 1 # CARD.FISTICUFFS (22117385)
+PlayCard 12 # CARD.STOMP (46677800)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 15 1 # CARD.TAUNT (3922802)
+PlayCard 13 # CARD.INFLAME (17447024)
+PlayCard 17 # CARD.COLOSSUS (49311561)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 18 1 # CARD.PILLAGE (41150872)
+PlayCard 5 # CARD.PRODUCTION (64452114)
+PlayCard 0 1 # CARD.SETUP_STRIKE (37442902)
+PlayCard 8 1 # CARD.RAMPAGE (9386603)
+PlayCard 19 # CARD.SHRUG_IT_OFF (34813533)
+PlayCard 17 # CARD.COLOSSUS (49311561)
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 2 # CARD.BATTLE_TRANCE (12976259)
+PlayCard 15 1 # CARD.TAUNT (3922802)
+PlayCard 11 # CARD.CRUELTY (64838745)
+PlayCard 10 1 # CARD.FISTICUFFS (22117385)
+EndTurn # EndPlayerTurnAction for player 1 round 5
+SelectCardFromScreen 0
+PlayCard 5 # CARD.PRODUCTION (64452114)
+PlayCard 16 1 # CARD.BASH (35305224)
+PlayCard 3 1 # CARD.STRIKE_IRONCLAD (49677470)
+PlayCard 9 1 # CARD.STRIKE_IRONCLAD (17370568)
+PlayCard 12 # CARD.STOMP (46677800)
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 8 1 # CARD.RAMPAGE (9386603)
+PlayCard 0 1 # CARD.SETUP_STRIKE (37442902)
+PlayCard 1 # CARD.BREAKTHROUGH (1441806)
+UsePotion 0 1 # POTION.FIRE_POTION
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # CardReward
+TakeCard 0 # Thrash
+ProceedToNextAct
+MoveToMapCoord 3
+ChooseEventOption 0 # TANX.pages.INITIAL.options.CROSSBOW
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+PlayCard 0 # CARD.SHRUG_IT_OFF (57058327)
+PlayCard 4 # CARD.INFLAME (26441400)
+PlayCard 3 1 # CARD.RAMPAGE (55133716)
+PlayCard 5 1 # CARD.STRIKE_IRONCLAD (36646012)
+PlayCard 2 1 # CARD.STRIKE_IRONCLAD (58321751)
+PlayCard 1 1 # CARD.STRIKE_IRONCLAD (43762896)
+PlayCard 21 # CARD.WHIRLWIND (49862995)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 # CARD.BATTLE_TRANCE (52190638)
+PlayCard 13 1 # CARD.SETUP_STRIKE (63358250)
+PlayCard 11 1 # CARD.TAUNT (67062560)
+PlayCard 9 # CARD.PRODUCTION (50538202)
+PlayCard 7 1 # CARD.THRASH (15537009)
+PlayCard 6 # CARD.STOMP (61378657)
+PlayCard 22 1 # CARD.THRASH (1006089)
+PlayCard 8 # CARD.DEFEND_IRONCLAD (5615355)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 23 1 # CARD.SETUP_STRIKE (26542413)
+ClaimReward 0 # GoldReward: 20
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # True Grit+
+MoveToMapCoord 1
+PlayCard 3 # CARD.BATTLE_TRANCE (6951315)
+PlayCard 7 # CARD.PRODUCTION (40660199)
+PlayCard 4 # CARD.BREAKTHROUGH (62561836)
+PlayCard 22 # CARD.WHIRLWIND (3604426)
+UsePotion 0 # POTION.ATTACK_POTION
+SelectCardFromScreen 1
+PlayCard 23 2 # CARD.RAMPAGE (49473319)
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # CardReward
+TakeCard 0 # Thunderclap+
+MoveToMapCoord 1
+OpenShop
+BuyRelic Brimstone
+MoveToMapCoord 0
+ChooseEventOption 2 # SELF_HELP_BOOK.pages.INITIAL.options.READ_ENTIRE_BOOK
+SelectGridCard 0
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+ChooseRestSiteOption SMITH
+SelectGridCard 12
+MoveToMapCoord 0
+PlayCard 1 1 # CARD.SETUP_STRIKE (63739875)
+PlayCard 23 1 # CARD.RAMPAGE (32224850)
+PlayCard 2 1 # CARD.THRASH (36787965)
+PlayCard 3 # CARD.TRUE_GRIT (62656237)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 24 1 # CARD.CINDER (55217288)
+PlayCard 7 # CARD.BATTLE_TRANCE (45783788)
+PlayCard 11 # CARD.PRODUCTION (8158124)
+PlayCard 5 1 # CARD.SETUP_STRIKE (41990456)
+PlayCard 12 # CARD.BREAKTHROUGH (6314255)
+PlayCard 13 1 # CARD.STRIKE_IRONCLAD (56828297)
+PlayCard 8 1 # CARD.STRIKE_IRONCLAD (9400908)
+PlayCard 6 # CARD.COLOSSUS (42369789)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 29 1 # CARD.GRAPPLE (52627749)
+PlayCard 16 # CARD.INFLAME (21659620)
+PlayCard 19 # CARD.CRUELTY (19279986)
+PlayCard 17 1 # CARD.TAUNT (60718852)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 22 # CARD.THUNDERCLAP (29357937)
+PlayCard 23 1 # CARD.RAMPAGE (32224850)
+PlayCard 12 # CARD.BREAKTHROUGH (6314255)
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 7 # CARD.BATTLE_TRANCE (45783788)
+PlayCard 31 1 # CARD.ANGER (41495555)
+PlayCard 5 1 # CARD.SETUP_STRIKE (41990456)
+PlayCard 8 1 # CARD.STRIKE_IRONCLAD (9400908)
+PlayCard 18 # CARD.STOMP (9598761)
+PlayCard 3 # CARD.TRUE_GRIT (62656237)
+SelectHandCards 0
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 37 # CARD.STOMP (55221167)
+ClaimReward 0 # GoldReward: 42
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Pillage+
+MoveToMapCoord 1
+OpenChest # Bronze Scales
+TakeChestRelic
+MoveToMapCoord 0
+ChooseEventOption 0 # ROUND_TEA_PARTY.pages.INITIAL.options.ENJOY_TEA
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+ChooseRestSiteOption SMITH
+SelectGridCard 9
+MoveToMapCoord 0
+PlayCard 3 # CARD.PRODUCTION (1697006)
+PlayCard 1 # CARD.BATTLE_TRANCE (45588697)
+PlayCard 24 1 # CARD.ASHEN_STRIKE (50410779)
+PlayCard 7 # CARD.CRUELTY (61098842)
+PlayCard 4 # CARD.INFLAME (15273060)
+PlayCard 2 # CARD.THUNDERCLAP (7645096)
+PlayCard 5 1 # CARD.RAMPAGE (3239820)
+PlayCard 6 # CARD.BREAKTHROUGH (29158381)
+PlayCard 0 1 # CARD.PILLAGE (42348113)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 1 # CARD.TAUNT (47879044)
+PlayCard 11 # CARD.COLOSSUS (28258215)
+PlayCard 9 1 # CARD.SETUP_STRIKE (50059136)
+PlayCard 25 1 # CARD.BULLY (25753234)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 13 # CARD.CRUELTY (7214070)
+PlayCard 17 1 # CARD.THRASH (19769391)
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # CardReward
+TakeCard 0 # Armaments+
+MoveToMapCoord 0
+OpenChest # Kusarigama
+TakeChestRelic
+MoveToMapCoord 0
+PlayCard 1 # CARD.BREAKTHROUGH (54584575)
+PlayCard 3 1 # CARD.THRASH (59274434)
+PlayCard 4 # CARD.PRODUCTION (63707859)
+PlayCard 2 # CARD.COLOSSUS (21499129)
+PlayCard 0 # CARD.BATTLE_TRANCE (50804195)
+PlayCard 5 # CARD.CRUELTY (36499821)
+PlayCard 7 1 # CARD.PILLAGE (3695529)
+PlayCard 6 # CARD.TRUE_GRIT (60062937)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 26 1 # CARD.GRAPPLE (36077882)
+PlayCard 11 1 # CARD.TAUNT (20068850)
+PlayCard 12 # CARD.CRUELTY (46401928)
+PlayCard 8 1 # CARD.FISTICUFFS (33259765)
+PlayCard 10 # CARD.STOMP (9686412)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 13 1 # CARD.RAMPAGE (14964176)
+PlayCard 14 1 # CARD.STRIKE_IRONCLAD (459857)
+ClaimReward 0 # GoldReward: 42
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 1
+ChooseRestSiteOption SMITH
+ChooseRestSiteOption HEAL
+MoveToMapCoord 3
+PlayCard 3 # CARD.PRODUCTION (30454028)
+PlayCard 0 1 # CARD.PILLAGE (27290367)
+PlayCard 7 1 # CARD.SETUP_STRIKE (25791130)
+PlayCard 8 1 # CARD.SETUP_STRIKE (30793582)
+PlayCard 10 # CARD.INFLAME (11252250)
+PlayCard 5 1 # CARD.BASH (50857183)
+PlayCard 12 # CARD.STOMP (39017025)
+PlayCard 25 # CARD.SWORD_BOOMERANG (32403591)
+PlayCard 6 1 # CARD.STRIKE_IRONCLAD (55061464)
+PlayCard 9 2 # CARD.FISTICUFFS (8706790)
+PlayCard 1 # CARD.SHRUG_IT_OFF (44286713)
+PlayCard 13 # CARD.CRUELTY (15608911)
+PlayCard 2 # CARD.BREAKTHROUGH (63036104)
+PlayCard 11 2 # CARD.THRASH (34161386)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 14 2 # CARD.TAUNT (6262477)
+PlayCard 26 2 # CARD.RAMPAGE (60396741)
+PlayCard 17 2 # CARD.RAMPAGE (1943643)
+PlayCard 15 2 # CARD.PILLAGE (56362301)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 20 # CARD.CRUELTY (7629661)
+PlayCard 22 # CARD.BATTLE_TRANCE (14022795)
+PlayCard 27 2 # CARD.IRON_WAVE (13984050)
+PlayCard 23 # CARD.TRUE_GRIT (59096295)
+SelectHandCards 3
+PlayCard 25 # CARD.SWORD_BOOMERANG (32403591)
+UsePotion 0 # POTION.REGEN_POTION
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 14 1 # CARD.TAUNT (6262477)
+PlayCard 28 # CARD.SWORD_BOOMERANG (42913287)
+PlayCard 17 1 # CARD.RAMPAGE (1943643)
+PlayCard 15 2 # CARD.PILLAGE (56362301)
+PlayCard 12 # CARD.STOMP (39017025)
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 16 # CARD.THUNDERCLAP (37498662)
+PlayCard 29 2 # CARD.THRASH (25518503)
+ProceedToNextAct
+ChooseEventOption 0 # THE_ARCHITECT.dialogue.0
+ChooseEventOption 0 # THE_ARCHITECT.dialogue.1
+ChooseEventOption 0 # PROCEED
