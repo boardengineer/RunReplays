@@ -26,6 +26,17 @@ internal static class RunOverlay
     private const int PanelWidth = 480;
     private const int FontSize   = 11;
 
+    // STS2 color palette (from StsColors.cs / top_bar.tscn / vertical_popup.tscn).
+    private static readonly Color CreamColor      = new(1f, 0.965f, 0.886f, 1f);         // #FFF6E2
+    private static readonly Color GoldColor       = new(0.937f, 0.784f, 0.318f, 1f);     // #EFC851
+    private static readonly Color PanelBg         = new(0.05f, 0.04f, 0.03f, 0.88f);     // fallback
+    private static readonly Color ButtonBg        = new(0.15f, 0.10f, 0.06f, 0.9f);      // dark brown
+    private static readonly Color ButtonHl        = new(0.25f, 0.18f, 0.10f, 0.9f);      // lighter brown
+    private static readonly Color SepColor        = new(0.937f, 0.784f, 0.318f, 0.3f);   // gold dimmed
+    private static readonly Color ShadowColor     = new(0f, 0f, 0f, 0.125f);             // text shadow
+    private static readonly Color OutlineColor    = new(0.098f, 0.161f, 0.188f, 1f);     // dark blue-grey outline
+    private static readonly Color BtnOutlineColor = new(0.35f, 0.07f, 0f, 1f);           // dark brown outline
+
     private static CanvasLayer? _canvas;
     private static Label?       _titleLabel;
     private static Label[]      _lineLabels = new Label[LineCount];
@@ -120,6 +131,10 @@ internal static class RunOverlay
         _canvas.AddChild(root);
 
 
+        // ── Load STS2 fonts ──────────────────────────────────────────────────
+        Font? fontBold = GD.Load<Font>("res://themes/kreon_bold.ttf");
+        Font? fontRegular = GD.Load<Font>("res://themes/kreon_regular.ttf");
+
         // ── Panel anchored to the top-right corner ────────────────────────────
         var panel = new PanelContainer();
         panel.AnchorLeft   = 1f;
@@ -130,83 +145,117 @@ internal static class RunOverlay
         panel.OffsetRight  = -8;
         panel.OffsetTop    = 140;
         panel.GrowVertical = Control.GrowDirection.End;
+
+        // Use the game's top bar texture as panel background.
+        var topBarTex = GD.Load<Texture2D>("res://images/atlases/ui_atlas.sprites/top_bar/top_bar.tres");
+        if (topBarTex != null)
+        {
+            var texStyle = new StyleBoxTexture();
+            texStyle.Texture = topBarTex;
+            texStyle.SetContentMarginAll(8);
+            texStyle.ContentMarginBottom = 55;
+            panel.AddThemeStyleboxOverride("panel", texStyle);
+        }
+        else
+        {
+            var flatStyle = new StyleBoxFlat();
+            flatStyle.BgColor = PanelBg;
+            flatStyle.SetCornerRadiusAll(6);
+            flatStyle.SetContentMarginAll(8);
+            panel.AddThemeStyleboxOverride("panel", flatStyle);
+        }
         root.AddChild(panel);
 
         // ── Inner layout ──────────────────────────────────────────────────────
         var vbox = new VBoxContainer();
-        vbox.AddThemeConstantOverride("separation", 1);
+        vbox.AddThemeConstantOverride("separation", 2);
         panel.AddChild(vbox);
 
-        _titleLabel = new Label();
-        _titleLabel.AddThemeFontSizeOverride("font_size", FontSize + 1);
-        vbox.AddChild(_titleLabel);
+        // ── Header row: controls (left) + title (right) ─────────────────────
+        var titleRow = new HBoxContainer();
+        titleRow.AddThemeConstantOverride("separation", 8);
+        vbox.AddChild(titleRow);
 
-        vbox.AddChild(new HSeparator());
-
-        _lineLabels = new Label[LineCount];
-        for (int i = 0; i < LineCount; i++)
-        {
-            var lbl = new Label();
-            lbl.AddThemeFontSizeOverride("font_size", FontSize);
-            lbl.ClipText           = true;
-            lbl.CustomMinimumSize  = new Vector2(PanelWidth - 16, 0);
-            lbl.AutowrapMode       = TextServer.AutowrapMode.Off;
-            _lineLabels[i]         = lbl;
-            vbox.AddChild(lbl);
-        }
-
-        // ── Control bar (play/pause + speed) ────────────────────────────────
-        vbox.AddChild(new HSeparator());
-
+        // ── Control bar (play/pause + speed) — left aligned ─────────────────
         var controlHbox = new HBoxContainer();
-        controlHbox.AddThemeConstantOverride("separation", 8);
+        controlHbox.AddThemeConstantOverride("separation", 4);
         controlHbox.MouseFilter = Control.MouseFilterEnum.Stop;
-        vbox.AddChild(controlHbox);
+        titleRow.AddChild(controlHbox);
         _controlBar = controlHbox;
 
-        _pauseButton = new Button();
-        _pauseButton.Text = "⏸ Pause";
-        _pauseButton.AddThemeFontSizeOverride("font_size", FontSize);
-        _pauseButton.CustomMinimumSize = new Vector2(90, 0);
+        // Spacer pushes title to the right.
+        var spacer = new Control();
+        spacer.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+        titleRow.AddChild(spacer);
+
+        _titleLabel = new Label();
+        _titleLabel.AddThemeFontSizeOverride("font_size", FontSize + 2);
+        if (fontBold != null) _titleLabel.AddThemeFontOverride("font", fontBold);
+        _titleLabel.AddThemeColorOverride("font_color", GoldColor);
+        StyleLabel(_titleLabel, 10);
+        _titleLabel.HorizontalAlignment = HorizontalAlignment.Right;
+        titleRow.AddChild(_titleLabel);
+
+        _pauseButton = MakeButton("⏸ Pause", fontBold, 90);
         _pauseButton.Connect(BaseButton.SignalName.Pressed,
             Callable.From(OnPausePressed));
         controlHbox.AddChild(_pauseButton);
 
-        var speedDown = new Button();
-        speedDown.Text = "◀";
-        speedDown.AddThemeFontSizeOverride("font_size", FontSize);
+        var speedDown = MakeButton("◀", fontBold);
         speedDown.Connect(BaseButton.SignalName.Pressed,
             Callable.From(OnSpeedDown));
         controlHbox.AddChild(speedDown);
 
         _speedLabel = new Label();
         _speedLabel.AddThemeFontSizeOverride("font_size", FontSize);
+        if (fontBold != null) _speedLabel.AddThemeFontOverride("font", fontBold);
+        _speedLabel.AddThemeColorOverride("font_color", GoldColor);
+        StyleLabel(_speedLabel);
         _speedLabel.CustomMinimumSize = new Vector2(50, 0);
         _speedLabel.HorizontalAlignment = HorizontalAlignment.Center;
         controlHbox.AddChild(_speedLabel);
 
-        var speedUp = new Button();
-        speedUp.Text = "▶";
-        speedUp.AddThemeFontSizeOverride("font_size", FontSize);
+        var speedUp = MakeButton("▶", fontBold);
         speedUp.Connect(BaseButton.SignalName.Pressed,
             Callable.From(OnSpeedUp));
         controlHbox.AddChild(speedUp);
 
-        _stepButton = new Button();
-        _stepButton.Text = "⏭ Step";
-        _stepButton.AddThemeFontSizeOverride("font_size", FontSize);
+        _stepButton = MakeButton("⏭ Step", fontBold);
         _stepButton.Visible = false;
         _stepButton.Connect(BaseButton.SignalName.Pressed,
             Callable.From(OnStepPressed));
         controlHbox.AddChild(_stepButton);
 
-        _stopButton = new Button();
-        _stopButton.Text = "⏹ Stop";
-        _stopButton.AddThemeFontSizeOverride("font_size", FontSize);
+        _stopButton = MakeButton("⏹ Stop", fontBold);
         _stopButton.Visible = false;
         _stopButton.Connect(BaseButton.SignalName.Pressed,
             Callable.From(OnStopPressed));
         controlHbox.AddChild(_stopButton);
+
+        // ── Separator + command lines ───────────────────────────────────────
+        var sep = new HSeparator();
+        var sepStyle = new StyleBoxFlat();
+        sepStyle.BgColor = SepColor;
+        sepStyle.SetContentMarginAll(0);
+        sepStyle.ContentMarginTop = 1;
+        sepStyle.ContentMarginBottom = 1;
+        sep.AddThemeStyleboxOverride("separator", sepStyle);
+        vbox.AddChild(sep);
+
+        _lineLabels = new Label[LineCount];
+        for (int i = 0; i < LineCount; i++)
+        {
+            var lbl = new Label();
+            lbl.AddThemeFontSizeOverride("font_size", FontSize);
+            if (fontRegular != null) lbl.AddThemeFontOverride("font", fontRegular);
+            lbl.AddThemeColorOverride("font_color", CreamColor);
+            StyleLabel(lbl);
+            lbl.ClipText           = true;
+            lbl.CustomMinimumSize  = new Vector2(PanelWidth - 16, 0);
+            lbl.AutowrapMode       = TextServer.AutowrapMode.Off;
+            _lineLabels[i]         = lbl;
+            vbox.AddChild(lbl);
+        }
 
         RefreshDisplay();
         RefreshControls();
@@ -336,9 +385,9 @@ internal static class RunOverlay
             if (entryIdx >= 0 && entryIdx < entries.Length)
             {
                 lbl.Text     = Truncate(entries[entryIdx]);
-                lbl.Modulate = i == LineCount - 1
-                    ? Colors.White
-                    : new Color(1f, 1f, 1f, 0.45f);
+                lbl.AddThemeColorOverride("font_color", i == LineCount - 1
+                    ? CreamColor
+                    : CreamColor * new Color(1, 1, 1, 0.45f));
             }
             else
             {
@@ -348,10 +397,10 @@ internal static class RunOverlay
         }
     }
 
-    // Colors for replay overlay status.
-    private static readonly Color CompletedColor  = new(0.4f, 1f, 0.4f, 0.7f);   // green
-    private static readonly Color InProgressColor = new(1f, 1f, 0.3f, 1f);        // yellow
-    private static readonly Color PendingColor    = new(1f, 1f, 1f, 0.45f);       // dimmed white
+    // Colors for replay overlay status (using STS2 palette).
+    private static readonly Color CompletedColor  = new(0.5f, 0.8f, 0.4f, 0.6f);  // muted green
+    private static readonly Color InProgressColor = GoldColor;                      // gold
+    private static readonly Color PendingColor    = CreamColor * new Color(1, 1, 1, 0.4f); // dimmed cream
 
     private static void RefreshReplay()
     {
@@ -396,20 +445,91 @@ internal static class RunOverlay
                 bool isInFlight = lastConsumedInProgress
                     && slots[i] != null
                     && slots[i] == prev[^1]?.ToLogString();
-                lbl.Modulate = isInFlight ? InProgressColor : CompletedColor;
+                lbl.AddThemeColorOverride("font_color", isInFlight ? InProgressColor : CompletedColor);
             }
             else if (i == 2)
             {
-                // If the last consumed command is still in flight, the queue
-                // front is blocked — show as pending instead of in-progress.
-                lbl.Modulate = lastConsumedInProgress ? PendingColor : InProgressColor;
+                lbl.AddThemeColorOverride("font_color", lastConsumedInProgress ? PendingColor : InProgressColor);
             }
             else
-                lbl.Modulate = PendingColor;
+                lbl.AddThemeColorOverride("font_color", PendingColor);
         }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
+
+    /// <summary>Apply STS2-style text shadow and outline to a label.</summary>
+    private static void StyleLabel(Label lbl, int outlineSize = 8)
+    {
+        lbl.AddThemeColorOverride("font_shadow_color", ShadowColor);
+        lbl.AddThemeColorOverride("font_outline_color", OutlineColor);
+        lbl.AddThemeConstantOverride("shadow_offset_x", 3);
+        lbl.AddThemeConstantOverride("shadow_offset_y", 3);
+        lbl.AddThemeConstantOverride("outline_size", outlineSize);
+    }
+
+    private static Button MakeButton(string text, Font? font, int minWidth = 0)
+    {
+        var btn = new Button();
+        btn.Text = text;
+        btn.AddThemeFontSizeOverride("font_size", FontSize);
+        if (font != null) btn.AddThemeFontOverride("font", font);
+        btn.AddThemeColorOverride("font_color", CreamColor);
+        btn.AddThemeColorOverride("font_hover_color", GoldColor);
+        btn.AddThemeColorOverride("font_shadow_color", ShadowColor);
+        btn.AddThemeColorOverride("font_outline_color", BtnOutlineColor);
+        btn.AddThemeConstantOverride("shadow_offset_x", 3);
+        btn.AddThemeConstantOverride("shadow_offset_y", 3);
+        btn.AddThemeConstantOverride("outline_size", 8);
+
+        // Try to use the game's button texture.
+        var btnTex = GD.Load<Texture2D>(
+            "res://images/atlases/ui_atlas.sprites/popup_cancel_button.tres");
+
+        if (btnTex != null)
+        {
+            var texNormal = new StyleBoxTexture();
+            texNormal.Texture = btnTex;
+            texNormal.SetContentMarginAll(4);
+            texNormal.ContentMarginLeft = 10;
+            texNormal.ContentMarginRight = 10;
+            btn.AddThemeStyleboxOverride("normal", texNormal);
+
+            var texHover = (StyleBoxTexture)texNormal.Duplicate();
+            texHover.ModulateColor = new Color(1.2f, 1.1f, 0.9f, 1f);
+            btn.AddThemeStyleboxOverride("hover", texHover);
+
+            var texPressed = (StyleBoxTexture)texNormal.Duplicate();
+            texPressed.ModulateColor = new Color(0.8f, 0.7f, 0.6f, 1f);
+            btn.AddThemeStyleboxOverride("pressed", texPressed);
+        }
+        else
+        {
+            // Fallback to flat style.
+            var normal = new StyleBoxFlat();
+            normal.BgColor = ButtonBg;
+            normal.SetCornerRadiusAll(4);
+            normal.SetContentMarginAll(4);
+            normal.ContentMarginLeft = 10;
+            normal.ContentMarginRight = 10;
+            btn.AddThemeStyleboxOverride("normal", normal);
+
+            var hover = (StyleBoxFlat)normal.Duplicate();
+            hover.BgColor = ButtonHl;
+            hover.BorderColor = GoldColor * new Color(1, 1, 1, 0.4f);
+            hover.SetBorderWidthAll(1);
+            btn.AddThemeStyleboxOverride("hover", hover);
+
+            var pressed = (StyleBoxFlat)normal.Duplicate();
+            pressed.BgColor = ButtonBg * new Color(0.7f, 0.7f, 0.7f, 1f);
+            btn.AddThemeStyleboxOverride("pressed", pressed);
+        }
+
+        if (minWidth > 0)
+            btn.CustomMinimumSize = new Vector2(minWidth, 0);
+
+        return btn;
+    }
 
     private static string Truncate(string s) =>
         s.Length <= 68 ? s : s[..65] + "...";
