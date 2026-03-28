@@ -201,13 +201,14 @@ internal static class RunOverlay
             Callable.From(OnPausePressed));
         controlHbox.AddChild(_pauseButton);
 
-        var speedDown = MakeButton("◀", fontBold);
+        var speedDown = MakeArrowButton(
+            "res://images/atlases/ui_atlas.sprites/settings_tiny_left_arrow.tres");
         speedDown.Connect(BaseButton.SignalName.Pressed,
             Callable.From(OnSpeedDown));
         controlHbox.AddChild(speedDown);
 
         _speedLabel = new Label();
-        _speedLabel.AddThemeFontSizeOverride("font_size", FontSize);
+        _speedLabel.AddThemeFontSizeOverride("font_size", (int)(FontSize * 1.5f));
         if (fontBold != null) _speedLabel.AddThemeFontOverride("font", fontBold);
         _speedLabel.AddThemeColorOverride("font_color", GoldColor);
         StyleLabel(_speedLabel);
@@ -215,7 +216,8 @@ internal static class RunOverlay
         _speedLabel.HorizontalAlignment = HorizontalAlignment.Center;
         controlHbox.AddChild(_speedLabel);
 
-        var speedUp = MakeButton("▶", fontBold);
+        var speedUp = MakeArrowButton(
+            "res://images/atlases/ui_atlas.sprites/settings_tiny_right_arrow.tres");
         speedUp.Connect(BaseButton.SignalName.Pressed,
             Callable.From(OnSpeedUp));
         controlHbox.AddChild(speedUp);
@@ -528,6 +530,26 @@ internal static class RunOverlay
         if (minWidth > 0)
             btn.CustomMinimumSize = new Vector2(minWidth, 0);
 
+        return btn;
+    }
+
+    private static TextureButton MakeArrowButton(string texturePath)
+    {
+        var btn = new TextureButton();
+        var tex = GD.Load<Texture2D>(texturePath);
+        if (tex != null)
+        {
+            btn.TextureNormal = tex;
+            btn.TextureHover = tex;
+            btn.TexturePressed = tex;
+        }
+        btn.StretchMode = TextureButton.StretchModeEnum.KeepAspectCentered;
+        btn.IgnoreTextureSize = true;
+        btn.CustomMinimumSize = new Vector2(24, 24);
+        // Brighten on hover.
+        btn.Modulate = new Color(0.9f, 0.9f, 0.9f, 1f);
+        btn.MouseEntered += () => btn.Modulate = new Color(1.2f, 1.1f, 0.9f, 1f);
+        btn.MouseExited += () => btn.Modulate = new Color(0.9f, 0.9f, 0.9f, 1f);
         return btn;
     }
 
