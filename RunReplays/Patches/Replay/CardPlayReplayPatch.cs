@@ -481,7 +481,7 @@ public static class CardPlayReplayPatch
     {
         if (_waitingForEffects)
         {
-            return false; 
+            return false;
         }
 
         // Don't issue EndTurn unless we've received a TurnStarted since the
@@ -491,8 +491,8 @@ public static class CardPlayReplayPatch
             return false;
         }
 
-        // Wait until combat is in progress and a player is available.
-        if (!CombatManager.Instance.IsInProgress || ResolveLocalPlayer() == null)
+        // Wait until combat is in progress, in the play phase, and a player is available.
+        if (!CombatManager.Instance.IsInProgress || !CombatManager.Instance.IsPlayPhase || ResolveLocalPlayer() == null)
         {
             return false;
         }
