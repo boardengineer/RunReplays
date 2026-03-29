@@ -24,6 +24,8 @@
       <EmbeddedResource Include="Resources\LFKFUEPCRA\floor_49\run.save" />
       <EmbeddedResource Include="Resources\F67ZPV6R17\floor_45\actions.sts2replay" />
       <EmbeddedResource Include="Resources\F67ZPV6R17\floor_45\run.save" />
+      <EmbeddedResource Include="Resources\0Z2X67NDP9\floor_49\actions.sts2replay" />
+      <EmbeddedResource Include="Resources\0Z2X67NDP9\floor_49\run.save" />
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">

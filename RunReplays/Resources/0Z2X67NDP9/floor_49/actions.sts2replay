@@ -1,0 +1,667 @@
+# Character: REGENT
+# Seed: 0Z2X67NDP9
+# Ascension: 0
+# Game: v0.99.1
+# Mod: 0.1.0
+ChooseEventOption 1 # NEOW.pages.INITIAL.options.PRECISE_SCISSORS
+SelectGridCard 4
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+PlayCard 2 3 # CARD.FALLING_STAR (24558259)
+PlayCard 3 3 # CARD.STRIKE_REGENT (19697743)
+PlayCard 4 # CARD.VENERATE (43061967)
+PlayCard 1 # CARD.DEFEND_REGENT (32554857)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 1 # CARD.DEFEND_REGENT (32554857)
+PlayCard 6 # CARD.DEFEND_REGENT (65467299)
+PlayCard 7 1 # CARD.STRIKE_REGENT (52334786)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 0 1 # CARD.STRIKE_REGENT (33443368)
+PlayCard 3 1 # CARD.STRIKE_REGENT (19697743)
+PlayCard 2 2 # CARD.FALLING_STAR (24558259)
+PlayCard 4 # CARD.VENERATE (43061967)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 2 2 # CARD.FALLING_STAR (24558259)
+PlayCard 12 # CARD.SLIMED (48533395)
+PlayCard 6 # CARD.DEFEND_REGENT (65467299)
+PlayCard 4 # CARD.VENERATE (43061967)
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 0 2 # CARD.STRIKE_REGENT (33443368)
+PlayCard 3 2 # CARD.STRIKE_REGENT (19697743)
+PlayCard 11 # CARD.SLIMED (19697776)
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 5 # CARD.DEFEND_REGENT (52013387)
+PlayCard 1 # CARD.DEFEND_REGENT (32554857)
+PlayCard 0 2 # CARD.STRIKE_REGENT (33443368)
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 7 2 # CARD.STRIKE_REGENT (52334786)
+ClaimReward 0 # GoldReward: 20
+ClaimReward 0 # CardReward
+TakeCard 0 # Glow
+MoveToMapCoord 3
+ChooseEventOption 0 # TABLET_OF_TRUTH.pages.INITIAL.options.DECIPHER_1
+ChooseEventOption 0 # TABLET_OF_TRUTH.pages.DECIPHER_1.options.DECIPHER
+ChooseEventOption 1 # TABLET_OF_TRUTH.pages.DECIPHER.options.GIVE_UP
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+PlayCard 3 # CARD.DEFEND_REGENT (54536407)
+PlayCard 4 1 # CARD.STRIKE_REGENT (21065623)
+PlayCard 2 1 # CARD.STRIKE_REGENT (20972681)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 5 1 # CARD.FALLING_STAR (55372880)
+PlayCard 9 # CARD.GLOW (41188551)
+PlayCard 4 1 # CARD.STRIKE_REGENT (21065623)
+PlayCard 7 1 # CARD.STRIKE_REGENT (56018301)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 5 1 # CARD.FALLING_STAR (55372880)
+PlayCard 2 1 # CARD.STRIKE_REGENT (20972681)
+ClaimReward 0 # GoldReward: 20
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Guiding Star
+MoveToMapCoord 1
+ChooseEventOption 1 # BYRDONIS_NEST.pages.INITIAL.options.TAKE
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+ChooseRestSiteOption HATCH
+MoveToMapCoord 2
+PlayCard 0 1 # CARD.GUIDING_STAR (21809922)
+PlayCard 2 # CARD.VENERATE (21773278)
+PlayCard 1 1 # CARD.STRIKE_REGENT (62071576)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 1 # CARD.FALLING_STAR (46820324)
+PlayCard 5 1 # CARD.BYRD_SWOOP (35028420)
+PlayCard 10 1 # CARD.STRIKE_REGENT (30879964)
+ClaimReward 0 # GoldReward: 20
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Glimmer
+MoveToMapCoord 1
+OpenShop
+BuyCardRemoval
+SelectGridCard 4
+BuyCard Cloak of Stars
+MoveToMapCoord 2
+PlayCard 3 2 # CARD.FALLING_STAR (9679690)
+PlayCard 4 2 # CARD.BYRD_SWOOP (20008346)
+PlayCard 0 2 # CARD.STRIKE_REGENT (36835699)
+PlayCard 2 # CARD.DEFEND_REGENT (30901682)
+PlayCard 1 # CARD.DEFEND_REGENT (63085843)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 # CARD.VENERATE (9822082)
+PlayCard 5 4 # CARD.GUIDING_STAR (45857388)
+PlayCard 7 # CARD.GLIMMER (23460963)
+SelectHandCards 3
+PlayCard 6 # CARD.CLOAK_OF_STARS (10063314)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 4 3 # CARD.BYRD_SWOOP (20008346)
+PlayCard 11 # CARD.GLOW (46758639)
+PlayCard 3 1 # CARD.FALLING_STAR (9679690)
+PlayCard 10 1 # CARD.STRIKE_REGENT (57391187)
+PlayCard 0 1 # CARD.STRIKE_REGENT (36835699)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 12 1 # CARD.STRIKE_REGENT (18174572)
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # CardReward
+TakeCard 0 # Black Hole
+MoveToMapCoord 3
+OpenChest
+TakeChestRelic # Unsettling Lamp
+MoveToMapCoord 3
+PlayCard 2 # CARD.GLOW (20687476)
+PlayCard 3 1 # CARD.FALLING_STAR (51969561)
+PlayCard 5 # CARD.BLACK_HOLE (48784890)
+PlayCard 0 1 # CARD.GUIDING_STAR (36709598)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 13 1 # CARD.BYRD_SWOOP (25616190)
+PlayCard 9 1 # CARD.STRIKE_REGENT (35496627)
+PlayCard 11 1 # CARD.STRIKE_REGENT (56654554)
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Orbit
+MoveToMapCoord 2
+PlayCard 2 # CARD.BLACK_HOLE (31567970)
+PlayCard 4 # CARD.VENERATE (6868782)
+PlayCard 0 # CARD.DEFEND_REGENT (52585511)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.GLOW (55870037)
+PlayCard 11 1 # CARD.GUIDING_STAR (29179182)
+PlayCard 7 1 # CARD.BYRD_SWOOP (41286473)
+PlayCard 10 # CARD.CLOAK_OF_STARS (33068293)
+PlayCard 5 1 # CARD.STRIKE_REGENT (61819042)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 9 # CARD.GLOW (55870037)
+PlayCard 13 2 # CARD.FALLING_STAR (14703547)
+PlayCard 5 2 # CARD.STRIKE_REGENT (61819042)
+PlayCard 10 # CARD.CLOAK_OF_STARS (33068293)
+PlayCard 0 # CARD.DEFEND_REGENT (52585511)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 7 2 # CARD.BYRD_SWOOP (41286473)
+ClaimReward 0 # GoldReward: 19
+ClaimReward 1 # CardReward
+TakeCard 2 # Child of the Stars
+MoveToMapCoord 3
+ChooseEventOption 0 # MORPHIC_GROVE.pages.INITIAL.options.GROUP
+SelectGridCard 3 4
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 4
+OpenShop
+MoveToMapCoord 4
+PlayCard 2 1 # CARD.STRIKE_REGENT (52513908)
+PlayCard 4 # CARD.CLOAK_OF_STARS (25768135)
+PlayCard 0 # CARD.CLOAK_OF_STARS (3962337)
+PlayCard 1 1 # CARD.STRIKE_REGENT (35661040)
+UsePotion 1 # POTION.COLORLESS_POTION
+SelectCardFromScreen 1
+PlayCard 16 # CARD.PROLONG (19849368)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.BLACK_HOLE (23338562)
+PlayCard 8 # CARD.GLOW (17506254)
+PlayCard 11 3 # CARD.FALLING_STAR (11375337)
+PlayCard 10 3 # CARD.BYRD_SWOOP (8720466)
+PlayCard 7 2 # CARD.STRIKE_REGENT (61597462)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 14 # CARD.VENERATE (38230949)
+PlayCard 3 2 # CARD.GUIDING_STAR (2863126)
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 4
+MoveToMapCoord 3
+UsePotion 2 # POTION.MAZALETHS_GIFT
+UsePotion 0 # POTION.DEXTERITY_POTION
+PlayCard 3 # CARD.ORBIT (55250811)
+PlayCard 2 1 # CARD.GUIDING_STAR (50878221)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 # CARD.BLACK_HOLE (25309830)
+PlayCard 6 # CARD.VENERATE (12523481)
+PlayCard 11 # CARD.CLOAK_OF_STARS (26461881)
+PlayCard 7 # CARD.CLOAK_OF_STARS (45602465)
+PlayCard 9 1 # CARD.BYRD_SWOOP (2812203)
+PlayCard 8 # CARD.GLIMMER (7769007)
+SelectHandCards 3
+PlayCard 12 # CARD.CHILD_OF_THE_STARS (36830341)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 15 # CARD.GLOW (5773571)
+PlayCard 9 1 # CARD.BYRD_SWOOP (2812203)
+PlayCard 11 # CARD.CLOAK_OF_STARS (26461881)
+PlayCard 13 1 # CARD.STRIKE_REGENT (63037620)
+PlayCard 2 1 # CARD.GUIDING_STAR (50878221)
+PlayCard 8 # CARD.GLIMMER (7769007)
+SelectHandCards 2
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 6 # CARD.VENERATE (12523481)
+PlayCard 0 # CARD.THE_SMITH (45367368)
+PlayCard 1 1 # CARD.STRIKE_REGENT (5653135)
+PlayCard 8 # CARD.GLIMMER (7769007)
+SelectHandCards 6
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 9 1 # CARD.BYRD_SWOOP (2812203)
+PlayCard 5 # CARD.DEFEND_REGENT (46130740)
+PlayCard 14 1 # CARD.STRIKE_REGENT (30467669)
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 15 # CARD.GLOW (5773571)
+PlayCard 6 # CARD.VENERATE (12523481)
+PlayCard 7 # CARD.CLOAK_OF_STARS (45602465)
+PlayCard 11 # CARD.CLOAK_OF_STARS (26461881)
+PlayCard 2 1 # CARD.GUIDING_STAR (50878221)
+PlayCard 13 1 # CARD.STRIKE_REGENT (63037620)
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 9 1 # CARD.BYRD_SWOOP (2812203)
+PlayCard 19 1 # CARD.SOVEREIGN_BLADE (12722633)
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # CardReward
+TakeCard 2 # Comet
+ProceedToNextAct
+MoveToMapCoord 3
+ChooseEventOption 2 # DARV.pages.INITIAL.options.DUSTY_TOME
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+PlayCard 15 # CARD.THE_SEALED_THRONE (29292654)
+PlayCard 1 1 # CARD.STRIKE_REGENT (45714106)
+PlayCard 0 1 # CARD.STRIKE_REGENT (27448966)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 4 # CARD.CHILD_OF_THE_STARS (39587107)
+PlayCard 8 # CARD.CLOAK_OF_STARS (19707410)
+PlayCard 6 # CARD.CLOAK_OF_STARS (52439084)
+PlayCard 5 1 # CARD.FALLING_STAR (20739645)
+PlayCard 7 1 # CARD.STRIKE_REGENT (2189712)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 12 # CARD.VENERATE (48645778)
+PlayCard 13 # CARD.GLOW (35158826)
+PlayCard 16 # CARD.BLACK_HOLE (62307301)
+PlayCard 14 2 # CARD.BYRD_SWOOP (47993982)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 1 2 # CARD.STRIKE_REGENT (45714106)
+PlayCard 7 3 # CARD.STRIKE_REGENT (2189712)
+PlayCard 3 3 # CARD.GUIDING_STAR (11855107)
+ClaimReward 0 # GoldReward: 20
+ClaimReward 0 # CardReward
+TakeCard 0 # Patter
+MoveToMapCoord 1
+PlayCard 17 # CARD.THE_SEALED_THRONE (2560478)
+PlayCard 0 # CARD.CHILD_OF_THE_STARS (22175337)
+PlayCard 2 # CARD.CLOAK_OF_STARS (51371835)
+PlayCard 3 1 # CARD.STRIKE_REGENT (59693337)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 4 # CARD.GLOW (369122)
+PlayCard 7 # CARD.PATTER (655098)
+PlayCard 6 1 # CARD.FALLING_STAR (29898950)
+PlayCard 5 # CARD.DEFEND_REGENT (3322105)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 14 # CARD.BLACK_HOLE (3041362)
+PlayCard 13 1 # CARD.BYRD_SWOOP (52533712)
+PlayCard 12 # CARD.VENERATE (28206700)
+PlayCard 11 # CARD.GLIMMER (3134077)
+SelectHandCards 2
+PlayCard 15 # CARD.CLOAK_OF_STARS (27372259)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 1 2 # CARD.COMET (65360305)
+ClaimReward 0 # GoldReward: 16
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Cloak of Stars
+MoveToMapCoord 2
+OpenShop
+BuyCardRemoval
+SelectGridCard 2
+MoveToMapCoord 3
+PlayCard 14 # CARD.THE_SEALED_THRONE (39235400)
+PlayCard 1 # CARD.GLOW (43349770)
+PlayCard 2 1 # CARD.BYRD_SWOOP (54603616)
+PlayCard 5 # CARD.GLIMMER (10480271)
+SelectHandCards 5
+PlayCard 3 1 # CARD.COMET (21670502)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.BLACK_HOLE (41584998)
+PlayCard 12 # CARD.VENERATE (49366152)
+PlayCard 10 # CARD.CLOAK_OF_STARS (38720665)
+PlayCard 8 # CARD.PATTER (56816338)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 15 # CARD.CHILD_OF_THE_STARS (17574286)
+PlayCard 16 # CARD.ORBIT (23950849)
+PlayCard 18 # CARD.CLOAK_OF_STARS (60970586)
+PlayCard 17 # CARD.CLOAK_OF_STARS (14231050)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 6 1 # CARD.FALLING_STAR (27213580)
+PlayCard 4 1 # CARD.GUIDING_STAR (60816798)
+PlayCard 13 1 # CARD.STRIKE_REGENT (41642191)
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Quasar
+MoveToMapCoord 4
+ChooseEventOption 1 # SYMBIOTE.pages.INITIAL.options.KILL_WITH_FIRE
+SelectGridCard 1
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 4
+ChooseEventOption 0 # INFESTED_AUTOMATON.pages.INITIAL.options.STUDY
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 4
+ChooseRestSiteOption SMITH
+SelectGridCard 7
+MoveToMapCoord 4
+OpenChest
+TakeChestRelic # Blood Vial
+MoveToMapCoord 4
+PlayCard 8 # CARD.THE_SEALED_THRONE (22865511)
+PlayCard 3 1 # CARD.MAKE_IT_SO (51144912)
+UsePotion 1 # POTION.RADIANT_TINCTURE
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.GLOW (4463008)
+PlayCard 6 # CARD.CLOAK_OF_STARS (39222001)
+PlayCard 4 # CARD.PATTER (57651032)
+PlayCard 10 # CARD.DEFEND_REGENT (40167073)
+PlayCard 3 1 # CARD.MAKE_IT_SO (51144912)
+PlayCard 5 # CARD.ORBIT (49097242)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 15 # CARD.BLACK_HOLE (64038811)
+PlayCard 16 # CARD.CLOAK_OF_STARS (39478394)
+PlayCard 12 # CARD.CLOAK_OF_STARS (32307463)
+PlayCard 13 1 # CARD.BYRD_SWOOP (22331719)
+PlayCard 14 # CARD.THE_SMITH (66767747)
+PlayCard 3 1 # CARD.MAKE_IT_SO (51144912)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 18 # CARD.CHILD_OF_THE_STARS (43633366)
+PlayCard 20 # CARD.QUASAR (44641791)
+SelectCardFromScreen 2
+PlayCard 22 1 # CARD.OMNISLICE (51339235)
+PlayCard 17 # CARD.GLIMMER (19761232)
+SelectHandCards 2
+PlayCard 6 # CARD.CLOAK_OF_STARS (39222001)
+PlayCard 13 1 # CARD.BYRD_SWOOP (22331719)
+PlayCard 3 1 # CARD.MAKE_IT_SO (51144912)
+PlayCard 21 1 # CARD.SOVEREIGN_BLADE (55091845)
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 4
+ChooseRestSiteOption HEAL
+MoveToMapCoord 5
+ChooseEventOption 0 # BUGSLAYER.pages.INITIAL.options.EXTERMINATION
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 6
+PlayCard 13 # CARD.THE_SEALED_THRONE (17434932)
+PlayCard 0 1 # CARD.BYRD_SWOOP (57208031)
+PlayCard 3 # CARD.GLOW (30050147)
+PlayCard 4 1 # CARD.FALLING_STAR (2015871)
+PlayCard 2 # CARD.QUASAR (3338905)
+SelectCardFromScreen 2
+PlayCard 22 1 # CARD.MIND_BLAST (65633725)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+UsePotion 0 1 # POTION.FIRE_POTION
+PlayCard 10 # CARD.VENERATE (58203342)
+PlayCard 9 2 # CARD.COMET (51206280)
+PlayCard 6 # CARD.PATTER (29067899)
+PlayCard 7 # CARD.DEFEND_REGENT (60284499)
+PlayCard 21 1 # CARD.MAKE_IT_SO (45849456)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 11 # CARD.CHILD_OF_THE_STARS (54068038)
+PlayCard 12 # CARD.GLIMMER (16850295)
+SelectHandCards 1
+PlayCard 18 # CARD.THE_SMITH (65330636)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 26 2 # CARD.SOVEREIGN_BLADE (66258049)
+ClaimReward 0 # GoldReward: 17
+ClaimReward 0 # CardReward
+TakeCard 1 # Astral Pulse
+MoveToMapCoord 6
+PlayCard 12 # CARD.THE_SEALED_THRONE (51664268)
+PlayCard 3 # CARD.CHILD_OF_THE_STARS (27477514)
+PlayCard 2 # CARD.BLACK_HOLE (25422678)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 24 # CARD.TOXIC (59651964)
+PlayCard 23 # CARD.TOXIC (16050020)
+PlayCard 5 # CARD.CLOAK_OF_STARS (11086163)
+PlayCard 4 # CARD.ASTRAL_PULSE (45971038)
+PlayCard 7 1 # CARD.FALLING_STAR (25564045)
+PlayCard 8 # CARD.VENERATE (28749820)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 10 # CARD.EXTERMINATE (47034082)
+PlayCard 13 2 # CARD.STRIKE_REGENT (62325230)
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 5
+ChooseRestSiteOption HEAL
+MoveToMapCoord 3
+PlayCard 8 # CARD.THE_SEALED_THRONE (20995793)
+PlayCard 0 # CARD.PATTER (16829211)
+PlayCard 1 # CARD.CLOAK_OF_STARS (17245172)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 4 # CARD.CLOAK_OF_STARS (22372821)
+PlayCard 6 # CARD.CLOAK_OF_STARS (259207)
+PlayCard 5 # CARD.EXTERMINATE (28800)
+PlayCard 7 1 # CARD.GUIDING_STAR (2332865)
+PlayCard 25 # CARD.FRANTIC_ESCAPE (32420319)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 11 # CARD.BLACK_HOLE (5112641)
+PlayCard 10 # CARD.CHILD_OF_THE_STARS (22937692)
+PlayCard 12 1 # CARD.MAKE_IT_SO (46013776)
+PlayCard 14 # CARD.QUASAR (36128339)
+SelectCardFromScreen 0
+PlayCard 29 # CARD.PRODUCTION (66934302)
+PlayCard 13 # CARD.ORBIT (11470800)
+PlayCard 24 # CARD.FRANTIC_ESCAPE (48341500)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 18 # CARD.ORBIT (9530797)
+PlayCard 16 # CARD.VENERATE (40714384)
+PlayCard 15 # CARD.GLIMMER (56719603)
+SelectHandCards 4
+PlayCard 20 1 # CARD.COMET (33797074)
+PlayCard 19 1 # CARD.BYRD_SWOOP (18668311)
+PlayCard 17 1 # CARD.STRIKE_REGENT (30885139)
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 21 # CARD.GLOW (35738216)
+PlayCard 22 # CARD.THE_SMITH (53208488)
+PlayCard 20 1 # CARD.COMET (33797074)
+PlayCard 30 1 # CARD.SOVEREIGN_BLADE (46952322)
+PlayCard 19 1 # CARD.BYRD_SWOOP (18668311)
+PlayCard 28 # CARD.FRANTIC_ESCAPE (12092504)
+PlayCard 26 # CARD.FRANTIC_ESCAPE (23347416)
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 5 # CARD.EXTERMINATE (28800)
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # CardReward
+TakeCard 0 # Seven Stars
+ProceedToNextAct
+MoveToMapCoord 3
+ChooseEventOption 2 # NONUPEIPE.pages.INITIAL.options.DELICATE_FROND
+ChooseEventOption -1 # PROCEED
+DiscardPotion 0
+MoveToMapCoord 1
+PlayCard 3 # CARD.THE_SEALED_THRONE (41755710)
+PlayCard 0 # CARD.PATTER (66429693)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+UsePotion 2 # POTION.FLEX_POTION
+UsePotion 0 # POTION.STRENGTH_POTION
+PlayCard 8 # CARD.BLACK_HOLE (53259313)
+PlayCard 9 # CARD.GLOW (9571771)
+PlayCard 11 # CARD.EXTERMINATE (37115968)
+DiscardPotion 1
+ClaimReward 0 # GoldReward: 17
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 0
+OpenShop
+BuyRelic Punch Dagger
+SelectGridCard 6
+MoveToMapCoord 1
+ChooseEventOption 0 # TRIAL.pages.INITIAL.options.ACCEPT
+ChooseEventOption 1 # TRIAL.pages.MERCHANT.options.INNOCENT
+SelectGridCard 16 10
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+ChooseEventOption 0 # POTION_COURIER.pages.INITIAL.options.GRAB_POTIONS
+ClaimReward 0 # PotionReward
+ClaimReward 0 # PotionReward
+ClaimReward 0 # PotionReward
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+ChooseEventOption 1 # BATTLEWORN_DUMMY.pages.INITIAL.options.SETTING_2
+PlayCard 23 # CARD.THE_SEALED_THRONE (20583204)
+PlayCard 0 # CARD.ORBIT (64961837)
+PlayCard 3 1 # CARD.MAKE_IT_SO (45430464)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 # CARD.EXTERMINATE (13767917)
+PlayCard 4 # CARD.GLOW (6220996)
+PlayCard 7 # CARD.BLACK_HOLE (38812470)
+PlayCard 10 1 # CARD.COMET (41459468)
+PlayCard 9 1 # CARD.BYRD_SWOOP (56802390)
+PlayCard 5 # CARD.CLOAK_OF_STARS (55988967)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 14 # CARD.ORBIT (23346024)
+PlayCard 13 # CARD.CHILD_OF_THE_STARS (24963624)
+PlayCard 11 1 # CARD.FALLING_STAR (37590895)
+UsePotion 2 # POTION.FOUL_POTION
+UsePotion 1 # POTION.FOUL_POTION
+UsePotion 0 # POTION.FOUL_POTION
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+PlayCard 2 # CARD.THE_SEALED_THRONE (66461200)
+PlayCard 3 # CARD.PATTER (61279889)
+UsePotion 2 # POTION.SWIFT_POTION
+UsePotion 1 # POTION.ENERGY_POTION
+UsePotion 0 # POTION.STAR_POTION
+PlayCard 6 # CARD.CLOAK_OF_STARS (45645035)
+PlayCard 5 # CARD.ORBIT (64723994)
+PlayCard 1 1 # CARD.COMET (7384577)
+PlayCard 7 1 # CARD.STRIKE_REGENT (8152131)
+PlayCard 4 # CARD.CLOAK_OF_STARS (14648095)
+PlayCard 23 2 # CARD.MAKE_IT_SO (4868060)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 # CARD.EXTERMINATE (6260315)
+PlayCard 10 2 # CARD.GUIDING_STAR (37323479)
+PlayCard 11 # CARD.CHILD_OF_THE_STARS (366998)
+PlayCard 9 # CARD.THE_SMITH (56342836)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 25 2 # CARD.SOVEREIGN_BLADE (5500369)
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+DiscardPotion 0
+TakeCard skip # skip
+MoveToMapCoord 1
+OpenChest
+TakeChestRelic # Strawberry
+MoveToMapCoord 0
+ChooseEventOption 0 # ROUND_TEA_PARTY.pages.INITIAL.options.ENJOY_TEA
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+OpenShop
+BuyCard Quasar
+MoveToMapCoord 2
+UsePotion 2 # POTION.BLOCK_POTION
+PlayCard 7 # CARD.THE_SEALED_THRONE (19034123)
+PlayCard 1 # CARD.BLACK_HOLE (9258930)
+UsePotion 1 # POTION.BOTTLED_POTENTIAL
+PlayCard 19 # CARD.GLOW (49657348)
+PlayCard 13 1 # CARD.BYRD_SWOOP (60596970)
+PlayCard 2 1 # CARD.FALLING_STAR (16221508)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+UsePotion 0 # POTION.EXPLOSIVE_AMPOULE
+PlayCard 21 # CARD.VENERATE (62822286)
+PlayCard 12 # CARD.SEVEN_STARS (6732996)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 18 # CARD.QUASAR (12974023)
+SelectCardFromScreen 1
+PlayCard 26 # CARD.JACK_OF_ALL_TRADES (15166471)
+PlayCard 28 # CARD.CATASTROPHE (34669325)
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+PlayCard 16 # CARD.THE_SEALED_THRONE (53178999)
+PlayCard 2 # CARD.VENERATE (17610802)
+PlayCard 0 1 # CARD.STRIKE_REGENT (4359939)
+PlayCard 3 # CARD.QUASAR (24279493)
+SelectCardFromScreen 0
+UsePotion 2 # POTION.COSMIC_CONCOCTION
+PlayCard 27 1 # CARD.FLASH_OF_STEEL (30353714)
+PlayCard 1 1 # CARD.COMET (39239458)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 1 # CARD.MAKE_IT_SO (33176921)
+PlayCard 6 # CARD.DEFEND_REGENT (50119861)
+PlayCard 7 # CARD.ORBIT (48425567)
+PlayCard 9 # CARD.CLOAK_OF_STARS (30156836)
+PlayCard 5 # CARD.CLOAK_OF_STARS (20481954)
+PlayCard 8 1 # CARD.MAKE_IT_SO (33176921)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 14 # CARD.CHILD_OF_THE_STARS (64451376)
+PlayCard 10 # CARD.THE_SMITH (2976074)
+PlayCard 13 # CARD.CLOAK_OF_STARS (22074344)
+PlayCard 11 # CARD.GLIMMER (26784666)
+SelectHandCards 4
+PlayCard 8 1 # CARD.MAKE_IT_SO (33176921)
+PlayCard 17 # CARD.ASTRAL_PULSE (8848943)
+PlayCard 15 2 # CARD.FALLING_STAR (43191479)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 21 # CARD.BLACK_HOLE (8749623)
+PlayCard 20 # CARD.GLOW (8428720)
+PlayCard 24 2 # CARD.BYRD_SWOOP (3133532)
+PlayCard 22 # CARD.QUASAR (11637748)
+SelectCardFromScreen 1
+PlayCard 31 # CARD.MASTER_OF_STRATEGY (57909050)
+PlayCard 25 # CARD.SEVEN_STARS (28201793)
+PlayCard 8 2 # CARD.MAKE_IT_SO (33176921)
+ClaimReward 0 # GoldReward: 17
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+DiscardPotion 0
+DiscardPotion 1
+TakeCard 2 # Decisions, Decisions
+MoveToMapCoord 2
+UsePotion 0 # POTION.POWER_POTION
+SelectCardFromScreen 2
+PlayCard 27 # CARD.NEUTRON_AEGIS (56407212)
+UsePotion 2 # POTION.POWER_POTION
+SelectCardFromScreen 0
+PlayCard 28 # CARD.NEUTRON_AEGIS (46065652)
+PlayCard 14 # CARD.THE_SEALED_THRONE (41215496)
+UsePotion 1 # POTION.SWIFT_POTION
+PlayCard 4 1 # CARD.MAKE_IT_SO (58436920)
+PlayCard 1 1 # CARD.BYRD_SWOOP (11679223)
+PlayCard 2 # CARD.CLOAK_OF_STARS (38004145)
+PlayCard 3 # CARD.QUASAR (6492991)
+SelectCardFromScreen 1
+PlayCard 29 # CARD.PANACHE (60027606)
+PlayCard 6 # CARD.DEFEND_REGENT (35770108)
+PlayCard 4 1 # CARD.MAKE_IT_SO (58436920)
+PlayCard 0 # CARD.THE_SMITH (60950015)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 # CARD.ORBIT (7984473)
+PlayCard 11 1 # CARD.FALLING_STAR (4751395)
+PlayCard 9 # CARD.CLOAK_OF_STARS (38169865)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 13 # CARD.CHILD_OF_THE_STARS (49318742)
+PlayCard 12 # CARD.VENERATE (42762562)
+PlayCard 16 1 # CARD.COMET (50120850)
+PlayCard 17 # CARD.CLOAK_OF_STARS (48434468)
+PlayCard 15 # CARD.PATTER (35395145)
+PlayCard 4 1 # CARD.MAKE_IT_SO (58436920)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 19 # CARD.ORBIT (30877840)
+PlayCard 21 # CARD.GLIMMER (18077108)
+SelectHandCards 5
+PlayCard 23 # CARD.BLACK_HOLE (54959673)
+PlayCard 22 # CARD.DECISIONS_DECISIONS (28476251)
+SelectHandCards 5
+PlayCard 25 # CARD.EXTERMINATE (22548551)
+PlayCard 11 1 # CARD.FALLING_STAR (4751395)
+PlayCard 20 # CARD.QUASAR (9465108)
+SelectCardFromScreen 2
+PlayCard 7 # CARD.ASTRAL_PULSE (53495520)
+PlayCard 4 1 # CARD.MAKE_IT_SO (58436920)
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 5 # CARD.SEVEN_STARS (56170239)
+ClaimReward 0 # GoldReward: 43
+ClaimReward 0 # PotionReward
+DiscardPotion 0
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 2
+ChooseRestSiteOption HEAL
+MoveToMapCoord 3
+PlayCard 15 # CARD.THE_SEALED_THRONE (59183288)
+PlayCard 0 # CARD.GLOW (22962794)
+PlayCard 4 1 # CARD.BYRD_SWOOP (66605244)
+UsePotion 1 # POTION.POWER_POTION
+SelectCardFromScreen 1
+PlayCard 27 # CARD.MONARCHS_GAZE (48285332)
+PlayCard 3 # CARD.DEFEND_REGENT (29770204)
+PlayCard 5 1 # CARD.COMET (62576284)
+PlayCard 1 # CARD.QUASAR (5338560)
+SelectCardFromScreen 0
+PlayCard 23 1 # CARD.MAKE_IT_SO (16149840)
+PlayCard 28 # CARD.MASTER_OF_STRATEGY (19053075)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+UsePotion 2 # POTION.EXPLOSIVE_AMPOULE
+PlayCard 10 # CARD.CLOAK_OF_STARS (52951417)
+PlayCard 13 # CARD.ASTRAL_PULSE (13986729)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 19 # CARD.BLACK_HOLE (9668347)
+PlayCard 17 # CARD.GLIMMER (29117019)
+SelectHandCards 1
+PlayCard 18 # CARD.ORBIT (60726584)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 1 # CARD.QUASAR (5338560)
+SelectCardFromScreen 0
+PlayCard 29 1 # CARD.FLASH_OF_STEEL (54777836)
+PlayCard 26 # CARD.CLOAK_OF_STARS (29182206)
+PlayCard 13 # CARD.ASTRAL_PULSE (13986729)
+PlayCard 25 # CARD.QUASAR (33068629)
+SelectCardFromScreen 1
+PlayCard 23 1 # CARD.MAKE_IT_SO (16149840)
+PlayCard 30 # CARD.SPLASH (25267825)
+SelectCardFromScreen 2
+PlayCard 31 1 # CARD.MURDER (61649814)
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 8 # CARD.CHILD_OF_THE_STARS (51192495)
+PlayCard 9 # CARD.CLOAK_OF_STARS (58079273)
+PlayCard 14 2 # CARD.FALLING_STAR (58771704)
+EndTurn # EndPlayerTurnAction for player 1 round 5

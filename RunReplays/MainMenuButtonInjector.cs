@@ -104,6 +104,7 @@ public static class MainMenuButtonInjector
     {
         ("LFKFUEPCRA", "floor_49", new[] { "actions.sts2replay", "run.save" }),
         ("F67ZPV6R17", "floor_45", new[] { "actions.sts2replay", "run.save" }),
+        ("0Z2X67NDP9", "floor_49", new[] { "actions.sts2replay", "run.save" }),
     };
 
     private static void ExtractBundledReplay()
@@ -125,7 +126,9 @@ public static class MainMenuButtonInjector
 
                 foreach (string fileName in files)
                 {
-                    string resourceName = $"RunReplays.Resources.{seed}.{floor}.{fileName}";
+                    // .NET prepends '_' to path segments starting with a digit in embedded resource names.
+                    string resSeed = char.IsDigit(seed[0]) ? $"_{seed}" : seed;
+                    string resourceName = $"RunReplays.Resources.{resSeed}.{floor}.{fileName}";
                     using var stream = assembly.GetManifestResourceStream(resourceName);
                     if (stream == null)
                     {
