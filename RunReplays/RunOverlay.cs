@@ -278,16 +278,34 @@ internal static class RunOverlay
         RefreshControls();
     }
 
+    private static readonly float[] SpeedSteps = { 0.5f, 1.0f, 1.5f, 2.0f, 3.0f, 5.0f };
+
     private static void OnSpeedDown()
     {
-        ReplayDispatcher.GameSpeed = Math.Max(1f, ReplayDispatcher.GameSpeed - 1f);
-        RefreshControls();
+        float cur = ReplayDispatcher.GameSpeed;
+        for (int i = SpeedSteps.Length - 1; i >= 0; i--)
+        {
+            if (SpeedSteps[i] < cur - 0.01f)
+            {
+                ReplayDispatcher.GameSpeed = SpeedSteps[i];
+                RefreshControls();
+                return;
+            }
+        }
     }
 
     private static void OnSpeedUp()
     {
-        ReplayDispatcher.GameSpeed = Math.Min(10f, ReplayDispatcher.GameSpeed + 1f);
-        RefreshControls();
+        float cur = ReplayDispatcher.GameSpeed;
+        for (int i = 0; i < SpeedSteps.Length; i++)
+        {
+            if (SpeedSteps[i] > cur + 0.01f)
+            {
+                ReplayDispatcher.GameSpeed = SpeedSteps[i];
+                RefreshControls();
+                return;
+            }
+        }
     }
 
     private static void OnStepPressed()

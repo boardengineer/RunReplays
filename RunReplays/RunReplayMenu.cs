@@ -92,28 +92,6 @@ public static class RunReplayMenu
         overlayCheck.Toggled += on => RunOverlay.OverlayVisible = on;
         vbox.AddChild(overlayCheck);
 
-        // ── Replay speed slider ──────────────────────────────────────────
-        var speedRow = new HBoxContainer();
-        speedRow.AddThemeConstantOverride("separation", 8);
-        vbox.AddChild(speedRow);
-
-        var speedLabel = new Label();
-        speedLabel.Text = $"Replay Speed: {ReplayDispatcher.GameSpeed:0.0}x";
-        speedRow.AddChild(speedLabel);
-
-        var speedSlider = new HSlider();
-        speedSlider.MinValue = 0.5;
-        speedSlider.MaxValue = 10.0;
-        speedSlider.Step = 0.5;
-        speedSlider.Value = ReplayDispatcher.GameSpeed;
-        speedSlider.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-        speedSlider.ValueChanged += val =>
-        {
-            ReplayDispatcher.GameSpeed = (float)val;
-            speedLabel.Text = $"Replay Speed: {val:0.0}x";
-        };
-        speedRow.AddChild(speedSlider);
-
         vbox.AddChild(new HSeparator());
 
         // ── Replay list ───────────────────────────────────────────────────────
