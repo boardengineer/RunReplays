@@ -23,7 +23,7 @@ namespace RunReplays;
 internal static class RunOverlay
 {
     private const int LineCount  = 5;
-    private const int PanelWidth = 480;
+    private const int PanelWidth = 435;
     private const int FontSize   = 11;
 
     // STS2 color palette (from StsColors.cs / top_bar.tscn / vertical_popup.tscn).
@@ -143,7 +143,7 @@ internal static class RunOverlay
         panel.AnchorBottom = 0f;
         panel.OffsetLeft   = -(PanelWidth + 8);
         panel.OffsetRight  = -8;
-        panel.OffsetTop    = 140;
+        panel.OffsetTop    = 160;
         panel.GrowVertical = Control.GrowDirection.End;
 
         // Use the game's top bar texture as panel background.
