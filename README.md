@@ -28,6 +28,8 @@ Logs are saved automatically on every game save to:
 
 See the [command reference](docs/commands.md) for details on the replay command format.
 
+A sample Ironclad full-run replay is included at [`Resources/LFKFUEPCRA/`](RunReplays/Resources/LFKFUEPCRA/floor_49/actions.sts2replay).
+
 ### Replay
 Load any recorded run from the **Run Replays** button on the main menu.  Replays will always executed the recorded commands in order for the applicable section
 Replay Options:
