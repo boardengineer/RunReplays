@@ -62,7 +62,7 @@ internal static class RunOverlay
                 _canvas.Visible = value;
         }
     }
-    private static bool _overlayVisible = true;
+    private static bool _overlayVisible = false;
 
     // Rolling buffer of the last LineCount recorded entries (recording mode).
     private static readonly Queue<string> _recentEntries = new();
@@ -94,6 +94,9 @@ internal static class RunOverlay
 
     internal static void InitForRun()
     {
+        // Show automatically for replays, hide for normal runs.
+        OverlayVisible = ReplayEngine.IsActive;
+
         // Unsubscribe stale handlers from the previous run.
         PlayerActionBuffer.EntryRecorded -= OnEntryRecorded;
         ReplayEngine.ContextChanged      -= OnContextChanged;
