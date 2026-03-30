@@ -26,7 +26,7 @@ Logs are saved automatically on every game save to:
 %APPDATA%/Godot/app_userdata/Slay the Spire 2/RunReplays/logs/{seed}/floor_{floor}/
 ```
 
-See the [replay file format](docs/sts2replay-format.md) for details on the `.sts2replay` log format.
+See the [command reference](docs/commands.md) for details on the replay command format.
 
 ### Replay
 Load any recorded run from the **Run Replays** button on the main menu.  Replays will always executed the recorded commands in order for the applicable section
