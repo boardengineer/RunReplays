@@ -116,9 +116,6 @@ public static class ReplayDispatcher
 
         var currentRoom = GetCurrentRoom();
 
-        if (currentRoom is EventRoom)
-            types.Add(typeof(ChooseEventOptionCommand));
-
         if (currentRoom is RestSiteRoom)
             types.Add(typeof(ChooseRestSiteOptionCommand));
 
@@ -147,6 +144,14 @@ public static class ReplayDispatcher
         {
             types.Add(typeof(OpenFakeShopCommand));
             types.Add(typeof(BuyRelicCommand));
+        }
+
+        if (currentRoom is EventRoom)
+        {
+            bool hasNonPotionCommands = types.Any(t =>
+                t != typeof(UsePotionCommand) && t != typeof(DiscardPotionCommand));
+            if (!hasNonPotionCommands)
+                types.Add(typeof(ChooseEventOptionCommand));
         }
 
         return types;
