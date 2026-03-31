@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Godot;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
+using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 using RunReplays.Commands;
 
@@ -21,6 +23,16 @@ namespace RunReplays;
 /// </summary>
 public static class ReplayDispatcher
 {
+    private static readonly PropertyInfo? RunStateProp =
+        typeof(RunManager).GetProperty("State",
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+    private static AbstractRoom? GetCurrentRoom()
+    {
+        var state = RunStateProp?.GetValue(RunManager.Instance) as IRunState;
+        return state?.CurrentRoom;
+    }
+
     private static readonly HashSet<Type> ShopCommandTypes = new()
     {
         typeof(OpenShopCommand),
@@ -49,14 +61,26 @@ public static class ReplayDispatcher
         var types = new HashSet<Type>
         {
             typeof(PlayCardCommand), typeof(EndTurnCommand), typeof(MapMoveCommand),
-            typeof(ChooseRestSiteOptionCommand), typeof(ChooseEventOptionCommand),
             typeof(ClaimRewardCommand), typeof(TakeCardCommand),
             typeof(SelectGridCardCommand), typeof(SelectHandCardsCommand),
             typeof(UsePotionCommand), typeof(DiscardPotionCommand),
-            typeof(ProceedToNextActCommand), typeof(OpenChestCommand),
-            typeof(TakeChestRelicCommand), typeof(CrystalSphereClickCommand),
+            typeof(ProceedToNextActCommand), typeof(CrystalSphereClickCommand),
             typeof(SelectCardFromScreenCommand),
         };
+
+        var currentRoom = GetCurrentRoom();
+
+        if (currentRoom is EventRoom)
+            types.Add(typeof(ChooseEventOptionCommand));
+
+        if (currentRoom is RestSiteRoom)
+            types.Add(typeof(ChooseRestSiteOptionCommand));
+
+        if (currentRoom is TreasureRoom)
+        {
+            types.Add(typeof(OpenChestCommand));
+            types.Add(typeof(TakeChestRelicCommand));
+        }
 
         if (ReplayState.ActiveMerchantRoom != null)
             types.UnionWith(ShopCommandTypes);
