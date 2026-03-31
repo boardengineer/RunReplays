@@ -51,21 +51,28 @@ public static class ReplayDispatcher
 
         if (blocked)
         {
-            return new HashSet<Type>
-            {
-                typeof(SelectGridCardCommand),
-                typeof(SelectCardFromScreenCommand),
-                typeof(SelectHandCardsCommand),
-            };
+            var selectionTypes = new HashSet<Type>();
+            if (CardGridScreenCapture.ActiveScreen != null)
+                selectionTypes.Add(typeof(SelectGridCardCommand));
+            if (ChooseACardScreenCapture.ActiveScreen != null)
+                selectionTypes.Add(typeof(SelectCardFromScreenCommand));
+            if (HandSelectionCapture.ActiveHand != null)
+                selectionTypes.Add(typeof(SelectHandCardsCommand));
+            return selectionTypes;
         }
 
         var types = new HashSet<Type>
         {
-            typeof(SelectGridCardCommand), typeof(SelectHandCardsCommand),
             typeof(UsePotionCommand), typeof(DiscardPotionCommand),
             typeof(ProceedToNextActCommand), typeof(CrystalSphereClickCommand),
-            typeof(SelectCardFromScreenCommand),
         };
+
+        if (CardGridScreenCapture.ActiveScreen != null)
+            types.Add(typeof(SelectGridCardCommand));
+        if (ChooseACardScreenCapture.ActiveScreen != null)
+            types.Add(typeof(SelectCardFromScreenCommand));
+        if (HandSelectionCapture.ActiveHand != null)
+            types.Add(typeof(SelectHandCardsCommand));
 
         if (CombatManager.Instance.IsInProgress)
         {
