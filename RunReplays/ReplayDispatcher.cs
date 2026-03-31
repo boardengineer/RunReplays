@@ -164,6 +164,14 @@ public static class ReplayDispatcher
     {
         if (_dispatchPollRunning) return;
         _dispatchPollRunning = true;
+        EnsureEmitter();
+        _emitter!.Connect(DispatchSignalEmitter.SignalInputRequired,
+            Callable.From(() =>
+            {
+                var names = _lastDispatchableTypes?.Select(t => t.Name).OrderBy(n => n);
+                PlayerActionBuffer.LogMigrationWarning(
+                    $"[Dispatcher] InputRequired: {string.Join(", ", names ?? Enumerable.Empty<string>())}");
+            }));
         SubscribeToRoomEvents();
         ScheduleDispatchPollTick();
     }
@@ -178,7 +186,6 @@ public static class ReplayDispatcher
     public static void ClearDispatchableCache()
     {
         _lastDispatchableTypes?.Clear();
-        PlayerActionBuffer.LogMigrationWarning("Clearing types");
     }
 
     private static void LogDispatchableChanges()
@@ -187,9 +194,9 @@ public static class ReplayDispatcher
         if (_lastDispatchableTypes == null || !current.SetEquals(_lastDispatchableTypes))
         {
             _lastDispatchableTypes = new HashSet<Type>(current);
-            var names = current.Select(t => t.Name).OrderBy(n => n);
-            PlayerActionBuffer.LogMigrationWarning(
-                $"[Dispatcher] Dispatchable commands changed: {string.Join(", ", names)}");
+
+            if (current.Count > 0 && _emitter != null && GodotObject.IsInstanceValid(_emitter))
+                _emitter.EmitSignal("InputRequired");
         }
     }
 
@@ -609,4 +616,24 @@ public static class ReplayDispatcher
         PlayerActionBuffer.LogMigrationWarning($"[Dispatcher] Unrecognised command: {cmd}");
     }
 
+    private static DispatchSignalEmitter? _emitter;
+    public static DispatchSignalEmitter? Emitter => _emitter;
+
+    private static void EnsureEmitter()
+    {
+        if (_emitter != null && GodotObject.IsInstanceValid(_emitter)) return;
+        _emitter = new DispatchSignalEmitter();
+        _emitter.Name = "DispatchSignalEmitter";
+        NGame.Instance?.AddChild(_emitter);
+    }
+}
+
+public partial class DispatchSignalEmitter : Node
+{
+    public const string SignalInputRequired = "InputRequired";
+
+    public DispatchSignalEmitter()
+    {
+        AddUserSignal(SignalInputRequired);
+    }
 }
