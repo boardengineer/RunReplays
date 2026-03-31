@@ -170,7 +170,13 @@ public static class ReplayDispatcher
             "timeout", Callable.From(DispatchPollTick));
     }
 
-    private static void DispatchPollTick()
+    public static void ClearDispatchableCache()
+    {
+        _lastDispatchableTypes?.Clear();
+        PlayerActionBuffer.LogMigrationWarning("Clearing types");
+    }
+
+    private static void LogDispatchableChanges()
     {
         var current = GetDispatchableTypes();
         if (_lastDispatchableTypes == null || !current.SetEquals(_lastDispatchableTypes))
@@ -180,7 +186,11 @@ public static class ReplayDispatcher
             PlayerActionBuffer.LogMigrationWarning(
                 $"[Dispatcher] Dispatchable commands changed: {string.Join(", ", names)}");
         }
+    }
 
+    private static void DispatchPollTick()
+    {
+        LogDispatchableChanges();
         ScheduleDispatchPollTick();
     }
 
@@ -482,6 +492,8 @@ public static class ReplayDispatcher
     /// </summary>
     internal static void TryDispatch()
     {
+        LogDispatchableChanges();
+
         if (!ReplayEngine.IsActive || _paused)
             return;
 
@@ -533,6 +545,8 @@ public static class ReplayDispatcher
 
     private static void ExecuteNext()
     {
+        LogDispatchableChanges();
+
         // Re-apply speed in case the game reset Engine.TimeScale during a transition.
         if (ReplayEngine.IsActive && Engine.TimeScale != _gameSpeed)
             Engine.TimeScale = _gameSpeed;

@@ -284,6 +284,7 @@ public static class PlayerActionBuffer
         _minimalEntries.Enqueue(text);
         LogToDevConsole($"[{timestamp}] {text}");
         EntryRecorded?.Invoke(text);
+        ReplayDispatcher.ClearDispatchableCache();
     }
 
     /// <summary>
@@ -299,6 +300,7 @@ public static class PlayerActionBuffer
         _verboseEntries.Enqueue((timestamp, text));
         LogToDevConsole($"[{timestamp}] {text}");
         EntryRecorded?.Invoke(text);
+        ReplayDispatcher.ClearDispatchableCache();
     }
 
     /// <summary>
@@ -311,6 +313,7 @@ public static class PlayerActionBuffer
             return;
 
         _minimalEntries.Enqueue(text);
+        ReplayDispatcher.ClearDispatchableCache();
     }
 
     /// <summary>
@@ -443,6 +446,7 @@ public static class PlayerActionBuffer
         _minimalEntries.Enqueue(minimalEntry);
         LogToDevConsole($"[{timestamp}] {actionText}");
         EntryRecorded?.Invoke(actionText);
+        ReplayDispatcher.ClearDispatchableCache();
     }
 }
 
