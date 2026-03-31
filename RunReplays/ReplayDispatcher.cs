@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Godot;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using MegaCrit.Sts2.Core.Rooms;
@@ -60,12 +61,22 @@ public static class ReplayDispatcher
 
         var types = new HashSet<Type>
         {
-            typeof(PlayCardCommand), typeof(EndTurnCommand), typeof(MapMoveCommand),
             typeof(SelectGridCardCommand), typeof(SelectHandCardsCommand),
             typeof(UsePotionCommand), typeof(DiscardPotionCommand),
             typeof(ProceedToNextActCommand), typeof(CrystalSphereClickCommand),
             typeof(SelectCardFromScreenCommand),
         };
+
+        if (CombatManager.Instance.IsInProgress)
+        {
+            types.Add(typeof(PlayCardCommand));
+            types.Add(typeof(EndTurnCommand));
+        }
+
+        if (NMapScreen.Instance != null
+            && GodotObject.IsInstanceValid(NMapScreen.Instance)
+            && NMapScreen.Instance.IsTravelEnabled)
+            types.Add(typeof(MapMoveCommand));
 
         var currentRoom = GetCurrentRoom();
 
