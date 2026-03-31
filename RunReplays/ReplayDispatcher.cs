@@ -20,6 +20,39 @@ namespace RunReplays;
 /// </summary>
 public static class ReplayDispatcher
 {
+    private static readonly HashSet<Type> AllCommandTypes = new()
+    {
+        typeof(PlayCardCommand), typeof(EndTurnCommand), typeof(MapMoveCommand),
+        typeof(ChooseRestSiteOptionCommand), typeof(ChooseEventOptionCommand),
+        typeof(ClaimRewardCommand), typeof(TakeCardCommand),
+        typeof(SelectGridCardCommand), typeof(SelectHandCardsCommand),
+        typeof(OpenShopCommand), typeof(OpenFakeShopCommand),
+        typeof(BuyCardCommand), typeof(BuyRelicCommand),
+        typeof(BuyCardRemovalCommand), typeof(BuyPotionCommand),
+        typeof(UsePotionCommand), typeof(DiscardPotionCommand),
+        typeof(ProceedToNextActCommand), typeof(OpenChestCommand),
+        typeof(TakeChestRelicCommand), typeof(CrystalSphereClickCommand),
+        typeof(SelectCardFromScreenCommand),
+    };
+
+    private static readonly HashSet<Type> SelectionCommandTypes = new()
+    {
+        typeof(SelectGridCardCommand),
+        typeof(SelectCardFromScreenCommand),
+        typeof(SelectHandCardsCommand),
+    };
+
+    private static HashSet<Type> GetDispatchableTypes()
+    {
+        bool blocked = ReplayState.PotionInFlight
+                    || ReplayState.CardPlayInFlight
+                    || CardPlayReplayPatch.IsAwaitingEndTurnCompletion
+                    || MapMoveInFlight
+                    || ReplayState.ActionInFlight;
+
+        return blocked ? SelectionCommandTypes : AllCommandTypes;
+    }
+
     public static void Load(IReadOnlyList<string> commands)
     {
         ReplayEngine.Load(commands);
@@ -321,31 +354,8 @@ public static class ReplayDispatcher
         if (!ReplayEngine.PeekNext(out ReplayCommand? cmd) || cmd == null)
             return;
 
-        // Block dispatch while in-flight operations are pending.
-        if (ReplayState.PotionInFlight || MapMoveInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion)
+        if (!GetDispatchableTypes().Contains(cmd.GetType()))
             return;
-
-        // Block while a game action is executing (BeforeAction → AfterAction).
-        if (ReplayState.ActionInFlight && !cmd.IsSelectionCommand)
-            return;
-
-        // Selection commands are consumed by ICardSelector implementations when the
-        // game triggers a selection screen (FromChooseACardScreen, FromDeckGeneric, etc.).
-        // The dispatcher does not touch them — the selector consumes the command,
-        // NotifyConsumed fires, and the dispatcher advances to the next command.
-        // Re-check periodically so dispatch resumes promptly after consumption.
-        if (cmd.IsSelectionCommand && cmd is not SelectHandCardsCommand)
-        {
-            int selGen = _dispatchGeneration;
-            NGame.Instance?.GetTree()?.CreateTimer(0.3f).Connect(
-                "timeout", Callable.From(() =>
-                {
-                    if (_dispatchGeneration == selGen) {
-                        ExecuteNext();
-                    }
-                }));
-            return;
-        }
 
         // Don't re-dispatch the same command that's already in progress.
         if (_dispatchInProgress && cmd == _lastDispatchedCmd)
@@ -404,19 +414,11 @@ public static class ReplayDispatcher
         if (!ReplayEngine.PeekNext(out ReplayCommand? cmd) || cmd == null)
             return;
 
-        if ((ReplayState.PotionInFlight || ReplayState.CardPlayInFlight || CardPlayReplayPatch.IsAwaitingEndTurnCompletion || MapMoveInFlight) && !cmd.IsSelectionCommand)
+        if (!GetDispatchableTypes().Contains(cmd.GetType()))
         {
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
             scheduleDispatchOnDelay();
-            return;
-        }
-
-        // Block while a game action is executing, unless it's a selection command.
-        if (ReplayState.ActionInFlight && !cmd.IsSelectionCommand)
-        {
-            _dispatchInProgress = false;
-            _lastDispatchedCmd = null;
             return;
         }
 
