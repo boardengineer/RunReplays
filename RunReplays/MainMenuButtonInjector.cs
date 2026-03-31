@@ -42,6 +42,9 @@ public static class MainMenuButtonInjector
         // Reset any replay in progress so the game returns to record mode.
         ReplayDispatcher.Clear();
 
+        // Start polling for dispatchable command changes (diagnostic).
+        ReplayDispatcher.StartDispatchPoll();
+
         // Apply manual patches (isolated from PatchAll).
         // Deferred so the dev console is available for diagnostic logging.
         Callable.From(CrystalSphereManualPatcher.Apply).CallDeferred();

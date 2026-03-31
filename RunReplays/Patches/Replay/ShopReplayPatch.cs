@@ -12,11 +12,9 @@ public static class ShopReplayPatch
     [HarmonyPatch("_Ready")]
     public static void ReadyPostfix(NMerchantRoom __instance)
     {
-        if (!ReplayEngine.IsActive)
-            return;
-
         ReplayState.ActiveMerchantRoom = __instance;
-        ReplayDispatcher.TryDispatch();
+        if (ReplayEngine.IsActive)
+            ReplayDispatcher.TryDispatch();
     }
 
     [HarmonyPostfix]

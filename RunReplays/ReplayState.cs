@@ -88,15 +88,14 @@ public static class ReplayState
 
     private static void OnBeforeAction(GameAction action)
     {
-        if (!ReplayEngine.IsActive) return;
         _actionInFlight = true;
     }
 
     private static void OnAfterAction(GameAction action)
     {
-        if (!ReplayEngine.IsActive) return;
         _actionInFlight = false;
-        ReplayDispatcher.TryDispatch();
+        if (ReplayEngine.IsActive)
+            ReplayDispatcher.TryDispatch();
     }
 
     /// <summary>

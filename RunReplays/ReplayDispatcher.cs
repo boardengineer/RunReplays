@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
@@ -20,26 +21,11 @@ namespace RunReplays;
 /// </summary>
 public static class ReplayDispatcher
 {
-    private static readonly HashSet<Type> AllCommandTypes = new()
+    private static readonly HashSet<Type> ShopCommandTypes = new()
     {
-        typeof(PlayCardCommand), typeof(EndTurnCommand), typeof(MapMoveCommand),
-        typeof(ChooseRestSiteOptionCommand), typeof(ChooseEventOptionCommand),
-        typeof(ClaimRewardCommand), typeof(TakeCardCommand),
-        typeof(SelectGridCardCommand), typeof(SelectHandCardsCommand),
-        typeof(OpenShopCommand), typeof(OpenFakeShopCommand),
+        typeof(OpenShopCommand),
         typeof(BuyCardCommand), typeof(BuyRelicCommand),
         typeof(BuyCardRemovalCommand), typeof(BuyPotionCommand),
-        typeof(UsePotionCommand), typeof(DiscardPotionCommand),
-        typeof(ProceedToNextActCommand), typeof(OpenChestCommand),
-        typeof(TakeChestRelicCommand), typeof(CrystalSphereClickCommand),
-        typeof(SelectCardFromScreenCommand),
-    };
-
-    private static readonly HashSet<Type> SelectionCommandTypes = new()
-    {
-        typeof(SelectGridCardCommand),
-        typeof(SelectCardFromScreenCommand),
-        typeof(SelectHandCardsCommand),
     };
 
     private static HashSet<Type> GetDispatchableTypes()
@@ -50,7 +36,77 @@ public static class ReplayDispatcher
                     || MapMoveInFlight
                     || ReplayState.ActionInFlight;
 
-        return blocked ? SelectionCommandTypes : AllCommandTypes;
+        if (blocked)
+        {
+            return new HashSet<Type>
+            {
+                typeof(SelectGridCardCommand),
+                typeof(SelectCardFromScreenCommand),
+                typeof(SelectHandCardsCommand),
+            };
+        }
+
+        var types = new HashSet<Type>
+        {
+            typeof(PlayCardCommand), typeof(EndTurnCommand), typeof(MapMoveCommand),
+            typeof(ChooseRestSiteOptionCommand), typeof(ChooseEventOptionCommand),
+            typeof(ClaimRewardCommand), typeof(TakeCardCommand),
+            typeof(SelectGridCardCommand), typeof(SelectHandCardsCommand),
+            typeof(UsePotionCommand), typeof(DiscardPotionCommand),
+            typeof(ProceedToNextActCommand), typeof(OpenChestCommand),
+            typeof(TakeChestRelicCommand), typeof(CrystalSphereClickCommand),
+            typeof(SelectCardFromScreenCommand),
+        };
+
+        if (ReplayState.ActiveMerchantRoom != null)
+            types.UnionWith(ShopCommandTypes);
+
+        if (ReplayState.FakeMerchantInstance != null)
+        {
+            types.Add(typeof(OpenFakeShopCommand));
+            types.Add(typeof(BuyRelicCommand));
+        }
+
+        return types;
+    }
+
+    private static bool _dispatchPollRunning;
+    private static HashSet<Type>? _lastDispatchableTypes;
+
+    public static void StartDispatchPoll()
+    {
+        if (_dispatchPollRunning) return;
+        _dispatchPollRunning = true;
+        SubscribeToRoomEvents();
+        ScheduleDispatchPollTick();
+    }
+
+    private static void ScheduleDispatchPollTick()
+    {
+        if (!_dispatchPollRunning) return;
+        NGame.Instance?.GetTree()?.CreateTimer(0.5).Connect(
+            "timeout", Callable.From(DispatchPollTick));
+    }
+
+    private static void DispatchPollTick()
+    {
+        PlayerActionBuffer.LogMigrationWarning(
+            $"[Dispatcher] Flags: ActionInFlight={ReplayState.ActionInFlight}" +
+            $" CardPlayInFlight={ReplayState.CardPlayInFlight}" +
+            $" PotionInFlight={ReplayState.PotionInFlight}" +
+            $" MapMoveInFlight={MapMoveInFlight}" +
+            $" AwaitingEndTurn={CardPlayReplayPatch.IsAwaitingEndTurnCompletion}");
+
+        var current = GetDispatchableTypes();
+        if (_lastDispatchableTypes == null || !current.SetEquals(_lastDispatchableTypes))
+        {
+            _lastDispatchableTypes = new HashSet<Type>(current);
+            var names = current.Select(t => t.Name).OrderBy(n => n);
+            PlayerActionBuffer.LogMigrationWarning(
+                $"[Dispatcher] Dispatchable commands changed: {string.Join(", ", names)}");
+        }
+
+        ScheduleDispatchPollTick();
     }
 
     public static void Load(IReadOnlyList<string> commands)
@@ -264,6 +320,7 @@ public static class ReplayDispatcher
         MapMoveInFlight = false;
         _lastDispatchTick = System.Environment.TickCount64;
         ++_dispatchGeneration;
+        _lastDispatchableTypes = null;
         RestoreGameSpeed();
         StartWatchdog();
         SubscribeToRoomEvents();
@@ -289,6 +346,8 @@ public static class ReplayDispatcher
 
     private static void OnRoomExited()
     {
+        ReplayState.ActiveMerchantRoom = null;
+
         if (!ReplayEngine.IsActive) return;
 
         ReplayState.DrainScreenCleanup();
