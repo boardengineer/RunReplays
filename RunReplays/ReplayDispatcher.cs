@@ -103,7 +103,7 @@ public static class ReplayDispatcher
             && GodotObject.IsInstanceValid(CrystalSphereReplayPatch.ActiveScreen))
             types.Add(typeof(CrystalSphereClickCommand));
 
-        if (CombatManager.Instance.IsInProgress)
+        if (CombatManager.Instance.IsInProgress && CombatManager.Instance.IsPlayPhase)
         {
             types.Add(typeof(PlayCardCommand));
             types.Add(typeof(EndTurnCommand));
