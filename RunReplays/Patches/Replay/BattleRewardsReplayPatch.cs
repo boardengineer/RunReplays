@@ -14,10 +14,8 @@ public static class BattleRewardsReplayPatch
     [HarmonyPostfix]
     public static void Postfix(NRewardsScreen __instance)
     {
-        if (!ReplayEngine.IsActive)
-            return;
-
         ReplayState.ActiveRewardsScreen = __instance;
-        ReplayDispatcher.DispatchNow();
+        if (ReplayEngine.IsActive)
+            ReplayDispatcher.DispatchNow();
     }
 }

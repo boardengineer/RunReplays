@@ -61,7 +61,6 @@ public static class ReplayDispatcher
         var types = new HashSet<Type>
         {
             typeof(PlayCardCommand), typeof(EndTurnCommand), typeof(MapMoveCommand),
-            typeof(ClaimRewardCommand), typeof(TakeCardCommand),
             typeof(SelectGridCardCommand), typeof(SelectHandCardsCommand),
             typeof(UsePotionCommand), typeof(DiscardPotionCommand),
             typeof(ProceedToNextActCommand), typeof(CrystalSphereClickCommand),
@@ -80,6 +79,14 @@ public static class ReplayDispatcher
         {
             types.Add(typeof(OpenChestCommand));
             types.Add(typeof(TakeChestRelicCommand));
+        }
+
+        if (ReplayState.ActiveRewardsScreen != null
+            && GodotObject.IsInstanceValid(ReplayState.ActiveRewardsScreen)
+            && ReplayState.ActiveRewardsScreen.IsInsideTree())
+        {
+            types.Add(typeof(ClaimRewardCommand));
+            types.Add(typeof(TakeCardCommand));
         }
 
         if (ReplayState.ActiveMerchantRoom != null)
