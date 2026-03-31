@@ -34,6 +34,14 @@ public static class ReplayDispatcher
         return state?.CurrentRoom;
     }
 
+    private static bool LocalPlayerHasPotions()
+    {
+        var state = RunStateProp?.GetValue(RunManager.Instance) as IRunState;
+        if (state == null) return false;
+        var player = state.Players.FirstOrDefault();
+        return player != null && player.Potions.Any();
+    }
+
     private static readonly HashSet<Type> ShopCommandTypes = new()
     {
         typeof(OpenShopCommand),
@@ -49,30 +57,51 @@ public static class ReplayDispatcher
                     || MapMoveInFlight
                     || ReplayState.ActionInFlight;
 
+        
+        var types = new HashSet<Type>();
+        
+        if (CardGridScreenCapture.ActiveScreen != null
+            && GodotObject.IsInstanceValid(CardGridScreenCapture.ActiveScreen)
+            && CardGridScreenCapture.ActiveScreen.IsInsideTree())
+            types.Add(typeof(SelectGridCardCommand));
+        if (ChooseACardScreenCapture.ActiveScreen != null
+            && GodotObject.IsInstanceValid(ChooseACardScreenCapture.ActiveScreen)
+            && ChooseACardScreenCapture.ActiveScreen.IsInsideTree())
+            types.Add(typeof(SelectCardFromScreenCommand));
+        if (HandSelectionCapture.ActiveHand != null
+            && GodotObject.IsInstanceValid(HandSelectionCapture.ActiveHand)
+            && HandSelectionCapture.ActiveHand.IsInsideTree())
+            types.Add(typeof(SelectHandCardsCommand));
+        
         if (blocked)
         {
-            var selectionTypes = new HashSet<Type>();
-            if (CardGridScreenCapture.ActiveScreen != null)
-                selectionTypes.Add(typeof(SelectGridCardCommand));
-            if (ChooseACardScreenCapture.ActiveScreen != null)
-                selectionTypes.Add(typeof(SelectCardFromScreenCommand));
-            if (HandSelectionCapture.ActiveHand != null)
-                selectionTypes.Add(typeof(SelectHandCardsCommand));
-            return selectionTypes;
+            return types;
         }
 
-        var types = new HashSet<Type>
+        // TODO: further refine potion commands to only include potions usable in
+        // the current context (e.g. combat-only potions gated behind IsInProgress)
+        if (LocalPlayerHasPotions())
         {
-            typeof(UsePotionCommand), typeof(DiscardPotionCommand),
-            typeof(ProceedToNextActCommand), typeof(CrystalSphereClickCommand),
-        };
+            types.Add(typeof(UsePotionCommand));
+            types.Add(typeof(DiscardPotionCommand));
+        }
 
-        if (CardGridScreenCapture.ActiveScreen != null)
+        if (CardGridScreenCapture.ActiveScreen != null
+            && GodotObject.IsInstanceValid(CardGridScreenCapture.ActiveScreen)
+            && CardGridScreenCapture.ActiveScreen.IsInsideTree())
             types.Add(typeof(SelectGridCardCommand));
-        if (ChooseACardScreenCapture.ActiveScreen != null)
+        if (ChooseACardScreenCapture.ActiveScreen != null
+            && GodotObject.IsInstanceValid(ChooseACardScreenCapture.ActiveScreen)
+            && ChooseACardScreenCapture.ActiveScreen.IsInsideTree())
             types.Add(typeof(SelectCardFromScreenCommand));
-        if (HandSelectionCapture.ActiveHand != null)
+        if (HandSelectionCapture.ActiveHand != null
+            && GodotObject.IsInstanceValid(HandSelectionCapture.ActiveHand)
+            && HandSelectionCapture.ActiveHand.IsInsideTree())
             types.Add(typeof(SelectHandCardsCommand));
+
+        if (CrystalSphereReplayPatch.ActiveScreen != null
+            && GodotObject.IsInstanceValid(CrystalSphereReplayPatch.ActiveScreen))
+            types.Add(typeof(CrystalSphereClickCommand));
 
         if (CombatManager.Instance.IsInProgress)
         {
@@ -105,6 +134,10 @@ public static class ReplayDispatcher
         {
             types.Add(typeof(ClaimRewardCommand));
             types.Add(typeof(TakeCardCommand));
+
+            if (currentRoom != null
+                && (currentRoom.RoomType == RoomType.Boss || currentRoom.IsVictoryRoom))
+                types.Add(typeof(ProceedToNextActCommand));
         }
 
         if (ReplayState.ActiveMerchantRoom != null)
@@ -139,13 +172,6 @@ public static class ReplayDispatcher
 
     private static void DispatchPollTick()
     {
-        PlayerActionBuffer.LogMigrationWarning(
-            $"[Dispatcher] Flags: ActionInFlight={ReplayState.ActionInFlight}" +
-            $" CardPlayInFlight={ReplayState.CardPlayInFlight}" +
-            $" PotionInFlight={ReplayState.PotionInFlight}" +
-            $" MapMoveInFlight={MapMoveInFlight}" +
-            $" AwaitingEndTurn={CardPlayReplayPatch.IsAwaitingEndTurnCompletion}");
-
         var current = GetDispatchableTypes();
         if (_lastDispatchableTypes == null || !current.SetEquals(_lastDispatchableTypes))
         {

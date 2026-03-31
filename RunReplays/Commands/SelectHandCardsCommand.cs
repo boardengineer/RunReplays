@@ -135,8 +135,8 @@ public static class HandSelectionCapture
     [HarmonyPostfix]
     public static void Postfix(NPlayerHand __instance)
     {
-        if (!ReplayEngine.IsActive) return;
         ActiveHand = __instance;
+        if (!ReplayEngine.IsActive) return;
         ReplayDispatcher.DispatchNow();
     }
 

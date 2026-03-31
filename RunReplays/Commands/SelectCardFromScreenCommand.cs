@@ -97,8 +97,8 @@ public static class ChooseACardScreenCapture
     [HarmonyPrefix]
     public static void Prefix(NChooseACardSelectionScreen __instance)
     {
-        if (!ReplayEngine.IsActive) return;
         ActiveScreen = __instance;
+        if (!ReplayEngine.IsActive) return;
         Callable.From(ReplayDispatcher.DispatchNow).CallDeferred();
     }
 

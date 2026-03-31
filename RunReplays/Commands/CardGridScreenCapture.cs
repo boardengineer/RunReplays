@@ -31,8 +31,8 @@ public static class CardGridScreenCapture
     [HarmonyPrefix]
     public static void Prefix(NCardGridSelectionScreen __instance)
     {
-        if (!ReplayEngine.IsActive) return;
         ActiveScreen = __instance;
+        if (!ReplayEngine.IsActive) return;
         UpgradeCardReplayPatch.selectionScreen = __instance;
         PlayerActionBuffer.LogDispatcher(
             $"[CardGridCapture] Screen captured: {__instance.GetType().Name}");
