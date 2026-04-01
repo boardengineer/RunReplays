@@ -82,6 +82,8 @@ public static class ReplayDispatcher
                 commands.Add(new BuyCardRemovalCommand());
             else if (type == typeof(OpenFakeShopCommand))
                 commands.Add(new OpenFakeShopCommand());
+            else if (type == typeof(ProceedFromRewardsCommand))
+                commands.Add(new ProceedFromRewardsCommand());
 
             // -- combat card plays --
             else if (type == typeof(PlayCardCommand))
@@ -397,6 +399,7 @@ public static class ReplayDispatcher
         {
             types.Add(typeof(ClaimRewardCommand));
             types.Add(typeof(TakeCardCommand));
+            types.Add(typeof(ProceedFromRewardsCommand));
 
             if (currentRoom != null
                 && (currentRoom.RoomType == RoomType.Boss || currentRoom.IsVictoryRoom))

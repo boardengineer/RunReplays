@@ -34,6 +34,7 @@ public static class ReplayCommandParser
             ?? (ReplayCommand?)OpenChestCommand.TryParse(raw)
             ?? (ReplayCommand?)TakeChestRelicCommand.TryParse(raw)
             ?? (ReplayCommand?)CrystalSphereClickCommand.TryParse(raw)
-            ?? (ReplayCommand?)SelectCardFromScreenCommand.TryParse(raw);
+            ?? (ReplayCommand?)SelectCardFromScreenCommand.TryParse(raw)
+            ?? (ReplayCommand?)ProceedFromRewardsCommand.TryParse(raw);
     }
 }
