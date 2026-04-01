@@ -168,9 +168,11 @@ public static class ReplayDispatcher
         _emitter!.Connect(DispatchSignalEmitter.SignalInputRequired,
             Callable.From(() =>
             {
-                var names = _lastDispatchableTypes?.Select(t => t.Name).OrderBy(n => n);
-                PlayerActionBuffer.LogMigrationWarning(
-                    $"[Dispatcher] InputRequired: {string.Join(", ", names ?? Enumerable.Empty<string>())}");
+                var state = new GameStateSnapshot(GetDispatchableTypes());
+                var json = System.Text.Json.JsonSerializer.Serialize(state,
+                    new System.Text.Json.JsonSerializerOptions
+                    { DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull });
+                PlayerActionBuffer.LogMigrationWarning($"[Dispatcher] InputRequired {json}");
             }));
         SubscribeToRoomEvents();
         ScheduleDispatchPollTick();
