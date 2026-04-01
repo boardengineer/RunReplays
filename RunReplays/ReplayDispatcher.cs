@@ -99,10 +99,13 @@ public static class ReplayDispatcher
                                 .Instance.TryGetCardId(card, out uint id))
                             continue;
 
-                        commands.Add(new PlayCardCommand(id));
+                        if (card.CanPlayTargeting(null))
+                            commands.Add(new PlayCardCommand(id));
+
                         if (aliveEnemies != null)
                             foreach (var enemy in aliveEnemies)
-                                commands.Add(new PlayCardCommand(id, enemy.CombatId));
+                                if (card.CanPlayTargeting(enemy))
+                                    commands.Add(new PlayCardCommand(id, enemy.CombatId));
                     }
                 }
             }
@@ -420,13 +423,19 @@ public static class ReplayDispatcher
         if (_dispatchPollRunning) return;
         _dispatchPollRunning = true;
         EnsureEmitter();
+        PlayerActionBuffer.LogMigrationWarning("connected");
         _emitter!.Connect(DispatchSignalEmitter.SignalInputRequired,
             Callable.From(() =>
             {
+                PlayerActionBuffer.LogMigrationWarning("signal fire");
                 var state = new GameStateSnapshot(GetDispatchableTypes());
                 var json = System.Text.Json.JsonSerializer.Serialize(state,
                     new System.Text.Json.JsonSerializerOptions
                     { DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull });
+
+                var cmds = GetAvailableCommands();
+                foreach (var cmd in cmds)
+                    PlayerActionBuffer.LogMigrationWarning(cmd.ToString());
             }));
         SubscribeToRoomEvents();
         ScheduleDispatchPollTick();
