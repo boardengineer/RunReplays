@@ -19,7 +19,7 @@ public class MapMoveCommand : ReplayCommand
 {
     private const string Prefix = "MoveToMapCoord ";
 
-    private static readonly FieldInfo? MapPointDictionaryField =
+    internal static readonly FieldInfo? MapPointDictionaryField =
         typeof(NMapScreen).GetField(
             "_mapPointDictionary",
             BindingFlags.NonPublic | BindingFlags.Instance);

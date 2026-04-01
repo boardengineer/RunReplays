@@ -5,7 +5,9 @@ using System.Reflection;
 using Godot;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Logging;
+using MegaCrit.Sts2.Core.Map;
 using MegaCrit.Sts2.Core.Nodes;
+using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
@@ -51,6 +53,256 @@ public static class ReplayDispatcher
         typeof(BuyCardCommand), typeof(BuyRelicCommand),
         typeof(BuyCardRemovalCommand), typeof(BuyPotionCommand),
     };
+
+    /// <summary>
+    /// Returns the concrete commands that can be dispatched right now,
+    /// expanding each available command type against the current game state.
+    /// </summary>
+    public static List<ReplayCommand> GetAvailableCommands()
+    {
+        var types = GetDispatchableTypes();
+        var commands = new List<ReplayCommand>();
+        var state = RunStateProp?.GetValue(RunManager.Instance) as IRunState;
+        var player = state?.Players.FirstOrDefault();
+
+        foreach (var type in types)
+        {
+            // -- parameterless commands --
+            if (type == typeof(EndTurnCommand))
+                commands.Add(new EndTurnCommand());
+            else if (type == typeof(OpenChestCommand))
+                commands.Add(new OpenChestCommand());
+            else if (type == typeof(TakeChestRelicCommand))
+                commands.Add(new TakeChestRelicCommand());
+            else if (type == typeof(ProceedToNextActCommand))
+                commands.Add(new ProceedToNextActCommand());
+            else if (type == typeof(OpenShopCommand))
+                commands.Add(new OpenShopCommand());
+            else if (type == typeof(BuyCardRemovalCommand))
+                commands.Add(new BuyCardRemovalCommand());
+            else if (type == typeof(OpenFakeShopCommand))
+                commands.Add(new OpenFakeShopCommand());
+
+            // -- combat card plays --
+            else if (type == typeof(PlayCardCommand))
+            {
+                var combat = player?.PlayerCombatState;
+                if (combat != null)
+                {
+                    var combatState = CombatManager.Instance?.DebugOnlyGetState();
+                    var aliveEnemies = combatState?.Enemies
+                        .Where(e => e.IsAlive).ToList();
+
+                    foreach (var card in combat.Hand.Cards)
+                    {
+                        if (!MegaCrit.Sts2.Core.GameActions.Multiplayer.NetCombatCardDb
+                                .Instance.TryGetCardId(card, out uint id))
+                            continue;
+
+                        commands.Add(new PlayCardCommand(id));
+                        if (aliveEnemies != null)
+                            foreach (var enemy in aliveEnemies)
+                                commands.Add(new PlayCardCommand(id, enemy.CombatId));
+                    }
+                }
+            }
+
+            // -- potions --
+            else if (type == typeof(UsePotionCommand))
+            {
+                if (player != null)
+                {
+                    var combatState = CombatManager.Instance?.DebugOnlyGetState();
+                    for (int i = 0; i < player.Potions.Count(); i++)
+                    {
+                        if (player.GetPotionAtSlotIndex(i) == null) continue;
+                        commands.Add(new UsePotionCommand((uint)i));
+                        if (combatState != null)
+                            foreach (var enemy in combatState.Enemies)
+                                if (enemy.IsAlive)
+                                    commands.Add(new UsePotionCommand((uint)i, enemy.CombatId));
+                    }
+                }
+            }
+            else if (type == typeof(DiscardPotionCommand))
+            {
+                if (player != null)
+                    for (int i = 0; i < player.Potions.Count(); i++)
+                        if (player.GetPotionAtSlotIndex(i) != null)
+                            commands.Add(new DiscardPotionCommand(i));
+            }
+
+            // -- map navigation --
+            else if (type == typeof(MapMoveCommand))
+            {
+                if (NMapScreen.Instance != null
+                    && MapMoveCommand.MapPointDictionaryField?.GetValue(NMapScreen.Instance)
+                        is Dictionary<MapCoord, NMapPoint> dict)
+                {
+                    var currentCoord = state?.CurrentMapCoord;
+                    int row = currentCoord.HasValue ? currentCoord.Value.row + 1 : 0;
+                    foreach (var coord in dict.Keys)
+                        if (coord.row == row)
+                            commands.Add(new MapMoveCommand(coord.col));
+                }
+            }
+
+            // -- rest site --
+            else if (type == typeof(ChooseRestSiteOptionCommand))
+            {
+                var sync = ReplayState.ActiveRestSiteSynchronizer;
+                if (sync != null)
+                    foreach (var option in sync.GetLocalOptions())
+                        commands.Add(new ChooseRestSiteOptionCommand(option.OptionId));
+            }
+
+            // -- events --
+            else if (type == typeof(ChooseEventOptionCommand))
+            {
+                var sync = ReplayState.ActiveEventSynchronizer;
+                if (sync != null && sync.Events.Count > 0)
+                {
+                    if (sync.Events[0].IsFinished)
+                        commands.Add(new ChooseEventOptionCommand(-1));
+                    else
+                        for (int i = 0; i < sync.Events[0].CurrentOptions.Count; i++)
+                            commands.Add(new ChooseEventOptionCommand(i));
+                }
+            }
+
+            // -- rewards --
+            else if (type == typeof(ClaimRewardCommand))
+            {
+                var screen = ReplayState.ActiveRewardsScreen;
+                if (screen != null && screen.IsInsideTree())
+                {
+                    int i = 0;
+                    foreach (var _ in ClaimRewardCommand.EnumerateRewardButtons(screen))
+                        commands.Add(new ClaimRewardCommand(i++));
+                }
+            }
+            else if (type == typeof(TakeCardCommand))
+            {
+                var screen = ReplayState.CardRewardSelectionScreen;
+                if (screen != null)
+                {
+                    var cardRow = typeof(NCardRewardSelectionScreen)
+                        .GetField("_cardRow", BindingFlags.NonPublic | BindingFlags.Instance)
+                        ?.GetValue(screen) as Godot.Node;
+                    if (cardRow != null)
+                    {
+                        int count = 0;
+                        foreach (Godot.Node child in cardRow.GetChildren())
+                        {
+                            var prop = child.GetType().GetProperty(
+                                "CardModel", BindingFlags.Public | BindingFlags.Instance);
+                            if (prop?.GetValue(child) is MegaCrit.Sts2.Core.Models.CardModel)
+                                count++;
+                        }
+                        for (int i = 0; i < count; i++)
+                            commands.Add(new TakeCardCommand(i));
+                    }
+                    commands.Add(TakeCardCommand.Skip());
+                    commands.Add(TakeCardCommand.Sacrifice());
+                }
+            }
+
+            // -- selection screens --
+            else if (type == typeof(SelectGridCardCommand))
+            {
+                var screen = CardGridScreenCapture.ActiveScreen;
+                if (screen != null)
+                {
+                    var cards = CardGridScreenCapture.CardsField?.GetValue(screen)
+                        as IReadOnlyList<MegaCrit.Sts2.Core.Models.CardModel>;
+                    if (cards != null)
+                        for (int i = 0; i < cards.Count; i++)
+                            commands.Add(new SelectGridCardCommand(new[] { i }));
+                }
+            }
+            else if (type == typeof(SelectCardFromScreenCommand))
+            {
+                var screen = ChooseACardScreenCapture.ActiveScreen;
+                if (screen != null)
+                {
+                    int count = 0;
+                    foreach (Godot.Node node in screen.FindChildren("*", "", owned: false))
+                    {
+                        var prop = node.GetType().GetProperty(
+                            "CardModel", BindingFlags.Public | BindingFlags.Instance);
+                        if (prop?.GetValue(node) is MegaCrit.Sts2.Core.Models.CardModel)
+                            count++;
+                    }
+                    for (int i = 0; i < count; i++)
+                        commands.Add(new SelectCardFromScreenCommand(i));
+                    commands.Add(new SelectCardFromScreenCommand(-1));
+                }
+            }
+            else if (type == typeof(SelectHandCardsCommand))
+            {
+                var combatState = CombatManager.Instance?.DebugOnlyGetState();
+                if (combatState != null)
+                {
+                    var p = combatState.Players.FirstOrDefault();
+                    if (p != null)
+                        for (int i = 0; i < p.PlayerCombatState.Hand.Cards.Count; i++)
+                            commands.Add(new SelectHandCardsCommand(new[] { i }));
+                }
+            }
+            else if (type == typeof(CrystalSphereClickCommand))
+            {
+                // Crystal sphere cells require deep grid reflection;
+                // not enumerable without knowing dimensions.
+            }
+
+            // -- shop purchases --
+            else if (type == typeof(BuyCardCommand))
+            {
+                var room = ReplayState.ActiveMerchantRoom;
+                if (room != null)
+                {
+                    var entries = OpenShopCommand.GetEntries(room);
+                    if (entries != null)
+                        foreach (var e in entries.OfType<MegaCrit.Sts2.Core.Entities.Merchant.MerchantCardEntry>())
+                            if (e.CreationResult?.Card?.Title != null)
+                                commands.Add(new BuyCardCommand(e.CreationResult.Card.Title));
+                }
+            }
+            else if (type == typeof(BuyRelicCommand))
+            {
+                List<MegaCrit.Sts2.Core.Entities.Merchant.MerchantEntry>? entries = null;
+                var room = ReplayState.ActiveMerchantRoom;
+                if (room != null)
+                    entries = OpenShopCommand.GetEntries(room);
+                if ((entries == null || entries.Count == 0) && ReplayState.FakeMerchantInstance != null)
+                    entries = BuyRelicCommand.GetFakeMerchantEntries(ReplayState.FakeMerchantInstance);
+                if (entries != null)
+                    foreach (var e in entries.OfType<MegaCrit.Sts2.Core.Entities.Merchant.MerchantRelicEntry>())
+                    {
+                        var title = e.Model?.Title.GetFormattedText();
+                        if (title != null)
+                            commands.Add(new BuyRelicCommand(title));
+                    }
+            }
+            else if (type == typeof(BuyPotionCommand))
+            {
+                var room = ReplayState.ActiveMerchantRoom;
+                if (room != null)
+                {
+                    var entries = OpenShopCommand.GetEntries(room);
+                    if (entries != null)
+                        foreach (var e in entries.OfType<MegaCrit.Sts2.Core.Entities.Merchant.MerchantPotionEntry>())
+                        {
+                            var title = e.Model?.Title.GetFormattedText();
+                            if (title != null)
+                                commands.Add(new BuyPotionCommand(title));
+                        }
+                }
+            }
+        }
+
+        return commands;
+    }
 
     private static HashSet<Type> GetDispatchableTypes()
     {
