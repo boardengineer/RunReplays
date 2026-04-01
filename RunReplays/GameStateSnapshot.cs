@@ -51,6 +51,7 @@ public record GameStateSnapshot
     public IReadOnlyList<CardInfo>? DrawPile { get; init; }
     public IReadOnlyList<CardInfo>? DiscardPile { get; init; }
     public IReadOnlyList<CardInfo>? ExhaustPile { get; init; }
+    public IReadOnlyList<PowerInfo>? PlayerPowers { get; init; }
     public IReadOnlyList<EnemyInfo>? Enemies { get; init; }
     public IReadOnlyList<string> Potions { get; init; }
     public IReadOnlyList<string> Relics { get; init; }
@@ -91,6 +92,10 @@ public record GameStateSnapshot
 
         if (CombatManager.Instance.IsInProgress)
         {
+            PlayerPowers = player?.Creature?.Powers
+                .Select(p => new PowerInfo { Id = p.Id.ToString(), Amount = p.Amount })
+                .ToList();
+
             var combatState = CombatManager.Instance.DebugOnlyGetState();
             Enemies = combatState?.Enemies
                 .Where(e => e.IsAlive)
