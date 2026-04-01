@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Godot;
 using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using MegaCrit.Sts2.Core.Rooms;
@@ -24,6 +25,8 @@ namespace RunReplays;
 /// </summary>
 public static class ReplayDispatcher
 {
+    private static readonly MegaCrit.Sts2.Core.Logging.Logger _logger =
+        new MegaCrit.Sts2.Core.Logging.Logger("RunReplays", LogType.Generic);
     private static readonly PropertyInfo? RunStateProp =
         typeof(RunManager).GetProperty("State",
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
@@ -172,7 +175,6 @@ public static class ReplayDispatcher
                 var json = System.Text.Json.JsonSerializer.Serialize(state,
                     new System.Text.Json.JsonSerializerOptions
                     { DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull });
-                PlayerActionBuffer.LogMigrationWarning($"[Dispatcher] InputRequired {json}");
             }));
         SubscribeToRoomEvents();
         ScheduleDispatchPollTick();
@@ -617,6 +619,7 @@ public static class ReplayDispatcher
 
         PlayerActionBuffer.LogMigrationWarning($"[Dispatcher] Unrecognised command: {cmd}");
     }
+
 
     private static DispatchSignalEmitter? _emitter;
     public static DispatchSignalEmitter? Emitter => _emitter;

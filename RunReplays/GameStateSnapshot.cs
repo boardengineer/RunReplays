@@ -29,7 +29,7 @@ public record EnemyInfo
     public uint? CombatId { get; init; }
     public int CurrentHp { get; init; }
     public int MaxHp { get; init; }
-    public IReadOnlyList<PowerInfo> Debuffs { get; init; } = new List<PowerInfo>();
+    public IReadOnlyList<PowerInfo> Powers { get; init; } = new List<PowerInfo>();
     public string? Intent { get; init; }
 }
 
@@ -105,7 +105,7 @@ public record GameStateSnapshot
                     CombatId = e.CombatId,
                     CurrentHp = e.CurrentHp,
                     MaxHp = e.MaxHp,
-                    Debuffs = e.Powers
+                    Powers = e.Powers
                         .Select(p => new PowerInfo { Id = p.Id.ToString(), Amount = p.Amount })
                         .ToList(),
                     Intent = e.Monster?.NextMove?.Intents.FirstOrDefault()?.IntentType.ToString(),
