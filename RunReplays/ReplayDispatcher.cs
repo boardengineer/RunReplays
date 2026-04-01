@@ -143,10 +143,18 @@ public static class ReplayDispatcher
                         is Dictionary<MapCoord, NMapPoint> dict)
                 {
                     var currentCoord = state?.CurrentMapCoord;
-                    int row = currentCoord.HasValue ? currentCoord.Value.row + 1 : 0;
-                    foreach (var coord in dict.Keys)
-                        if (coord.row == row)
-                            commands.Add(new MapMoveCommand(coord.col));
+                    if (currentCoord.HasValue && dict.TryGetValue(currentCoord.Value, out var currentPoint))
+                    {
+                        foreach (var child in currentPoint.Point.Children)
+                            commands.Add(new MapMoveCommand(child.coord.col));
+                    }
+                    else
+                    {
+                        // First move of act — all row 0 nodes are reachable
+                        foreach (var coord in dict.Keys)
+                            if (coord.row == 0)
+                                commands.Add(new MapMoveCommand(coord.col));
+                    }
                 }
             }
 

@@ -405,7 +405,7 @@ public static class PlayerActionBuffer
     }
 
     [System.Diagnostics.Conditional("RUNREPLAYS_MIGRATION")]
-    internal static void LogMigrationWarning(string entry)
+    public static void LogMigrationWarning(string entry)
     {
         WriteToDevConsole(entry);
     }
