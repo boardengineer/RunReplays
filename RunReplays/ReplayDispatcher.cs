@@ -142,7 +142,7 @@ public static class ReplayDispatcher
                         if (!needsEnemyTarget)
                             commands.Add(new UsePotionCommand((uint)i));
 
-                        if (combatState != null)
+                        if (needsEnemyTarget && combatState != null)
                             foreach (var enemy in combatState.Enemies)
                                 if (enemy.IsAlive)
                                     commands.Add(new UsePotionCommand((uint)i, enemy.CombatId));
