@@ -78,12 +78,19 @@ public static class ReplayDispatcher
                 commands.Add(new ProceedToNextActCommand());
             else if (type == typeof(OpenShopCommand))
                 commands.Add(new OpenShopCommand());
-            else if (type == typeof(BuyCardRemovalCommand))
-                commands.Add(new BuyCardRemovalCommand());
             else if (type == typeof(OpenFakeShopCommand))
                 commands.Add(new OpenFakeShopCommand());
-            else if (type == typeof(ProceedFromRewardsCommand))
-                commands.Add(new ProceedFromRewardsCommand());
+            else if (type == typeof(ProceedToMapCommand))
+            {
+                if (ProceedToMapCommand.IsAvailable())
+                    commands.Add(new ProceedToMapCommand());
+            }
+            else if (type == typeof(CloseShopCommand))
+            {
+                var room = ReplayState.ActiveMerchantRoom;
+                if (room != null && room.Inventory != null && room.Inventory.IsOpen)
+                    commands.Add(new CloseShopCommand());
+            }
 
             // -- combat card plays --
             else if (type == typeof(PlayCardCommand))
@@ -117,11 +124,24 @@ public static class ReplayDispatcher
             {
                 if (player != null)
                 {
-                    var combatState = CombatManager.Instance?.DebugOnlyGetState();
+                    bool inCombat = CombatManager.Instance?.IsInProgress == true;
+                    var combatState = inCombat
+                        ? CombatManager.Instance?.DebugOnlyGetState()
+                        : null;
+
                     for (int i = 0; i < player.Potions.Count(); i++)
                     {
-                        if (player.GetPotionAtSlotIndex(i) == null) continue;
-                        commands.Add(new UsePotionCommand((uint)i));
+                        var potion = player.GetPotionAtSlotIndex(i);
+                        if (potion == null) continue;
+
+                        if (!inCombat && potion.Usage == MegaCrit.Sts2.Core.Entities.Potions.PotionUsage.CombatOnly)
+                            continue;
+
+                        bool needsEnemyTarget = potion.TargetType == MegaCrit.Sts2.Core.Entities.Cards.TargetType.AnyEnemy;
+
+                        if (!needsEnemyTarget)
+                            commands.Add(new UsePotionCommand((uint)i));
+
                         if (combatState != null)
                             foreach (var enemy in combatState.Enemies)
                                 if (enemy.IsAlive)
@@ -216,7 +236,18 @@ public static class ReplayDispatcher
                             commands.Add(new TakeCardCommand(i));
                     }
                     commands.Add(TakeCardCommand.Skip());
-                    commands.Add(TakeCardCommand.Sacrifice());
+
+                    var extras = typeof(NCardRewardSelectionScreen)
+                        .GetField("_extraOptions", BindingFlags.NonPublic | BindingFlags.Instance)
+                        ?.GetValue(screen) as IReadOnlyList<MegaCrit.Sts2.Core.Entities.CardRewardAlternatives.CardRewardAlternative>;
+                    if (extras != null)
+                        foreach (var alt in extras)
+                            if (alt.OptionId.Contains("sacrifice", StringComparison.OrdinalIgnoreCase)
+                                || alt.OptionId.Contains("pael", StringComparison.OrdinalIgnoreCase))
+                            {
+                                commands.Add(TakeCardCommand.Sacrifice());
+                                break;
+                            }
                 }
             }
 
@@ -232,6 +263,30 @@ public static class ReplayDispatcher
                         for (int i = 0; i < cards.Count; i++)
                             commands.Add(new SelectGridCardCommand(new[] { i }));
                 }
+            }
+            else if (type == typeof(ClickGridCardCommand))
+            {
+                var screen = CardGridScreenCapture.ActiveScreen;
+                if (screen != null)
+                {
+                    var cards = CardGridScreenCapture.CardsField?.GetValue(screen)
+                        as IReadOnlyList<MegaCrit.Sts2.Core.Models.CardModel>;
+                    if (cards != null)
+                        for (int i = 0; i < cards.Count; i++)
+                            commands.Add(new ClickGridCardCommand(i));
+                }
+            }
+            else if (type == typeof(ConfirmGridSelectionCommand))
+            {
+                var screen = CardGridScreenCapture.ActiveScreen;
+                if (screen != null && ConfirmGridSelectionCommand.FindEnabledConfirmButton(screen) != null)
+                    commands.Add(new ConfirmGridSelectionCommand());
+            }
+            else if (type == typeof(CancelGridSelectionCommand))
+            {
+                var screen = CardGridScreenCapture.ActiveScreen;
+                if (screen != null && CancelGridSelectionCommand.FindEnabledBackButton(screen) != null)
+                    commands.Add(new CancelGridSelectionCommand());
             }
             else if (type == typeof(SelectCardFromScreenCommand))
             {
@@ -277,7 +332,7 @@ public static class ReplayDispatcher
                     var entries = OpenShopCommand.GetEntries(room);
                     if (entries != null)
                         foreach (var e in entries.OfType<MegaCrit.Sts2.Core.Entities.Merchant.MerchantCardEntry>())
-                            if (e.CreationResult?.Card?.Title != null)
+                            if (e.EnoughGold && e.CreationResult?.Card?.Title != null)
                                 commands.Add(new BuyCardCommand(e.CreationResult.Card.Title));
                 }
             }
@@ -293,7 +348,7 @@ public static class ReplayDispatcher
                     foreach (var e in entries.OfType<MegaCrit.Sts2.Core.Entities.Merchant.MerchantRelicEntry>())
                     {
                         var title = e.Model?.Title.GetFormattedText();
-                        if (title != null)
+                        if (e.EnoughGold && title != null)
                             commands.Add(new BuyRelicCommand(title));
                     }
             }
@@ -307,9 +362,23 @@ public static class ReplayDispatcher
                         foreach (var e in entries.OfType<MegaCrit.Sts2.Core.Entities.Merchant.MerchantPotionEntry>())
                         {
                             var title = e.Model?.Title.GetFormattedText();
-                            if (title != null)
+                            if (e.EnoughGold && title != null)
                                 commands.Add(new BuyPotionCommand(title));
                         }
+                }
+            }
+            else if (type == typeof(BuyCardRemovalCommand))
+            {
+                var room = ReplayState.ActiveMerchantRoom;
+                if (room != null)
+                {
+                    var entries = OpenShopCommand.GetEntries(room);
+                    if (entries != null)
+                    {
+                        var removal = entries.OfType<MegaCrit.Sts2.Core.Entities.Merchant.MerchantCardRemovalEntry>().FirstOrDefault();
+                        if (removal != null && removal.EnoughGold)
+                            commands.Add(new BuyCardRemovalCommand());
+                    }
                 }
             }
         }
@@ -331,7 +400,12 @@ public static class ReplayDispatcher
         if (CardGridScreenCapture.ActiveScreen != null
             && GodotObject.IsInstanceValid(CardGridScreenCapture.ActiveScreen)
             && CardGridScreenCapture.ActiveScreen.IsInsideTree())
+        {
             types.Add(typeof(SelectGridCardCommand));
+            types.Add(typeof(ClickGridCardCommand));
+            types.Add(typeof(ConfirmGridSelectionCommand));
+            types.Add(typeof(CancelGridSelectionCommand));
+        }
         if (ChooseACardScreenCapture.ActiveScreen != null
             && GodotObject.IsInstanceValid(ChooseACardScreenCapture.ActiveScreen)
             && ChooseACardScreenCapture.ActiveScreen.IsInsideTree())
@@ -357,7 +431,12 @@ public static class ReplayDispatcher
         if (CardGridScreenCapture.ActiveScreen != null
             && GodotObject.IsInstanceValid(CardGridScreenCapture.ActiveScreen)
             && CardGridScreenCapture.ActiveScreen.IsInsideTree())
+        {
             types.Add(typeof(SelectGridCardCommand));
+            types.Add(typeof(ClickGridCardCommand));
+            types.Add(typeof(ConfirmGridSelectionCommand));
+            types.Add(typeof(CancelGridSelectionCommand));
+        }
         if (ChooseACardScreenCapture.ActiveScreen != null
             && GodotObject.IsInstanceValid(ChooseACardScreenCapture.ActiveScreen)
             && ChooseACardScreenCapture.ActiveScreen.IsInsideTree())
@@ -385,12 +464,16 @@ public static class ReplayDispatcher
         var currentRoom = GetCurrentRoom();
 
         if (currentRoom is RestSiteRoom)
+        {
             types.Add(typeof(ChooseRestSiteOptionCommand));
+            types.Add(typeof(ProceedToMapCommand));
+        }
 
         if (currentRoom is TreasureRoom)
         {
             types.Add(typeof(OpenChestCommand));
             types.Add(typeof(TakeChestRelicCommand));
+            types.Add(typeof(ProceedToMapCommand));
         }
 
         if (ReplayState.ActiveRewardsScreen != null
@@ -399,7 +482,7 @@ public static class ReplayDispatcher
         {
             types.Add(typeof(ClaimRewardCommand));
             types.Add(typeof(TakeCardCommand));
-            types.Add(typeof(ProceedFromRewardsCommand));
+            types.Add(typeof(ProceedToMapCommand));
 
             if (currentRoom != null
                 && (currentRoom.RoomType == RoomType.Boss || currentRoom.IsVictoryRoom))
@@ -407,7 +490,11 @@ public static class ReplayDispatcher
         }
 
         if (ReplayState.ActiveMerchantRoom != null)
+        {
             types.UnionWith(ShopCommandTypes);
+            types.Add(typeof(CloseShopCommand));
+            types.Add(typeof(ProceedToMapCommand));
+        }
 
         if (ReplayState.FakeMerchantInstance != null)
         {

@@ -35,6 +35,10 @@ public static class ReplayCommandParser
             ?? (ReplayCommand?)TakeChestRelicCommand.TryParse(raw)
             ?? (ReplayCommand?)CrystalSphereClickCommand.TryParse(raw)
             ?? (ReplayCommand?)SelectCardFromScreenCommand.TryParse(raw)
-            ?? (ReplayCommand?)ProceedFromRewardsCommand.TryParse(raw);
+            ?? (ReplayCommand?)ProceedToMapCommand.TryParse(raw)
+            ?? (ReplayCommand?)CloseShopCommand.TryParse(raw)
+            ?? (ReplayCommand?)ClickGridCardCommand.TryParse(raw)
+            ?? (ReplayCommand?)ConfirmGridSelectionCommand.TryParse(raw)
+            ?? (ReplayCommand?)CancelGridSelectionCommand.TryParse(raw);
     }
 }
