@@ -129,7 +129,7 @@ public static class ReplayDispatcher
                         ? CombatManager.Instance?.DebugOnlyGetState()
                         : null;
 
-                    for (int i = 0; i < player.Potions.Count(); i++)
+                    for (int i = 0; i < player.PotionSlots.Count; i++)
                     {
                         var potion = player.GetPotionAtSlotIndex(i);
                         if (potion == null) continue;
@@ -152,7 +152,7 @@ public static class ReplayDispatcher
             else if (type == typeof(DiscardPotionCommand))
             {
                 if (player != null)
-                    for (int i = 0; i < player.Potions.Count(); i++)
+                    for (int i = 0; i < player.PotionSlots.Count; i++)
                         if (player.GetPotionAtSlotIndex(i) != null)
                             commands.Add(new DiscardPotionCommand(i));
             }
