@@ -35,6 +35,21 @@ public class ChooseEventOptionCommand : ReplayCommand
     public override ExecuteResult Execute()
     {
         var sync = ReplayState.ActiveEventSynchronizer;
+
+        // PROCEED sentinel — always consume, even if the sync has been cleared
+        // or we're no longer in an EventRoom.  Some events auto-proceed when
+        // their sub-combat ends (Battleworn Dummy), so the recorded `-1` has
+        // no UI to act on at replay time.
+        if (RecordedIndex == ProceedIndex)
+        {
+            if (sync != null && sync.Events.Count > 0 && sync.Events[0].IsFinished)
+            {
+                TaskHelper.RunSafely(NEventRoom.Proceed());
+                ScheduleFollowUp();
+            }
+            return ExecuteResult.Ok();
+        }
+
         if (sync == null)
             return ExecuteResult.Retry(300);
 
@@ -45,10 +60,6 @@ public class ChooseEventOptionCommand : ReplayCommand
             ScheduleFollowUp();
             return ExecuteResult.Ok();
         }
-
-        // PROCEED sentinel — consume and advance.
-        if (RecordedIndex == ProceedIndex)
-            return ExecuteResult.Ok();
 
         if (sync.Events.Count == 0)
             return ExecuteResult.Retry(300);

@@ -504,10 +504,24 @@ public static class ReplayDispatcher
 
         if (currentRoom is EventRoom)
         {
-            bool hasNonPotionCommands = types.Any(t =>
-                t != typeof(UsePotionCommand) && t != typeof(DiscardPotionCommand));
-            if (!hasNonPotionCommands)
-                types.Add(typeof(ChooseEventOptionCommand));
+            // Events can legitimately coexist with other dispatchable commands:
+            // Future of Potions embeds a fake merchant (OpenFakeShop/BuyRelic),
+            // events offer potions (UsePotion/DiscardPotion), and the map
+            // screen's MapMoveCommand lingers from the room entry.  None of
+            // those should suppress the event's own option selection.
+            types.Add(typeof(ChooseEventOptionCommand));
+        }
+
+        // If the next queued command is a PROCEED sentinel, allow dispatching
+        // it even when we're no longer in an EventRoom.  Some events (e.g.
+        // Battleworn Dummy) auto-proceed when their sub-combat resolves, so
+        // the recorded `-1` has no UI to act on — the command just needs to
+        // be consumed so the replay can advance.
+        if (ReplayEngine.PeekNext(out ReplayCommand? nextCmd)
+            && nextCmd is ChooseEventOptionCommand evtCmd
+            && evtCmd.RecordedIndex == -1)
+        {
+            types.Add(typeof(ChooseEventOptionCommand));
         }
 
         return types;
@@ -798,6 +812,8 @@ public static class ReplayDispatcher
 
     private static void OnRoomEntered()
     {
+        var room = GetCurrentRoom();
+        GD.Print($"[RunReplays] OnRoomEntered — room={room?.GetType().Name ?? "null"} active={ReplayEngine.IsActive}");
         if (!ReplayEngine.IsActive) return;
 
         MapMoveInFlight = false;
@@ -806,6 +822,8 @@ public static class ReplayDispatcher
 
     private static void OnRoomExited()
     {
+        var room = GetCurrentRoom();
+        GD.Print($"[RunReplays] OnRoomExited — room={room?.GetType().Name ?? "null"} active={ReplayEngine.IsActive}");
         ReplayState.ActiveMerchantRoom = null;
 
         if (!ReplayEngine.IsActive) return;
@@ -813,6 +831,11 @@ public static class ReplayDispatcher
         ReplayState.DrainScreenCleanup();
         ReplayState.ActiveEventSynchronizer = null;
         TreasureRoomReplayPatch.ActiveRoom = null;
+
+        // Auto-proceeding events (e.g. Battleworn Dummy after its sub-combat)
+        // fire RoomExited but don't reliably fire a matching RoomEntered.
+        // Pump dispatch here so a queued PROCEED sentinel can consume itself.
+        TryDispatch();
     }
 
     /// <summary>
@@ -865,8 +888,11 @@ public static class ReplayDispatcher
     /// Checks if the next queued command can execute given the current readiness
     /// state, and if so, executes it.
     /// </summary>
-    internal static void TryDispatch()
+    internal static void TryDispatch([System.Runtime.CompilerServices.CallerMemberName] string? caller = null)
     {
+        ReplayEngine.PeekNext(out ReplayCommand? peekCmd);
+        GD.Print($"[RunReplays] TryDispatch caller={caller} active={ReplayEngine.IsActive} paused={_paused} next={peekCmd?.GetType().Name ?? "null"}({peekCmd})");
+
         LogDispatchableChanges();
 
         if (!ReplayEngine.IsActive || _paused)
@@ -875,12 +901,19 @@ public static class ReplayDispatcher
         if (!ReplayEngine.PeekNext(out ReplayCommand? cmd) || cmd == null)
             return;
 
-        if (!GetDispatchableTypes().Contains(cmd.GetType()))
+        var dispatchable = GetDispatchableTypes();
+        if (!dispatchable.Contains(cmd.GetType()))
+        {
+            GD.Print($"[RunReplays] TryDispatch miss — cmd={cmd.GetType().Name} dispatchable=[{string.Join(",", dispatchable.Select(t => t.Name))}]");
             return;
+        }
 
         // Don't re-dispatch the same command that's already in progress.
         if (_dispatchInProgress && cmd == _lastDispatchedCmd)
+        {
+            GD.Print($"[RunReplays] TryDispatch skip — already in progress ({cmd.GetType().Name})");
             return;
+        }
 
         _dispatchInProgress = true;
         _lastDispatchedCmd = cmd;
@@ -920,6 +953,9 @@ public static class ReplayDispatcher
 
     private static void ExecuteNext()
     {
+        ReplayEngine.PeekNext(out ReplayCommand? peekCmd);
+        GD.Print($"[RunReplays] ExecuteNext entry — active={ReplayEngine.IsActive} paused={_paused} next={peekCmd?.GetType().Name ?? "null"}({peekCmd})");
+
         LogDispatchableChanges();
 
         // Re-apply speed in case the game reset Engine.TimeScale during a transition.
