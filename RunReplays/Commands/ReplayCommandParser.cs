@@ -39,6 +39,7 @@ public static class ReplayCommandParser
             ?? (ReplayCommand?)CloseShopCommand.TryParse(raw)
             ?? (ReplayCommand?)ClickGridCardCommand.TryParse(raw)
             ?? (ReplayCommand?)ConfirmGridSelectionCommand.TryParse(raw)
-            ?? (ReplayCommand?)CancelGridSelectionCommand.TryParse(raw);
+            ?? (ReplayCommand?)CancelGridSelectionCommand.TryParse(raw)
+            ?? (ReplayCommand?)SkipRewardsCommand.TryParse(raw);
     }
 }

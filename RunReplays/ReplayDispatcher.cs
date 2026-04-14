@@ -85,6 +85,11 @@ public static class ReplayDispatcher
                 if (ProceedToMapCommand.IsAvailable())
                     commands.Add(new ProceedToMapCommand());
             }
+            else if (type == typeof(SkipRewardsCommand))
+            {
+                if (SkipRewardsCommand.IsAvailable())
+                    commands.Add(new SkipRewardsCommand());
+            }
             else if (type == typeof(CloseShopCommand))
             {
                 var room = ReplayState.ActiveMerchantRoom;
@@ -483,6 +488,7 @@ public static class ReplayDispatcher
             types.Add(typeof(ClaimRewardCommand));
             types.Add(typeof(TakeCardCommand));
             types.Add(typeof(ProceedToMapCommand));
+            types.Add(typeof(SkipRewardsCommand));
 
             if (currentRoom != null
                 && (currentRoom.RoomType == RoomType.Boss || currentRoom.IsVictoryRoom))
