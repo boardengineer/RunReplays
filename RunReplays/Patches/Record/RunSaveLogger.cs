@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.Saves.Managers;
 
 namespace RunReplays.Patches.Record;
 using RunReplays;
+using RunReplays.Utils;
 
 /// <summary>
 /// Harmony postfix on RunManager.ToSave() that writes a snapshot log file
@@ -70,6 +71,10 @@ public static class RunSaveLogger
         CopySaveBackup(logsDir);
 
         GD.Print($"[RunReplays] Wrote save logs to: {logsDir}");
+        DiagnosticLog.Write("Save",
+            $"ToSave — seed='{seed}' character={character} ascension={run.Ascension} " +
+            $"gameMode={run.GameMode} floor={totalFloor + 1} " +
+            $"actions={minimalActions.Count} dir={logsDir}");
     }
 
     private static void WriteVerbose(string filePath, string seed, string character,

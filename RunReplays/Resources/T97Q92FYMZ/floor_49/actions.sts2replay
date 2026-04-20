@@ -1,0 +1,643 @@
+# Character: NECROBINDER
+# Seed: T97Q92FYMZ
+# Ascension: 1
+# Game: v0.103.2
+# Mod: 0.1.0
+ChooseEventOption 2 # NEOW.pages.INITIAL.options.PRECARIOUS_SHEARS
+SelectGridCard 5 0
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+PlayCard 3 # CARD.DEFEND_NECROBINDER (55792989)
+PlayCard 0 1 # CARD.UNLEASH (5323728)
+PlayCard 1 1 # CARD.STRIKE_NECROBINDER (47913558)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 # CARD.BODYGUARD (5117683)
+PlayCard 3 # CARD.DEFEND_NECROBINDER (55792989)
+PlayCard 0 1 # CARD.UNLEASH (5323728)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 1 1 # CARD.STRIKE_NECROBINDER (47913558)
+PlayCard 2 1 # CARD.STRIKE_NECROBINDER (28568842)
+PlayCard 4 1 # CARD.STRIKE_NECROBINDER (32374856)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 6 # CARD.BODYGUARD (5117683)
+PlayCard 0 1 # CARD.UNLEASH (5323728)
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # CardReward
+TakeCard 0 # Sow
+MoveToMapCoord 1
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+OpenShop
+MoveToMapCoord 0
+PlayCard 3 1 # CARD.UNLEASH (48670641) || Hand: [Defend, Strike, Defend, Unleash, Defend] Enemies: [Shrinker Beetle 38/38]
+PlayCard 0 # CARD.DEFEND_NECROBINDER (1999940) || Hand: [Defend, Strike, Defend, Defend] Enemies: [Shrinker Beetle 31/38]
+PlayCard 1 1 # CARD.STRIKE_NECROBINDER (17999466) || Hand: [Strike, Defend, Defend] Enemies: [Shrinker Beetle 31/38]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 # CARD.BODYGUARD (47417383) || Hand: [Strike, Bodyguard, Sow, Defend, Defend] Enemies: [Shrinker Beetle 25/38]
+PlayCard 4 # CARD.DEFEND_NECROBINDER (35382588) || Hand: [Strike, Sow, Defend, Defend] Enemies: [Shrinker Beetle 25/38]
+PlayCard 2 # CARD.DEFEND_NECROBINDER (27777470) || Hand: [Strike, Sow, Defend] Enemies: [Shrinker Beetle 25/38]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 6 # CARD.BODYGUARD (47417383) || Hand: [Sow, Strike, Defend, Unleash, Bodyguard, Strike] Enemies: [Shrinker Beetle 25/38]
+PlayCard 0 # CARD.DEFEND_NECROBINDER (1999940) || Hand: [Sow, Strike, Defend, Unleash, Strike] Enemies: [Shrinker Beetle 25/38]
+PlayCard 3 1 # CARD.UNLEASH (48670641) || Hand: [Sow, Strike, Unleash, Strike] Enemies: [Shrinker Beetle 25/38]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 2 # CARD.DEFEND_NECROBINDER (27777470) || Hand: [Sow] Enemies: [Shrinker Beetle 6/38]
+PlayCard 7 # CARD.SOW (24103264) || Hand: [Sow, Defend, Strike, Bodyguard, Unleash] Enemies: [Shrinker Beetle 6/38]
+PlayCard 3 1 # CARD.UNLEASH (48670641) || Hand: [Defend, Strike, Bodyguard, Unleash] Enemies: [Shrinker Beetle 1/38]
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Poke
+MoveToMapCoord 0
+ChooseEventOption 1 # TABLET_OF_TRUTH.pages.INITIAL.options.SMASH
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+ChooseEventOption 0 # DENSE_VEGETATION.pages.INITIAL.options.TRUDGE_ON
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+ChooseRestSiteOption SMITH
+SelectGridCard 5
+MoveToMapCoord 0
+PlayCard 1 1 # CARD.POKE (2608442) || Hand: [Defend, Poke, Strike, Sow, Defend] Enemies: [Byrdonis 83/83]
+PlayCard 3 # CARD.SOW (9957255) || Hand: [Defend, Strike, Sow, Defend] Enemies: [Byrdonis 77/83]
+PlayCard 4 # CARD.DEFEND_NECROBINDER (22506437) || Hand: [Defend, Strike, Defend] Enemies: [Byrdonis 69/83]
+PlayCard 2 1 # CARD.STRIKE_NECROBINDER (23475983) || Hand: [Defend, Strike] Enemies: [Byrdonis 69/83]
+UsePotion 0 # POTION.BLOCK_POTION || Hand: [Defend] Enemies: [Byrdonis 63/83]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 # CARD.BODYGUARD (11082108) || Hand: [Unleash, Bodyguard+, Defend, Strike, Sow] Enemies: [Byrdonis 63/83]
+PlayCard 5 1 # CARD.UNLEASH (1231345) || Hand: [Unleash, Defend, Strike, Sow] Enemies: [Byrdonis 63/83]
+PlayCard 7 # CARD.DEFEND_NECROBINDER (32630111) || Hand: [Defend, Strike, Sow] Enemies: [Byrdonis 48/83]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 1 1 # CARD.POKE (2608442) || Hand: [Sow, Strike, Defend, Defend, Poke, Defend] Enemies: [Byrdonis 48/83]
+PlayCard 7 # CARD.DEFEND_NECROBINDER (32630111) || Hand: [Sow, Strike, Defend, Defend, Defend] Enemies: [Byrdonis 42/83]
+PlayCard 0 # CARD.DEFEND_NECROBINDER (37572529) || Hand: [Sow, Strike, Defend, Defend] Enemies: [Byrdonis 42/83]
+PlayCard 4 # CARD.DEFEND_NECROBINDER (22506437) || Hand: [Sow, Strike, Defend] Enemies: [Byrdonis 42/83]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 6 # CARD.BODYGUARD (11082108) || Hand: [Sow, Bodyguard+, Strike, Unleash, Poke, Strike] Enemies: [Byrdonis 42/83]
+PlayCard 1 1 # CARD.POKE (2608442) || Hand: [Sow, Strike, Unleash, Poke, Strike] Enemies: [Byrdonis 42/83]
+PlayCard 5 1 # CARD.UNLEASH (1231345) || Hand: [Sow, Strike, Unleash, Strike] Enemies: [Byrdonis 36/83]
+PlayCard 8 1 # CARD.STRIKE_NECROBINDER (25235547) || Hand: [Sow, Strike, Strike] Enemies: [Byrdonis 22/83]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 3 # CARD.SOW (9957255) || Hand: [Sow, Defend, Defend, Defend, Strike, Poke] Enemies: [Byrdonis 16/83]
+PlayCard 1 1 # CARD.POKE (2608442) || Hand: [Defend, Defend, Defend, Strike, Poke] Enemies: [Byrdonis 8/83]
+PlayCard 2 1 # CARD.STRIKE_NECROBINDER (23475983) || Hand: [Defend, Defend, Defend, Strike] Enemies: [Byrdonis 2/83]
+ClaimReward 0 # GoldReward: 35
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Hang
+MoveToMapCoord 1
+ChooseEventOption 1 # UNREST_SITE.pages.INITIAL.options.KILL
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+OpenChest
+TakeChestRelic # Lantern
+NetPickRelicAction for player 1 index 0 || Hand: [Defend, Defend, Defend] Enemies: []
+MoveToMapCoord 2
+ChooseRestSiteOption SMITH
+SelectGridCard 8
+MoveToMapCoord 1
+PlayCard 1 1 # CARD.POKE (10344781) || Hand: [Sow, Poke, Defend, Defend, Hang+] Enemies: [Fuzzy Wurm Crawler 55/55]
+PlayCard 4 1 # CARD.HANG (25152833) || Hand: [Sow, Defend, Defend, Hang+] Enemies: [Fuzzy Wurm Crawler 49/55]
+PlayCard 2 # CARD.DEFEND_NECROBINDER (25994168) || Hand: [Sow, Defend, Defend] Enemies: [Fuzzy Wurm Crawler 36/55]
+PlayCard 0 # CARD.SOW (60801743) || Hand: [Sow, Defend] Enemies: [Fuzzy Wurm Crawler 36/55]
+PlayCard 3 # CARD.DEFEND_NECROBINDER (32620921) || Hand: [Defend] Enemies: [Fuzzy Wurm Crawler 28/55]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 # CARD.BODYGUARD (7040852) || Hand: [Unleash, Strike, Defend, Bodyguard+, Strike] Enemies: [Fuzzy Wurm Crawler 28/55]
+PlayCard 5 1 # CARD.UNLEASH (25048905) || Hand: [Unleash, Strike, Defend, Strike] Enemies: [Fuzzy Wurm Crawler 28/55]
+PlayCard 9 1 # CARD.STRIKE_NECROBINDER (63367670) || Hand: [Strike, Defend, Strike] Enemies: [Fuzzy Wurm Crawler 13/55]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 4 1 # CARD.HANG (25152833) || Hand: [Unleash, Defend, Defend, Strike, Hang+] Enemies: [Fuzzy Wurm Crawler 7/55]
+ClaimReward 0 # GoldReward: 20
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 2
+PlayCard 0 1 # CARD.HANG (49349351) || Hand: [Hang+, Defend, Strike, Defend, Poke] Enemies: [Bygone Effigy 127/127]
+PlayCard 4 1 # CARD.POKE (47932090) || Hand: [Defend, Strike, Defend, Poke] Enemies: [Bygone Effigy 114/127]
+PlayCard 2 1 # CARD.STRIKE_NECROBINDER (37874456) || Hand: [Defend, Strike, Defend] Enemies: [Bygone Effigy 108/127]
+PlayCard 3 # CARD.DEFEND_NECROBINDER (5325787) || Hand: [Defend, Defend] Enemies: [Bygone Effigy 101/127]
+PlayCard 1 # CARD.DEFEND_NECROBINDER (41490975) || Hand: [Defend] Enemies: [Bygone Effigy 101/127]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 # CARD.BODYGUARD (57294068) || Hand: [Defend, Bodyguard+, Unleash, Strike, Sow] Enemies: [Bygone Effigy 101/127]
+PlayCard 8 1 # CARD.STRIKE_NECROBINDER (10307951) || Hand: [Defend, Unleash, Strike, Sow] Enemies: [Bygone Effigy 101/127]
+PlayCard 7 1 # CARD.UNLEASH (45884570) || Hand: [Defend, Unleash, Sow] Enemies: [Bygone Effigy 95/127]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 2 1 # CARD.STRIKE_NECROBINDER (37874456) || Hand: [Sow, Defend, Unleash, Strike, Hang+, Strike] Enemies: [Bygone Effigy 77/127]
+PlayCard 7 1 # CARD.UNLEASH (45884570) || Hand: [Sow, Defend, Unleash, Hang+, Strike] Enemies: [Bygone Effigy 71/127]
+PlayCard 0 1 # CARD.HANG (49349351) || Hand: [Sow, Defend, Hang+, Strike] Enemies: [Bygone Effigy 54/127]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 4 1 # CARD.POKE (47932090) || Hand: [Sow, Bodyguard+, Poke, Defend, Defend, Strike] Enemies: [Bygone Effigy 23/127]
+PlayCard 6 # CARD.BODYGUARD (57294068) || Hand: [Sow, Bodyguard+, Defend, Defend, Strike] Enemies: [Bygone Effigy 17/127]
+PlayCard 2 1 # CARD.STRIKE_NECROBINDER (37874456) || Hand: [Sow, Defend, Defend, Strike] Enemies: [Bygone Effigy 17/127]
+PlayCard 9 # CARD.SOW (25662700) || Hand: [Sow, Defend, Defend] Enemies: [Bygone Effigy 10/127]
+ClaimReward 0 # GoldReward: 36
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Rattle
+MoveToMapCoord 2
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+OpenShop
+BuyCard Lethality
+MoveToMapCoord 2
+PlayCard 2 1 # CARD.POKE (66388974) || Hand: [Bodyguard+, Rattle, Poke, Hang+, Defend] Enemies: [Vine Shambler 61/61]
+PlayCard 0 # CARD.BODYGUARD (29817274) || Hand: [Bodyguard+, Rattle, Hang+, Defend] Enemies: [Vine Shambler 55/61]
+PlayCard 4 # CARD.DEFEND_NECROBINDER (8797807) || Hand: [Rattle, Hang+, Defend] Enemies: [Vine Shambler 55/61]
+PlayCard 1 1 # CARD.RATTLE (67028876) || Hand: [Rattle, Hang+] Enemies: [Vine Shambler 55/61]
+PlayCard 3 1 # CARD.HANG (60629857) || Hand: [Hang+] Enemies: [Vine Shambler 41/61]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.LETHALITY (11993124) || Hand: [Defend, Strike, Defend, Unleash, Lethality] Enemies: [Vine Shambler 28/61]
+PlayCard 8 1 # CARD.UNLEASH (8789109) || Hand: [Defend, Strike, Defend, Unleash] Enemies: [Vine Shambler 28/61]
+PlayCard 6 1 # CARD.STRIKE_NECROBINDER (41533732) || Hand: [Defend, Strike, Defend] Enemies: [Vine Shambler 10/61]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 3 1 # CARD.HANG (60629857) || Hand: [Sow, Unleash, Defend, Strike, Hang+] Enemies: [Vine Shambler 4/61]
+ClaimReward 0 # GoldReward: 14
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 7
+MoveToMapCoord 3
+PlayCard 3 # CARD.LETHALITY (22675478) || Hand: [Poke, Hang+, Unleash, Lethality, Strike] Enemies: [Kin Follower 59/59, Kin Follower 58/58, Kin Priest 190/190]
+PlayCard 1 1 # CARD.HANG (40876664) || Hand: [Poke, Hang+, Unleash, Strike] Enemies: [Kin Follower 59/59, Kin Follower 58/58, Kin Priest 190/190]
+PlayCard 0 1 # CARD.POKE (19454932) || Hand: [Poke, Unleash, Strike] Enemies: [Kin Follower 40/59, Kin Follower 58/58, Kin Priest 190/190]
+PlayCard 2 1 # CARD.UNLEASH (32345659) || Hand: [Unleash, Strike] Enemies: [Kin Follower 34/59, Kin Follower 58/58, Kin Priest 190/190]
+PlayCard 4 1 # CARD.STRIKE_NECROBINDER (2752714) || Hand: [Strike] Enemies: [Kin Follower 27/59, Kin Follower 58/58, Kin Priest 190/190]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.SOW (7387548) || Hand: [Defend, Defend, Rattle+, Defend, Sow] Enemies: [Kin Follower 21/59, Kin Follower 58/58, Kin Priest 190/190]
+PlayCard 7 1 # CARD.RATTLE (60572032) || Hand: [Defend, Defend, Rattle+, Defend] Enemies: [Kin Follower 9/59, Kin Follower 46/58, Kin Priest 178/190]
+PlayCard 8 # CARD.DEFEND_NECROBINDER (8277379) || Hand: [Defend, Defend, Defend] Enemies: [Kin Follower 46/58, Kin Priest 178/190]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 10 # CARD.BODYGUARD (66487932) || Hand: [Bodyguard+, Hang+, Sow, Defend, Rattle+] Enemies: [Kin Follower 46/58, Kin Priest 178/190]
+PlayCard 1 2 # CARD.HANG (40876664) || Hand: [Hang+, Sow, Defend, Rattle+] Enemies: [Kin Follower 46/58, Kin Priest 178/190]
+PlayCard 7 2 # CARD.RATTLE (60572032) || Hand: [Sow, Defend, Rattle+] Enemies: [Kin Follower 32/58, Kin Priest 178/190]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 0 2 # CARD.POKE (19454932) || Hand: [Sow, Unleash, Defend, Poke, Defend, Strike] Enemies: [Kin Follower 23/58, Kin Priest 178/190]
+PlayCard 4 2 # CARD.STRIKE_NECROBINDER (2752714) || Hand: [Sow, Unleash, Defend, Defend, Strike] Enemies: [Kin Follower 14/58, Kin Priest 178/190]
+PlayCard 2 2 # CARD.UNLEASH (32345659) || Hand: [Sow, Unleash, Defend, Defend] Enemies: [Kin Follower 8/58, Kin Priest 178/190]
+PlayCard 9 # CARD.SOW (7387548) || Hand: [Sow, Defend, Defend] Enemies: [Kin Priest 178/190]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 2 3 # CARD.UNLEASH (32345659) || Hand: [Defend, Rattle+, Hang+, Unleash, Strike] Enemies: [Kin Priest 170/190]
+PlayCard 7 3 # CARD.RATTLE (60572032) || Hand: [Defend, Rattle+, Hang+, Strike] Enemies: [Kin Priest 155/190]
+PlayCard 1 3 # CARD.HANG (40876664) || Hand: [Defend, Hang+, Strike] Enemies: [Kin Priest 137/190]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 10 # CARD.BODYGUARD (66487932) || Hand: [Sow, Bodyguard+, Poke, Defend, Defend] Enemies: [Kin Priest 124/190]
+PlayCard 0 3 # CARD.POKE (19454932) || Hand: [Sow, Poke, Defend, Defend] Enemies: [Kin Priest 124/190]
+PlayCard 5 # CARD.DEFEND_NECROBINDER (24774433) || Hand: [Sow, Defend, Defend] Enemies: [Kin Priest 115/190]
+PlayCard 6 # CARD.DEFEND_NECROBINDER (21643306) || Hand: [Sow, Defend] Enemies: [Kin Priest 115/190]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 0 3 # CARD.POKE (19454932) || Hand: [Sow, Defend, Unleash, Defend, Poke, Defend] Enemies: [Kin Priest 115/190]
+PlayCard 2 3 # CARD.UNLEASH (32345659) || Hand: [Sow, Defend, Unleash, Defend, Defend] Enemies: [Kin Priest 106/190]
+PlayCard 8 # CARD.DEFEND_NECROBINDER (8277379) || Hand: [Sow, Defend, Defend, Defend] Enemies: [Kin Priest 93/190]
+PlayCard 6 # CARD.DEFEND_NECROBINDER (21643306) || Hand: [Sow, Defend, Defend] Enemies: [Kin Priest 93/190]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 1 3 # CARD.HANG (40876664) || Hand: [Sow, Hang+, Strike, Rattle+, Bodyguard+, Defend] Enemies: [Kin Priest 93/190]
+PlayCard 10 # CARD.BODYGUARD (66487932) || Hand: [Sow, Strike, Rattle+, Bodyguard+, Defend] Enemies: [Kin Priest 54/190]
+PlayCard 7 3 # CARD.RATTLE (60572032) || Hand: [Sow, Strike, Rattle+, Defend] Enemies: [Kin Priest 54/190]
+EndTurn # EndPlayerTurnAction for player 1 round 8
+PlayCard 1 3 # CARD.HANG (40876664) || Hand: [Sow, Defend, Defend, Unleash, Poke, Hang+] Enemies: [Kin Priest 45/190]
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Hang
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Sow, Defend, Defend, Unleash, Poke] Enemies: []
+MoveToMapCoord 3
+ChooseEventOption 0 # TEZCATARA.pages.INITIAL.options.VERY_HOT_COCOA
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+UsePotion 0 1 # POTION.VULNERABLE_POTION || Hand: [Strike, Defend, Hang+, Hang, Defend] Enemies: [Bowlbug (Rock) 47/47, Bowlbug (Egg) 22/22]
+PlayCard 3 1 # CARD.HANG (44076936) || Hand: [Strike, Defend, Hang+, Hang, Defend] Enemies: [Bowlbug (Rock) 47/47, Bowlbug (Egg) 22/22]
+PlayCard 2 1 # CARD.HANG (42180139) || Hand: [Strike, Defend, Hang+, Defend] Enemies: [Bowlbug (Rock) 32/47, Bowlbug (Egg) 22/22]
+PlayCard 0 2 # CARD.STRIKE_NECROBINDER (62658579) || Hand: [Strike, Defend, Defend] Enemies: [Bowlbug (Egg) 22/22]
+PlayCard 4 # CARD.DEFEND_NECROBINDER (61148112) || Hand: [Defend, Defend] Enemies: [Bowlbug (Egg) 16/22]
+PlayCard 1 # CARD.DEFEND_NECROBINDER (27056303) || Hand: [Defend] Enemies: [Bowlbug (Egg) 16/22]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 7 # CARD.LETHALITY (16688181) || Hand: [Sow, Defend, Lethality, Poke, Unleash] Enemies: [Bowlbug (Egg) 16/22]
+PlayCard 9 2 # CARD.UNLEASH (9565400) || Hand: [Sow, Defend, Poke, Unleash] Enemies: [Bowlbug (Egg) 16/22]
+PlayCard 8 2 # CARD.POKE (15975903) || Hand: [Sow, Defend, Poke] Enemies: [Bowlbug (Egg) 11/22]
+PlayCard 5 # CARD.SOW (13462098) || Hand: [Sow, Defend] Enemies: [Bowlbug (Egg) 5/22]
+ClaimReward 0 # GoldReward: 13
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Grave Warden+
+MoveToMapCoord 0
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+MoveToMapCoord 0
+PlayCard 3 # CARD.LETHALITY (47456476) || Hand: [Rattle+, Sow, Unleash, Lethality, Defend] Enemies: [Exoskeleton 26/26, Exoskeleton 25/25, Exoskeleton 27/27]
+PlayCard 1 # CARD.SOW (46982134) || Hand: [Rattle+, Sow, Unleash, Defend] Enemies: [Exoskeleton 26/26, Exoskeleton 25/25, Exoskeleton 27/27]
+PlayCard 2 1 # CARD.UNLEASH (20186022) || Hand: [Rattle+, Unleash, Defend] Enemies: [Exoskeleton 17/26, Exoskeleton 16/25, Exoskeleton 18/27]
+PlayCard 0 2 # CARD.RATTLE (12676777) || Hand: [Rattle+, Defend] Enemies: [Exoskeleton 10/26, Exoskeleton 16/25, Exoskeleton 18/27]
+PlayCard 4 # CARD.DEFEND_NECROBINDER (24455104) || Hand: [Defend] Enemies: [Exoskeleton 10/26, Exoskeleton 18/27]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 7 # CARD.GRAVE_WARDEN (43922130) || Hand: [Poke, Defend, Grave Warden+, Hang, Hang+] Enemies: [Exoskeleton 10/26, Exoskeleton 18/27]
+PlayCard 8 1 # CARD.HANG (59754857) || Hand: [Poke, Defend, Hang, Hang+] Enemies: [Exoskeleton 10/26, Exoskeleton 18/27]
+PlayCard 9 1 # CARD.HANG (922802) || Hand: [Poke, Defend, Hang+] Enemies: [Exoskeleton 1/26, Exoskeleton 18/27]
+PlayCard 5 3 # CARD.POKE (18769347) || Hand: [Poke, Defend] Enemies: [Exoskeleton 18/27]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 7 # CARD.GRAVE_WARDEN (43922130) || Hand: [Bodyguard+, Soul, Defend, Grave Warden+, Defend] Enemies: [Exoskeleton 12/27]
+PlayCard 12 # CARD.SOUL (54045481) || Hand: [Bodyguard+, Soul, Defend, Defend] Enemies: [Exoskeleton 12/27]
+PlayCard 9 3 # CARD.HANG (922802) || Hand: [Bodyguard+, Defend, Defend, Hang+, Soul] Enemies: [Exoskeleton 12/27]
+PlayCard 13 # CARD.SOUL (46757525) || Hand: [Bodyguard+, Defend, Defend, Soul] Enemies: [Exoskeleton 3/27]
+PlayCard 5 3 # CARD.POKE (18769347) || Hand: [Bodyguard+, Defend, Defend, Defend, Poke] Enemies: [Exoskeleton 3/27]
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 0
+PlayCard 1 1 # CARD.POKE (20847504) || Hand: [Sow, Poke, Unleash, Defend, Defend] Enemies: [Ovicopter 127/127]
+PlayCard 2 1 # CARD.UNLEASH (53409808) || Hand: [Sow, Unleash, Defend, Defend] Enemies: [Ovicopter 121/127]
+PlayCard 0 # CARD.SOW (32142551) || Hand: [Sow, Defend, Defend] Enemies: [Ovicopter 114/127]
+PlayCard 4 # CARD.DEFEND_NECROBINDER (31227153) || Hand: [Defend, Defend] Enemies: [Ovicopter 106/127]
+PlayCard 3 # CARD.DEFEND_NECROBINDER (10926224) || Hand: [Defend] Enemies: [Ovicopter 106/127]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 # CARD.GRAVE_WARDEN (46371459) || Hand: [Rattle+, Grave Warden+, Lethality, Bodyguard+, Hang] Enemies: [Tough Egg 18/18, Tough Egg 15/15, Tough Egg 17/17, Ovicopter 106/127]
+PlayCard 8 # CARD.BODYGUARD (65100685) || Hand: [Rattle+, Lethality, Bodyguard+, Hang] Enemies: [Tough Egg 18/18, Tough Egg 15/15, Tough Egg 17/17, Ovicopter 106/127]
+PlayCard 9 1 # CARD.HANG (49035259) || Hand: [Rattle+, Lethality, Hang] Enemies: [Tough Egg 18/18, Tough Egg 15/15, Tough Egg 17/17, Ovicopter 106/127]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+UsePotion 0 1 # POTION.VULNERABLE_POTION || Hand: [Defend, Hang+, Soul, Poke, Rattle+] Enemies: [Hatchling 20/20, Hatchling 19/19, Hatchling 20/20, Ovicopter 96/127]
+PlayCard 1 1 # CARD.POKE (20847504) || Hand: [Defend, Hang+, Soul, Poke, Rattle+] Enemies: [Hatchling 20/20, Hatchling 19/19, Hatchling 20/20, Ovicopter 96/127]
+PlayCard 12 # CARD.SOUL (18694099) || Hand: [Defend, Hang+, Soul, Rattle+] Enemies: [Hatchling 20/20, Hatchling 19/19, Hatchling 20/20, Ovicopter 87/127]
+PlayCard 2 1 # CARD.UNLEASH (53409808) || Hand: [Defend, Hang+, Rattle+, Unleash, Sow] Enemies: [Hatchling 20/20, Hatchling 19/19, Hatchling 20/20, Ovicopter 87/127]
+PlayCard 5 1 # CARD.RATTLE (12608924) || Hand: [Defend, Hang+, Rattle+, Sow] Enemies: [Hatchling 20/20, Hatchling 19/19, Hatchling 20/20, Ovicopter 63/127]
+PlayCard 11 1 # CARD.HANG (12433053) || Hand: [Defend, Hang+, Sow] Enemies: [Hatchling 20/20, Hatchling 19/19, Hatchling 20/20, Ovicopter 24/127]
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 0
+ChooseEventOption 1 # BRAIN_LEECH.pages.INITIAL.options.RIP
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+PlayCard 2 # CARD.GRAVE_WARDEN (42311731) || Hand: [Defend, Defend, Grave Warden+, Rattle+, Bodyguard+] Enemies: [Entomancer 145/145]
+PlayCard 4 # CARD.BODYGUARD (4698180) || Hand: [Defend, Defend, Rattle+, Bodyguard+] Enemies: [Entomancer 145/145]
+PlayCard 1 # CARD.DEFEND_NECROBINDER (34527465) || Hand: [Defend, Defend, Rattle+] Enemies: [Entomancer 145/145]
+PlayCard 0 # CARD.DEFEND_NECROBINDER (41119087) || Hand: [Defend, Rattle+] Enemies: [Entomancer 145/145]
+PlayCard 3 1 # CARD.RATTLE (45261262) || Hand: [Rattle+] Enemies: [Entomancer 145/145]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 # CARD.LETHALITY (21790826) || Hand: [Sow, Dazed, Unleash, Hang, Lethality] Enemies: [Entomancer 136/145]
+PlayCard 6 1 # CARD.UNLEASH (45008265) || Hand: [Sow, Dazed, Unleash, Hang] Enemies: [Entomancer 136/145]
+PlayCard 7 1 # CARD.HANG (2421202)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 10 1 # CARD.HANG (20226513) || Hand: [Sow, Soul, Poke, Dazed, Hang+, Dazed] Enemies: [Entomancer 104/145]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 2 # CARD.GRAVE_WARDEN (42311731) || Hand: [Sow, Dazed, Defend, Hang, Grave Warden+, Poke] Enemies: [Entomancer 65/145]
+PlayCard 9 1 # CARD.POKE (61899713) || Hand: [Sow, Dazed, Defend, Hang, Poke] Enemies: [Entomancer 65/145]
+PlayCard 7 1 # CARD.HANG (2421202)
+PlayCard 11 # CARD.DEFEND_NECROBINDER (47820889) || Hand: [Sow, Dazed, Defend, Hang] Enemies: [Entomancer 56/145]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 4 # CARD.BODYGUARD (4698180) || Hand: [Sow, Bodyguard+, Defend, Unleash, Dazed, Dazed] Enemies: [Entomancer 16/145]
+PlayCard 0 # CARD.DEFEND_NECROBINDER (41119087) || Hand: [Sow, Defend, Unleash, Dazed, Dazed] Enemies: [Entomancer 16/145]
+PlayCard 6 1 # CARD.UNLEASH (45008265) || Hand: [Sow, Unleash, Dazed, Dazed] Enemies: [Entomancer 16/145]
+ClaimReward 0 # GoldReward: 45
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 0
+ChooseRestSiteOption SMITH
+SelectGridCard 6
+MoveToMapCoord 0
+OpenChest
+TakeChestRelic # Anchor
+NetPickRelicAction for player 1 index 0 || Hand: [Sow, Dazed, Dazed] Enemies: []
+MoveToMapCoord 1
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+BuyCard Lethality
+MoveToMapCoord 2
+PlayCard 4 # CARD.LETHALITY (32132709) || Hand: [Sow, Defend, Lethality, Defend, Lethality+] Enemies: [Infested Prism 200/200]
+PlayCard 2 # CARD.LETHALITY (55077996)
+PlayCard 3 # CARD.DEFEND_NECROBINDER (25939922) || Hand: [Sow, Defend, Lethality, Defend] Enemies: [Infested Prism 200/200]
+PlayCard 1 # CARD.DEFEND_NECROBINDER (35945939)
+PlayCard 0 # CARD.SOW (63646316) || Hand: [Sow] Enemies: [Infested Prism 200/200]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.GRAVE_WARDEN (35428442) || Hand: [Bodyguard+, Hang, Rattle+, Poke, Grave Warden+] Enemies: [Infested Prism 182/200]
+PlayCard 8 1 # CARD.POKE (33762655) || Hand: [Bodyguard+, Hang, Rattle+, Poke] Enemies: [Infested Prism 182/200]
+PlayCard 5 # CARD.BODYGUARD (20758926) || Hand: [Bodyguard+, Hang, Rattle+] Enemies: [Infested Prism 169/200]
+PlayCard 7 1 # CARD.RATTLE (3751406) || Hand: [Hang, Rattle+] Enemies: [Infested Prism 169/200]
+PlayCard 6 1 # CARD.HANG (52612606) || Hand: [Hang] Enemies: [Infested Prism 151/200]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 10 1 # CARD.HANG (50420529) || Hand: [Hang+, Unleash, Soul, Grave Warden+, Bodyguard+] Enemies: [Infested Prism 141/200]
+PlayCard 9 # CARD.GRAVE_WARDEN (35428442) || Hand: [Unleash, Soul, Grave Warden+, Bodyguard+] Enemies: [Infested Prism 99/200]
+PlayCard 5 # CARD.BODYGUARD (20758926) || Hand: [Unleash, Soul, Bodyguard+] Enemies: [Infested Prism 99/200]
+PlayCard 12 # CARD.SOUL (41336628) || Hand: [Unleash, Soul] Enemies: [Infested Prism 99/200]
+PlayCard 11 1 # CARD.UNLEASH (51131579) || Hand: [Unleash, Sow, Rattle+] Enemies: [Infested Prism 99/200]
+PlayCard 7 1 # CARD.RATTLE (3751406) || Hand: [Sow, Rattle+] Enemies: [Infested Prism 77/200]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 13 # CARD.SOUL (57083578) || Hand: [Sow, Defend, Hang, Defend, Poke, Soul] Enemies: [Infested Prism 59/200]
+PlayCard 6 1 # CARD.HANG (52612606) || Hand: [Sow, Defend, Hang, Defend, Poke, Bodyguard+, Grave Warden+] Enemies: [Infested Prism 59/200]
+ClaimReward 0 # GoldReward: 35
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 2
+PlayCard 2 1 # CARD.HANG (55964086) || Hand: [Defend, Rattle+, Hang, Unleash, Hang+] Enemies: [Bowlbug (Rock) 45/45, Bowlbug (Silk) 41/41, Slumbering Beetle 86/86]
+PlayCard 4 1 # CARD.HANG (36797111) || Hand: [Defend, Rattle+, Unleash, Hang+] Enemies: [Bowlbug (Rock) 35/45, Bowlbug (Silk) 41/41, Slumbering Beetle 86/86]
+PlayCard 1 1 # CARD.RATTLE (13674772) || Hand: [Defend, Rattle+, Unleash] Enemies: [Bowlbug (Rock) 9/45, Bowlbug (Silk) 41/41, Slumbering Beetle 86/86]
+PlayCard 3 2 # CARD.UNLEASH (33914729) || Hand: [Defend, Unleash] Enemies: [Bowlbug (Silk) 41/41, Slumbering Beetle 86/86]
+PlayCard 0 # CARD.DEFEND_NECROBINDER (53715202) || Hand: [Defend] Enemies: [Bowlbug (Silk) 34/41, Slumbering Beetle 86/86]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 5 # CARD.GRAVE_WARDEN (62738543) || Hand: [Grave Warden+, Bodyguard+, Sow, Defend, Poke] Enemies: [Bowlbug (Silk) 34/41, Slumbering Beetle 86/86]
+PlayCard 6 # CARD.BODYGUARD (27775980) || Hand: [Bodyguard+, Sow, Defend, Poke] Enemies: [Bowlbug (Silk) 34/41, Slumbering Beetle 86/86]
+PlayCard 9 2 # CARD.POKE (48921516) || Hand: [Sow, Defend, Poke] Enemies: [Bowlbug (Silk) 34/41, Slumbering Beetle 86/86]
+PlayCard 7 # CARD.SOW (48657229) || Hand: [Sow, Defend] Enemies: [Bowlbug (Silk) 28/41, Slumbering Beetle 86/86]
+PlayCard 8 # CARD.DEFEND_NECROBINDER (35261885) || Hand: [Defend] Enemies: [Bowlbug (Silk) 22/41, Slumbering Beetle 86/86]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 10 # CARD.LETHALITY (37640468) || Hand: [Lethality, Soul, Lethality+, Defend, Hang] Enemies: [Bowlbug (Silk) 22/41, Slumbering Beetle 86/86]
+PlayCard 11 # CARD.LETHALITY (3219892)
+PlayCard 2 2 # CARD.HANG (55964086) || Hand: [Soul, Defend, Hang] Enemies: [Bowlbug (Silk) 22/41, Slumbering Beetle 86/86]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 5 # CARD.GRAVE_WARDEN (62738543) || Hand: [Rattle+, Defend, Bodyguard+, Sow, Grave Warden+] Enemies: [Slumbering Beetle 86/86]
+PlayCard 6 # CARD.BODYGUARD (27775980) || Hand: [Rattle+, Defend, Bodyguard+, Sow] Enemies: [Slumbering Beetle 86/86]
+PlayCard 1 3 # CARD.RATTLE (13674772) || Hand: [Rattle+, Defend, Sow] Enemies: [Slumbering Beetle 86/86]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 13 # CARD.SOUL (65349311) || Hand: [Sow, Soul, Poke, Hang+, Unleash, Bodyguard+] Enemies: [Slumbering Beetle 79/86]
+PlayCard 6 # CARD.BODYGUARD (27775980) || Hand: [Sow, Poke, Hang+, Unleash, Bodyguard+, Defend, Defend] Enemies: [Slumbering Beetle 79/86]
+PlayCard 3 3 # CARD.UNLEASH (33914729) || Hand: [Sow, Poke, Hang+, Unleash, Defend, Defend] Enemies: [Slumbering Beetle 79/86]
+PlayCard 4 3 # CARD.HANG (36797111) || Hand: [Sow, Poke, Hang+, Defend, Defend] Enemies: [Slumbering Beetle 14/86]
+PlayCard 9 3 # CARD.POKE (48921516) || Hand: [Sow, Poke, Defend, Defend] Enemies: [Slumbering Beetle 1/86]
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 1
+PlayCard 1 # CARD.LETHALITY (52141362) || Hand: [Bodyguard+, Lethality, Sow, Defend, Grave Warden+] Enemies: [Decimillipede 40/40, Decimillipede 44/44, Decimillipede 42/42]
+PlayCard 4 # CARD.GRAVE_WARDEN (27436182)
+PlayCard 0 # CARD.BODYGUARD (13250025) || Hand: [Bodyguard+, Sow, Defend] Enemies: [Decimillipede 40/40, Decimillipede 44/44, Decimillipede 42/42]
+PlayCard 2 # CARD.SOW (66619077) || Hand: [Sow, Defend] Enemies: [Decimillipede 40/40, Decimillipede 44/44, Decimillipede 42/42]
+PlayCard 3 # CARD.DEFEND_NECROBINDER (62700788) || Hand: [Defend] Enemies: [Decimillipede 28/40, Decimillipede 32/44, Decimillipede 30/42]
+UsePotion 0 2 # POTION.POTION_OF_DOOM || Hand: [] Enemies: [Decimillipede 28/40, Decimillipede 32/44, Decimillipede 30/42]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 5 3 # CARD.POKE (45599054) || Hand: [Poke, Soul, Defend, Hang+, Rattle+] Enemies: [Decimillipede 28/40, Decimillipede 0/44, Decimillipede 30/42]
+PlayCard 12 # CARD.SOUL (41105546) || Hand: [Soul, Defend, Hang+, Rattle+] Enemies: [Decimillipede 28/40, Decimillipede 0/44, Decimillipede 21/42]
+PlayCard 10 # CARD.LETHALITY (36741717) || Hand: [Defend, Hang+, Rattle+, Hang, Lethality+] Enemies: [Decimillipede 28/40, Decimillipede 0/44, Decimillipede 21/42]
+PlayCard 8 3 # CARD.RATTLE (22823222) || Hand: [Defend, Hang+, Rattle+, Hang] Enemies: [Decimillipede 28/40, Decimillipede 0/44, Decimillipede 21/42]
+PlayCard 9 3 # CARD.HANG (4082413) || Hand: [Defend, Hang+, Hang] Enemies: [Decimillipede 28/40, Decimillipede 0/44, Decimillipede 3/42]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 11 2 # CARD.UNLEASH (62240000) || Hand: [Unleash, Sow, Defend, Hang, Rattle+] Enemies: [Decimillipede 28/40, Decimillipede 25/44, Decimillipede 0/42]
+PlayCard 8 1 # CARD.RATTLE (22823222) || Hand: [Sow, Defend, Hang, Rattle+] Enemies: [Decimillipede 28/40, Decimillipede 0/44, Decimillipede 0/42]
+PlayCard 9 1 # CARD.HANG (4082413) || Hand: [Sow, Defend, Hang] Enemies: [Decimillipede 10/40, Decimillipede 0/44, Decimillipede 0/42]
+ClaimReward 0 # GoldReward: 38
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 0
+PlayCard 3 # CARD.LETHALITY (43788456) || Hand: [Grave Warden+, Rattle+, Sow, Lethality+, Poke] Enemies: [Louse Progenitor 135/135]
+PlayCard 0 # CARD.GRAVE_WARDEN (63762856)
+PlayCard 4 1 # CARD.POKE (58551787) || Hand: [Rattle+, Sow, Poke] Enemies: [Louse Progenitor 135/135]
+PlayCard 1 1 # CARD.RATTLE (36994795)
+PlayCard 2 # CARD.SOW (64517707) || Hand: [Sow] Enemies: [Louse Progenitor 121/135]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 7 # CARD.LETHALITY (3015402) || Hand: [Bodyguard+, Defend, Lethality, Unleash, Soul] Enemies: [Louse Progenitor 113/135]
+PlayCard 12 # CARD.SOUL (36458665) || Hand: [Bodyguard+, Defend, Unleash, Soul] Enemies: [Louse Progenitor 113/135]
+PlayCard 10 1 # CARD.HANG (50744901) || Hand: [Bodyguard+, Defend, Unleash, Defend, Hang+] Enemies: [Louse Progenitor 113/135]
+PlayCard 8 1 # CARD.UNLEASH (27138624) || Hand: [Bodyguard+, Defend, Unleash, Defend] Enemies: [Louse Progenitor 84/135]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 4 1 # CARD.POKE (58551787) || Hand: [Hang, Poke, Unleash, Rattle+, Sow] Enemies: [Louse Progenitor 76/135]
+PlayCard 11 1 # CARD.HANG (54050926) || Hand: [Hang, Unleash, Rattle+, Sow] Enemies: [Louse Progenitor 76/135]
+PlayCard 8 1 # CARD.UNLEASH (27138624) || Hand: [Unleash, Rattle+, Sow] Enemies: [Louse Progenitor 57/135]
+PlayCard 1 1 # CARD.RATTLE (36994795) || Hand: [Rattle+, Sow] Enemies: [Louse Progenitor 48/135]
+PlayCard 2 # CARD.SOW (64517707) || Hand: [Sow] Enemies: [Louse Progenitor 21/135]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 10 1 # CARD.HANG (50744901) || Hand: [Defend, Bodyguard+, Defend, Grave Warden+, Hang+] Enemies: [Louse Progenitor 13/135]
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard 0 # Lethality+
+MoveToMapCoord 0
+ChooseRestSiteOption SMITH
+SelectGridCard 6
+MoveToMapCoord 3
+PlayCard 4 1 # CARD.POKE (5670428) || Hand: [Unleash, Sow, Defend, Hang, Poke] Enemies: [The Insatiable 321/321]
+PlayCard 0 1 # CARD.UNLEASH (47113107) || Hand: [Unleash, Sow, Defend, Hang] Enemies: [The Insatiable 315/321]
+PlayCard 3 1 # CARD.HANG (52825830) || Hand: [Sow, Defend, Hang] Enemies: [The Insatiable 308/321]
+PlayCard 1 # CARD.SOW (21364783) || Hand: [Sow, Defend] Enemies: [The Insatiable 298/321]
+PlayCard 2 # CARD.DEFEND_NECROBINDER (58065319) || Hand: [Defend] Enemies: [The Insatiable 290/321]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 # CARD.LETHALITY (56651546) || Hand: [Frantic Escape, Lethality+, Lethality+, Bodyguard+, Grave Warden+] Enemies: [The Insatiable 290/321]
+PlayCard 5 # CARD.LETHALITY (51033858)
+PlayCard 8 # CARD.GRAVE_WARDEN (25372488) || Hand: [Frantic Escape, Lethality+, Bodyguard+, Grave Warden+] Enemies: [The Insatiable 290/321]
+PlayCard 7 # CARD.BODYGUARD (40101867) || Hand: [Frantic Escape, Bodyguard+] Enemies: [The Insatiable 290/321]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 11 # CARD.LETHALITY (41606210) || Hand: [Hang+, Defend, Frantic Escape, Frantic Escape, Lethality+] Enemies: [The Insatiable 290/321]
+PlayCard 9 1 # CARD.HANG (27025800) || Hand: [Hang+, Defend, Frantic Escape, Frantic Escape] Enemies: [The Insatiable 290/321]
+PlayCard 13 # CARD.FRANTIC_ESCAPE (31640928) || Hand: [Defend, Frantic Escape, Frantic Escape] Enemies: [The Insatiable 206/321]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 19 # CARD.SOUL (32016288) || Hand: [Soul, Rattle+, Frantic Escape, Defend, Bodyguard+] Enemies: [The Insatiable 206/321]
+PlayCard 9 1 # CARD.HANG (27025800) || Hand: [Rattle+, Frantic Escape, Defend, Bodyguard+, Hang+, Frantic Escape] Enemies: [The Insatiable 206/321]
+PlayCard 12 1 # CARD.RATTLE (38911573) || Hand: [Rattle+, Frantic Escape, Defend, Bodyguard+, Frantic Escape] Enemies: [The Insatiable 37/321]
+PlayCard 16 # CARD.FRANTIC_ESCAPE (47896708) || Hand: [Frantic Escape, Defend, Bodyguard+, Frantic Escape] Enemies: [The Insatiable 28/321]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 18 # CARD.FRANTIC_ESCAPE (54428114) || Hand: [Sow, Unleash, Poke, Frantic Escape, Grave Warden+] Enemies: [The Insatiable 28/321]
+PlayCard 8 # CARD.GRAVE_WARDEN (25372488) || Hand: [Sow, Unleash, Poke, Grave Warden+] Enemies: [The Insatiable 28/321]
+PlayCard 0 1 # CARD.UNLEASH (47113107) || Hand: [Sow, Unleash, Poke] Enemies: [The Insatiable 28/321]
+PlayCard 4 1 # CARD.POKE (5670428) || Hand: [Sow, Poke] Enemies: [The Insatiable 2/321]
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard 0 # Hang+
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Sow] Enemies: []
+MoveToMapCoord 3
+ChooseEventOption 2 # VAKUU.pages.INITIAL.options.JEWELED_MASK
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+PlayCard 9 # CARD.LETHALITY (54299810) || Hand: [Lethality+, Defend, Sow, Unleash, Rattle+, Hang+] Enemies: [Devoted Sculptor 162/162]
+PlayCard 4 1 # CARD.HANG (690771) || Hand: [Defend, Sow, Unleash, Rattle+, Hang+] Enemies: [Devoted Sculptor 162/162]
+PlayCard 2 1 # CARD.UNLEASH (29006185) || Hand: [Defend, Sow, Unleash, Rattle+] Enemies: [Devoted Sculptor 140/162]
+PlayCard 1 # CARD.SOW (25592530) || Hand: [Defend, Sow, Rattle+] Enemies: [Devoted Sculptor 133/162]
+PlayCard 3 1 # CARD.RATTLE (59729075) || Hand: [Defend, Rattle+] Enemies: [Devoted Sculptor 125/162]
+PlayCard 0 # CARD.DEFEND_NECROBINDER (17756695) || Hand: [Defend] Enemies: [Devoted Sculptor 107/162]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 # CARD.LETHALITY (18936245) || Hand: [Hang, Defend, Grave Warden+, Hang+, Lethality+] Enemies: [Devoted Sculptor 107/162]
+PlayCard 8 1 # CARD.HANG (35859474) || Hand: [Hang, Defend, Grave Warden+, Hang+] Enemies: [Devoted Sculptor 107/162]
+PlayCard 5 1 # CARD.HANG (6216945) || Hand: [Hang, Defend, Grave Warden+] Enemies: [Devoted Sculptor 42/162]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 13 # CARD.LETHALITY (47206181) || Hand: [Poke, Bodyguard+, Lethality+, Defend, Defend] Enemies: [Devoted Sculptor 2/162]
+PlayCard 11 1 # CARD.POKE (36208485) || Hand: [Poke, Bodyguard+, Defend, Defend] Enemies: [Devoted Sculptor 2/162]
+ClaimReward 0 # GoldReward: 14
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+PlayCard 11 # CARD.LETHALITY (9807214) || Hand: [Lethality+, Defend, Sow, Hang+, Unleash, Defend] Enemies: [Living Shield 55/55, Turret Operator 41/41]
+PlayCard 1 # CARD.SOW (62096233) || Hand: [Defend, Sow, Hang+, Unleash, Defend] Enemies: [Living Shield 55/55, Turret Operator 41/41]
+PlayCard 2 1 # CARD.HANG (21995188) || Hand: [Defend, Hang+, Unleash, Defend] Enemies: [Living Shield 41/55, Turret Operator 41/41]
+PlayCard 3 1 # CARD.UNLEASH (63738966) || Hand: [Defend, Unleash, Defend] Enemies: [Living Shield 28/55, Turret Operator 41/41]
+PlayCard 4 # CARD.DEFEND_NECROBINDER (36779784) || Hand: [Defend, Defend] Enemies: [Living Shield 21/55, Turret Operator 41/41]
+PlayCard 0 # CARD.DEFEND_NECROBINDER (59095364) || Hand: [Defend] Enemies: [Living Shield 21/55, Turret Operator 41/41]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 7 # CARD.LETHALITY (36026097) || Hand: [Hang+, Hang, Lethality+, Lethality+, Grave Warden+] Enemies: [Living Shield 21/55, Turret Operator 41/41]
+PlayCard 8 # CARD.LETHALITY (55799422)
+PlayCard 5 1 # CARD.HANG (62582603) || Hand: [Hang+, Hang, Lethality+, Grave Warden+] Enemies: [Living Shield 21/55, Turret Operator 41/41]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 9 # CARD.GRAVE_WARDEN (32432751) || Hand: [Rattle+, Poke, Bodyguard+, Grave Warden+, Hang] Enemies: [Turret Operator 41/41]
+PlayCard 10 2 # CARD.RATTLE (23459311) || Hand: [Rattle+, Poke, Bodyguard+, Hang] Enemies: [Turret Operator 41/41]
+PlayCard 6 2 # CARD.HANG (26372521) || Hand: [Poke, Bodyguard+, Hang] Enemies: [Turret Operator 12/41]
+PlayCard 13 # CARD.BODYGUARD (56186902) || Hand: [Poke, Bodyguard+] Enemies: [Turret Operator 2/41]
+PlayCard 12 2 # CARD.POKE (21156070) || Hand: [Poke] Enemies: [Turret Operator 2/41]
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard 1 # Parse
+MoveToMapCoord 3
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+MoveToMapCoord 3
+PlayCard 2 # CARD.LETHALITY (18725862) || Hand: [Lethality+, Grave Warden+, Poke, Lethality+, Rattle+, Sow] Enemies: [Scroll of Biting 36/36, Scroll of Biting 33/33, Scroll of Biting 37/37, Scroll of Biting 35/35]
+PlayCard 12 # CARD.LETHALITY (8412798) || Hand: [Lethality+, Grave Warden+, Poke, Rattle+, Sow] Enemies: [Scroll of Biting 36/36, Scroll of Biting 33/33, Scroll of Biting 37/37, Scroll of Biting 35/35]
+PlayCard 4 # CARD.SOW (40399829) || Hand: [Grave Warden+, Poke, Rattle+, Sow] Enemies: [Scroll of Biting 36/36, Scroll of Biting 33/33, Scroll of Biting 37/37, Scroll of Biting 35/35]
+PlayCard 1 2 # CARD.POKE (9537191) || Hand: [Grave Warden+, Poke, Rattle+] Enemies: [Scroll of Biting 16/36, Scroll of Biting 13/33, Scroll of Biting 17/37, Scroll of Biting 15/35]
+PlayCard 3 1 # CARD.RATTLE (34315031) || Hand: [Grave Warden+, Rattle+] Enemies: [Scroll of Biting 16/36, Scroll of Biting 7/33, Scroll of Biting 17/37, Scroll of Biting 15/35]
+PlayCard 0 # CARD.GRAVE_WARDEN (60712011) || Hand: [Grave Warden+] Enemies: [Scroll of Biting 7/33, Scroll of Biting 17/37, Scroll of Biting 15/35]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 # CARD.LETHALITY (51160705) || Hand: [Bodyguard+, Lethality+, Hang+, Soul, Hang] Enemies: [Scroll of Biting 7/33, Scroll of Biting 17/37, Scroll of Biting 15/35]
+PlayCard 14 # CARD.SOUL (60504914) || Hand: [Bodyguard+, Hang+, Soul, Hang] Enemies: [Scroll of Biting 7/33, Scroll of Biting 17/37, Scroll of Biting 15/35]
+PlayCard 8 2 # CARD.HANG (50376401) || Hand: [Bodyguard+, Hang+, Hang, Hang+, Unleash] Enemies: [Scroll of Biting 7/33, Scroll of Biting 17/37, Scroll of Biting 15/35]
+PlayCard 7 3 # CARD.HANG (57793161) || Hand: [Bodyguard+, Hang+, Hang+, Unleash] Enemies: [Scroll of Biting 17/37, Scroll of Biting 15/35]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 8 4 # CARD.HANG (50376401) || Hand: [Parse, Defend, Unleash, Hang, Grave Warden+] Enemies: [Scroll of Biting 4/37, Scroll of Biting 15/35]
+PlayCard 10 3 # CARD.UNLEASH (53956653) || Hand: [Parse, Defend, Unleash, Grave Warden+] Enemies: [Scroll of Biting 4/37]
+ClaimReward 0 # GoldReward: 17
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # PotionReward
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard 2 # Fetch+
+MoveToMapCoord 3
+PlayCard 10 # CARD.LETHALITY (63374786) || Hand: [Lethality+, Unleash, Hang+, Defend, Sow, Poke] Enemies: [Owl Magistrate 234/234]
+PlayCard 1 1 # CARD.HANG (63914480) || Hand: [Unleash, Hang+, Defend, Sow, Poke] Enemies: [Owl Magistrate 234/234]
+PlayCard 0 1 # CARD.UNLEASH (7101608) || Hand: [Unleash, Defend, Sow, Poke] Enemies: [Owl Magistrate 212/234]
+PlayCard 4 1 # CARD.POKE (20104328) || Hand: [Defend, Sow, Poke] Enemies: [Owl Magistrate 205/234]
+PlayCard 3 # CARD.SOW (9690354) || Hand: [Defend, Sow] Enemies: [Owl Magistrate 199/234]
+PlayCard 2 # CARD.DEFEND_NECROBINDER (38359408) || Hand: [Defend] Enemies: [Owl Magistrate 191/234]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 1 # CARD.FETCH (51780885) || Hand: [Lethality+, Parse, Hang, Bodyguard+, Fetch+] Enemies: [Owl Magistrate 191/234]
+PlayCard 6 # CARD.PARSE (17837848) || Hand: [Lethality+, Parse, Hang, Bodyguard+, Rattle+] Enemies: [Owl Magistrate 181/234]
+UsePotion 0 # POTION.ENERGY_POTION || Hand: [Lethality+, Hang, Bodyguard+, Rattle+, Lethality+, Grave Warden+, Hang+] Enemies: [Owl Magistrate 181/234]
+PlayCard 13 # CARD.GRAVE_WARDEN (29321235) || Hand: [Lethality+, Hang, Bodyguard+, Rattle+, Lethality+, Grave Warden+, Hang+] Enemies: [Owl Magistrate 181/234]
+PlayCard 12 # CARD.LETHALITY (33084076) || Hand: [Lethality+, Hang, Bodyguard+, Rattle+, Lethality+, Hang+] Enemies: [Owl Magistrate 181/234]
+PlayCard 5 # CARD.LETHALITY (46721225) || Hand: [Lethality+, Hang, Bodyguard+, Rattle+, Hang+] Enemies: [Owl Magistrate 181/234]
+PlayCard 14 1 # CARD.HANG (62564527) || Hand: [Hang, Bodyguard+, Rattle+, Hang+] Enemies: [Owl Magistrate 181/234]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 6 # CARD.PARSE (17837848) || Hand: [Soul, Parse, Rattle+, Grave Warden+, Bodyguard+] Enemies: [Owl Magistrate 155/234]
+PlayCard 7 1 # CARD.HANG (26322909) || Hand: [Soul, Rattle+, Grave Warden+, Bodyguard+, Hang, Poke, Defend] Enemies: [Owl Magistrate 155/234]
+PlayCard 15 # CARD.SOUL (49178561) || Hand: [Soul, Rattle+, Grave Warden+, Bodyguard+, Poke, Defend] Enemies: [Owl Magistrate 25/234]
+PlayCard 1 1 # CARD.HANG (63914480) || Hand: [Rattle+, Grave Warden+, Bodyguard+, Poke, Defend, Hang+, Sow] Enemies: [Owl Magistrate 25/234]
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+PlayCard 1 # CARD.LETHALITY (59161401) || Hand: [Lethality+, Poke, Defend, Hang+, Parse, Unleash] Enemies: [Soul Nexus 234/234]
+PlayCard 4 # CARD.PARSE (44770995) || Hand: [Poke, Defend, Hang+, Parse, Unleash] Enemies: [Soul Nexus 234/234]
+PlayCard 7 1 # CARD.FETCH (23147839) || Hand: [Poke, Defend, Hang+, Unleash, Sow, Fetch+, Lethality+] Enemies: [Soul Nexus 234/234]
+PlayCard 8 # CARD.LETHALITY (7003965) || Hand: [Poke, Defend, Hang+, Unleash, Sow, Lethality+, Hang] Enemies: [Soul Nexus 224/234]
+PlayCard 0 1 # CARD.POKE (51312731) || Hand: [Poke, Defend, Hang+, Unleash, Sow, Hang] Enemies: [Soul Nexus 224/234]
+PlayCard 9 1 # CARD.HANG (63035688) || Hand: [Defend, Hang+, Unleash, Sow, Hang] Enemies: [Soul Nexus 218/234]
+PlayCard 3 1 # CARD.HANG (27344176) || Hand: [Defend, Hang+, Unleash, Sow] Enemies: [Soul Nexus 208/234]
+PlayCard 6 # CARD.SOW (2571982) || Hand: [Defend, Unleash, Sow] Enemies: [Soul Nexus 182/234]
+PlayCard 5 1 # CARD.UNLEASH (285775) || Hand: [Defend, Unleash] Enemies: [Soul Nexus 174/234]
+PlayCard 2 # CARD.DEFEND_NECROBINDER (62690565) || Hand: [Defend] Enemies: [Soul Nexus 167/234]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 # CARD.LETHALITY (30450281) || Hand: [Lethality+, Grave Warden+, Rattle+, Hang+, Bodyguard+] Enemies: [Soul Nexus 167/234]
+PlayCard 13 1 # CARD.HANG (52329730) || Hand: [Grave Warden+, Rattle+, Hang+, Bodyguard+] Enemies: [Soul Nexus 167/234]
+ClaimReward 0 # GoldReward: 44
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+OpenChest
+TakeChestRelic # Pendulum
+NetPickRelicAction for player 1 index 0 || Hand: [Grave Warden+, Rattle+, Bodyguard+] Enemies: []
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 5
+MoveToMapCoord 2
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+BuyCard Grave Warden
+MoveToMapCoord 2
+PlayCard 2 # CARD.LETHALITY (49691082) || Hand: [Lethality+, Bodyguard+, Hang+, Grave Warden, Rattle+, Hang] Enemies: [Flail Knight 101/101, Spectral Knight 93/93, Magi Knight 82/82]
+PlayCard 5 3 # CARD.HANG (53121493) || Hand: [Bodyguard+, Hang+, Grave Warden, Rattle+, Hang] Enemies: [Flail Knight 101/101, Spectral Knight 93/93, Magi Knight 82/82]
+PlayCard 1 3 # CARD.HANG (35347393) || Hand: [Bodyguard+, Hang+, Grave Warden, Rattle+] Enemies: [Flail Knight 101/101, Spectral Knight 93/93, Magi Knight 65/82]
+PlayCard 4 3 # CARD.RATTLE (65554711) || Hand: [Bodyguard+, Grave Warden, Rattle+] Enemies: [Flail Knight 101/101, Spectral Knight 93/93, Magi Knight 39/82]
+PlayCard 3 # CARD.GRAVE_WARDEN (44566559) || Hand: [Bodyguard+, Grave Warden] Enemies: [Flail Knight 101/101, Spectral Knight 93/93, Magi Knight 30/82]
+PlayCard 0 # CARD.BODYGUARD (33753649) || Hand: [Bodyguard+] Enemies: [Flail Knight 101/101, Spectral Knight 93/93, Magi Knight 30/82]
+UsePotion 0 3 # POTION.POTION_OF_DOOM || Hand: [] Enemies: [Flail Knight 101/101, Spectral Knight 93/93, Magi Knight 30/82]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 2 # CARD.POKE (8331393) || Hand: [Poke, Grave Warden+, Lethality+, Parse+, Lethality+] Enemies: [Flail Knight 101/101, Spectral Knight 93/93]
+PlayCard 10 # CARD.LETHALITY (35656650) || Hand: [Grave Warden+, Lethality+, Parse+, Lethality+] Enemies: [Flail Knight 101/101, Spectral Knight 83/93]
+PlayCard 8 # CARD.LETHALITY (3754223)
+PlayCard 7 # CARD.GRAVE_WARDEN (7873676) || Hand: [Grave Warden+, Lethality+, Parse+] Enemies: [Flail Knight 101/101, Spectral Knight 83/93]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 12 2 # CARD.HANG (2507513) || Hand: [Unleash, Soul, Hang+, Sow, Fetch+, Soul] Enemies: [Flail Knight 101/101, Spectral Knight 83/93]
+PlayCard 14 2 # CARD.FETCH (1781989) || Hand: [Unleash, Soul, Sow, Fetch+, Soul] Enemies: [Flail Knight 101/101, Spectral Knight 41/93]
+PlayCard 16 # CARD.SOUL (44278527) || Hand: [Unleash, Soul, Sow, Soul, Bodyguard+] Enemies: [Flail Knight 101/101, Spectral Knight 35/93]
+PlayCard 5 2 # CARD.HANG (53121493) || Hand: [Unleash, Soul, Sow, Bodyguard+, Hang, Grave Warden+] Enemies: [Flail Knight 101/101, Spectral Knight 35/93]
+PlayCard 15 # CARD.SOUL (60976568) || Hand: [Unleash, Soul, Sow, Bodyguard+, Grave Warden+] Enemies: [Flail Knight 101/101, Spectral Knight 15/93]
+PlayCard 6 2 # CARD.POKE (8331393) || Hand: [Unleash, Sow, Bodyguard+, Grave Warden+, Rattle+, Poke] Enemies: [Flail Knight 101/101, Spectral Knight 15/93]
+PlayCard 4 2 # CARD.RATTLE (65554711) || Hand: [Unleash, Sow, Bodyguard+, Grave Warden+, Rattle+] Enemies: [Flail Knight 101/101, Spectral Knight 9/93]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 14 1 # CARD.FETCH (1781989) || Hand: [Sow, Grave Warden, Hang+, Hang+, Fetch+, Grave Warden+] Enemies: [Flail Knight 101/101]
+PlayCard 5 1 # CARD.HANG (53121493) || Hand: [Sow, Grave Warden, Hang+, Hang+, Grave Warden+, Hang] Enemies: [Flail Knight 82/101]
+PlayCard 12 1 # CARD.HANG (2507513) || Hand: [Sow, Grave Warden, Hang+, Hang+, Grave Warden+] Enemies: [Flail Knight 72/101]
+PlayCard 1 1 # CARD.HANG (35347393) || Hand: [Sow, Grave Warden, Hang+, Grave Warden+] Enemies: [Flail Knight 46/101]
+ClaimReward 0 # GoldReward: 45
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 2
+ChooseEventOption 1 # SLIPPERY_BRIDGE.pages.INITIAL.options.HOLD_ON_0
+ChooseEventOption 1 # SLIPPERY_BRIDGE.pages.HOLD_ON_0.options.HOLD_ON_1
+ChooseEventOption 0 # SLIPPERY_BRIDGE.pages.INITIAL.options.OVERCOME
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+OpenShop
+BuyCardRemoval
+SelectGridCard 1
+MoveToMapCoord 3
+ChooseRestSiteOption HEAL
+MoveToMapCoord 3
+PlayCard 3 2 # CARD.FETCH (7701532) || Hand: [Lethality+, Lethality+, Lethality+, Grave Warden+, Fetch+, Hang+] Enemies: [Torch Head Amalgam 199/199, Queen 400/400]
+PlayCard 4 # CARD.LETHALITY (2204930) || Hand: [Lethality+, Lethality+, Lethality+, Grave Warden+, Hang+, Bodyguard+] Enemies: [Torch Head Amalgam 199/199, Queen 394/400]
+PlayCard 0 # CARD.LETHALITY (8295609) || Hand: [Lethality+, Lethality+, Grave Warden+, Hang+, Bodyguard+] Enemies: [Torch Head Amalgam 199/199, Queen 394/400]
+PlayCard 1 # CARD.LETHALITY (7551621)
+PlayCard 2 # CARD.GRAVE_WARDEN (855725) || Hand: [Lethality+, Grave Warden+, Hang+, Bodyguard+] Enemies: [Torch Head Amalgam 199/199, Queen 394/400]
+PlayCard 6 # CARD.BODYGUARD (44381664) || Hand: [Hang+, Bodyguard+] Enemies: [Torch Head Amalgam 199/199, Queen 394/400]
+PlayCard 5 2 # CARD.HANG (19844376) || Hand: [Hang+] Enemies: [Torch Head Amalgam 199/199, Queen 394/400]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 7 2 # CARD.HANG (63890657) || Hand: [Hang+, Rattle+, Parse+, Hang+, Grave Warden, Sow+] Enemies: [Torch Head Amalgam 199/199, Queen 381/400]
+PlayCard 10 2 # CARD.HANG (2737748) || Hand: [Rattle+, Parse+, Hang+, Grave Warden, Sow+] Enemies: [Torch Head Amalgam 199/199, Queen 297/400]
+PlayCard 11 # CARD.GRAVE_WARDEN (24639736) || Hand: [Rattle+, Parse+, Grave Warden, Sow+] Enemies: [Torch Head Amalgam 199/199, Queen 245/400]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 7 2 # CARD.HANG (63890657) || Hand: [Sow+, Soul, Soul, Hang+, Hang+, Fetch+] Enemies: [Torch Head Amalgam 199/199, Queen 245/400]
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Sow+, Soul, Soul, Hang+, Fetch+] Enemies: []
+ChooseEventOption 0 # THE_ARCHITECT.dialogue.0
+ChooseEventOption 0 # PROCEED
+ProceedToNextAct

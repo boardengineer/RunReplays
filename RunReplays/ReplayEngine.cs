@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Godot;
 using RunReplays.Commands;
+using RunReplays.Utils;
 
 namespace RunReplays;
 
@@ -145,6 +146,9 @@ public static class ReplayEngine
         }
 
         _replayActive = _loadedCommands.Count > 0;
+        DiagnosticLog.WriteAndEcho("Replay",
+            $"ReplayEngine.Load — parsed={_loadedCommands.Count}/{commands.Count} " +
+            $"active={_replayActive} activeSeed='{ActiveSeed}'");
         if (_replayActive)
         {
             ReplayDispatcher.ApplyGameSpeed();

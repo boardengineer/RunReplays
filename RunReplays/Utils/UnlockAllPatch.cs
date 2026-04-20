@@ -1,5 +1,6 @@
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Random;
 using MegaCrit.Sts2.Core.Saves;
 using MegaCrit.Sts2.Core.Unlocks;
 
@@ -26,17 +27,19 @@ public static class UnlockAllPatch
 [HarmonyPatch(typeof(ActModel), nameof(ActModel.GetRandomList))]
 public static class GetRandomListUnlockPatch
 {
+    // NOTE: The first parameter was renamed `string seed` → `Rng rng` when the
+    // game moved seed-hashing earlier in the pipeline. The seed override used
+    // to live here; that job now belongs to the StartNewSingleplayerRun prefix
+    // in EncounterRngTracker (which rewrites `seed` before the RunRngSet is
+    // constructed from it). This patch only forces UnlockState.all.
     [HarmonyPrefix]
-    public static void Prefix(ref string seed, ref UnlockState unlockState)
+    public static void Prefix(Rng rng, ref UnlockState unlockState, bool isMultiplayer)
     {
-        PlayerActionBuffer.LogToDevConsole(
-            $"[GetRandomListUnlockPatch] seed='{seed}' activeSeed='{ReplayEngine.ActiveSeed}' " +
-            $"forcedSeedEnabled={ForcedSeedPatch.Enabled} forcedSeed='{ForcedSeedPatch.ForcedSeed}'");
+        DiagnosticLog.Write("Rng",
+            $"GetRandomList prefix — rng.Seed={rng.Seed} rng.Counter={rng.Counter} " +
+            $"isMultiplayer={isMultiplayer} unlockState.isAll={ReferenceEquals(unlockState, UnlockState.all)} " +
+            $"activeSeed='{ReplayEngine.ActiveSeed}' forcedSeedEnabled={ForcedSeedPatch.Enabled}");
 
-        // Prefer the seed from the replay/save being loaded via the menu.
-        // Fall back to the hardcoded forced seed if no active seed is set.
-        if (ReplayEngine.ActiveSeed != null)
-            seed = ReplayEngine.ActiveSeed;
         unlockState = UnlockState.all;
     }
 }

@@ -15,6 +15,7 @@ using MegaCrit.Sts2.Core.Nodes.Screens.MainMenu;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
 using MegaCrit.Sts2.Core.Saves.Managers;
+using RunReplays.Utils;
 
 namespace RunReplays;
 
@@ -562,6 +563,10 @@ public static class RunReplayMenu
         }
 
         SerializableRun serializableRun = result.SaveData;
+        DiagnosticLog.WriteAndEcho("Load",
+            $"LoadRunSave — seed='{serializableRun.SerializableRng?.Seed}' " +
+            $"gameMode={serializableRun.GameMode} ascension={serializableRun.Ascension} " +
+            $"character={serializableRun.Players?.FirstOrDefault()?.CharacterId?.Entry}");
         RunState runState = RunState.FromSerializable(serializableRun);
         RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
 
@@ -598,6 +603,9 @@ public static class RunReplayMenu
         }
 
         GD.Print($"[RunReplays] Starting replay: seed={entry.Seed} character={character.Id} floor={entry.Floor} ascension={entry.Ascension} ({commands.Count} commands)");
+        DiagnosticLog.WriteAndEcho("Replay",
+            $"StartReplay — seed={entry.Seed} character={character.Id} floor={entry.Floor} " +
+            $"ascension={entry.Ascension} commands={commands.Count} log={entry.MinimalLogPath}");
 
         NAudioManager.Instance?.StopMusic();
         SfxCmd.Play(character.CharacterTransitionSfx);
@@ -609,8 +617,8 @@ public static class RunReplayMenu
                 ActModel.GetDefaultList(),
                 [],
                 entry.Seed,
-                entry.Ascension,
-                null));
+                GameMode.Standard,
+                entry.Ascension));
     }
 
     /// <summary>
@@ -683,6 +691,10 @@ public static class RunReplayMenu
         }
 
         SerializableRun serializableRun = result.SaveData;
+        DiagnosticLog.WriteAndEcho("Load",
+            $"LoadRunSave — seed='{serializableRun.SerializableRng?.Seed}' " +
+            $"gameMode={serializableRun.GameMode} ascension={serializableRun.Ascension} " +
+            $"character={serializableRun.Players?.FirstOrDefault()?.CharacterId?.Entry}");
         RunState runState = RunState.FromSerializable(serializableRun);
         RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
 

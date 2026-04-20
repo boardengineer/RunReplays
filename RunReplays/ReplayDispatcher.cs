@@ -16,6 +16,7 @@ using RunReplays.Commands;
 using RunReplays.Patches;
 using RunReplays.Patches.Record;
 using RunReplays.Patches.Replay;
+using RunReplays.Utils;
 namespace RunReplays;
 
 /// <summary>
@@ -898,6 +899,9 @@ public static class ReplayDispatcher
     {
         ReplayEngine.PeekNext(out ReplayCommand? peekCmd);
         GD.Print($"[RunReplays] TryDispatch caller={caller} active={ReplayEngine.IsActive} paused={_paused} next={peekCmd?.GetType().Name ?? "null"}({peekCmd})");
+        DiagnosticLog.Write("Dispatch",
+            $"TryDispatch caller={caller} active={ReplayEngine.IsActive} paused={_paused} " +
+            $"next={peekCmd?.GetType().Name ?? "null"}({peekCmd})");
 
         LogDispatchableChanges();
 
@@ -910,7 +914,10 @@ public static class ReplayDispatcher
         var dispatchable = GetDispatchableTypes();
         if (!dispatchable.Contains(cmd.GetType()))
         {
-            GD.Print($"[RunReplays] TryDispatch miss — cmd={cmd.GetType().Name} dispatchable=[{string.Join(",", dispatchable.Select(t => t.Name))}]");
+            string dispatchableNames = string.Join(",", dispatchable.Select(t => t.Name));
+            GD.Print($"[RunReplays] TryDispatch miss — cmd={cmd.GetType().Name} dispatchable=[{dispatchableNames}]");
+            DiagnosticLog.Write("Dispatch",
+                $"miss — cmd={cmd.GetType().Name}({cmd}) dispatchable=[{dispatchableNames}]");
             return;
         }
 
@@ -989,9 +996,23 @@ public static class ReplayDispatcher
 
         _lastDispatchTick = System.Environment.TickCount64;
 
-        var result = cmd.Execute();
+        DiagnosticLog.Write("Dispatch", $"execute → {cmd.GetType().Name}({cmd})");
+        ExecuteResult result;
+        try
+        {
+            result = cmd.Execute();
+        }
+        catch (Exception ex)
+        {
+            DiagnosticLog.Write("Dispatch",
+                $"EXCEPTION in {cmd.GetType().Name}({cmd}): {ex.GetType().Name}: {ex.Message}");
+            DiagnosticLog.Write("Dispatch", ex.StackTrace ?? "<no stack>");
+            throw;
+        }
+
         if (result.Success)
         {
+            DiagnosticLog.Write("Dispatch", $"ok → consumed {cmd.GetType().Name}");
             ReplayEngine.ConsumeAny();
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
@@ -1006,6 +1027,8 @@ public static class ReplayDispatcher
         }
         if (result.RetryDelayMs > 0)
         {
+            DiagnosticLog.Write("Dispatch",
+                $"retry in {result.RetryDelayMs}ms → {cmd.GetType().Name}");
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
             int gen = ++_dispatchGeneration;
@@ -1018,6 +1041,7 @@ public static class ReplayDispatcher
             return;
         }
 
+        DiagnosticLog.Write("Dispatch", $"UNRECOGNISED result from {cmd.GetType().Name}({cmd})");
         PlayerActionBuffer.LogMigrationWarning($"[Dispatcher] Unrecognised command: {cmd}");
     }
 

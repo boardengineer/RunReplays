@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Nodes.Screens.MainMenu;
 using RunReplays.Commands;
 using RunReplays.Patches;
+using RunReplays.Utils;
 
 namespace RunReplays;
 
@@ -36,9 +37,18 @@ public static class MainMenuButtonInjector
     private static bool _autoPlayFired;
 #endif
 
+    private static bool _startupFingerprintLogged;
+
     [HarmonyPostfix]
     public static void Postfix(NMainMenu __instance)
     {
+        if (!_startupFingerprintLogged)
+        {
+            _startupFingerprintLogged = true;
+            DiagnosticLog.WriteStartupFingerprint();
+        }
+        DiagnosticLog.Write("MainMenu", "NMainMenu._Ready postfix — resetting replay state");
+
         // Reset any replay in progress so the game returns to record mode.
         ReplayDispatcher.Clear();
 
@@ -50,7 +60,7 @@ public static class MainMenuButtonInjector
         Callable.From(CrystalSphereManualPatcher.Apply).CallDeferred();
         Callable.From(ApplyCardRewardButtonPatch).CallDeferred();
 
-        // Ensure bundled replay log exists in the user's log directory.
+        // Ensure bundled sample replays exist in the user's samples directory.
         ExtractBundledReplay();
 
         // The container holding all vertical menu buttons.
@@ -103,11 +113,15 @@ public static class MainMenuButtonInjector
 
     // ── Bundled replay extraction ────────────────────────────────────────────
 
+    // Each entry names a seed + floor directory under Resources/. Every file
+    // in that directory must also appear as an <EmbeddedResource> in the
+    // csproj, or extraction will log a "resource not found" warning.
     private static readonly (string seed, string floor, string[] files)[] BundledReplays =
     {
-        ("LFKFUEPCRA", "floor_49", new[] { "actions.sts2replay", "run.save" }),
-        ("F67ZPV6R17", "floor_45", new[] { "actions.sts2replay", "run.save" }),
-        ("0Z2X67NDP9", "floor_49", new[] { "actions.sts2replay", "run.save" }),
+        ("T97Q92FYMZ", "floor_49", new[] { "actions.sts2replay", "run.save" }),
+        ("4M42XQ1BSA", "floor_49", new[] { "actions.sts2replay", "run.save" }),
+        ("YHREJXEUX2", "floor_49", new[] { "actions.sts2replay", "run.save" }),
+        ("DTDBLEA3T9", "floor_49", new[] { "actions.sts2replay", "run.save" }),
     };
 
     private static void ExtractBundledReplay()

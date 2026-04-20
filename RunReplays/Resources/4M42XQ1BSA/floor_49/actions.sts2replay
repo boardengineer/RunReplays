@@ -1,0 +1,927 @@
+# Character: SILENT
+# Seed: 4M42XQ1BSA
+# Ascension: 1
+# Game: v0.103.2
+# Mod: 0.1.0
+ChooseEventOption 0 # NEOW.pages.INITIAL.options.NEW_LEAF
+SelectGridCard 5
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+PlayCard 5 1 # CARD.STRIKE_SILENT (7434325) || Hand: [Strike, Defend, Defend, Survivor, Defend, Strike, Strike] Enemies: [Fuzzy Wurm Crawler 57/57]
+PlayCard 6 1 # CARD.STRIKE_SILENT (66908929) || Hand: [Strike, Defend, Defend, Survivor, Defend, Strike] Enemies: [Fuzzy Wurm Crawler 51/57]
+PlayCard 2 # CARD.DEFEND_SILENT (47971402) || Hand: [Strike, Defend, Defend, Survivor, Defend] Enemies: [Fuzzy Wurm Crawler 45/57]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 11 1 # CARD.NEUTRALIZE (5220507) || Hand: [Strike, Strike, Defend, Leg Sweep, Neutralize] Enemies: [Fuzzy Wurm Crawler 45/57]
+PlayCard 8 1 # CARD.STRIKE_SILENT (50914159) || Hand: [Strike, Strike, Defend, Leg Sweep] Enemies: [Fuzzy Wurm Crawler 42/57]
+PlayCard 7 1 # CARD.STRIKE_SILENT (65309452) || Hand: [Strike, Defend, Leg Sweep] Enemies: [Fuzzy Wurm Crawler 36/57]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 4 # CARD.DEFEND_SILENT (60478359) || Hand: [Defend, Defend, Strike, Strike, Strike] Enemies: [Fuzzy Wurm Crawler 30/57]
+PlayCard 2 # CARD.DEFEND_SILENT (47971402) || Hand: [Defend, Strike, Strike, Strike] Enemies: [Fuzzy Wurm Crawler 30/57]
+PlayCard 8 1 # CARD.STRIKE_SILENT (50914159) || Hand: [Strike, Strike, Strike] Enemies: [Fuzzy Wurm Crawler 30/57]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 10 1 # CARD.LEG_SWEEP (30406218) || Hand: [Survivor, Strike, Defend, Leg Sweep, Strike] Enemies: [Fuzzy Wurm Crawler 24/57]
+PlayCard 6 1 # CARD.STRIKE_SILENT (66908929) || Hand: [Survivor, Strike, Defend, Strike] Enemies: [Fuzzy Wurm Crawler 24/57]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 11 1 # CARD.NEUTRALIZE (5220507) || Hand: [Defend, Neutralize, Defend, Leg Sweep, Strike] Enemies: [Fuzzy Wurm Crawler 18/57]
+PlayCard 5 1 # CARD.STRIKE_SILENT (7434325) || Hand: [Defend, Defend, Leg Sweep, Strike] Enemies: [Fuzzy Wurm Crawler 15/57]
+PlayCard 10 1 # CARD.LEG_SWEEP (30406218) || Hand: [Defend, Defend, Leg Sweep] Enemies: [Fuzzy Wurm Crawler 9/57]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 0 1 # CARD.STRIKE_SILENT (17990833) || Hand: [Defend, Strike, Survivor, Strike, Strike] Enemies: [Fuzzy Wurm Crawler 9/57]
+PlayCard 6 1 # CARD.STRIKE_SILENT (66908929) || Hand: [Defend, Strike, Survivor, Strike] Enemies: [Fuzzy Wurm Crawler 3/57]
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # CardReward
+TakeCard 0 # Calculated Gamble
+MoveToMapCoord 0
+ChooseEventOption 1 # WOOD_CARVINGS.pages.INITIAL.options.SNAKE
+SelectGridCard 11
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+ChooseEventOption 0 # TABLET_OF_TRUTH.pages.INITIAL.options.DECIPHER_1
+ChooseEventOption 0 # TABLET_OF_TRUTH.pages.DECIPHER_1.options.DECIPHER
+ChooseEventOption 0 # TABLET_OF_TRUTH.pages.DECIPHER_2.options.DECIPHER
+ChooseEventOption 1 # TABLET_OF_TRUTH.pages.DECIPHER.options.GIVE_UP
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+PlayCard 0 1 # CARD.NEUTRALIZE (59802124) || Hand: [Neutralize, Strike, Calculated Gamble, Strike+, Strike, Defend, Leg Sweep] Enemies: [Shrinker Beetle 40/40]
+PlayCard 3 1 # CARD.STRIKE_SILENT (42095661) || Hand: [Strike, Calculated Gamble, Strike+, Strike, Defend, Leg Sweep] Enemies: [Shrinker Beetle 37/40]
+PlayCard 6 1 # CARD.LEG_SWEEP (18986329) || Hand: [Strike, Calculated Gamble, Strike, Defend, Leg Sweep] Enemies: [Shrinker Beetle 28/40]
+PlayCard 4 1 # CARD.STRIKE_SILENT (43316632) || Hand: [Strike, Calculated Gamble, Strike, Defend] Enemies: [Shrinker Beetle 28/40]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 1 # CARD.STRIKE_SILENT (16608564) || Hand: [Defend, Survivor+, Strike+, Strike, Defend] Enemies: [Shrinker Beetle 22/40]
+PlayCard 10 1 # CARD.STRIKE_SILENT (15259353) || Hand: [Defend, Survivor+, Strike, Defend] Enemies: [Shrinker Beetle 16/40]
+PlayCard 8 # CARD.SURVIVOR (61497719) || Hand: [Defend, Survivor+, Defend] Enemies: [Shrinker Beetle 12/40]
+SelectHandCards 1
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 2 # CARD.CALCULATED_GAMBLE (12133836) || Hand: [Defend, Calculated Gamble, Defend, Strike, Defend] Enemies: [Shrinker Beetle 12/40]
+PlayCard 3 1 # CARD.STRIKE_SILENT (42095661) || Hand: [Strike, Survivor+, Strike, Strike+] Enemies: [Shrinker Beetle 12/40]
+PlayCard 4 1 # CARD.STRIKE_SILENT (43316632) || Hand: [Strike, Survivor+, Strike] Enemies: [Shrinker Beetle 6/40]
+PlayCard 1 1 # CARD.STRIKE_SILENT (1348204) || Hand: [Strike, Survivor+] Enemies: [Shrinker Beetle 2/40]
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Prepared
+MoveToMapCoord 0
+ChooseEventOption 0 # SAPPHIRE_SEED.pages.INITIAL.options.EAT
+SelectGridCard 10
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+PlayCard 5 1 # CARD.NEUTRALIZE (6267365) || Hand: [Prepared+, Defend, Strike+, Survivor+, Strike, Neutralize, Leg Sweep] Enemies: [Nibbit 42/42]
+PlayCard 6 1 # CARD.LEG_SWEEP (56406290) || Hand: [Prepared+, Defend, Strike+, Survivor+, Strike, Leg Sweep] Enemies: [Nibbit 39/42]
+PlayCard 2 1 # CARD.STRIKE_SILENT (13632893) || Hand: [Prepared+, Defend, Strike+, Survivor+, Strike] Enemies: [Nibbit 39/42]
+PlayCard 4 1 # CARD.STRIKE_SILENT (30522535) || Hand: [Prepared+, Defend, Survivor+, Strike] Enemies: [Nibbit 30/42]
+PlayCard 0 # CARD.PREPARED (54021099) || Hand: [Prepared+, Defend, Survivor+] Enemies: [Nibbit 24/42]
+SelectHandCards 2 0
+PlayCard 8 1 # CARD.STRIKE_SILENT (5506790) || Hand: [Survivor+, Strike] Enemies: [Nibbit 24/42]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 11 1 # CARD.STRIKE_SILENT (55026969) || Hand: [Strike, Defend, Strike+, Calculated Gamble, Defend] Enemies: [Nibbit 18/42]
+PlayCard 9 1 # CARD.STRIKE_SILENT (49561110) || Hand: [Strike, Defend, Calculated Gamble, Defend] Enemies: [Nibbit 9/42]
+PlayCard 12 # CARD.CALCULATED_GAMBLE (25480678) || Hand: [Defend, Calculated Gamble, Defend] Enemies: [Nibbit 3/42]
+PlayCard 8 1 # CARD.STRIKE_SILENT (5506790) || Hand: [Strike, Defend] Enemies: [Nibbit 3/42]
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Untouchable
+MoveToMapCoord 0
+OpenShop
+BuyCardRemoval
+SelectGridCard 5
+MoveToMapCoord 1
+PlayCard 3 # CARD.PREPARED (63496278) || Hand: [Strike+, Untouchable, Strike+, Prepared+, Calculated Gamble, Strike, Defend] Enemies: [Bygone Effigy 127/127]
+SelectHandCards 1 5
+PlayCard 7 1 # CARD.NEUTRALIZE (54365223) || Hand: [Strike+, Strike+, Calculated Gamble, Strike, Neutralize, Defend] Enemies: [Bygone Effigy 127/127]
+PlayCard 5 1 # CARD.STRIKE_SILENT (42924904) || Hand: [Strike+, Strike+, Calculated Gamble, Strike, Defend] Enemies: [Bygone Effigy 124/127]
+PlayCard 2 1 # CARD.STRIKE_SILENT (51794384) || Hand: [Strike+, Strike+, Calculated Gamble, Defend] Enemies: [Bygone Effigy 117/127]
+PlayCard 0 1 # CARD.STRIKE_SILENT (3124950) || Hand: [Strike+, Calculated Gamble, Defend] Enemies: [Bygone Effigy 105/127]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 1 # CARD.LEG_SWEEP (38018127) || Hand: [Strike, Leg Sweep, Strike, Survivor+, Defend] Enemies: [Bygone Effigy 92/127]
+PlayCard 11 1 # CARD.STRIKE_SILENT (6618826) || Hand: [Strike, Strike, Survivor+, Defend] Enemies: [Bygone Effigy 92/127]
+PlayCard 9 1 # CARD.STRIKE_SILENT (41506938) || Hand: [Strike, Survivor+, Defend] Enemies: [Bygone Effigy 86/127]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 10 1 # CARD.LEG_SWEEP (38018127) || Hand: [Leg Sweep, Neutralize, Untouchable, Calculated Gamble, Defend] Enemies: [Bygone Effigy 79/127]
+PlayCard 7 1 # CARD.NEUTRALIZE (54365223) || Hand: [Neutralize, Untouchable, Calculated Gamble, Defend] Enemies: [Bygone Effigy 79/127]
+PlayCard 4 # CARD.CALCULATED_GAMBLE (34595595) || Hand: [Untouchable, Calculated Gamble, Defend] Enemies: [Bygone Effigy 76/127]
+PlayCard 3 # CARD.PREPARED (63496278) || Hand: [Prepared+, Defend] Enemies: [Bygone Effigy 76/127]
+SelectHandCards 0 1
+PlayCard 9 1 # CARD.STRIKE_SILENT (41506938) || Hand: [Strike] Enemies: [Bygone Effigy 76/127]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 12 # CARD.SURVIVOR (59569436) || Hand: [Survivor+, Defend, Strike+, Strike+, Strike] Enemies: [Bygone Effigy 67/127]
+SelectHandCards 1
+PlayCard 8 # CARD.DEFEND_SILENT (19524962) || Hand: [Defend, Strike+, Strike] Enemies: [Bygone Effigy 67/127]
+PlayCard 0 1 # CARD.STRIKE_SILENT (3124950) || Hand: [Strike+, Strike] Enemies: [Bygone Effigy 67/127]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 3 # CARD.PREPARED (63496278) || Hand: [Defend, Prepared+, Strike+, Strike, Neutralize] Enemies: [Bygone Effigy 57/127]
+SelectHandCards 5 2
+PlayCard 6 # CARD.DEFEND_SILENT (50779823) || Hand: [Defend, Strike+, Neutralize, Strike+] Enemies: [Bygone Effigy 57/127]
+PlayCard 7 1 # CARD.NEUTRALIZE (54365223) || Hand: [Strike+, Neutralize, Strike+] Enemies: [Bygone Effigy 57/127]
+PlayCard 0 1 # CARD.STRIKE_SILENT (3124950) || Hand: [Strike+, Strike+] Enemies: [Bygone Effigy 54/127]
+PlayCard 2 1 # CARD.STRIKE_SILENT (51794384) || Hand: [Strike+] Enemies: [Bygone Effigy 42/127]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 10 1 # CARD.LEG_SWEEP (38018127) || Hand: [Defend, Survivor+, Leg Sweep, Strike, Strike] Enemies: [Bygone Effigy 29/127]
+PlayCard 12 # CARD.SURVIVOR (59569436) || Hand: [Defend, Survivor+, Strike, Strike] Enemies: [Bygone Effigy 29/127]
+SelectHandCards 0
+PlayCard 5 1 # CARD.STRIKE_SILENT (42924904) || Hand: [Strike, Strike] Enemies: [Bygone Effigy 29/127]
+UsePotion 0 1 # POTION.POISON_POTION || Hand: [Strike] Enemies: [Bygone Effigy 22/127]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 10 1 # CARD.LEG_SWEEP (38018127) || Hand: [Defend, Prepared+, Leg Sweep, Strike, Survivor+] Enemies: [Bygone Effigy 16/127]
+PlayCard 3 # CARD.PREPARED (63496278) || Hand: [Defend, Prepared+, Strike, Survivor+] Enemies: [Bygone Effigy 16/127]
+SelectHandCards 0 2
+PlayCard 5 1 # CARD.STRIKE_SILENT (42924904) || Hand: [Strike, Strike+, Strike+] Enemies: [Bygone Effigy 16/127]
+PlayCard 2 1 # CARD.STRIKE_SILENT (51794384) || Hand: [Strike+, Strike+] Enemies: [Bygone Effigy 9/127]
+ClaimReward 0 # GoldReward: 35
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard 1 # Backflip
+ClaimReward 0 # RelicReward
+MoveToMapCoord 0
+OpenChest
+TakeChestRelic # Meat on the Bone
+NetPickRelicAction for player 1 index 0 || Hand: [Strike+] Enemies: []
+MoveToMapCoord 0
+PlayCard 2 1 # CARD.LEG_SWEEP (31003113) || Hand: [Calculated Gamble, Defend, Leg Sweep, Untouchable+, Strike, Neutralize, Strike+] Enemies: [Byrdonis 84/84]
+PlayCard 5 1 # CARD.NEUTRALIZE (52691233) || Hand: [Calculated Gamble, Defend, Untouchable+, Strike, Neutralize, Strike+] Enemies: [Byrdonis 84/84]
+PlayCard 4 1 # CARD.STRIKE_SILENT (28224202) || Hand: [Calculated Gamble, Defend, Untouchable+, Strike, Strike+] Enemies: [Byrdonis 81/84]
+PlayCard 6 1 # CARD.STRIKE_SILENT (4459057) || Hand: [Calculated Gamble, Defend, Untouchable+, Strike+] Enemies: [Byrdonis 75/84]
+PlayCard 0 # CARD.CALCULATED_GAMBLE (56721060) || Hand: [Calculated Gamble, Defend, Untouchable+] Enemies: [Byrdonis 66/84]
+PlayCard 7 1 # CARD.STRIKE_SILENT (40131513) || Hand: [Strike, Survivor+] Enemies: [Byrdonis 66/84]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 13 # CARD.BACKFLIP (66144386) || Hand: [Defend, Strike, Prepared+, Defend, Backflip+] Enemies: [Byrdonis 60/84]
+PlayCard 11 # CARD.PREPARED (34785281) || Hand: [Defend, Strike, Prepared+, Defend, Strike+, Survivor+] Enemies: [Byrdonis 60/84]
+SelectHandCards 5 2
+PlayCard 7 1 # CARD.STRIKE_SILENT (40131513) || Hand: [Defend, Strike, Strike+, Survivor+, Strike] Enemies: [Byrdonis 60/84]
+PlayCard 14 1 # CARD.STRIKE_SILENT (58428566) || Hand: [Defend, Strike, Strike+, Survivor+] Enemies: [Byrdonis 54/84]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 5 1 # CARD.NEUTRALIZE (52691233) || Hand: [Strike, Untouchable+, Defend, Strike+, Neutralize] Enemies: [Byrdonis 45/84]
+PlayCard 6 1 # CARD.STRIKE_SILENT (4459057) || Hand: [Strike, Untouchable+, Defend, Strike+] Enemies: [Byrdonis 42/84]
+PlayCard 3 # CARD.UNTOUCHABLE (10592562) || Hand: [Strike, Untouchable+, Defend] Enemies: [Byrdonis 33/84]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 13 # CARD.BACKFLIP (66144386) || Hand: [Prepared+, Defend, Strike, Backflip+, Strike] Enemies: [Byrdonis 33/84]
+PlayCard 11 # CARD.PREPARED (34785281) || Hand: [Prepared+, Defend, Strike, Strike, Leg Sweep, Neutralize] Enemies: [Byrdonis 33/84]
+SelectHandCards 3 5
+PlayCard 5 1 # CARD.NEUTRALIZE (52691233) || Hand: [Defend, Strike, Strike, Neutralize, Survivor+] Enemies: [Byrdonis 33/84]
+PlayCard 4 1 # CARD.STRIKE_SILENT (28224202) || Hand: [Defend, Strike, Strike, Survivor+] Enemies: [Byrdonis 30/84]
+PlayCard 7 1 # CARD.STRIKE_SILENT (40131513) || Hand: [Defend, Strike, Survivor+] Enemies: [Byrdonis 24/84]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 6 1 # CARD.STRIKE_SILENT (4459057) || Hand: [Strike+, Defend, Strike+, Strike, Defend] Enemies: [Byrdonis 18/84]
+PlayCard 14 1 # CARD.STRIKE_SILENT (58428566) || Hand: [Strike+, Defend, Strike, Defend] Enemies: [Byrdonis 9/84]
+ClaimReward 0 # GoldReward: 36
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Backflip
+MoveToMapCoord 0
+ChooseRestSiteOption SMITH
+SelectGridCard 6
+MoveToMapCoord 0
+PlayCard 1 # CARD.PREPARED (58845421) || Hand: [Neutralize+, Prepared+, Backflip+, Untouchable+, Defend, Calculated Gamble, Strike] Enemies: [Snapping Jaxfruit 33/33, Flyconid 48/48]
+SelectHandCards 2 5
+PlayCard 8 2 # CARD.LEG_SWEEP (43110755) || Hand: [Neutralize+, Backflip+, Defend, Calculated Gamble, Backflip, Leg Sweep] Enemies: [Snapping Jaxfruit 33/33, Flyconid 48/48]
+PlayCard 0 1 # CARD.NEUTRALIZE (51277622) || Hand: [Neutralize+, Backflip+, Defend, Calculated Gamble, Backflip] Enemies: [Snapping Jaxfruit 33/33, Flyconid 48/48]
+PlayCard 5 # CARD.CALCULATED_GAMBLE (7515677) || Hand: [Backflip+, Defend, Calculated Gamble, Backflip] Enemies: [Snapping Jaxfruit 29/33, Flyconid 48/48]
+PlayCard 9 1 # CARD.STRIKE_SILENT (52452479) || Hand: [Strike+, Defend, Strike+] Enemies: [Snapping Jaxfruit 29/33, Flyconid 48/48]
+PlayCard 11 1 # CARD.STRIKE_SILENT (20792374) || Hand: [Defend, Strike+] Enemies: [Snapping Jaxfruit 20/33, Flyconid 48/48]
+PlayCard 10 # CARD.DEFEND_SILENT (2310263) || Hand: [Defend] Enemies: [Snapping Jaxfruit 11/33, Flyconid 48/48]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 14 1 # CARD.STRIKE_SILENT (58146794) || Hand: [Survivor+, Defend, Strike, Strike, Neutralize+] Enemies: [Snapping Jaxfruit 11/33, Flyconid 48/48]
+PlayCard 15 1 # CARD.STRIKE_SILENT (53559099) || Hand: [Survivor+, Defend, Strike, Neutralize+] Enemies: [Snapping Jaxfruit 5/33, Flyconid 48/48]
+PlayCard 0 2 # CARD.NEUTRALIZE (51277622) || Hand: [Survivor+, Defend, Neutralize+] Enemies: [Flyconid 48/48]
+PlayCard 12 # CARD.SURVIVOR (52913644) || Hand: [Survivor+, Defend] Enemies: [Flyconid 44/48]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 2 # CARD.BACKFLIP (59846745) || Hand: [Leg Sweep, Backflip+, Strike+, Backflip, Defend] Enemies: [Flyconid 44/48]
+PlayCard 9 2 # CARD.STRIKE_SILENT (52452479) || Hand: [Leg Sweep, Strike+, Backflip, Defend, Strike, Untouchable+] Enemies: [Flyconid 44/48]
+PlayCard 6 2 # CARD.STRIKE_SILENT (532231) || Hand: [Leg Sweep, Backflip, Defend, Strike, Untouchable+] Enemies: [Flyconid 35/48]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 2 # CARD.BACKFLIP (59846745) || Hand: [Prepared+, Defend, Strike+, Backflip+, Defend] Enemies: [Flyconid 29/48]
+PlayCard 1 # CARD.PREPARED (58845421) || Hand: [Prepared+, Defend, Strike+, Defend, Backflip, Survivor+] Enemies: [Flyconid 29/48]
+SelectHandCards 6 2
+PlayCard 0 2 # CARD.NEUTRALIZE (51277622) || Hand: [Defend, Strike+, Backflip, Survivor+, Neutralize+] Enemies: [Flyconid 29/48]
+PlayCard 11 2 # CARD.STRIKE_SILENT (20792374) || Hand: [Defend, Strike+, Backflip, Survivor+] Enemies: [Flyconid 25/48]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 8 2 # CARD.LEG_SWEEP (43110755) || Hand: [Strike, Leg Sweep, Strike, Defend, Strike] Enemies: [Flyconid 16/48]
+PlayCard 15 2 # CARD.STRIKE_SILENT (53559099) || Hand: [Strike, Strike, Defend, Strike] Enemies: [Flyconid 16/48]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 9 2 # CARD.STRIKE_SILENT (52452479) || Hand: [Strike+, Backflip, Leg Sweep, Untouchable+, Strike] Enemies: [Flyconid 10/48]
+PlayCard 15 2 # CARD.STRIKE_SILENT (53559099) || Hand: [Backflip, Leg Sweep, Untouchable+, Strike] Enemies: [Flyconid 1/48]
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # CardReward
+TakeCard 0 # Untouchable
+MoveToMapCoord 0
+PlayCard 0 # CARD.BACKFLIP (18028383) || Hand: [Backflip+, Untouchable, Strike, Defend, Defend, Strike, Survivor+] Enemies: [Inklet 13/13, Inklet 14/14, Inklet 11/11]
+PlayCard 6 # CARD.SURVIVOR (23769768) || Hand: [Untouchable, Strike, Defend, Defend, Strike, Survivor+, Strike+, Untouchable+] Enemies: [Inklet 13/13, Inklet 14/14, Inklet 11/11]
+SelectHandCards 6
+PlayCard 5 1 # CARD.STRIKE_SILENT (10097625) || Hand: [Untouchable, Strike, Defend, Defend, Strike, Strike+] Enemies: [Inklet 13/13, Inklet 14/14, Inklet 11/11]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 13 # CARD.PREPARED (64797103) || Hand: [Strike, Strike+, Calculated Gamble, Neutralize+, Prepared+] Enemies: [Inklet 12/13, Inklet 14/14, Inklet 11/11]
+SelectHandCards 5 1
+PlayCard 12 2 # CARD.NEUTRALIZE (59395461) || Hand: [Strike, Calculated Gamble, Neutralize+, Leg Sweep] Enemies: [Inklet 12/13, Inklet 14/14, Inklet 11/11]
+PlayCard 14 3 # CARD.LEG_SWEEP (46303018) || Hand: [Strike, Calculated Gamble, Leg Sweep] Enemies: [Inklet 12/13, Inklet 13/14, Inklet 11/11]
+PlayCard 11 # CARD.CALCULATED_GAMBLE (66251819) || Hand: [Strike, Calculated Gamble] Enemies: [Inklet 12/13, Inklet 13/14, Inklet 11/11]
+PlayCard 16 # CARD.BACKFLIP (59556992) || Hand: [Backflip] Enemies: [Inklet 12/13, Inklet 13/14, Inklet 11/11]
+PlayCard 13 # CARD.PREPARED (64797103) || Hand: [Prepared+, Defend] Enemies: [Inklet 12/13, Inklet 13/14, Inklet 11/11]
+SelectHandCards 2 0
+PlayCard 9 3 # CARD.STRIKE_SILENT (14073995) || Hand: [Strike] Enemies: [Inklet 12/13, Inklet 13/14, Inklet 11/11]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 2 1 # CARD.STRIKE_SILENT (51012905) || Hand: [Leg Sweep, Strike+, Strike+, Defend, Strike] Enemies: [Inklet 12/13, Inklet 13/14, Inklet 10/11]
+PlayCard 10 1 # CARD.STRIKE_SILENT (59557096) || Hand: [Leg Sweep, Strike+, Strike+, Defend] Enemies: [Inklet 6/13, Inklet 13/14, Inklet 10/11]
+PlayCard 15 # CARD.DEFEND_SILENT (14073984) || Hand: [Leg Sweep, Strike+, Defend] Enemies: [Inklet 13/14, Inklet 10/11]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 0 # CARD.BACKFLIP (18028383) || Hand: [Untouchable+, Strike, Defend, Backflip+, Survivor+] Enemies: [Inklet 13/14, Inklet 10/11]
+PlayCard 12 3 # CARD.NEUTRALIZE (59395461) || Hand: [Untouchable+, Strike, Defend, Survivor+, Neutralize+, Leg Sweep] Enemies: [Inklet 13/14, Inklet 10/11]
+PlayCard 5 3 # CARD.STRIKE_SILENT (10097625) || Hand: [Untouchable+, Strike, Defend, Survivor+, Leg Sweep] Enemies: [Inklet 13/14, Inklet 6/11]
+PlayCard 14 2 # CARD.LEG_SWEEP (46303018) || Hand: [Untouchable+, Defend, Survivor+, Leg Sweep] Enemies: [Inklet 13/14]
+PlayCard 6 # CARD.SURVIVOR (23769768) || Hand: [Untouchable+, Defend, Survivor+] Enemies: [Inklet 13/14]
+SelectHandCards 0
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 7 2 # CARD.STRIKE_SILENT (12601320) || Hand: [Defend, Strike+, Strike, Backflip, Strike] Enemies: [Inklet 13/14]
+PlayCard 2 2 # CARD.STRIKE_SILENT (51012905) || Hand: [Defend, Strike, Backflip, Strike] Enemies: [Inklet 4/14]
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Hand Trick
+MoveToMapCoord 0
+OpenShop
+BuyCardRemoval
+SelectGridCard 5
+BuyCard Serpent Form
+MoveToMapCoord 0
+ChooseRestSiteOption SMITH
+SelectGridCard 10
+MoveToMapCoord 3
+PlayCard 1 # CARD.SERPENT_FORM (34293944) || Hand: [Backflip+, Serpent Form+, Strike+, Strike, Strike, Untouchable+, Defend] Enemies: [Kin Follower 59/59, Kin Follower 58/58, Kin Priest 190/190]
+UsePotion 2 # POTION.BLOCK_POTION || Hand: [Backflip+, Strike+, Strike, Strike, Untouchable+, Defend] Enemies: [Kin Follower 59/59, Kin Follower 58/58, Kin Priest 190/190]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 7 1 # CARD.NEUTRALIZE (51169234) || Hand: [Neutralize+, Strike, Hand Trick, Survivor+, Strike+] Enemies: [Kin Follower 59/59, Kin Follower 58/58, Kin Priest 190/190]
+PlayCard 8 1 # CARD.STRIKE_SILENT (57869926) || Hand: [Strike, Hand Trick, Survivor+, Strike+] Enemies: [Kin Follower 55/59, Kin Follower 58/58, Kin Priest 184/190]
+PlayCard 9 # CARD.HAND_TRICK (51067286) || Hand: [Hand Trick, Survivor+, Strike+] Enemies: [Kin Follower 49/59, Kin Follower 58/58, Kin Priest 178/190]
+PlayCard 10 # CARD.SURVIVOR (56952397) || Hand: [Survivor+, Strike+] Enemies: [Kin Follower 49/59, Kin Follower 58/58, Kin Priest 172/190]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 13 # CARD.PREPARED (45020009) || Hand: [Leg Sweep, Prepared+, Defend, Backflip, Untouchable] Enemies: [Kin Follower 49/59, Kin Follower 58/58, Kin Priest 166/190]
+SelectHandCards 3 0
+PlayCard 15 # CARD.BACKFLIP (22742087) || Hand: [Defend, Backflip, Calculated Gamble, Strike+] Enemies: [Kin Follower 49/59, Kin Follower 52/58, Kin Priest 160/190]
+PlayCard 17 # CARD.CALCULATED_GAMBLE (30169725) || Hand: [Defend, Calculated Gamble, Strike+, Survivor+, Untouchable+] Enemies: [Kin Follower 43/59, Kin Follower 52/58, Kin Priest 160/190]
+PlayCard 7 1 # CARD.NEUTRALIZE (51169234) || Hand: [Neutralize+, Strike+, Strike, Defend] Enemies: [Kin Follower 37/59, Kin Follower 52/58, Kin Priest 154/190]
+PlayCard 2 1 # CARD.STRIKE_SILENT (40210042)
+PlayCard 4 1 # CARD.STRIKE_SILENT (35787940) || Hand: [Strike, Defend] Enemies: [Kin Follower 16/59, Kin Follower 52/58, Kin Priest 154/190]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 0 # CARD.BACKFLIP (41093140) || Hand: [Backflip+, Strike, Hand Trick, Strike, Neutralize+] Enemies: [Kin Follower 12/59, Kin Follower 46/58, Kin Priest 154/190]
+PlayCard 7 1 # CARD.NEUTRALIZE (51169234) || Hand: [Strike, Hand Trick, Strike, Neutralize+, Survivor+, Untouchable] Enemies: [Kin Follower 12/59, Kin Follower 40/58, Kin Priest 154/190]
+PlayCard 10 # CARD.SURVIVOR (56952397) || Hand: [Strike, Hand Trick, Strike, Survivor+, Untouchable] Enemies: [Kin Follower 2/59, Kin Follower 40/58, Kin Priest 154/190]
+SelectHandCards 3
+PlayCard 3 1 # CARD.STRIKE_SILENT (26346059) || Hand: [Strike, Hand Trick, Strike] Enemies: [Kin Follower 2/59, Kin Follower 34/58, Kin Priest 148/190]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 13 # CARD.PREPARED (45020009) || Hand: [Prepared+, Strike+, Untouchable+, Strike+, Defend] Enemies: [Kin Follower 28/58, Kin Priest 148/190]
+SelectHandCards 1 5
+PlayCard 4 2 # CARD.STRIKE_SILENT (35787940) || Hand: [Strike+, Strike+, Defend, Strike] Enemies: [Kin Follower 22/58, Kin Priest 142/190]
+PlayCard 2 2 # CARD.STRIKE_SILENT (40210042) || Hand: [Strike+, Strike+, Defend] Enemies: [Kin Follower 16/58, Kin Priest 136/190]
+PlayCard 11 2 # CARD.STRIKE_SILENT (42809531) || Hand: [Strike+, Defend] Enemies: [Kin Follower 1/58, Kin Priest 136/190]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 15 # CARD.BACKFLIP (22742087) || Hand: [Defend, Backflip, Prepared+, Backflip+, Neutralize+] Enemies: [Kin Priest 130/190]
+PlayCard 7 3 # CARD.NEUTRALIZE (51169234) || Hand: [Defend, Prepared+, Backflip+, Neutralize+, Strike, Strike] Enemies: [Kin Priest 124/190]
+PlayCard 13 # CARD.PREPARED (45020009) || Hand: [Defend, Prepared+, Backflip+, Strike, Strike] Enemies: [Kin Priest 114/190]
+SelectHandCards 2 5
+PlayCard 12 3 # CARD.LEG_SWEEP (49741465) || Hand: [Defend, Backflip+, Strike, Leg Sweep] Enemies: [Kin Priest 108/190]
+PlayCard 3 3 # CARD.STRIKE_SILENT (26346059) || Hand: [Defend, Backflip+, Strike] Enemies: [Kin Priest 102/190]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 10 # CARD.SURVIVOR (56952397) || Hand: [Strike+, Survivor+, Untouchable+, Untouchable, Defend] Enemies: [Kin Priest 90/190]
+SelectHandCards 1
+PlayCard 11 3 # CARD.STRIKE_SILENT (42809531) || Hand: [Strike+, Untouchable, Defend] Enemies: [Kin Priest 78/190]
+PlayCard 14 # CARD.DEFEND_SILENT (2526898) || Hand: [Untouchable, Defend] Enemies: [Kin Priest 66/190]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 7 3 # CARD.NEUTRALIZE (51169234) || Hand: [Strike+, Hand Trick, Defend, Defend, Neutralize+] Enemies: [Kin Priest 60/190]
+PlayCard 2 3 # CARD.STRIKE_SILENT (40210042) || Hand: [Strike+, Hand Trick, Defend, Defend] Enemies: [Kin Priest 50/190]
+PlayCard 9 # CARD.HAND_TRICK (51067286) || Hand: [Hand Trick, Defend, Defend] Enemies: [Kin Priest 35/190]
+SelectHandCards 0
+PlayCard 6 # CARD.DEFEND_SILENT (13142010) || Hand: [Defend, Defend] Enemies: [Kin Priest 29/190]
+EndTurn # EndPlayerTurnAction for player 1 round 8
+PlayCard 0 # CARD.BACKFLIP (41093140) || Hand: [Backflip, Backflip+, Prepared+, Strike+, Strike] Enemies: [Kin Priest 23/190]
+PlayCard 13 # CARD.PREPARED (45020009) || Hand: [Backflip, Prepared+, Strike+, Strike, Strike, Leg Sweep] Enemies: [Kin Priest 17/190]
+SelectHandCards 4 6
+PlayCard 11 3 # CARD.STRIKE_SILENT (42809531) || Hand: [Backflip, Strike+, Strike, Strike, Survivor+] Enemies: [Kin Priest 5/190]
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # The Hunt
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Backflip, Strike, Strike, Survivor+] Enemies: []
+MoveToMapCoord 3
+ChooseEventOption 2 # OROBAS.pages.INITIAL.options.ARCHAIC_TOOTH
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+PlayCard 2 1 # CARD.LEG_SWEEP (27437842) || Hand: [Suppress+, Strike, Prepared+, Leg Sweep, Survivor+, Untouchable, Calculated Gamble] Enemies: [Thieving Hopper 79/79]
+PlayCard 13 1 # CARD.SUPPRESS (31990286) || Hand: [Suppress+, Strike, Prepared+, Survivor+, Untouchable, Calculated Gamble] Enemies: [Thieving Hopper 79/79]
+PlayCard 1 # CARD.PREPARED (25418270) || Hand: [Strike, Prepared+, Survivor+, Untouchable, Calculated Gamble] Enemies: [Thieving Hopper 62/79]
+SelectHandCards 2 4
+PlayCard 7 1 # CARD.STRIKE_SILENT (34976436) || Hand: [Strike, Survivor+, Calculated Gamble, Strike+] Enemies: [Thieving Hopper 62/79]
+PlayCard 0 1 # CARD.STRIKE_SILENT (40106954) || Hand: [Strike, Survivor+, Calculated Gamble] Enemies: [Thieving Hopper 53/79]
+PlayCard 5 # CARD.CALCULATED_GAMBLE (3745825) || Hand: [Survivor+, Calculated Gamble] Enemies: [Thieving Hopper 47/79]
+PlayCard 8 # CARD.DEFEND_SILENT (46352470) || Hand: [Defend] Enemies: [Thieving Hopper 47/79]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 15 # CARD.BACKFLIP (41076370) || Hand: [The Hunt, Untouchable+, Strike, Strike, Backflip+] Enemies: [Thieving Hopper 47/79]
+PlayCard 14 1 # CARD.STRIKE_SILENT (19477122) || Hand: [The Hunt, Untouchable+, Strike, Strike, Serpent Form+, Backflip] Enemies: [Thieving Hopper 47/79]
+PlayCard 12 1 # CARD.STRIKE_SILENT (48293718) || Hand: [The Hunt, Untouchable+, Strike, Serpent Form+, Backflip] Enemies: [Thieving Hopper 41/79]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 2 1 # CARD.LEG_SWEEP (27437842) || Hand: [Strike+, Defend, Leg Sweep, Backflip, Strike] Enemies: [Thieving Hopper 35/79]
+PlayCard 8 # CARD.DEFEND_SILENT (46352470) || Hand: [Strike+, Defend, Backflip, Strike] Enemies: [Thieving Hopper 35/79]
+PlayCard 0 1 # CARD.STRIKE_SILENT (40106954) || Hand: [Strike+, Backflip, Strike] Enemies: [Thieving Hopper 35/79]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 1 # CARD.PREPARED (25418270) || Hand: [Prepared+, The Hunt, Serpent Form+, Strike, Untouchable] Enemies: [Thieving Hopper 32/79]
+SelectHandCards 3 4
+PlayCard 12 1 # CARD.STRIKE_SILENT (48293718) || Hand: [The Hunt, Serpent Form+, Strike, Survivor+] Enemies: [Thieving Hopper 32/79]
+PlayCard 9 1 # CARD.THE_HUNT (14519047) || Hand: [The Hunt, Serpent Form+, Survivor+] Enemies: [Thieving Hopper 29/79]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 13 1 # CARD.SUPPRESS (31990286) || Hand: [Defend, Backflip+, Suppress+, Strike, Strike+] Enemies: [Thieving Hopper 24/79]
+PlayCard 14 1 # CARD.STRIKE_SILENT (19477122) || Hand: [Defend, Backflip+, Strike, Strike+] Enemies: [Thieving Hopper 16/79]
+PlayCard 7 1 # CARD.STRIKE_SILENT (34976436)
+PlayCard 15 # CARD.BACKFLIP (41076370) || Hand: [Defend, Backflip+] Enemies: [Thieving Hopper 4/79]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 0 1 # CARD.STRIKE_SILENT (40106954) || Hand: [Survivor+, Strike, Leg Sweep, Defend, Strike+] Enemies: [Thieving Hopper 4/79]
+ClaimReward 0 # GoldReward: 20
+ClaimReward 0 # SpecialCardReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Prepared
+MoveToMapCoord 0
+OpenShop
+BuyCardRemoval
+SelectGridCard 5
+MoveToMapCoord 0
+PlayCard 1 1 # CARD.SUPPRESS (34094713) || Hand: [Suppress+, Untouchable, The Hunt, Backflip, Backflip+, Prepared+, Calculated Gamble] Enemies: [Tunneler 87/87]
+PlayCard 5 # CARD.PREPARED (21569934) || Hand: [Untouchable, The Hunt, Backflip, Backflip+, Prepared+, Calculated Gamble] Enemies: [Tunneler 70/87]
+SelectHandCards 2 4
+PlayCard 8 # CARD.PREPARED (21007756) || Hand: [Untouchable, The Hunt, Backflip+, Survivor+, Prepared] Enemies: [Tunneler 70/87]
+SelectHandCards 0
+PlayCard 4 # CARD.BACKFLIP (24766280) || Hand: [The Hunt, Backflip+, Survivor+, Strike+] Enemies: [Tunneler 70/87]
+PlayCard 9 1 # CARD.STRIKE_SILENT (54852084) || Hand: [The Hunt, Survivor+, Strike+, Serpent Form+, Strike] Enemies: [Tunneler 70/87]
+PlayCard 11 1 # CARD.STRIKE_SILENT (13833851) || Hand: [The Hunt, Survivor+, Serpent Form+, Strike] Enemies: [Tunneler 61/87]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 13 1 # CARD.LEG_SWEEP (46800109) || Hand: [Defend, Leg Sweep, Strike+, Strike, Hand Trick] Enemies: [Tunneler 55/87]
+PlayCard 15 1 # CARD.STRIKE_SILENT (32712500) || Hand: [Defend, Strike+, Strike, Hand Trick] Enemies: [Tunneler 55/87]
+PlayCard 14 1 # CARD.STRIKE_SILENT (18547803) || Hand: [Defend, Strike+, Hand Trick] Enemies: [Tunneler 49/87]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 6 # CARD.CALCULATED_GAMBLE (59911678) || Hand: [Strike, Untouchable+, Strike, Strike, Calculated Gamble] Enemies: [Tunneler 40/87]
+PlayCard 13 1 # CARD.LEG_SWEEP (46800109) || Hand: [Prepared+, Leg Sweep, Defend, Survivor+] Enemies: [Tunneler 40/87]
+PlayCard 5 # CARD.PREPARED (21569934) || Hand: [Prepared+, Defend, Survivor+] Enemies: [Tunneler 40/87]
+SelectHandCards 3 1
+PlayCard 2 1 # CARD.THE_HUNT (38416963) || Hand: [Defend, The Hunt] Enemies: [Tunneler 40/87]
+PlayCard 12 # CARD.DEFEND_SILENT (57395795) || Hand: [Defend] Enemies: [Tunneler 40/87]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 3 # CARD.BACKFLIP (10208349) || Hand: [Prepared, Untouchable, Backflip, Strike+, Strike+] Enemies: [Tunneler 40/87]
+PlayCard 8 # CARD.PREPARED (21007756) || Hand: [Prepared, Untouchable, Strike+, Strike+, Suppress+, Serpent Form+] Enemies: [Tunneler 40/87]
+SelectHandCards 0
+PlayCard 1 1 # CARD.SUPPRESS (34094713) || Hand: [Strike+, Strike+, Suppress+, Serpent Form+, Backflip+] Enemies: [Tunneler 40/87]
+PlayCard 14 1 # CARD.STRIKE_SILENT (18547803) || Hand: [Strike+, Strike+, Serpent Form+, Backflip+] Enemies: [Tunneler 40/87]
+PlayCard 9 1 # CARD.STRIKE_SILENT (54852084) || Hand: [Strike+, Serpent Form+, Backflip+] Enemies: [Tunneler 36/87]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 1 1 # CARD.SUPPRESS (34094713) || Hand: [Untouchable, Survivor+, Strike, Suppress+, Strike+] Enemies: [Tunneler 27/87]
+PlayCard 14 1 # CARD.STRIKE_SILENT (18547803) || Hand: [Untouchable, Survivor+, Strike, Strike+] Enemies: [Tunneler 10/87]
+PlayCard 15 1 # CARD.STRIKE_SILENT (32712500) || Hand: [Untouchable, Survivor+, Strike] Enemies: [Tunneler 1/87]
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 0
+ChooseEventOption 0 # THE_LANTERN_KEY.pages.INITIAL.options.RETURN_THE_KEY
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+PlayCard 4 # CARD.SERPENT_FORM (33799682) || Hand: [Suppress+, Strike+, Prepared, Strike, Defend, Serpent Form+, Backflip] Enemies: [Bowlbug (Rock) 48/48, Bowlbug (Silk) 40/40, Bowlbug (Nectar) 35/35]
+PlayCard 9 1 # CARD.SUPPRESS (19847769) || Hand: [Suppress+, Strike+, Prepared, Strike, Defend, Backflip] Enemies: [Bowlbug (Rock) 48/48, Bowlbug (Silk) 40/40, Bowlbug (Nectar) 35/35]
+PlayCard 1 # CARD.PREPARED (7502904) || Hand: [Strike+, Prepared, Strike, Defend, Backflip] Enemies: [Bowlbug (Rock) 31/48, Bowlbug (Silk) 40/40, Bowlbug (Nectar) 29/35]
+SelectHandCards 4
+UsePotion 2 # POTION.ENERGY_POTION || Hand: [Strike+, Strike, Defend, Backflip] Enemies: [Bowlbug (Rock) 25/48, Bowlbug (Silk) 40/40, Bowlbug (Nectar) 23/35]
+PlayCard 5 # CARD.BACKFLIP (35761688) || Hand: [Strike+, Strike, Defend, Backflip] Enemies: [Bowlbug (Rock) 25/48, Bowlbug (Silk) 40/40, Bowlbug (Nectar) 23/35]
+PlayCard 7 3 # CARD.LEG_SWEEP (11015592) || Hand: [Strike+, Strike, Defend, Leg Sweep, The Hunt] Enemies: [Bowlbug (Rock) 25/48, Bowlbug (Silk) 40/40, Bowlbug (Nectar) 17/35]
+PlayCard 0 1 # CARD.STRIKE_SILENT (30659817) || Hand: [Strike+, Strike, Defend, The Hunt] Enemies: [Bowlbug (Rock) 25/48, Bowlbug (Silk) 40/40, Bowlbug (Nectar) 11/35]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 13 # CARD.PREPARED (30019644) || Hand: [Strike, Strike, Strike+, Prepared+, Hand Trick] Enemies: [Bowlbug (Rock) 16/48, Bowlbug (Silk) 40/40, Bowlbug (Nectar) 5/35]
+SelectHandCards 4 3
+PlayCard 12 1 # CARD.STRIKE_SILENT (40618218) || Hand: [Strike, Strike, Strike+, Survivor+] Enemies: [Bowlbug (Rock) 10/48, Bowlbug (Silk) 34/40, Bowlbug (Nectar) 5/35]
+PlayCard 11 1 # CARD.STRIKE_SILENT (64165458) || Hand: [Strike, Strike, Survivor+] Enemies: [Bowlbug (Rock) 4/48, Bowlbug (Silk) 34/40]
+PlayCard 10 2 # CARD.STRIKE_SILENT (44412197) || Hand: [Strike, Survivor+] Enemies: [Bowlbug (Silk) 28/40]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 7 2 # CARD.LEG_SWEEP (11015592) || Hand: [Backflip+, Calculated Gamble, Prepared, Strike+, Leg Sweep] Enemies: [Bowlbug (Silk) 18/40]
+PlayCard 1 # CARD.PREPARED (7502904) || Hand: [Backflip+, Calculated Gamble, Prepared, Strike+] Enemies: [Bowlbug (Silk) 12/40]
+SelectHandCards 0
+PlayCard 9 2 # CARD.SUPPRESS (19847769) || Hand: [Calculated Gamble, Strike+, Suppress+] Enemies: [Bowlbug (Silk) 6/40]
+ClaimReward 0 # GoldReward: 13
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 1
+PlayCard 16 1 # CARD.SUPPRESS (32914214) || Hand: [Suppress+, Strike, Backflip+, Hand Trick, Leg Sweep, Backflip, Strike+] Enemies: [Chomper 63/63, Chomper 64/64]
+PlayCard 1 # CARD.BACKFLIP (47218263) || Hand: [Strike, Backflip+, Hand Trick, Leg Sweep, Backflip, Strike+] Enemies: [Chomper 46/63, Chomper 64/64]
+PlayCard 4 # CARD.BACKFLIP (62375656) || Hand: [Strike, Hand Trick, Leg Sweep, Backflip, Strike+, Untouchable, The Hunt] Enemies: [Chomper 46/63, Chomper 64/64]
+PlayCard 7 1 # CARD.THE_HUNT (39152718) || Hand: [Strike, Hand Trick, Leg Sweep, Strike+, Untouchable, The Hunt, Serpent Form+, Strike] Enemies: [Chomper 46/63, Chomper 64/64]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 11 # CARD.PREPARED (55366023) || Hand: [Defend, Prepared+, Calculated Gamble, Untouchable+, Strike+] Enemies: [Chomper 36/63, Chomper 64/64]
+SelectHandCards 2 1
+PlayCard 15 # CARD.SURVIVOR (63309458) || Hand: [Defend, Strike+, Survivor+, Strike] Enemies: [Chomper 36/63, Chomper 64/64]
+SelectHandCards 2
+PlayCard 14 1 # CARD.STRIKE_SILENT (29404005) || Hand: [Defend, Strike+] Enemies: [Chomper 36/63, Chomper 64/64]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 18 # CARD.PREPARED (48805679) || Hand: [Prepared, Untouchable, Suppress+, Hand Trick, Survivor+] Enemies: [Chomper 27/63, Chomper 64/64]
+SelectHandCards 0
+PlayCard 16 1 # CARD.SUPPRESS (32914214) || Hand: [Suppress+, Hand Trick, Survivor+, Defend] Enemies: [Chomper 27/63, Chomper 64/64]
+PlayCard 2 # CARD.HAND_TRICK (22311186) || Hand: [Hand Trick, Survivor+, Defend] Enemies: [Chomper 10/63, Chomper 64/64]
+SelectHandCards 1
+PlayCard 15 # CARD.SURVIVOR (63309458) || Hand: [Survivor+, Defend] Enemies: [Chomper 10/63, Chomper 64/64]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 17 1 # CARD.STRIKE_SILENT (27792474) || Hand: [Dazed, Strike, Strike, Serpent Form+, Leg Sweep] Enemies: [Chomper 10/63, Chomper 64/64]
+PlayCard 9 1 # CARD.STRIKE_SILENT (17253621) || Hand: [Dazed, Strike, Serpent Form+, Leg Sweep] Enemies: [Chomper 4/63, Chomper 64/64]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 5 2 # CARD.STRIKE_SILENT (24509997) || Hand: [Dazed, Untouchable+, Strike, Dazed, Strike+] Enemies: [Chomper 64/64]
+PlayCard 0 2 # CARD.STRIKE_SILENT (64898797) || Hand: [Dazed, Untouchable+, Strike, Dazed] Enemies: [Chomper 55/64]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 4 # CARD.BACKFLIP (62375656) || Hand: [Prepared+, Dazed, Strike+, Backflip, Dazed] Enemies: [Chomper 49/64]
+PlayCard 1 # CARD.BACKFLIP (47218263) || Hand: [Prepared+, Dazed, Strike+, Dazed, Backflip+, Dazed] Enemies: [Chomper 49/64]
+PlayCard 3 2 # CARD.LEG_SWEEP (66582952) || Hand: [Prepared+, Dazed, Strike+, Dazed, Dazed, Calculated Gamble, Leg Sweep] Enemies: [Chomper 49/64]
+PlayCard 12 # CARD.CALCULATED_GAMBLE (28532165) || Hand: [Prepared+, Dazed, Strike+, Dazed, Dazed, Calculated Gamble] Enemies: [Chomper 49/64]
+PlayCard 16 2 # CARD.SUPPRESS (32914214) || Hand: [Suppress+, Serpent Form+, Backflip, Strike, Prepared] Enemies: [Chomper 49/64]
+PlayCard 18 # CARD.PREPARED (48805679) || Hand: [Serpent Form+, Backflip, Strike, Prepared] Enemies: [Chomper 32/64]
+SelectHandCards 0
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 15 # CARD.SURVIVOR (63309458) || Hand: [Dazed, Defend, Dazed, Hand Trick, Survivor+] Enemies: [Chomper 32/64]
+SelectHandCards 1
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 13 # CARD.UNTOUCHABLE (55462894) || Hand: [Strike, Strike+, Dazed, Dazed, Untouchable+] Enemies: [Chomper 32/64]
+PlayCard 5 2 # CARD.STRIKE_SILENT (24509997) || Hand: [Strike, Strike+, Dazed, Dazed] Enemies: [Chomper 32/64]
+EndTurn # EndPlayerTurnAction for player 1 round 8
+PlayCard 8 # CARD.SERPENT_FORM (16830149) || Hand: [Untouchable, Dazed, Dazed, Serpent Form+, Strike+] Enemies: [Chomper 23/64]
+EndTurn # EndPlayerTurnAction for player 1 round 9
+PlayCard 15 # CARD.SURVIVOR (63309458) || Hand: [Dazed, Untouchable+, Dazed, Survivor+, Hand Trick] Enemies: [Chomper 23/64]
+SelectHandCards 1
+PlayCard 2 # CARD.HAND_TRICK (22311186) || Hand: [Dazed, Dazed, Hand Trick] Enemies: [Chomper 11/64]
+EndTurn # EndPlayerTurnAction for player 1 round 10
+PlayCard 9 2 # CARD.STRIKE_SILENT (17253621) || Hand: [Dazed, Strike, Backflip, Defend, Strike] Enemies: [Chomper 5/64]
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # PotionReward
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard 0 # Ricochet
+MoveToMapCoord 2
+OpenShop
+BuyCardRemoval
+SelectGridCard 3
+MoveToMapCoord 1
+OpenChest
+TakeChestRelic # Oddly Smooth Stone
+NetPickRelicAction for player 1 index 0 || Hand: [Dazed, Strike, Backflip, Defend] Enemies: []
+MoveToMapCoord 0
+ChooseRestSiteOption SMITH
+SelectGridCard 9
+MoveToMapCoord 0
+ChooseEventOption 1 # SYMBIOTE.pages.INITIAL.options.KILL_WITH_FIRE
+SelectGridCard 2
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+ChooseEventOption 0 # THIS_OR_THAT.pages.INITIAL.options.PLAIN
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+PlayCard 0 # CARD.SERPENT_FORM (4483042) || Hand: [Suppress+, Serpent Form+, Leg Sweep, Prepared+, Leg Sweep, Strike+, Strike] Enemies: [Louse Progenitor 135/135]
+PlayCard 2 # CARD.PREPARED (27582110) || Hand: [Suppress+, Leg Sweep, Prepared+, Leg Sweep, Strike+, Strike] Enemies: [Louse Progenitor 135/135]
+SelectHandCards 1 2
+PlayCard 6 # CARD.PREPARED (40726378) || Hand: [Suppress+, Strike+, Strike, Prepared+, Backflip+] Enemies: [Louse Progenitor 129/135]
+SelectHandCards 2 1
+PlayCard 13 1 # CARD.SUPPRESS (133098) || Hand: [Suppress+, Backflip+, Defend, Survivor+] Enemies: [Louse Progenitor 123/135]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 # CARD.BACKFLIP (45383817) || Hand: [Backflip, Hand Trick, Ricochet, Untouchable+, Calculated Gamble] Enemies: [Louse Progenitor 100/135]
+PlayCard 16 1 # CARD.STRIKE_SILENT (29919613) || Hand: [Hand Trick, Ricochet, Untouchable+, Calculated Gamble, Strike+, Untouchable] Enemies: [Louse Progenitor 94/135]
+PlayCard 15 # CARD.CALCULATED_GAMBLE (10780941) || Hand: [Hand Trick, Ricochet, Untouchable+, Calculated Gamble, Untouchable] Enemies: [Louse Progenitor 79/135]
+PlayCard 2 # CARD.PREPARED (27582110)
+SelectHandCards 0 3
+PlayCard 4 1 # CARD.STRIKE_SILENT (19558398) || Hand: [Survivor+, Strike+] Enemies: [Louse Progenitor 37/135]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 7 # CARD.BACKFLIP (30993089) || Hand: [Hand Trick, Leg Sweep, Backflip, Strike+, Backflip+] Enemies: [Louse Progenitor 22/135]
+PlayCard 10 # CARD.BACKFLIP (45383817) || Hand: [Hand Trick, Leg Sweep, Backflip, Strike+, Strike, Leg Sweep] Enemies: [Louse Progenitor 22/135]
+PlayCard 6 # CARD.PREPARED (40726378) || Hand: [Hand Trick, Leg Sweep, Strike+, Strike, Leg Sweep, Suppress+, Prepared+] Enemies: [Louse Progenitor 22/135]
+SelectHandCards 7 4
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # CardReward
+TakeCard 0 # Reflex
+MoveToMapCoord 0
+ChooseEventOption 1 # POTION_COURIER.pages.INITIAL.options.RANSACK
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+ChooseRestSiteOption SMITH
+SelectGridCard 10
+MoveToMapCoord 3
+PlayCard 0 # CARD.SERPENT_FORM (40428677) || Hand: [Suppress+, Serpent Form+, Backflip+, Leg Sweep, Untouchable+, Reflex+, Leg Sweep] Enemies: [The Insatiable 321/321]
+PlayCard 13 1 # CARD.SUPPRESS (36624192) || Hand: [Suppress+, Backflip+, Leg Sweep, Untouchable+, Reflex+, Leg Sweep] Enemies: [The Insatiable 321/321]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 # CARD.BACKFLIP (46544616) || Hand: [Calculated Gamble, Survivor+, Backflip, Defend, Frantic Escape] Enemies: [The Insatiable 298/321]
+PlayCard 7 # CARD.SURVIVOR (20084704) || Hand: [Calculated Gamble, Survivor+, Defend, Frantic Escape, Untouchable, Frantic Escape] Enemies: [The Insatiable 292/321]
+SelectHandCards 3
+PlayCard 22 # CARD.FRANTIC_ESCAPE (48849531) || Hand: [Calculated Gamble, Defend, Frantic Escape, Frantic Escape] Enemies: [The Insatiable 280/321]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 21 # CARD.FRANTIC_ESCAPE (42710427) || Hand: [Frantic Escape, Strike+, Strike, Ricochet, The Hunt] Enemies: [The Insatiable 274/321]
+UsePotion 0 # POTION.DROPLET_OF_PRECOGNITION || Hand: [Strike+, Strike, Ricochet, The Hunt] Enemies: [The Insatiable 268/321]
+SelectGridCard 2
+PlayCard 19 # CARD.PREPARED (13595080) || Hand: [Strike+, Strike, Ricochet, The Hunt, Prepared+] Enemies: [The Insatiable 268/321]
+SelectHandCards 2 1
+PlayCard 17 # CARD.PREPARED (41593065) || Hand: [Strike+, The Hunt, Strike+, Prepared+] Enemies: [The Insatiable 244/321]
+SelectHandCards 0 2
+PlayCard 18 # CARD.HAND_TRICK (38793266) || Hand: [The Hunt, Hand Trick, Calculated Gamble] Enemies: [The Insatiable 238/321]
+PlayCard 6 # CARD.CALCULATED_GAMBLE (17144714) || Hand: [The Hunt, Calculated Gamble] Enemies: [The Insatiable 232/321]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 19 # CARD.PREPARED (13595080) || Hand: [Frantic Escape, Backflip, Frantic Escape, Leg Sweep, Prepared+] Enemies: [The Insatiable 226/321]
+SelectHandCards 4 0
+PlayCard 1 # CARD.BACKFLIP (28313777) || Hand: [Backflip, Frantic Escape, Leg Sweep, Backflip+] Enemies: [The Insatiable 220/321]
+PlayCard 8 # CARD.BACKFLIP (46544616) || Hand: [Backflip, Frantic Escape, Leg Sweep, Leg Sweep, Untouchable] Enemies: [The Insatiable 214/321]
+PlayCard 13 1 # CARD.SUPPRESS (36624192) || Hand: [Frantic Escape, Leg Sweep, Leg Sweep, Untouchable, Untouchable+, Suppress+] Enemies: [The Insatiable 208/321]
+PlayCard 23 # CARD.FRANTIC_ESCAPE (36992595) || Hand: [Frantic Escape, Leg Sweep, Leg Sweep, Untouchable, Untouchable+] Enemies: [The Insatiable 185/321]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 7 # CARD.SURVIVOR (20084704) || Hand: [Ricochet, Frantic Escape, Survivor+, Reflex+, Frantic Escape] Enemies: [The Insatiable 179/321]
+SelectHandCards 2
+PlayCard 9 # CARD.DEFEND_SILENT (16248361) || Hand: [Ricochet, Frantic Escape, Frantic Escape, Defend, Strike, Untouchable] Enemies: [The Insatiable 167/321]
+PlayCard 20 # CARD.FRANTIC_ESCAPE (34571764) || Hand: [Ricochet, Frantic Escape, Frantic Escape, Strike, Untouchable] Enemies: [The Insatiable 161/321]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 17 # CARD.PREPARED (41593065) || Hand: [Prepared+, Prepared+, Frantic Escape, Frantic Escape, Frantic Escape] Enemies: [The Insatiable 155/321]
+SelectHandCards 1 3
+PlayCard 19 # CARD.PREPARED (13595080) || Hand: [Prepared+, Frantic Escape, Leg Sweep, Backflip] Enemies: [The Insatiable 149/321]
+SelectHandCards 3 0
+PlayCard 8 # CARD.BACKFLIP (46544616) || Hand: [Leg Sweep, Backflip, Hand Trick] Enemies: [The Insatiable 137/321]
+PlayCard 22 # CARD.FRANTIC_ESCAPE (48849531) || Hand: [Leg Sweep, Hand Trick, The Hunt, Frantic Escape] Enemies: [The Insatiable 131/321]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 1 # CARD.BACKFLIP (28313777) || Hand: [Leg Sweep, Strike+, Strike+, Suppress+, Backflip+] Enemies: [The Insatiable 125/321]
+PlayCard 13 1 # CARD.SUPPRESS (36624192) || Hand: [Leg Sweep, Strike+, Strike+, Suppress+, The Hunt, Strike] Enemies: [The Insatiable 119/321]
+PlayCard 5 1 # CARD.LEG_SWEEP (9361508) || Hand: [Leg Sweep, Strike+, Strike+, The Hunt, Strike] Enemies: [The Insatiable 96/321]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 8 # CARD.BACKFLIP (46544616) || Hand: [Frantic Escape, Frantic Escape, Backflip, Frantic Escape, Ricochet] Enemies: [The Insatiable 90/321]
+PlayCard 19 # CARD.PREPARED (13595080) || Hand: [Frantic Escape, Frantic Escape, Frantic Escape, Ricochet, Frantic Escape, Prepared+] Enemies: [The Insatiable 84/321]
+SelectHandCards 3 1
+PlayCard 24 # CARD.FRANTIC_ESCAPE (64497901) || Hand: [Frantic Escape, Frantic Escape, Frantic Escape, Defend, Frantic Escape] Enemies: [The Insatiable 60/321]
+PlayCard 25 # CARD.FRANTIC_ESCAPE (43610203) || Hand: [Frantic Escape, Frantic Escape, Frantic Escape, Defend] Enemies: [The Insatiable 54/321]
+EndTurn # EndPlayerTurnAction for player 1 round 8
+PlayCard 18 # CARD.HAND_TRICK (38793266) || Hand: [Survivor+, Leg Sweep, Untouchable+, Prepared+, Hand Trick] Enemies: [The Insatiable 48/321]
+SelectHandCards 1
+PlayCard 17 # CARD.PREPARED (41593065) || Hand: [Survivor+, Leg Sweep, Untouchable+, Prepared+] Enemies: [The Insatiable 42/321]
+SelectHandCards 2 4
+PlayCard 19 # CARD.PREPARED (13595080) || Hand: [Survivor+, Leg Sweep, Frantic Escape, Untouchable, Backflip, Prepared+] Enemies: [The Insatiable 24/321]
+SelectHandCards 3 1
+PlayCard 13 1 # CARD.SUPPRESS (36624192) || Hand: [Survivor+, Frantic Escape, Backflip, Suppress+, Frantic Escape] Enemies: [The Insatiable 6/321]
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # CardReward
+TakeCard 1 # Afterimage
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Survivor+, Frantic Escape, Backflip, Frantic Escape] Enemies: []
+MoveToMapCoord 3
+ChooseEventOption 2 # VAKUU.pages.INITIAL.options.JEWELED_MASK
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+PlayCard 0 # CARD.AFTERIMAGE (23176372) || Hand: [Afterimage, Suppress+, Prepared+, Serpent Form+, Untouchable, Leg Sweep, Backflip+, Strike] Enemies: [Scroll of Biting 31/31, Scroll of Biting 34/34, Scroll of Biting 36/36]
+PlayCard 3 # CARD.SERPENT_FORM (51250963) || Hand: [Suppress+, Prepared+, Serpent Form+, Untouchable, Leg Sweep, Backflip+, Strike] Enemies: [Scroll of Biting 31/31, Scroll of Biting 34/34, Scroll of Biting 36/36]
+PlayCard 2 2 # CARD.SUPPRESS (65346875) || Hand: [Suppress+, Prepared+, Untouchable, Leg Sweep, Backflip+, Strike] Enemies: [Scroll of Biting 31/31, Scroll of Biting 34/34, Scroll of Biting 36/36]
+PlayCard 1 # CARD.PREPARED (7260763) || Hand: [Prepared+, Untouchable, Leg Sweep, Backflip+, Strike] Enemies: [Scroll of Biting 25/31, Scroll of Biting 17/34, Scroll of Biting 36/36]
+SelectHandCards 0 3
+PlayCard 8 # CARD.PREPARED (43909752) || Hand: [Leg Sweep, Backflip+, Prepared+, Backflip] Enemies: [Scroll of Biting 13/31, Scroll of Biting 17/34, Scroll of Biting 36/36]
+SelectHandCards 4 1
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 12 # CARD.CALCULATED_GAMBLE (60641877) || Hand: [Calculated Gamble, Strike+, Reflex+, Strike+, Defend] Enemies: [Scroll of Biting 13/31, Scroll of Biting 11/34, Scroll of Biting 36/36]
+PlayCard 9 # CARD.BACKFLIP (59643452) || Hand: [Untouchable+, Ricochet, Hand Trick, The Hunt, Backflip, Leg Sweep, Survivor+] Enemies: [Scroll of Biting 13/31, Scroll of Biting 5/34, Scroll of Biting 30/36]
+PlayCard 8 # CARD.PREPARED (43909752) || Hand: [Untouchable+, Ricochet, Hand Trick, The Hunt, Leg Sweep, Survivor+, Prepared+, Strike+] Enemies: [Scroll of Biting 13/31, Scroll of Biting 5/34, Scroll of Biting 24/36]
+SelectHandCards 0 1
+PlayCard 1 # CARD.PREPARED (7260763) || Hand: [Hand Trick, The Hunt, Leg Sweep, Survivor+, Strike+, Prepared+, Defend] Enemies: [Scroll of Biting 18/36]
+SelectHandCards 3 5
+PlayCard 11 3 # CARD.LEG_SWEEP (66390309) || Hand: [Hand Trick, The Hunt, Leg Sweep, Strike+, Leg Sweep, Backflip+] Enemies: [Scroll of Biting 12/36]
+PlayCard 20 3 # CARD.THE_HUNT (28694084) || Hand: [Hand Trick, The Hunt, Strike+, Leg Sweep, Backflip+] Enemies: [Scroll of Biting 6/36]
+ClaimReward 0 # GoldReward: 17
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Prepared
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 2
+PlayCard 9 # CARD.AFTERIMAGE (28786598) || Hand: [Afterimage, Suppress+, Reflex+, Leg Sweep, Calculated Gamble, Untouchable+, Ricochet, Strike+] Enemies: [Living Shield 55/55, Turret Operator 41/41]
+PlayCard 1 2 # CARD.SUPPRESS (37713777) || Hand: [Suppress+, Reflex+, Leg Sweep, Calculated Gamble, Untouchable+, Ricochet, Strike+] Enemies: [Living Shield 55/55, Turret Operator 41/41]
+PlayCard 3 # CARD.CALCULATED_GAMBLE (34917079) || Hand: [Reflex+, Leg Sweep, Calculated Gamble, Untouchable+, Ricochet, Strike+] Enemies: [Living Shield 55/55, Turret Operator 41/41]
+PlayCard 11 # CARD.PREPARED (50013135) || Hand: [Leg Sweep, Prepared, Strike+, Prepared+, Defend, Backflip, Backflip+, Untouchable] Enemies: [Living Shield 55/55, Turret Operator 37/41]
+SelectHandCards 6 3
+PlayCard 8 # CARD.PREPARED (33024672) || Hand: [Leg Sweep, Prepared, Strike+, Backflip, Backflip+, Survivor+, Strike] Enemies: [Living Shield 55/55, Turret Operator 37/41]
+SelectHandCards 5
+PlayCard 18 # CARD.SERPENT_FORM (53547976) || Hand: [Leg Sweep, Strike+, Backflip, Backflip+, Survivor+, Serpent Form+] Enemies: [Living Shield 55/55, Turret Operator 37/41]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 19 # CARD.PREPARED (12169743) || Hand: [Prepared+, Hand Trick, The Hunt, Strike+, Suppress+] Enemies: [Living Shield 55/55, Turret Operator 37/41]
+SelectHandCards 4 0
+PlayCard 14 # CARD.BACKFLIP (19462674) || Hand: [The Hunt, Strike+, Suppress+, Backflip+] Enemies: [Living Shield 49/55, Turret Operator 37/41]
+PlayCard 1 1 # CARD.SUPPRESS (37713777) || Hand: [The Hunt, Strike+, Suppress+, Leg Sweep, Ricochet] Enemies: [Living Shield 43/55, Turret Operator 37/41]
+PlayCard 6 1 # CARD.STRIKE_SILENT (20291819) || Hand: [The Hunt, Strike+, Leg Sweep, Ricochet] Enemies: [Living Shield 20/55, Turret Operator 37/41]
+PlayCard 21 1 # CARD.THE_HUNT (46225102) || Hand: [The Hunt, Leg Sweep, Ricochet] Enemies: [Living Shield 5/55, Turret Operator 37/41]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 11 # CARD.PREPARED (50013135) || Hand: [Strike, Survivor+, Prepared+, Prepared, Leg Sweep] Enemies: [Turret Operator 37/41]
+SelectHandCards 5 3
+PlayCard 8 # CARD.PREPARED (33024672) || Hand: [Strike, Survivor+, Prepared, Defend] Enemies: [Turret Operator 25/41]
+SelectHandCards 1
+PlayCard 10 2 # CARD.STRIKE_SILENT (57752798) || Hand: [Strike, Defend, Strike+] Enemies: [Turret Operator 19/41]
+PlayCard 17 2 # CARD.STRIKE_SILENT (28319396) || Hand: [Strike, Defend] Enemies: [Turret Operator 4/41]
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+ClaimReward 1 # CardReward
+TakeCard 0 # Ricochet+
+MoveToMapCoord 2
+ChooseEventOption 0 # RANWID_THE_ELDER.pages.INITIAL.options.POTION
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+ChooseEventOption 1 # HUNGRY_FOR_MUSHROOMS.pages.INITIAL.options.FRAGRANT_MUSHROOM
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 4
+PlayCard 0 # CARD.SERPENT_FORM (5446512) || Hand: [Serpent Form+, Suppress+, Leg Sweep, Strike+, Ricochet+, The Hunt+, Backflip, Untouchable+] Enemies: [Fabricator 150/150]
+PlayCard 5 # CARD.BACKFLIP (25460737) || Hand: [Suppress+, Leg Sweep, Strike+, Ricochet+, The Hunt+, Backflip, Untouchable+] Enemies: [Fabricator 150/150]
+PlayCard 19 1 # CARD.SUPPRESS (48318385) || Hand: [Suppress+, Leg Sweep, Strike+, Ricochet+, The Hunt+, Untouchable+, Backflip+, Reflex+] Enemies: [Fabricator 144/150]
+PlayCard 7 # CARD.BACKFLIP (49053851) || Hand: [Leg Sweep, Strike+, Ricochet+, The Hunt+, Untouchable+, Backflip+, Reflex+] Enemies: [Fabricator 121/150]
+UsePotion 0 # POTION.CURE_ALL || Hand: [Leg Sweep, Strike+, Ricochet+, The Hunt+, Untouchable+, Reflex+, Strike, Ricochet] Enemies: [Fabricator 115/150]
+PlayCard 9 1 # CARD.STRIKE_SILENT (13939022) || Hand: [Leg Sweep, Strike+, Ricochet+, The Hunt+, Untouchable+, Reflex+, Strike, Ricochet, Untouchable+, Defend] Enemies: [Fabricator 115/150]
+PlayCard 2 1 # CARD.STRIKE_SILENT (38514356) || Hand: [Leg Sweep, Strike+, Ricochet+, The Hunt+, Untouchable+, Reflex+, Ricochet, Untouchable+, Defend] Enemies: [Fabricator 103/150]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 17 # CARD.AFTERIMAGE (56934828) || Hand: [Prepared+, Calculated Gamble, Survivor+, Prepared+, Afterimage] Enemies: [Guardbot 17/17, Zapbot 19/19, Fabricator 88/150]
+PlayCard 13 # CARD.PREPARED (51652124)
+SelectHandCards 3 4
+PlayCard 16 # CARD.PREPARED (6326092) || Hand: [Calculated Gamble, Survivor+, Prepared+] Enemies: [Guardbot 17/17, Zapbot 19/19, Fabricator 76/150]
+SelectHandCards 3 0
+PlayCard 15 # CARD.SURVIVOR (23072520) || Hand: [Survivor+, Prepared] Enemies: [Guardbot 11/17, Zapbot 19/19, Fabricator 76/150]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 13 # CARD.PREPARED (51652124) || Hand: [Reflex+, Strike, Backflip, Calculated Gamble, Prepared+] Enemies: [Guardbot 11/17, Zapbot 10/19, Fabricator 76/150, Stabbot 23/23]
+SelectHandCards 0 5
+PlayCard 22 # CARD.HAND_TRICK (59058488) || Hand: [Strike, Backflip, Calculated Gamble, Prepared+, Backflip+, Leg Sweep, Hand Trick] Enemies: [Guardbot 5/17, Zapbot 4/19, Fabricator 76/150, Stabbot 23/23]
+SelectHandCards 5
+PlayCard 16 # CARD.PREPARED (6326092) || Hand: [Strike, Backflip, Calculated Gamble, Prepared+, Backflip+, Leg Sweep] Enemies: [Zapbot 4/19, Fabricator 76/150, Stabbot 23/23]
+SelectHandCards 4 6
+PlayCard 7 # CARD.BACKFLIP (49053851) || Hand: [Strike, Backflip, Calculated Gamble, Backflip+, Untouchable+] Enemies: [Fabricator 73/150, Stabbot 8/23]
+PlayCard 14 # CARD.CALCULATED_GAMBLE (62215936) || Hand: [Strike, Backflip, Calculated Gamble, Untouchable+, Survivor+, Leg Sweep] Enemies: [Fabricator 73/150, Stabbot 2/23]
+PlayCard 21 # CARD.PREPARED (21475135) || Hand: [Strike+, Prepared, Strike+, Defend, The Hunt+] Enemies: [Fabricator 61/150, Stabbot 2/23]
+SelectHandCards 2
+PlayCard 19 1 # CARD.SUPPRESS (48318385) || Hand: [Strike+, Strike+, The Hunt+, Suppress+] Enemies: [Fabricator 61/150]
+PlayCard 20 1 # CARD.STRIKE_SILENT (32212287) || Hand: [Strike+, Strike+, The Hunt+] Enemies: [Fabricator 38/150]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 1 1 # CARD.LEG_SWEEP (49018615) || Hand: [Ricochet+, Backflip+, Hand Trick, Leg Sweep, Strike] Enemies: [Fabricator 20/150]
+PlayCard 22 # CARD.HAND_TRICK (59058488) || Hand: [Ricochet+, Backflip+, Hand Trick, Strike] Enemies: [Fabricator 14/150]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 4 1 # CARD.THE_HUNT (32655132) || Hand: [Strike+, Backflip, Prepared+, The Hunt+, Defend] Enemies: [Zapbot 19/19, Fabricator 5/150]
+ClaimReward 0 # GoldReward: 16
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 4
+ChooseRestSiteOption SMITH
+SelectGridCard 8
+MoveToMapCoord 3
+OpenChest
+TakeChestRelic # Centennial Puzzle
+NetPickRelicAction for player 1 index 0 || Hand: [Strike+, Backflip, Prepared+, Defend] Enemies: []
+MoveToMapCoord 2
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+BuyCard Acrobatics
+MoveToMapCoord 1
+PlayCard 15 # CARD.SERPENT_FORM (33025096) || Hand: [Serpent Form+, Afterimage+, Suppress+, Backflip+, Calculated Gamble, Ricochet, Defend, Backflip] Enemies: [Soul Nexus 234/234]
+PlayCard 19 # CARD.AFTERIMAGE (50247002) || Hand: [Afterimage+, Suppress+, Backflip+, Calculated Gamble, Ricochet, Defend, Backflip] Enemies: [Soul Nexus 234/234]
+PlayCard 0 # CARD.BACKFLIP (64132897) || Hand: [Suppress+, Backflip+, Calculated Gamble, Ricochet, Defend, Backflip] Enemies: [Soul Nexus 228/234]
+PlayCard 7 1 # CARD.SUPPRESS (37295739) || Hand: [Suppress+, Calculated Gamble, Ricochet, Defend, Backflip, Hand Trick, Strike+] Enemies: [Soul Nexus 222/234]
+PlayCard 1 # CARD.CALCULATED_GAMBLE (40325168) || Hand: [Calculated Gamble, Ricochet, Defend, Backflip, Hand Trick, Strike+] Enemies: [Soul Nexus 199/234]
+PlayCard 12 # CARD.PREPARED (31620528) || Hand: [The Hunt+, Prepared, Survivor+, Strike+, Prepared+] Enemies: [Soul Nexus 175/234]
+SelectHandCards 4 3
+PlayCard 14 # CARD.PREPARED (11125995) || Hand: [The Hunt+, Prepared, Survivor+, Prepared+] Enemies: [Soul Nexus 163/234]
+SelectHandCards 3 4
+PlayCard 9 # CARD.PREPARED (1055991) || Hand: [The Hunt+, Prepared, Survivor+, Acrobatics, Leg Sweep, Ricochet+] Enemies: [Soul Nexus 145/234]
+SelectHandCards 4
+PlayCard 22 1 # CARD.LEG_SWEEP (55734012)
+PlayCard 18 # CARD.ACROBATICS (50322242) || Hand: [The Hunt+, Survivor+, Acrobatics, Leg Sweep] Enemies: [Soul Nexus 112/234]
+SelectHandCards 3
+PlayCard 9 # CARD.PREPARED (1055991) || Hand: [The Hunt+, Survivor+, Leg Sweep, Strike+, Prepared] Enemies: [Soul Nexus 106/234]
+SelectHandCards 2
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 22 1 # CARD.LEG_SWEEP (55734012) || Hand: [Leg Sweep, Ricochet, Prepared+, Ricochet+, Hand Trick] Enemies: [Soul Nexus 97/234]
+PlayCard 14 # CARD.PREPARED (11125995) || Hand: [Ricochet, Prepared+, Ricochet+, Hand Trick] Enemies: [Soul Nexus 91/234]
+SelectHandCards 0 1
+PlayCard 4 # CARD.BACKFLIP (3365178) || Hand: [Hand Trick, Backflip, Suppress+] Enemies: [Soul Nexus 46/234]
+PlayCard 7 1 # CARD.SUPPRESS (37295739) || Hand: [Hand Trick, Suppress+, Untouchable+, Reflex+] Enemies: [Soul Nexus 40/234]
+PlayCard 5 # CARD.HAND_TRICK (30286603) || Hand: [Hand Trick, Untouchable+, Reflex+] Enemies: [Soul Nexus 17/234]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 8 1 # CARD.THE_HUNT (117332) || Hand: [Prepared+, Strike+, Untouchable+, The Hunt+, Untouchable+] Enemies: [Soul Nexus 8/234]
+ClaimReward 0 # GoldReward: 45
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 1
+ChooseRestSiteOption SMITH
+SelectGridCard 7
+MoveToMapCoord 0
+PlayCard 7 # CARD.SERPENT_FORM (39208178) || Hand: [Serpent Form+, Afterimage+, Suppress+, Prepared+, Defend, Survivor+, Calculated Gamble, Ricochet+] Enemies: [Slimed Berserker 266/266]
+PlayCard 1 # CARD.AFTERIMAGE (17019457)
+PlayCard 2 # CARD.PREPARED (18957392) || Hand: [Suppress+, Prepared+, Defend, Survivor+, Calculated Gamble, Ricochet+] Enemies: [Slimed Berserker 260/266]
+SelectHandCards 4 1
+PlayCard 0 1 # CARD.SUPPRESS (61543374) || Hand: [Suppress+, Survivor+, Calculated Gamble, Acrobatics, The Hunt+] Enemies: [Slimed Berserker 233/266]
+PlayCard 8 # CARD.ACROBATICS (17329289) || Hand: [Survivor+, Calculated Gamble, Acrobatics, The Hunt+] Enemies: [Slimed Berserker 210/266]
+SelectHandCards 5
+PlayCard 11 # CARD.PREPARED (16585284) || Hand: [Survivor+, Calculated Gamble, The Hunt+, Ricochet, Prepared+, Backflip+, Hand Trick, Leg Sweep] Enemies: [Slimed Berserker 198/266]
+SelectHandCards 3 7
+PlayCard 5 # CARD.CALCULATED_GAMBLE (62621888) || Hand: [Survivor+, Calculated Gamble, The Hunt+, Backflip+, Hand Trick, Leg Sweep, Backflip] Enemies: [Slimed Berserker 168/266]
+PlayCard 18 # CARD.PREPARED (64079857) || Hand: [Prepared+, Strike+, Strike+, Untouchable+, Leg Sweep, Prepared+] Enemies: [Slimed Berserker 162/266]
+SelectHandCards 6 2
+PlayCard 11 # CARD.PREPARED (16585284) || Hand: [Strike+, Strike+, Leg Sweep, Prepared+, Backflip] Enemies: [Slimed Berserker 132/266]
+SelectHandCards 4 2
+PlayCard 20 1 # CARD.STRIKE_SILENT (23085935) || Hand: [Strike+, Strike+, Backflip, Leg Sweep] Enemies: [Slimed Berserker 105/266]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 13 # CARD.BACKFLIP (1230772) || Hand: [Backflip+, Hand Trick, Suppress+, Reflex+, Defend] Enemies: [Slimed Berserker 86/266]
+PlayCard 2 # CARD.PREPARED (18957392) || Hand: [Hand Trick, Suppress+, Reflex+, Defend, Prepared+, Untouchable+] Enemies: [Slimed Berserker 80/266]
+SelectHandCards 2 4
+PlayCard 11 # CARD.PREPARED (16585284) || Hand: [Hand Trick, Suppress+, Defend, Survivor+, The Hunt+, Acrobatics, Prepared+, Slimed] Enemies: [Slimed Berserker 62/266]
+SelectHandCards 6 2
+PlayCard 18 # CARD.PREPARED (64079857) || Hand: [Hand Trick, Suppress+, Survivor+, The Hunt+, Acrobatics, Prepared+, Backflip] Enemies: [Slimed Berserker 56/266]
+SelectHandCards 6 7
+PlayCard 0 1 # CARD.SUPPRESS (61543374) || Hand: [Hand Trick, Suppress+, Survivor+, The Hunt+, Acrobatics, Backflip] Enemies: [Slimed Berserker 50/266]
+PlayCard 8 # CARD.ACROBATICS (17329289) || Hand: [Hand Trick, Survivor+, The Hunt+, Acrobatics, Backflip] Enemies: [Slimed Berserker 27/266]
+SelectHandCards 4
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 1
+PlayCard 0 # CARD.AFTERIMAGE (56671287) || Hand: [Afterimage+, Suppress+, Hand Trick, Leg Sweep, The Hunt+, Backflip, Untouchable+, Prepared+] Enemies: [Mecha Knight 300/300]
+PlayCard 6 # CARD.PREPARED (61213519) || Hand: [Suppress+, Hand Trick, Leg Sweep, The Hunt+, Backflip, Untouchable+, Prepared+] Enemies: [Mecha Knight 300/300]
+SelectHandCards 5 6
+PlayCard 4 # CARD.BACKFLIP (37209920) || Hand: [Suppress+, Hand Trick, Leg Sweep, The Hunt+, Backflip, Acrobatics] Enemies: [Mecha Knight 300/300]
+PlayCard 9 # CARD.CALCULATED_GAMBLE (64369907) || Hand: [Suppress+, Hand Trick, Leg Sweep, The Hunt+, Acrobatics, Calculated Gamble, Untouchable+] Enemies: [Mecha Knight 300/300]
+PlayCard 16 # CARD.PREPARED (42111046) || Hand: [Defend, Leg Sweep, Backflip+, Ricochet, Prepared+, Serpent Form+] Enemies: [Mecha Knight 300/300]
+SelectHandCards 3 6
+PlayCard 20 # CARD.PREPARED (3383831) || Hand: [Defend, Leg Sweep, Backflip+, Serpent Form+, Ricochet+, Prepared+, Survivor+, Strike+] Enemies: [Mecha Knight 288/300]
+SelectHandCards 4 0
+PlayCard 14 # CARD.BACKFLIP (66800248) || Hand: [Leg Sweep, Backflip+, Serpent Form+, Survivor+, Strike+, Hand Trick, The Hunt+] Enemies: [Mecha Knight 273/300]
+PlayCard 21 # CARD.SURVIVOR (30454482) || Hand: [Leg Sweep, Serpent Form+, Survivor+, Strike+, Hand Trick, The Hunt+, Ricochet, Reflex+] Enemies: [Mecha Knight 273/300]
+SelectHandCards 5
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 # CARD.PREPARED (61213519) || Hand: [Untouchable+, Acrobatics, Untouchable+, Prepared+, Backflip] Enemies: [Mecha Knight 258/300]
+SelectHandCards 0 2
+PlayCard 12 1 # CARD.SUPPRESS (16566279) || Hand: [Acrobatics, Backflip, Prepared+, Suppress+] Enemies: [Mecha Knight 258/300]
+PlayCard 16 # CARD.PREPARED (42111046) || Hand: [Acrobatics, Backflip, Prepared+] Enemies: [Mecha Knight 241/300]
+SelectHandCards 3 2
+PlayCard 8 # CARD.ACROBATICS (59347995) || Hand: [Acrobatics, Backflip] Enemies: [Mecha Knight 241/300]
+SelectHandCards 3
+PlayCard 14 # CARD.BACKFLIP (66800248) || Hand: [Backflip, Backflip+, Hand Trick] Enemies: [Mecha Knight 229/300]
+PlayCard 1 # CARD.HAND_TRICK (40279538) || Hand: [Backflip, Hand Trick, Untouchable+, Prepared+] Enemies: [Mecha Knight 229/300]
+SelectHandCards 0
+PlayCard 6 # CARD.PREPARED (61213519) || Hand: [Backflip, Untouchable+, Prepared+] Enemies: [Mecha Knight 229/300]
+SelectHandCards 1 0
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 20 # CARD.PREPARED (3383831) || Hand: [Burn, Burn, Burn, Burn, Reflex+, Strike+, Defend, Ricochet+, Prepared+] Enemies: [Mecha Knight 229/300]
+SelectHandCards 0 1
+PlayCard 21 # CARD.SURVIVOR (30454482) || Hand: [Burn, Burn, Reflex+, Strike+, Defend, Ricochet+, Untouchable+, Survivor+] Enemies: [Mecha Knight 229/300]
+SelectHandCards 2
+PlayCard 12 1 # CARD.SUPPRESS (16566279) || Hand: [Burn, Burn, Strike+, Defend, Ricochet+, Untouchable+, The Hunt+, Suppress+, Prepared+] Enemies: [Mecha Knight 229/300]
+PlayCard 16 # CARD.PREPARED (42111046) || Hand: [Burn, Burn, Strike+, Defend, Ricochet+, Untouchable+, The Hunt+, Prepared+] Enemies: [Mecha Knight 212/300]
+SelectHandCards 4 7
+PlayCard 20 # CARD.PREPARED (3383831) || Hand: [Burn, Burn, Strike+, Defend, Untouchable+, The Hunt+, Ricochet, Untouchable+, Survivor+, Prepared+] Enemies: [Mecha Knight 197/300]
+SelectHandCards 6 0
+PlayCard 7 1 # CARD.STRIKE_SILENT (14050762) || Hand: [Burn, Strike+, Defend, Untouchable+, The Hunt+, Untouchable+, Survivor+, Leg Sweep] Enemies: [Mecha Knight 185/300]
+PlayCard 21 # CARD.SURVIVOR (30454482) || Hand: [Burn, Defend, Untouchable+, The Hunt+, Untouchable+, Survivor+, Leg Sweep] Enemies: [Mecha Knight 176/300]
+SelectHandCards 0
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 14 # CARD.BACKFLIP (66800248) || Hand: [Serpent Form+, Backflip+, Strike+, Suppress+, Acrobatics] Enemies: [Mecha Knight 176/300]
+PlayCard 12 1 # CARD.SUPPRESS (16566279) || Hand: [Serpent Form+, Strike+, Suppress+, Acrobatics, Prepared+, Hand Trick] Enemies: [Mecha Knight 176/300]
+PlayCard 1 # CARD.HAND_TRICK (40279538) || Hand: [Serpent Form+, Strike+, Acrobatics, Prepared+, Hand Trick] Enemies: [Mecha Knight 174/300]
+SelectHandCards 2
+PlayCard 6 # CARD.PREPARED (61213519) || Hand: [Serpent Form+, Strike+, Acrobatics, Prepared+] Enemies: [Mecha Knight 174/300]
+SelectHandCards 2 3
+SelectHandCards 3
+PlayCard 14 # CARD.BACKFLIP (66800248) || Hand: [Serpent Form+, Strike+, Leg Sweep, Backflip, Backflip+] Enemies: [Mecha Knight 174/300]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 13 1 # CARD.LEG_SWEEP (14878790) || Hand: [Ricochet, Untouchable+, Ricochet+, Reflex+, Leg Sweep] Enemies: [Mecha Knight 171/300]
+PlayCard 18 # CARD.RICOCHET (55551576) || Hand: [Ricochet, Untouchable+, Ricochet+, Reflex+] Enemies: [Mecha Knight 171/300]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 20 # CARD.PREPARED (3383831) || Hand: [Burn, Burn, Burn, Burn, Survivor+, The Hunt+, Strike+, Defend, Prepared+] Enemies: [Mecha Knight 156/300]
+SelectHandCards 0 1
+PlayCard 12 1 # CARD.SUPPRESS (16566279) || Hand: [Burn, Burn, Survivor+, The Hunt+, Strike+, Defend, Prepared+, Suppress+] Enemies: [Mecha Knight 156/300]
+PlayCard 16 # CARD.PREPARED (42111046) || Hand: [Burn, Burn, Survivor+, The Hunt+, Strike+, Defend, Prepared+] Enemies: [Mecha Knight 139/300]
+SelectHandCards 0 1
+PlayCard 1 # CARD.HAND_TRICK (40279538) || Hand: [Survivor+, The Hunt+, Strike+, Defend, Burn, Hand Trick] Enemies: [Mecha Knight 139/300]
+SelectHandCards 3
+PlayCard 7 1 # CARD.STRIKE_SILENT (14050762) || Hand: [Survivor+, The Hunt+, Strike+, Defend, Burn] Enemies: [Mecha Knight 139/300]
+PlayCard 3 1 # CARD.THE_HUNT (41417137) || Hand: [Survivor+, The Hunt+, Defend, Burn] Enemies: [Mecha Knight 130/300]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 16 # CARD.PREPARED (42111046) || Hand: [Burn, Suppress+, Prepared+, Leg Sweep, Leg Sweep] Enemies: [Mecha Knight 115/300]
+SelectHandCards 0 5
+PlayCard 12 1 # CARD.SUPPRESS (16566279) || Hand: [Suppress+, Leg Sweep, Leg Sweep, Defend] Enemies: [Mecha Knight 115/300]
+PlayCard 13 1 # CARD.LEG_SWEEP (14878790) || Hand: [Leg Sweep, Leg Sweep, Defend] Enemies: [Mecha Knight 113/300]
+PlayCard 11 # CARD.DEFEND_SILENT (46579940) || Hand: [Leg Sweep, Defend] Enemies: [Mecha Knight 113/300]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 1 # CARD.HAND_TRICK (40279538) || Hand: [Untouchable+, Prepared+, Survivor+, Strike+, Backflip, Hand Trick, Burn, Burn] Enemies: [Mecha Knight 110/300]
+SelectHandCards 2
+PlayCard 20 # CARD.PREPARED (3383831) || Hand: [Untouchable+, Prepared+, Survivor+, Strike+, Backflip, Burn, Burn] Enemies: [Mecha Knight 110/300]
+SelectHandCards 1 0
+SelectHandCards 2
+PlayCard 14 # CARD.BACKFLIP (66800248) || Hand: [Strike+, Backflip, Burn, Backflip+, Serpent Form+] Enemies: [Mecha Knight 110/300]
+PlayCard 7 1 # CARD.STRIKE_SILENT (14050762) || Hand: [Strike+, Backflip, Burn, Serpent Form+, Strike+, Ricochet] Enemies: [Mecha Knight 110/300]
+EndTurn # EndPlayerTurnAction for player 1 round 8
+PlayCard 6 # CARD.PREPARED (61213519) || Hand: [Burn, Burn, Burn, Burn, Prepared+, Reflex+, Burn, Burn, Acrobatics] Enemies: [Mecha Knight 101/300]
+SelectHandCards 0 1
+PlayCard 8 # CARD.ACROBATICS (59347995) || Hand: [Burn, Burn, Reflex+, Burn, Burn, Acrobatics, Ricochet+, Untouchable+] Enemies: [Mecha Knight 101/300]
+SelectHandCards 5
+PlayCard 6 # CARD.PREPARED (61213519) || Hand: [Burn, Burn, Reflex+, Burn, Burn, Untouchable+, Burn, Burn, Prepared+] Enemies: [Mecha Knight 86/300]
+SelectHandCards 5 2
+PlayCard 2 1 # CARD.LEG_SWEEP (26971525) || Hand: [Burn, Burn, Burn, Burn, Burn, Burn, Burn, Hand Trick, Burn, Leg Sweep] Enemies: [Mecha Knight 86/300]
+EndTurn # EndPlayerTurnAction for player 1 round 9
+PlayCard 16 # CARD.PREPARED (42111046) || Hand: [Burn, Ricochet, Prepared+, Defend, Serpent Form+] Enemies: [Mecha Knight 86/300]
+SelectHandCards 1 4
+UsePotion 2 # POTION.RADIANT_TINCTURE || Hand: [Burn, Defend, Serpent Form+, Burn] Enemies: [Mecha Knight 86/300]
+UsePotion 0 # POTION.DEXTERITY_POTION || Hand: [Burn, Defend, Serpent Form+, Burn] Enemies: [Mecha Knight 86/300]
+PlayCard 17 # CARD.SERPENT_FORM (43455099) || Hand: [Burn, Defend, Serpent Form+, Burn] Enemies: [Mecha Knight 86/300]
+PlayCard 11 # CARD.DEFEND_SILENT (46579940)
+EndTurn # EndPlayerTurnAction for player 1 round 10
+PlayCard 14 # CARD.BACKFLIP (66800248) || Hand: [Burn, Burn, Suppress+, Backflip, Backflip+] Enemies: [Mecha Knight 80/300]
+PlayCard 12 1 # CARD.SUPPRESS (16566279) || Hand: [Burn, Burn, Suppress+, Backflip, Leg Sweep, Survivor+] Enemies: [Mecha Knight 74/300]
+PlayCard 13 1 # CARD.LEG_SWEEP (14878790) || Hand: [Burn, Burn, Backflip, Leg Sweep, Survivor+] Enemies: [Mecha Knight 51/300]
+PlayCard 4 # CARD.BACKFLIP (37209920) || Hand: [Burn, Burn, Backflip, Survivor+] Enemies: [Mecha Knight 45/300]
+PlayCard 7 1 # CARD.STRIKE_SILENT (14050762) || Hand: [Burn, Burn, Survivor+, Strike+, Strike+] Enemies: [Mecha Knight 39/300]
+PlayCard 22 1 # CARD.STRIKE_SILENT (5654890) || Hand: [Burn, Burn, Survivor+, Strike+] Enemies: [Mecha Knight 24/300]
+EndTurn # EndPlayerTurnAction for player 1 round 11
+PlayCard 20 # CARD.PREPARED (3383831) || Hand: [Burn, Burn, Burn, Burn, Prepared+, Leg Sweep, Prepared+, Untouchable+, Acrobatics] Enemies: [Mecha Knight 9/300]
+SelectHandCards 8 9
+ClaimReward 0 # GoldReward: 37
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 2
+ChooseRestSiteOption HEAL
+MoveToMapCoord 3
+PlayCard 7 # CARD.SERPENT_FORM (47262482) || Hand: [Serpent Form+, Afterimage+, Suppress+, Untouchable+, Prepared+, Strike+, The Hunt+, Strike+] Enemies: [Test Subject #C80 100/100]
+PlayCard 20 # CARD.AFTERIMAGE (65835673)
+PlayCard 6 1 # CARD.SUPPRESS (64903710) || Hand: [Afterimage+, Suppress+, Untouchable+, Prepared+, Strike+, The Hunt+, Strike+] Enemies: [Test Subject #C80 100/100]
+PlayCard 1 # CARD.PREPARED (26936018) || Hand: [Untouchable+, Prepared+, Strike+, The Hunt+, Strike+] Enemies: [Test Subject #C80 71/100]
+SelectHandCards 0 5
+PlayCard 10 # CARD.PREPARED (27502420) || Hand: [Strike+, The Hunt+, Strike+, Leg Sweep, Survivor+, Prepared+, Ricochet+] Enemies: [Test Subject #C80 53/100]
+SelectHandCards 5 6
+PlayCard 3 1 # CARD.THE_HUNT (34333883) || Hand: [Strike+, The Hunt+, Strike+, Leg Sweep, Survivor+, Acrobatics] Enemies: [Test Subject #C80 20/100]
+PlayCard 9 # CARD.SURVIVOR (3055824) || Hand: [Strike+, Strike+, Leg Sweep, Survivor+, Acrobatics] Enemies: [Test Subject #C80 0/100]
+SelectHandCards 1
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 14 # CARD.PREPARED (54756429) || Hand: [Prepared+, Ricochet, Backflip, Defend, Calculated Gamble] Enemies: [Test Subject #C80 200/200]
+SelectHandCards 0 2
+PlayCard 19 1 # CARD.LEG_SWEEP (7315074) || Hand: [Backflip, Calculated Gamble, Leg Sweep, Hand Trick] Enemies: [Test Subject #C80 176/200]
+PlayCard 16 # CARD.BACKFLIP (6085734) || Hand: [Backflip, Calculated Gamble, Hand Trick] Enemies: [Test Subject #C80 170/200]
+PlayCard 22 # CARD.BACKFLIP (31089283) || Hand: [Calculated Gamble, Hand Trick, Backflip+, Leg Sweep] Enemies: [Test Subject #C80 164/200]
+PlayCard 6 1 # CARD.SUPPRESS (64903710) || Hand: [Calculated Gamble, Hand Trick, Leg Sweep, Suppress+, Ricochet+] Enemies: [Test Subject #C80 158/200]
+PlayCard 18 # CARD.CALCULATED_GAMBLE (23182407) || Hand: [Calculated Gamble, Hand Trick, Leg Sweep, Ricochet+] Enemies: [Test Subject #C80 135/200]
+PlayCard 2 1 # CARD.STRIKE_SILENT (41097578) || Hand: [Untouchable+, Strike+, Strike+] Enemies: [Test Subject #C80 108/200]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 10 # CARD.PREPARED (27502420) || Hand: [Defend, Survivor+, Leg Sweep, Prepared+, Prepared+] Enemies: [Test Subject #C80 84/200]
+SelectHandCards 4 5
+PlayCard 14 # CARD.PREPARED (54756429) || Hand: [Defend, Survivor+, Leg Sweep, Prepared+, Acrobatics, Ricochet, Prepared+] Enemies: [Test Subject #C80 66/200]
+SelectHandCards 5 2
+PlayCard 1 # CARD.PREPARED (26936018) || Hand: [Defend, Survivor+, Prepared+, Acrobatics, Backflip+, Backflip] Enemies: [Test Subject #C80 42/200]
+SelectHandCards 0 4
+PlayCard 6 1 # CARD.SUPPRESS (64903710) || Hand: [Survivor+, Acrobatics, Backflip+, Suppress+, Strike+] Enemies: [Test Subject #C80 36/200]
+PlayCard 2 1 # CARD.STRIKE_SILENT (41097578) || Hand: [Survivor+, Acrobatics, Backflip+, Strike+] Enemies: [Test Subject #C80 13/200]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+UsePotion 0 1 # POTION.POTION_SHAPED_ROCK || Hand: [Strike+, Prepared+, Hand Trick, Leg Sweep, Ricochet+] Enemies: [Test Subject #C80 300/300]
+PlayCard 10 # CARD.PREPARED (27502420) || Hand: [Strike+, Prepared+, Hand Trick, Leg Sweep, Ricochet+] Enemies: [Test Subject #C80 299/300]
+SelectHandCards 3 5
+PlayCard 21 # CARD.HAND_TRICK (55650147) || Hand: [Strike+, Hand Trick, Leg Sweep, Untouchable+, Untouchable+, Strike+, Acrobatics] Enemies: [Test Subject #C80 291/300]
+SelectHandCards 1
+PlayCard 13 # CARD.ACROBATICS (50823290) || Hand: [Strike+, Leg Sweep, Untouchable+, Untouchable+, Strike+, Acrobatics] Enemies: [Test Subject #C80 290/300]
+SelectHandCards 1
+PlayCard 2 1 # CARD.STRIKE_SILENT (41097578) || Hand: [Strike+, Untouchable+, Untouchable+, Strike+, Ricochet+, Backflip, Ricochet] Enemies: [Test Subject #C80 288/300]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 14 # CARD.PREPARED (54756429) || Hand: [Survivor+, Prepared+, Prepared+, Defend, Leg Sweep] Enemies: [Test Subject #C80 283/300]
+SelectHandCards 3 2
+PlayCard 22 # CARD.BACKFLIP (31089283) || Hand: [Survivor+, Prepared+, Suppress+, Backflip+] Enemies: [Test Subject #C80 277/300]
+PlayCard 6 1 # CARD.SUPPRESS (64903710) || Hand: [Survivor+, Prepared+, Suppress+, Untouchable+, Leg Sweep] Enemies: [Test Subject #C80 271/300]
+PlayCard 1 # CARD.PREPARED (26936018) || Hand: [Survivor+, Prepared+, Untouchable+, Leg Sweep] Enemies: [Test Subject #C80 248/300]
+SelectHandCards 1 3
+PlayCard 5 1 # CARD.LEG_SWEEP (29581144) || Hand: [Survivor+, Leg Sweep, Untouchable+] Enemies: [Test Subject #C80 215/300]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 16 # CARD.BACKFLIP (6085734) || Hand: [Backflip, Prepared+, Reflex+, Hand Trick, Ricochet] Enemies: [Test Subject #C80 206/300]
+PlayCard 10 # CARD.PREPARED (27502420) || Hand: [Prepared+, Reflex+, Hand Trick, Ricochet, Leg Sweep, Strike+] Enemies: [Test Subject #C80 205/300]
+SelectHandCards 0 2
+PlayCard 14 # CARD.PREPARED (54756429) || Hand: [Hand Trick, Leg Sweep, Strike+, Acrobatics, Defend, Prepared+, Strike+, Untouchable+] Enemies: [Test Subject #C80 198/300]
+SelectHandCards 6 7
+PlayCard 2 1 # CARD.STRIKE_SILENT (41097578) || Hand: [Hand Trick, Leg Sweep, Strike+, Acrobatics, Defend, Strike+, Backflip+] Enemies: [Test Subject #C80 195/300]
+PlayCard 4 1 # CARD.STRIKE_SILENT (40569496) || Hand: [Hand Trick, Leg Sweep, Strike+, Acrobatics, Defend, Backflip+] Enemies: [Test Subject #C80 193/300]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+UsePotion 1 # POTION.FLEX_POTION || Hand: [Backflip, Prepared+, Leg Sweep, Ricochet+, Suppress+] Enemies: [Test Subject #C80 191/300]
+PlayCard 1 # CARD.PREPARED (26936018) || Hand: [Backflip, Prepared+, Leg Sweep, Ricochet+, Suppress+] Enemies: [Test Subject #C80 191/300]
+SelectHandCards 2 5
+PlayCard 16 # CARD.BACKFLIP (6085734) || Hand: [Backflip, Leg Sweep, Suppress+, Survivor+] Enemies: [Test Subject #C80 139/300]
+PlayCard 6 1 # CARD.SUPPRESS (64903710) || Hand: [Leg Sweep, Suppress+, Survivor+, Strike+, Ricochet] Enemies: [Test Subject #C80 133/300]
+PlayCard 9 # CARD.SURVIVOR (3055824) || Hand: [Leg Sweep, Survivor+, Strike+, Ricochet] Enemies: [Test Subject #C80 105/300]
+SelectHandCards 2
+PlayCard 2 1 # CARD.STRIKE_SILENT (41097578) || Hand: [Leg Sweep, Strike+] Enemies: [Test Subject #C80 61/300]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 10 # CARD.PREPARED (27502420) || Hand: [Leg Sweep, Untouchable+, Burn, Strike+, Prepared+] Enemies: [Test Subject #C80 32/300]
+SelectHandCards 0 2
+PlayCard 13 # CARD.ACROBATICS (50823290) || Hand: [Untouchable+, Strike+, Acrobatics, Defend] Enemies: [Test Subject #C80 31/300]
+SelectHandCards 0
+PlayCard 21 # CARD.HAND_TRICK (55650147) || Hand: [Strike+, Defend, Backflip+, Hand Trick, Prepared+] Enemies: [Test Subject #C80 29/300]
+SelectHandCards 2
+PlayCard 14 # CARD.PREPARED (54756429) || Hand: [Strike+, Defend, Backflip+, Prepared+] Enemies: [Test Subject #C80 28/300]
+SelectHandCards 2 4
+PlayCard 1 # CARD.PREPARED (26936018) || Hand: [Strike+, Defend, Untouchable+, Burn, Ricochet+, Prepared+, Burn] Enemies: [Test Subject #C80 25/300]
+SelectHandCards 2 3
+PlayCard 6 1 # CARD.SUPPRESS (64903710) || Hand: [Strike+, Defend, Ricochet+, Burn, Backflip, Suppress+] Enemies: [Test Subject #C80 23/300]
+PlayCard 16 # CARD.BACKFLIP (6085734) || Hand: [Strike+, Defend, Ricochet+, Burn, Backflip] Enemies: [Test Subject #C80 21/300]
+EndTurn # EndPlayerTurnAction for player 1 round 8
+PlayCard 10 # CARD.PREPARED (27502420) || Hand: [Leg Sweep, Ricochet, Prepared+, Strike+, Hand Trick] Enemies: [Test Subject #C80 19/300]
+SelectHandCards 5 1
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Leg Sweep, Strike+, Hand Trick, Acrobatics] Enemies: []
+ChooseEventOption 0 # PROCEED
+ProceedToNextAct

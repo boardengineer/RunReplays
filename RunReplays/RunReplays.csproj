@@ -5,7 +5,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <DefineConstants>RUNREPLAYS_MIGRATION;RUNREPLAYS_AUTOPLAY</DefineConstants>
+        <DefineConstants>RUNREPLAYS_MIGRATION;RUNREPLAYS_AUTOPLAY;RUNREPLAYS_VERBOSE;RUNREPLAYS_DISPATCHER</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,12 +20,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Resources\LFKFUEPCRA\floor_49\actions.sts2replay" />
-      <EmbeddedResource Include="Resources\LFKFUEPCRA\floor_49\run.save" />
-      <EmbeddedResource Include="Resources\F67ZPV6R17\floor_45\actions.sts2replay" />
-      <EmbeddedResource Include="Resources\F67ZPV6R17\floor_45\run.save" />
-      <EmbeddedResource Include="Resources\0Z2X67NDP9\floor_49\actions.sts2replay" />
-      <EmbeddedResource Include="Resources\0Z2X67NDP9\floor_49\run.save" />
+      <EmbeddedResource Include="Resources\T97Q92FYMZ\floor_49\actions.sts2replay" />
+      <EmbeddedResource Include="Resources\T97Q92FYMZ\floor_49\run.save" />
+      <EmbeddedResource Include="Resources\4M42XQ1BSA\floor_49\actions.sts2replay" />
+      <EmbeddedResource Include="Resources\4M42XQ1BSA\floor_49\run.save" />
+      <EmbeddedResource Include="Resources\YHREJXEUX2\floor_49\actions.sts2replay" />
+      <EmbeddedResource Include="Resources\YHREJXEUX2\floor_49\run.save" />
+      <EmbeddedResource Include="Resources\DTDBLEA3T9\floor_49\actions.sts2replay" />
+      <EmbeddedResource Include="Resources\DTDBLEA3T9\floor_49\run.save" />
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">

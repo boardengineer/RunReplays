@@ -283,6 +283,7 @@ public static class PlayerActionBuffer
         _verboseEntries.Enqueue((timestamp, text));
         _minimalEntries.Enqueue(text);
         LogToDevConsole($"[{timestamp}] {text}");
+        Utils.DiagnosticLog.Write("Record", text);
         EntryRecorded?.Invoke(text);
         ReplayDispatcher.ClearDispatchableCache();
     }
@@ -398,6 +399,16 @@ public static class PlayerActionBuffer
         WriteToDevConsole(entry);
     }
 
+    /// <summary>
+    /// Unconditional variant used by DiagnosticLog so important diagnostic
+    /// lines surface in the in-game console even when RUNREPLAYS_VERBOSE is
+    /// off. Keep call sites sparse — this fires on every message.
+    /// </summary>
+    internal static void ForceLogToDevConsole(string entry)
+    {
+        WriteToDevConsole(entry);
+    }
+
     [System.Diagnostics.Conditional("RUNREPLAYS_DISPATCHER")]
     internal static void LogDispatcher(string entry)
     {
@@ -445,6 +456,7 @@ public static class PlayerActionBuffer
         _verboseEntries.Enqueue((timestamp, actionText));
         _minimalEntries.Enqueue(minimalEntry);
         LogToDevConsole($"[{timestamp}] {actionText}");
+        Utils.DiagnosticLog.Write("Record", $"(early) {actionText}");
         EntryRecorded?.Invoke(actionText);
         ReplayDispatcher.ClearDispatchableCache();
     }

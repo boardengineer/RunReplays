@@ -43,7 +43,7 @@ public sealed class ProceedToMapCommand : ReplayCommand
     {
         // Try rewards screen
         var rewardsScreen = ReplayState.ActiveRewardsScreen;
-        if (rewardsScreen != null && rewardsScreen.IsInsideTree())
+        if (rewardsScreen != null && GodotObject.IsInstanceValid(rewardsScreen) && rewardsScreen.IsInsideTree())
         {
             if (TryPressProceedButton(rewardsScreen, RewardsOnProceedMethod))
                 return ExecuteResult.Ok();
@@ -82,7 +82,7 @@ public sealed class ProceedToMapCommand : ReplayCommand
     public static bool IsAvailable()
     {
         var rewardsScreen = ReplayState.ActiveRewardsScreen;
-        if (rewardsScreen != null && rewardsScreen.IsInsideTree()
+        if (rewardsScreen != null && GodotObject.IsInstanceValid(rewardsScreen) && rewardsScreen.IsInsideTree()
             && HasEnabledProceedButton(rewardsScreen))
             return true;
 

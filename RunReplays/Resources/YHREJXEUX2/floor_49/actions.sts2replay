@@ -1,0 +1,920 @@
+# Character: DEFECT
+# Seed: YHREJXEUX2
+# Ascension: 1
+# Game: v0.103.2
+# Mod: 0.1.0
+ChooseEventOption 2 # NEOW.pages.INITIAL.options.LARGE_CAPSULE
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 5
+PlayCard 3 # CARD.DEFEND_DEFECT (37965502) || Hand: [Defend, Strike, Strike, Defend+, Defend] Enemies: [Fuzzy Wurm Crawler 56/56]
+PlayCard 2 1 # CARD.STRIKE_DEFECT (34044550) || Hand: [Defend, Strike, Strike, Defend] Enemies: [Fuzzy Wurm Crawler 56/56]
+PlayCard 1 1 # CARD.STRIKE_DEFECT (11239268) || Hand: [Defend, Strike, Defend] Enemies: [Fuzzy Wurm Crawler 50/56]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 7 # CARD.ZAP (50669149) || Hand: [Strike, Defend, Zap+, Dualcast, Strike] Enemies: [Fuzzy Wurm Crawler 41/56]
+PlayCard 8 # CARD.DUALCAST (53369157) || Hand: [Strike, Defend, Dualcast, Strike] Enemies: [Fuzzy Wurm Crawler 41/56]
+PlayCard 9 1 # CARD.STRIKE_DEFECT (10560368) || Hand: [Strike, Defend, Strike] Enemies: [Fuzzy Wurm Crawler 25/56]
+PlayCard 5 1 # CARD.STRIKE_DEFECT (55306841) || Hand: [Strike, Defend] Enemies: [Fuzzy Wurm Crawler 19/56]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 11 1 # CARD.STRIKE_DEFECT (50083517) || Hand: [Defend, Strike, Defend, Strike, Defend] Enemies: [Fuzzy Wurm Crawler 10/56]
+PlayCard 1 1 # CARD.STRIKE_DEFECT (11239268) || Hand: [Defend, Defend, Strike, Defend] Enemies: [Fuzzy Wurm Crawler 4/56]
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Fusion
+MoveToMapCoord 5
+PlayCard 2 # CARD.ZAP (21934014) || Hand: [Defend, Defend+, Zap+, Defend, Strike] Enemies: [Nibbit 42/42]
+PlayCard 1 # CARD.DEFEND_DEFECT (9893653) || Hand: [Defend, Defend+, Defend, Strike] Enemies: [Nibbit 42/42]
+PlayCard 3 # CARD.DEFEND_DEFECT (63188404) || Hand: [Defend, Defend, Strike] Enemies: [Nibbit 42/42]
+PlayCard 4 1 # CARD.STRIKE_DEFECT (31824727) || Hand: [Defend, Strike] Enemies: [Nibbit 42/42]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 # CARD.DEFEND_DEFECT (26358673) || Hand: [Strike, Strike, Defend, Defend, Strike] Enemies: [Nibbit 30/42]
+PlayCard 7 # CARD.DEFEND_DEFECT (47667984) || Hand: [Strike, Strike, Defend, Strike] Enemies: [Nibbit 30/42]
+PlayCard 9 1 # CARD.STRIKE_DEFECT (35901468) || Hand: [Strike, Strike, Strike] Enemies: [Nibbit 30/42]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 11 # CARD.DUALCAST (22337821) || Hand: [Fusion, Dualcast, Strike, Defend+, Defend] Enemies: [Nibbit 18/42]
+PlayCard 10 # CARD.FUSION (54677763) || Hand: [Fusion, Strike, Defend+, Defend] Enemies: [Nibbit 7/42]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 2 # CARD.ZAP (21934014) || Hand: [Defend, Zap+, Strike, Strike, Strike] Enemies: [Nibbit 4/42]
+PlayCard 9 1 # CARD.STRIKE_DEFECT (35901468) || Hand: [Defend, Strike, Strike, Strike] Enemies: [Nibbit 4/42]
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # CardReward
+TakeCard 2 # Lightning Rod
+MoveToMapCoord 5
+PlayCard 4 # CARD.ZAP (48590584) || Hand: [Lightning Rod, Strike, Strike, Defend+, Zap+] Enemies: [Shrinker Beetle 40/40]
+PlayCard 3 # CARD.DEFEND_DEFECT (5398953) || Hand: [Lightning Rod, Strike, Strike, Defend+] Enemies: [Shrinker Beetle 40/40]
+PlayCard 2 1 # CARD.STRIKE_DEFECT (30426045) || Hand: [Lightning Rod, Strike, Strike] Enemies: [Shrinker Beetle 40/40]
+PlayCard 1 1 # CARD.STRIKE_DEFECT (48119914) || Hand: [Lightning Rod, Strike] Enemies: [Shrinker Beetle 34/40]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 # CARD.DEFEND_DEFECT (43523207) || Hand: [Strike, Defend, Defend, Strike, Fusion] Enemies: [Shrinker Beetle 22/40]
+PlayCard 7 # CARD.DEFEND_DEFECT (56164546) || Hand: [Strike, Defend, Strike, Fusion] Enemies: [Shrinker Beetle 22/40]
+PlayCard 8 1 # CARD.STRIKE_DEFECT (35718867) || Hand: [Strike, Strike, Fusion] Enemies: [Shrinker Beetle 22/40]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 11 # CARD.DUALCAST (814812) || Hand: [] Enemies: [Shrinker Beetle 12/40]
+ClaimReward 0 # GoldReward: 13
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Glasswork
+MoveToMapCoord 4
+ChooseEventOption 0 # TABLET_OF_TRUTH.pages.INITIAL.options.DECIPHER_1
+ChooseEventOption 0 # TABLET_OF_TRUTH.pages.DECIPHER_1.options.DECIPHER
+ChooseEventOption 1 # TABLET_OF_TRUTH.pages.DECIPHER.options.GIVE_UP
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+PlayCard 1 # CARD.GLASSWORK (51375883) || Hand: [Defend, Glasswork+, Defend+, Strike, Defend] Enemies: [Snapping Jaxfruit 32/32, Flyconid 47/47]
+PlayCard 3 1 # CARD.STRIKE_DEFECT (696965) || Hand: [Defend, Defend+, Strike, Defend] Enemies: [Snapping Jaxfruit 32/32, Flyconid 47/47]
+PlayCard 2 # CARD.DEFEND_DEFECT (59729764) || Hand: [Defend, Defend+, Defend] Enemies: [Snapping Jaxfruit 26/32, Flyconid 47/47]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.ZAP (22106654) || Hand: [Strike+, Defend, Strike, Defend, Zap+] Enemies: [Snapping Jaxfruit 19/32, Flyconid 43/47]
+PlayCard 5 1 # CARD.STRIKE_DEFECT (56454187) || Hand: [Strike+, Defend, Strike, Defend] Enemies: [Snapping Jaxfruit 19/32, Flyconid 43/47]
+PlayCard 6 # CARD.DEFEND_DEFECT (38325643) || Hand: [Defend, Strike, Defend] Enemies: [Snapping Jaxfruit 10/32, Flyconid 43/47]
+PlayCard 8 # CARD.DEFEND_DEFECT (17369375) || Hand: [Strike, Defend] Enemies: [Snapping Jaxfruit 10/32, Flyconid 43/47]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 13 # CARD.DUALCAST (19506723) || Hand: [Strike, Fusion, Strike, Dualcast, Lightning Rod] Enemies: [Snapping Jaxfruit 4/32, Flyconid 37/47]
+PlayCard 11 # CARD.FUSION (45808570) || Hand: [Strike, Fusion, Strike, Lightning Rod] Enemies: [Flyconid 29/47]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 1 # CARD.GLASSWORK (51375883) || Hand: [Strike, Defend, Defend, Glasswork+, Defend] Enemies: [Flyconid 24/47]
+PlayCard 8 # CARD.DEFEND_DEFECT (17369375) || Hand: [Strike, Defend, Defend, Defend] Enemies: [Flyconid 22/47]
+PlayCard 4 # CARD.DEFEND_DEFECT (6272687) || Hand: [Strike, Defend, Defend] Enemies: [Flyconid 22/47]
+PlayCard 0 # CARD.DEFEND_DEFECT (35534593) || Hand: [Strike, Defend] Enemies: [Flyconid 22/47]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 3 2 # CARD.STRIKE_DEFECT (696965) || Hand: [Strike, Defend+, Strike, Defend, Strike] Enemies: [Flyconid 15/47]
+PlayCard 7 2 # CARD.STRIKE_DEFECT (9386471) || Hand: [Strike, Defend+, Defend, Strike] Enemies: [Flyconid 9/47]
+PlayCard 10 2 # CARD.STRIKE_DEFECT (64742164) || Hand: [Strike, Defend+, Defend] Enemies: [Flyconid 3/47]
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Charge Battery
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 9
+MoveToMapCoord 3
+OpenShop
+BuyRelic Miniature Tent
+MoveToMapCoord 4
+PlayCard 1 # CARD.FUSION (39264529) || Hand: [Glasswork+, Fusion+, Defend, Strike, Strike] Enemies: [Bygone Effigy 127/127]
+PlayCard 0 # CARD.GLASSWORK (41645427) || Hand: [Glasswork+, Defend, Strike, Strike] Enemies: [Bygone Effigy 127/127]
+PlayCard 3 1 # CARD.STRIKE_DEFECT (26310314) || Hand: [Defend, Strike, Strike] Enemies: [Bygone Effigy 127/127]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 # CARD.ZAP (54193077) || Hand: [Defend, Zap+, Defend, Strike, Strike+] Enemies: [Bygone Effigy 113/127]
+PlayCard 9 1 # CARD.STRIKE_DEFECT (46741455) || Hand: [Defend, Defend, Strike, Strike+] Enemies: [Bygone Effigy 105/127]
+PlayCard 8 1 # CARD.STRIKE_DEFECT (27563116) || Hand: [Defend, Defend, Strike] Enemies: [Bygone Effigy 96/127]
+PlayCard 7 # CARD.DEFEND_DEFECT (17975649) || Hand: [Defend, Defend] Enemies: [Bygone Effigy 89/127]
+PlayCard 5 # CARD.DEFEND_DEFECT (50760695) || Hand: [Defend] Enemies: [Bygone Effigy 89/127]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+UsePotion 0 # POTION.SWIFT_POTION || Hand: [Defend, Strike, Charge Battery, Lightning Rod, Dualcast] Enemies: [Bygone Effigy 83/127]
+PlayCard 6 # CARD.ZAP (54193077) || Hand: [Defend, Strike, Charge Battery, Lightning Rod, Dualcast, Defend+, Zap+, Strike] Enemies: [Bygone Effigy 83/127]
+PlayCard 12 # CARD.CHARGE_BATTERY (50327035) || Hand: [Defend, Strike, Charge Battery, Lightning Rod, Dualcast, Defend+, Strike] Enemies: [Bygone Effigy 83/127]
+PlayCard 13 # CARD.LIGHTNING_ROD (50290137) || Hand: [Defend, Strike, Lightning Rod, Dualcast, Defend+, Strike] Enemies: [Bygone Effigy 83/127]
+PlayCard 14 # CARD.DUALCAST (49958052) || Hand: [Defend, Strike, Dualcast, Defend+, Strike] Enemies: [Bygone Effigy 83/127]
+PlayCard 11 1 # CARD.STRIKE_DEFECT (27961514) || Hand: [Defend, Strike, Defend+, Strike] Enemies: [Bygone Effigy 75/127]
+PlayCard 15 # CARD.DEFEND_DEFECT (46969285) || Hand: [Defend, Defend+, Strike] Enemies: [Bygone Effigy 67/127]
+PlayCard 10 # CARD.DEFEND_DEFECT (18019915) || Hand: [Defend, Strike] Enemies: [Bygone Effigy 67/127]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 0 # CARD.GLASSWORK (41645427) || Hand: [Defend, Defend, Glasswork+, Fusion+, Strike+] Enemies: [Bygone Effigy 61/127]
+PlayCard 1 # CARD.FUSION (39264529)
+PlayCard 7 # CARD.DEFEND_DEFECT (17975649) || Hand: [Defend, Defend, Strike+] Enemies: [Bygone Effigy 45/127]
+PlayCard 2 # CARD.DEFEND_DEFECT (17836449) || Hand: [Defend, Strike+] Enemies: [Bygone Effigy 45/127]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 0 # CARD.GLASSWORK (41645427) || Hand: [Strike, Strike, Defend, Fusion+, Glasswork+] Enemies: [Bygone Effigy 30/127]
+PlayCard 1 # CARD.FUSION (39264529) || Hand: [Strike, Strike, Defend, Fusion+] Enemies: [Bygone Effigy 24/127]
+PlayCard 5 # CARD.DEFEND_DEFECT (50760695) || Hand: [Strike, Strike, Defend] Enemies: [Bygone Effigy 24/127]
+PlayCard 4 1 # CARD.STRIKE_DEFECT (35466239) || Hand: [Strike, Strike] Enemies: [Bygone Effigy 24/127]
+PlayCard 8 1 # CARD.STRIKE_DEFECT (27563116) || Hand: [Strike] Enemies: [Bygone Effigy 17/127]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 11 1 # CARD.STRIKE_DEFECT (27961514) || Hand: [Defend+, Dualcast, Lightning Rod, Strike, Defend] Enemies: [Bygone Effigy 2/127]
+ClaimReward 0 # GoldReward: 44
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Supercritical
+MoveToMapCoord 4
+OpenChest
+TakeChestRelic # Bowler Hat
+NetPickRelicAction for player 1 index 0 || Hand: [Defend+, Dualcast, Lightning Rod, Defend] Enemies: []
+MoveToMapCoord 3
+PlayCard 0 # CARD.ZAP (4755316) || Hand: [Zap+, Strike, Strike+, Glasswork+, Dualcast] Enemies: [Byrdonis 83/83]
+PlayCard 3 # CARD.GLASSWORK (44073552) || Hand: [Strike, Strike+, Glasswork+, Dualcast] Enemies: [Byrdonis 83/83]
+PlayCard 4 # CARD.DUALCAST (61117648) || Hand: [Strike, Strike+, Dualcast] Enemies: [Byrdonis 83/83]
+PlayCard 2 1 # CARD.STRIKE_DEFECT (49636304) || Hand: [Strike, Strike+] Enemies: [Byrdonis 67/83]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 5 # CARD.SUPERCRITICAL (13187921) || Hand: [Supercritical, Fusion+, Charge Battery, Strike, Defend] Enemies: [Byrdonis 51/83]
+PlayCard 6 # CARD.FUSION (51582428) || Hand: [Fusion+, Charge Battery, Strike, Defend] Enemies: [Byrdonis 51/83]
+PlayCard 7 # CARD.CHARGE_BATTERY (61588675) || Hand: [Charge Battery, Strike, Defend] Enemies: [Byrdonis 51/83]
+PlayCard 8 1 # CARD.STRIKE_DEFECT (17427165) || Hand: [Strike, Defend] Enemies: [Byrdonis 51/83]
+PlayCard 9 # CARD.DEFEND_DEFECT (22626765) || Hand: [Defend] Enemies: [Byrdonis 45/83]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 12 # CARD.LIGHTNING_ROD (53240541) || Hand: [Defend, Defend, Lightning Rod, Strike, Strike] Enemies: [Byrdonis 39/83]
+PlayCard 10 # CARD.DEFEND_DEFECT (2314299) || Hand: [Defend, Defend, Strike, Strike] Enemies: [Byrdonis 39/83]
+PlayCard 11 # CARD.DEFEND_DEFECT (20828696) || Hand: [Defend, Strike, Strike] Enemies: [Byrdonis 39/83]
+PlayCard 13 1 # CARD.STRIKE_DEFECT (9402828) || Hand: [Strike, Strike] Enemies: [Byrdonis 39/83]
+PlayCard 14 1 # CARD.STRIKE_DEFECT (17516588) || Hand: [Strike] Enemies: [Byrdonis 33/83]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 4 # CARD.DUALCAST (61117648) || Hand: [Defend, Defend+, Strike, Dualcast, Strike] Enemies: [Byrdonis 14/83]
+PlayCard 14 1 # CARD.STRIKE_DEFECT (17516588) || Hand: [Defend, Defend+, Strike, Strike] Enemies: [Byrdonis 10/83]
+PlayCard 1 1 # CARD.STRIKE_DEFECT (42797847) || Hand: [Defend, Defend+, Strike] Enemies: [Byrdonis 4/83]
+ClaimReward 0 # GoldReward: 41
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Skim
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 12
+ChooseRestSiteOption HEAL
+ClaimReward 1 # PotionReward
+DiscardPotion 1
+ClaimReward 0 # PotionReward
+MoveToMapCoord 2
+OpenShop
+BuyCard Charge Battery
+BuyCardRemoval
+SelectGridCard 0
+MoveToMapCoord 2
+ChooseEventOption 1 # SLIPPERY_BRIDGE.pages.INITIAL.options.HOLD_ON_0
+ChooseEventOption 1 # SLIPPERY_BRIDGE.pages.HOLD_ON_0.options.HOLD_ON_1
+ChooseEventOption 1 # SLIPPERY_BRIDGE.pages.HOLD_ON_1.options.HOLD_ON_2
+ChooseEventOption 1 # SLIPPERY_BRIDGE.pages.HOLD_ON_2.options.HOLD_ON_3
+ChooseEventOption 0 # SLIPPERY_BRIDGE.pages.INITIAL.options.OVERCOME
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+PlayCard 2 # CARD.SUPERCRITICAL (12947379) || Hand: [Strike, Charge Battery, Supercritical, Strike, Charge Battery] Enemies: [Vine Shambler 61/61]
+PlayCard 4 # CARD.CHARGE_BATTERY (42104739) || Hand: [Strike, Charge Battery, Strike, Charge Battery] Enemies: [Vine Shambler 61/61]
+PlayCard 1 # CARD.CHARGE_BATTERY (8895138) || Hand: [Strike, Charge Battery, Strike] Enemies: [Vine Shambler 61/61]
+PlayCard 3 1 # CARD.STRIKE_DEFECT (49417547) || Hand: [Strike, Strike] Enemies: [Vine Shambler 61/61]
+PlayCard 0 1 # CARD.STRIKE_DEFECT (45727591) || Hand: [Strike] Enemies: [Vine Shambler 55/61]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 7 # CARD.GLASSWORK (25603998) || Hand: [Strike, Fusion+, Glasswork+, Strike+, Lightning Rod] Enemies: [Vine Shambler 46/61]
+PlayCard 6 # CARD.FUSION (55040671) || Hand: [Strike, Fusion+, Strike+, Lightning Rod] Enemies: [Vine Shambler 46/61]
+PlayCard 9 # CARD.LIGHTNING_ROD (60657944) || Hand: [Strike, Strike+, Lightning Rod] Enemies: [Vine Shambler 46/61]
+PlayCard 8 1 # CARD.STRIKE_DEFECT (29109392) || Hand: [Strike, Strike+] Enemies: [Vine Shambler 46/61]
+PlayCard 5 1 # CARD.STRIKE_DEFECT (43398332) || Hand: [Strike] Enemies: [Vine Shambler 34/61]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 13 # CARD.DEFEND_DEFECT (21211895) || Hand: [Defend, Dualcast, Defend, Defend+, Defend] Enemies: [Vine Shambler 13/61]
+PlayCard 11 # CARD.DUALCAST (14346451) || Hand: [Defend, Dualcast, Defend, Defend] Enemies: [Vine Shambler 13/61]
+PlayCard 10 # CARD.DEFEND_DEFECT (9050590) || Hand: [Defend, Defend, Defend] Enemies: [Vine Shambler 1/61]
+PlayCard 12 # CARD.DEFEND_DEFECT (62009200) || Hand: [Defend, Defend] Enemies: [Vine Shambler 1/61]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+ClaimReward 0 # GoldReward: 14
+ClaimReward 0 # PotionReward
+DiscardPotion 2
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Sweeping Beam
+MoveToMapCoord 3
+ChooseRestSiteOption HEAL
+DiscardPotion 0
+ClaimReward 0 # PotionReward
+ChooseRestSiteOption SMITH
+SelectGridCard 9
+MoveToMapCoord 3
+UsePotion 0 # POTION.POWER_POTION || Hand: [Charge Battery, Supercritical+, Strike+, Charge Battery, Zap+] Enemies: [Kin Follower 58/58, Kin Follower 59/59, Kin Priest 190/190]
+SelectCardFromScreen 0
+PlayCard 18 # CARD.CREATIVE_AI (58943818) || Hand: [Charge Battery, Supercritical+, Strike+, Charge Battery, Zap+, Creative AI] Enemies: [Kin Follower 58/58, Kin Follower 59/59, Kin Priest 190/190]
+PlayCard 0 # CARD.CHARGE_BATTERY (65456537) || Hand: [Charge Battery, Supercritical+, Strike+, Charge Battery, Zap+] Enemies: [Kin Follower 58/58, Kin Follower 59/59, Kin Priest 190/190]
+PlayCard 1 # CARD.SUPERCRITICAL (52237922) || Hand: [Supercritical+, Strike+, Charge Battery, Zap+] Enemies: [Kin Follower 58/58, Kin Follower 59/59, Kin Priest 190/190]
+PlayCard 4 # CARD.ZAP (30719558) || Hand: [Strike+, Charge Battery, Zap+] Enemies: [Kin Follower 58/58, Kin Follower 59/59, Kin Priest 190/190]
+PlayCard 3 # CARD.CHARGE_BATTERY (3413284) || Hand: [Strike+, Charge Battery] Enemies: [Kin Follower 58/58, Kin Follower 59/59, Kin Priest 190/190]
+PlayCard 2 1 # CARD.STRIKE_DEFECT (379253) || Hand: [Strike+] Enemies: [Kin Follower 58/58, Kin Follower 59/59, Kin Priest 190/190]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 19 # CARD.TRASH_TO_TREASURE (10775101) || Hand: [Trash to Treasure, Strike, Defend+, Lightning Rod, Dualcast, Defend] Enemies: [Kin Follower 46/58, Kin Follower 56/59, Kin Priest 187/190]
+PlayCard 6 # CARD.DEFEND_DEFECT (5256308) || Hand: [Strike, Defend+, Lightning Rod, Dualcast, Defend] Enemies: [Kin Follower 46/58, Kin Follower 56/59, Kin Priest 187/190]
+PlayCard 9 # CARD.DEFEND_DEFECT (6643741) || Hand: [Strike, Lightning Rod, Dualcast, Defend] Enemies: [Kin Follower 46/58, Kin Follower 56/59, Kin Priest 187/190]
+PlayCard 7 # CARD.LIGHTNING_ROD (47306777) || Hand: [Strike, Lightning Rod, Dualcast] Enemies: [Kin Follower 46/58, Kin Follower 56/59, Kin Priest 187/190]
+PlayCard 5 1 # CARD.STRIKE_DEFECT (8040574) || Hand: [Strike, Dualcast] Enemies: [Kin Follower 46/58, Kin Follower 56/59, Kin Priest 187/190]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 10 # CARD.FUSION (59793669) || Hand: [Trash to Treasure, Fusion+, Defend, Strike, Strike, Defend] Enemies: [Kin Follower 37/58, Kin Follower 53/59, Kin Priest 187/190]
+PlayCard 20 # CARD.TRASH_TO_TREASURE (20438477) || Hand: [Trash to Treasure, Defend, Strike, Strike, Defend] Enemies: [Kin Follower 37/58, Kin Follower 53/59, Kin Priest 179/190]
+PlayCard 12 1 # CARD.STRIKE_DEFECT (11449016) || Hand: [Defend, Strike, Strike, Defend] Enemies: [Kin Follower 37/58, Kin Follower 53/59, Kin Priest 179/190]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 21 # CARD.STORM (23432378) || Hand: [Storm, Glasswork+, Skim+, Sweeping Beam, Defend, Charge Battery] Enemies: [Kin Follower 27/58, Kin Follower 53/59, Kin Priest 171/190]
+PlayCard 0 # CARD.CHARGE_BATTERY (65456537) || Hand: [Glasswork+, Skim+, Sweeping Beam, Defend, Charge Battery] Enemies: [Kin Follower 27/58, Kin Follower 53/59, Kin Priest 171/190]
+PlayCard 17 # CARD.SWEEPING_BEAM (65393887) || Hand: [Glasswork+, Skim+, Sweeping Beam, Defend] Enemies: [Kin Follower 27/58, Kin Follower 53/59, Kin Priest 171/190]
+PlayCard 15 # CARD.GLASSWORK (24833962) || Hand: [Glasswork+, Skim+, Defend, Defend] Enemies: [Kin Follower 21/58, Kin Follower 47/59, Kin Priest 165/190]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 4 # CARD.ZAP (30719558) || Hand: [Feral, Strike, Zap+, Charge Battery, Defend+, Strike] Enemies: [Kin Follower 17/58, Kin Follower 35/59, Kin Priest 158/190]
+PlayCard 22 # CARD.FERAL (49982813) || Hand: [Feral, Strike, Charge Battery, Defend+, Strike] Enemies: [Kin Follower 17/58, Kin Follower 35/59, Kin Priest 158/190]
+PlayCard 3 # CARD.CHARGE_BATTERY (3413284)
+PlayCard 6 # CARD.DEFEND_DEFECT (5256308) || Hand: [Strike, Charge Battery, Defend+, Strike] Enemies: [Kin Follower 17/58, Kin Follower 35/59, Kin Priest 150/190]
+PlayCard 12 1 # CARD.STRIKE_DEFECT (11449016) || Hand: [Strike, Strike] Enemies: [Kin Follower 17/58, Kin Follower 35/59, Kin Priest 150/190]
+PlayCard 13 1 # CARD.STRIKE_DEFECT (35932285) || Hand: [Strike] Enemies: [Kin Follower 11/58, Kin Follower 35/59, Kin Priest 150/190]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 23 # CARD.SPINNER (39535677) || Hand: [Spinner, Fusion+, Strike+, Lightning Rod, Defend, Dualcast] Enemies: [Kin Follower 32/59, Kin Priest 144/190]
+PlayCard 10 # CARD.FUSION (59793669) || Hand: [Fusion+, Strike+, Lightning Rod, Defend, Dualcast] Enemies: [Kin Follower 28/59, Kin Priest 140/190]
+PlayCard 2 2 # CARD.STRIKE_DEFECT (379253) || Hand: [Strike+, Lightning Rod, Defend, Dualcast] Enemies: [Kin Follower 20/59, Kin Priest 140/190]
+PlayCard 7 # CARD.LIGHTNING_ROD (47306777) || Hand: [Lightning Rod, Defend, Dualcast] Enemies: [Kin Follower 8/59, Kin Priest 140/190]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 24 # CARD.TRASH_TO_TREASURE (42563169) || Hand: [Trash to Treasure, Strike, Defend, Charge Battery, Strike, Strike] Enemies: [Kin Follower 8/59, Kin Priest 118/190]
+PlayCard 12 2 # CARD.STRIKE_DEFECT (11449016) || Hand: [Strike, Defend, Charge Battery, Strike, Strike] Enemies: [Kin Follower 8/59, Kin Priest 118/190]
+PlayCard 13 2 # CARD.STRIKE_DEFECT (35932285) || Hand: [Strike, Defend, Charge Battery, Strike] Enemies: [Kin Follower 4/59, Kin Priest 118/190]
+PlayCard 0 # CARD.CHARGE_BATTERY (65456537) || Hand: [Strike, Defend, Charge Battery] Enemies: [Kin Priest 118/190]
+PlayCard 11 # CARD.DEFEND_DEFECT (1272112) || Hand: [Strike, Defend] Enemies: [Kin Priest 118/190]
+PlayCard 5 3 # CARD.STRIKE_DEFECT (8040574) || Hand: [Strike] Enemies: [Kin Priest 118/190]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 25 # CARD.CAPACITOR (60860322) || Hand: [Capacitor, Sweeping Beam, Lightning Rod, Dualcast, Skim+, Defend] Enemies: [Kin Priest 90/190]
+PlayCard 7 # CARD.LIGHTNING_ROD (47306777) || Hand: [Sweeping Beam, Lightning Rod, Dualcast, Skim+, Defend] Enemies: [Kin Priest 90/190]
+PlayCard 8 # CARD.DUALCAST (23107814) || Hand: [Sweeping Beam, Dualcast, Skim+, Defend] Enemies: [Kin Priest 90/190]
+PlayCard 16 # CARD.SKIM (22179068) || Hand: [Sweeping Beam, Skim+, Defend] Enemies: [Kin Priest 74/190]
+PlayCard 4 # CARD.ZAP (30719558) || Hand: [Sweeping Beam, Defend, Charge Battery, Defend+, Strike+, Zap+] Enemies: [Kin Priest 74/190]
+EndTurn # EndPlayerTurnAction for player 1 round 8
+PlayCard 26 # CARD.SMOKESTACK (38770176) || Hand: [Smokestack, Defend, Fusion+, Glasswork+, Strike, Dualcast] Enemies: [Kin Priest 55/190]
+PlayCard 15 # CARD.GLASSWORK (24833962) || Hand: [Defend, Fusion+, Glasswork+, Strike, Dualcast] Enemies: [Kin Priest 47/190]
+PlayCard 9 # CARD.DEFEND_DEFECT (6643741) || Hand: [Defend, Fusion+, Strike, Dualcast] Enemies: [Kin Priest 39/190]
+EndTurn # EndPlayerTurnAction for player 1 round 9
+PlayCard 27 # CARD.CAPACITOR (52542668) || Hand: [Capacitor, Lightning Rod, Strike, Defend, Zap+, Sweeping Beam] Enemies: [Kin Priest 8/190]
+PlayCard 4 # CARD.ZAP (30719558) || Hand: [Lightning Rod, Strike, Defend, Zap+, Sweeping Beam] Enemies: [Kin Priest 8/190]
+PlayCard 17 # CARD.SWEEPING_BEAM (65393887) || Hand: [Lightning Rod, Strike, Defend, Sweeping Beam] Enemies: [Kin Priest 8/190]
+PlayCard 5 3 # CARD.STRIKE_DEFECT (8040574) || Hand: [Lightning Rod, Strike, Defend, Charge Battery] Enemies: [Kin Priest 2/190]
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Meteor Strike
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Lightning Rod, Defend, Charge Battery] Enemies: []
+MoveToMapCoord 3
+ChooseEventOption 1 # PAEL.pages.INITIAL.options.PAELS_WING
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 4
+PlayCard 1 # CARD.SKIM (18715810) || Hand: [Meteor Strike, Skim+, Charge Battery, Strike, Sweeping Beam] Enemies: [Bowlbug (Rock) 45/45, Bowlbug (Nectar) 37/37]
+PlayCard 2 # CARD.CHARGE_BATTERY (34224562) || Hand: [Meteor Strike, Charge Battery, Strike, Sweeping Beam, Strike, Lightning Rod, Strike, Defend] Enemies: [Bowlbug (Rock) 45/45, Bowlbug (Nectar) 37/37]
+PlayCard 6 # CARD.LIGHTNING_ROD (1097066) || Hand: [Meteor Strike, Strike, Sweeping Beam, Strike, Lightning Rod, Strike, Defend] Enemies: [Bowlbug (Rock) 45/45, Bowlbug (Nectar) 37/37]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 # CARD.ZAP (17205076) || Hand: [Defend+, Zap+, Fusion+, Defend, Dualcast] Enemies: [Bowlbug (Rock) 45/45, Bowlbug (Nectar) 34/37]
+PlayCard 11 # CARD.FUSION (20627959) || Hand: [Defend+, Fusion+, Defend, Dualcast] Enemies: [Bowlbug (Rock) 45/45, Bowlbug (Nectar) 34/37]
+PlayCard 9 # CARD.DEFEND_DEFECT (61563998) || Hand: [Defend+, Defend, Dualcast] Enemies: [Bowlbug (Rock) 37/45, Bowlbug (Nectar) 34/37]
+PlayCard 12 # CARD.DEFEND_DEFECT (51433904) || Hand: [Defend, Dualcast] Enemies: [Bowlbug (Rock) 37/45, Bowlbug (Nectar) 34/37]
+PlayCard 13 # CARD.DUALCAST (60251952) || Hand: [Dualcast] Enemies: [Bowlbug (Rock) 37/45, Bowlbug (Nectar) 34/37]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 16 # CARD.GLASSWORK (34475964) || Hand: [Defend, Supercritical+, Glasswork+, Charge Battery, Strike+] Enemies: [Bowlbug (Rock) 29/45, Bowlbug (Nectar) 23/37]
+PlayCard 17 # CARD.CHARGE_BATTERY (41848227) || Hand: [Defend, Supercritical+, Charge Battery, Strike+] Enemies: [Bowlbug (Rock) 21/45, Bowlbug (Nectar) 23/37]
+PlayCard 18 1 # CARD.STRIKE_DEFECT (41089725) || Hand: [Defend, Supercritical+, Strike+] Enemies: [Bowlbug (Rock) 21/45, Bowlbug (Nectar) 23/37]
+PlayCard 15 # CARD.SUPERCRITICAL (48569905) || Hand: [Defend, Supercritical+] Enemies: [Bowlbug (Rock) 9/45, Bowlbug (Nectar) 23/37]
+PlayCard 14 # CARD.DEFEND_DEFECT (5396656) || Hand: [Defend] Enemies: [Bowlbug (Rock) 9/45, Bowlbug (Nectar) 23/37]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 0 1 # CARD.METEOR_STRIKE (54275317) || Hand: [Defend, Meteor Strike, Charge Battery, Strike, Glasswork+] Enemies: [Bowlbug (Rock) 5/45, Bowlbug (Nectar) 16/37]
+PlayCard 16 # CARD.GLASSWORK (34475964) || Hand: [Defend, Charge Battery, Strike, Glasswork+] Enemies: [Bowlbug (Nectar) 2/37]
+PlayCard 7 2 # CARD.STRIKE_DEFECT (9873598) || Hand: [Defend, Charge Battery, Strike] Enemies: [Bowlbug (Nectar) 2/37]
+ClaimReward 0 # GoldReward: 17
+ClaimReward 0 # CardReward
+TakeCard sacrifice # sacrifice
+MoveToMapCoord 5
+OpenShop
+BuyCardRemoval
+SelectGridCard 
+BuyCard Compact
+BuyCardRemoval
+SelectGridCard 0
+MoveToMapCoord 6
+ChooseEventOption 0 # BUGSLAYER.pages.INITIAL.options.EXTERMINATION
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 6
+PlayCard 0 # CARD.SUPERCRITICAL (31704833) || Hand: [Supercritical+, Exterminate, Strike, Fusion+, Charge Battery] Enemies: [Exoskeleton 28/28, Exoskeleton 24/24, Exoskeleton 25/25]
+PlayCard 1 # CARD.EXTERMINATE (16908049) || Hand: [Exterminate, Strike, Fusion+, Charge Battery] Enemies: [Exoskeleton 28/28, Exoskeleton 24/24, Exoskeleton 25/25]
+PlayCard 4 # CARD.CHARGE_BATTERY (45045735) || Hand: [Strike, Fusion+, Charge Battery] Enemies: [Exoskeleton 16/28, Exoskeleton 12/24, Exoskeleton 13/25]
+PlayCard 3 # CARD.FUSION (27374703) || Hand: [Strike, Fusion+] Enemies: [Exoskeleton 16/28, Exoskeleton 12/24, Exoskeleton 13/25]
+PlayCard 2 2 # CARD.STRIKE_DEFECT (17954714) || Hand: [Strike] Enemies: [Exoskeleton 16/28, Exoskeleton 12/24, Exoskeleton 13/25]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 7 # CARD.SWEEPING_BEAM (22106844) || Hand: [Defend, Skim+, Sweeping Beam, Dualcast, Lightning Rod] Enemies: [Exoskeleton 16/28, Exoskeleton 3/24, Exoskeleton 13/25]
+PlayCard 10 # CARD.ZAP (9762202) || Hand: [Defend, Skim+, Dualcast, Lightning Rod, Zap+] Enemies: [Exoskeleton 10/28, Exoskeleton 7/25]
+PlayCard 8 # CARD.DUALCAST (64743871) || Hand: [Defend, Skim+, Dualcast, Lightning Rod] Enemies: [Exoskeleton 10/28, Exoskeleton 7/25]
+PlayCard 9 # CARD.LIGHTNING_ROD (45823931) || Hand: [Defend, Skim+, Lightning Rod] Enemies: [Exoskeleton 2/28]
+PlayCard 6 # CARD.SKIM (24825937) || Hand: [Defend, Skim+] Enemies: [Exoskeleton 2/28]
+PlayCard 11 # CARD.GLASSWORK (20750955) || Hand: [Defend, Glasswork+, Strike+, Meteor Strike, Strike] Enemies: [Exoskeleton 2/28]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # CardReward
+TakeCard sacrifice # sacrifice
+MoveToMapCoord 5
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+MoveToMapCoord 6
+PlayCard 2 # CARD.SKIM (17084484) || Hand: [Strike+, Sweeping Beam, Skim+, Dualcast, Compact] Enemies: [Decimillipede 40/40, Decimillipede 42/42, Decimillipede 46/46]
+PlayCard 6 # CARD.GLASSWORK (19499834) || Hand: [Strike+, Sweeping Beam, Dualcast, Compact, Defend, Glasswork+, Exterminate, Defend] Enemies: [Decimillipede 40/40, Decimillipede 42/42, Decimillipede 46/46]
+PlayCard 4 # CARD.COMPACT (41665963) || Hand: [Strike+, Sweeping Beam, Dualcast, Compact, Defend, Exterminate, Defend] Enemies: [Decimillipede 40/40, Decimillipede 42/42, Decimillipede 46/46]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 # CARD.CHARGE_BATTERY (28921331) || Hand: [Defend, Charge Battery, Charge Battery, Supercritical+, Fusion+] Enemies: [Decimillipede 35/40, Decimillipede 33/42, Decimillipede 41/46]
+PlayCard 11 # CARD.CHARGE_BATTERY (58965388) || Hand: [Defend, Charge Battery, Supercritical+, Fusion+] Enemies: [Decimillipede 35/40, Decimillipede 33/42, Decimillipede 41/46]
+PlayCard 12 # CARD.SUPERCRITICAL (60926444) || Hand: [Defend, Supercritical+, Fusion+] Enemies: [Decimillipede 35/40, Decimillipede 33/42, Decimillipede 41/46]
+PlayCard 13 # CARD.FUSION (11467084) || Hand: [Defend, Fusion+] Enemies: [Decimillipede 35/40, Decimillipede 33/42, Decimillipede 41/46]
+PlayCard 9 # CARD.DEFEND_DEFECT (55409264) || Hand: [Defend] Enemies: [Decimillipede 35/40, Decimillipede 33/42, Decimillipede 41/46]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+UsePotion 0 # POTION.EXPLOSIVE_AMPOULE || Hand: [Zap+, Lightning Rod, Defend+, Strike, Meteor Strike] Enemies: [Decimillipede 31/40, Decimillipede 25/42, Decimillipede 37/46]
+PlayCard 18 3 # CARD.METEOR_STRIKE (58523561) || Hand: [Zap+, Lightning Rod, Defend+, Strike, Meteor Strike] Enemies: [Decimillipede 21/40, Decimillipede 15/42, Decimillipede 27/46]
+PlayCard 17 3 # CARD.STRIKE_DEFECT (6502617) || Hand: [Zap+, Lightning Rod, Defend+, Strike] Enemies: [Decimillipede 15/40, Decimillipede 0/42, Decimillipede 3/46]
+PlayCard 14 # CARD.ZAP (36094893) || Hand: [Zap+, Lightning Rod, Defend+] Enemies: [Decimillipede 15/40, Decimillipede 0/42, Decimillipede 0/46]
+PlayCard 15 # CARD.LIGHTNING_ROD (56418584) || Hand: [Lightning Rod, Defend+] Enemies: [Decimillipede 15/40, Decimillipede 0/42, Decimillipede 0/46]
+PlayCard 16 # CARD.DEFEND_DEFECT (38005215) || Hand: [Defend+] Enemies: [Decimillipede 15/40, Decimillipede 0/42, Decimillipede 0/46]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 18 1 # CARD.METEOR_STRIKE (58523561) || Hand: [Zap+, Charge Battery, Glasswork+, Meteor Strike, Charge Battery] Enemies: [Decimillipede 11/40, Decimillipede 0/42, Decimillipede 0/46]
+ClaimReward 0 # GoldReward: 41
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard sacrifice # sacrifice
+MoveToMapCoord 5
+ChooseRestSiteOption HEAL
+ClaimReward 1 # PotionReward
+ChooseRestSiteOption SMITH
+SelectGridCard 4
+MoveToMapCoord 6
+OpenChest
+TakeChestRelic # Art of War
+NetPickRelicAction for player 1 index 0 || Hand: [Zap+, Charge Battery, Glasswork+, Charge Battery] Enemies: [Decimillipede 0/40, Decimillipede 0/42, Decimillipede 0/46]
+MoveToMapCoord 6
+ChooseRestSiteOption HEAL
+ChooseRestSiteOption SMITH
+SelectGridCard 8
+MoveToMapCoord 6
+PlayCard 2 # CARD.ZAP (47490917) || Hand: [Strike+, Defend, Zap+, Sweeping Beam, Skim+] Enemies: [Chomper 64/64, Chomper 61/61]
+PlayCard 4 # CARD.SKIM (21559038) || Hand: [Strike+, Defend, Sweeping Beam, Skim+] Enemies: [Chomper 64/64, Chomper 61/61]
+PlayCard 5 # CARD.SUPERCRITICAL (59813614) || Hand: [Strike+, Defend, Sweeping Beam, Supercritical+, Glasswork+, Exterminate, Strike] Enemies: [Chomper 64/64, Chomper 61/61]
+PlayCard 6 # CARD.GLASSWORK (1451615) || Hand: [Strike+, Defend, Sweeping Beam, Glasswork+, Exterminate, Strike] Enemies: [Chomper 64/64, Chomper 61/61]
+PlayCard 7 # CARD.EXTERMINATE (13064538) || Hand: [Strike+, Defend, Sweeping Beam, Exterminate, Strike] Enemies: [Chomper 64/64, Chomper 61/61]
+PlayCard 3 # CARD.SWEEPING_BEAM (24765070) || Hand: [Strike+, Defend, Sweeping Beam, Strike] Enemies: [Chomper 52/64, Chomper 49/61]
+PlayCard 9 # CARD.DUALCAST (51594683) || Hand: [Strike+, Defend, Strike, Dualcast+] Enemies: [Chomper 46/64, Chomper 43/61]
+PlayCard 1 # CARD.DEFEND_DEFECT (35102930) || Hand: [Strike+, Defend, Strike] Enemies: [Chomper 37/64, Chomper 34/61]
+PlayCard 0 1 # CARD.STRIKE_DEFECT (56096108) || Hand: [Strike+, Strike] Enemies: [Chomper 37/64, Chomper 34/61]
+PlayCard 8 1 # CARD.STRIKE_DEFECT (50471985) || Hand: [Strike] Enemies: [Chomper 25/64, Chomper 34/61]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 11 # CARD.CHARGE_BATTERY (18419833) || Hand: [Defend+, Charge Battery, Defend, Defend, Meteor Strike+] Enemies: [Chomper 10/64, Chomper 29/61]
+PlayCard 10 # CARD.DEFEND_DEFECT (61698971) || Hand: [Defend+, Defend, Defend, Meteor Strike+] Enemies: [Chomper 10/64, Chomper 29/61]
+PlayCard 12 # CARD.DEFEND_DEFECT (31560774) || Hand: [Defend, Defend, Meteor Strike+] Enemies: [Chomper 10/64, Chomper 29/61]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 3 # CARD.SWEEPING_BEAM (24765070) || Hand: [Charge Battery, Fusion+, Lightning Rod, Compact, Sweeping Beam] Enemies: [Chomper 2/64, Chomper 25/61]
+PlayCard 15 # CARD.CHARGE_BATTERY (56573226) || Hand: [Charge Battery, Fusion+, Lightning Rod, Compact, Glasswork+] Enemies: [Chomper 19/61]
+PlayCard 6 # CARD.GLASSWORK (1451615) || Hand: [Fusion+, Lightning Rod, Compact, Glasswork+] Enemies: [Chomper 19/61]
+PlayCard 17 # CARD.LIGHTNING_ROD (19028589) || Hand: [Fusion+, Lightning Rod, Compact] Enemies: [Chomper 19/61]
+PlayCard 16 # CARD.FUSION (39396989) || Hand: [Fusion+, Compact] Enemies: [Chomper 19/61]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+ClaimReward 0 # GoldReward: 20
+ClaimReward 0 # CardReward
+TakeCard 0 # Iteration+
+MoveToMapCoord 6
+ChooseRestSiteOption HEAL
+ChooseRestSiteOption SMITH
+SelectGridCard 5
+MoveToMapCoord 5
+PlayCard 1 # CARD.ITERATION (16373967) || Hand: [Defend+, Iteration+, Lightning Rod, Charge Battery, Defend] Enemies: [Entomancer 145/145]
+PlayCard 3 # CARD.CHARGE_BATTERY (51222954) || Hand: [Defend+, Lightning Rod, Charge Battery, Defend] Enemies: [Entomancer 145/145]
+PlayCard 2 # CARD.LIGHTNING_ROD (13147979) || Hand: [Defend+, Lightning Rod, Defend] Enemies: [Entomancer 145/145]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 # CARD.SUPERCRITICAL (612589) || Hand: [Strike+, Defend, Fusion+, Supercritical+, Glasswork+] Enemies: [Entomancer 141/145]
+PlayCard 9 # CARD.GLASSWORK (5513301) || Hand: [Strike+, Defend, Fusion+, Glasswork+] Enemies: [Entomancer 141/145]
+PlayCard 7 # CARD.FUSION (59720389) || Hand: [Strike+, Defend, Fusion+] Enemies: [Entomancer 141/145]
+PlayCard 5 1 # CARD.STRIKE_DEFECT (55418585) || Hand: [Strike+, Defend] Enemies: [Entomancer 132/145]
+PlayCard 6 # CARD.DEFEND_DEFECT (29005220)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 12 # CARD.DUALCAST (59773568) || Hand: [Exterminate, Charge Battery+, Dualcast+, Strike, Meteor Strike+] Enemies: [Entomancer 102/145]
+PlayCard 11 # CARD.CHARGE_BATTERY (43924209) || Hand: [Exterminate, Charge Battery+, Strike, Meteor Strike+] Enemies: [Entomancer 86/145]
+PlayCard 10 # CARD.EXTERMINATE (49619710) || Hand: [Exterminate, Strike, Meteor Strike+] Enemies: [Entomancer 86/145]
+PlayCard 13 1 # CARD.STRIKE_DEFECT (1091202)
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 16 # CARD.COMPACT (57289461) || Hand: [Sweeping Beam, Compact, Dazed, Dazed, Zap+, Dazed, Dazed, Skim+] Enemies: [Entomancer 64/145]
+PlayCard 17 # CARD.ZAP (45843106) || Hand: [Sweeping Beam, Fuel, Fuel, Zap+, Fuel, Fuel, Skim+] Enemies: [Entomancer 64/145]
+PlayCard 26 # CARD.FUEL (8350077) || Hand: [Sweeping Beam, Fuel, Fuel, Fuel, Fuel, Skim+] Enemies: [Entomancer 64/145]
+PlayCard 27 # CARD.FUEL (33715614) || Hand: [Sweeping Beam, Fuel, Fuel, Fuel, Skim+, Dazed] Enemies: [Entomancer 64/145]
+PlayCard 28 # CARD.FUEL (26106856) || Hand: [Sweeping Beam, Fuel, Fuel, Skim+, Dazed, Defend] Enemies: [Entomancer 64/145]
+PlayCard 29 # CARD.FUEL (3758968) || Hand: [Sweeping Beam, Fuel, Skim+, Dazed, Defend, Dazed] Enemies: [Entomancer 64/145]
+PlayCard 15 # CARD.SWEEPING_BEAM (21278576) || Hand: [Sweeping Beam, Skim+, Dazed, Defend, Dazed, Dualcast+] Enemies: [Entomancer 64/145]
+PlayCard 18 # CARD.SKIM (9934777) || Hand: [Skim+, Dazed, Defend, Dazed, Dualcast+, Defend] Enemies: [Entomancer 58/145]
+PlayCard 12 # CARD.DUALCAST (59773568) || Hand: [Dazed, Defend, Dazed, Dualcast+, Defend, Strike, Strike+, Meteor Strike+, Defend] Enemies: [Entomancer 58/145]
+PlayCard 14 1 # CARD.METEOR_STRIKE (9820826) || Hand: [Dazed, Defend, Dazed, Defend, Strike, Strike+, Meteor Strike+, Defend] Enemies: [Entomancer 58/145]
+PlayCard 5 1 # CARD.STRIKE_DEFECT (55418585)
+ClaimReward 0 # GoldReward: 39
+ClaimReward 0 # PotionReward
+ClaimReward 1 # RelicReward
+ClaimReward 1 # CardReward
+TakeCard sacrifice # sacrifice
+ClaimReward 0 # PotionReward
+MoveToMapCoord 4
+PlayCard 4 # CARD.DEFEND_DEFECT (39251018) || Hand: [Strike+, Defend, Meteor Strike+, Defend, Defend] Enemies: [Bowlbug (Rock) 47/47, Bowlbug (Silk) 42/42, Slumbering Beetle 86/86]
+PlayCard 3 # CARD.DEFEND_DEFECT (11817764) || Hand: [Strike+, Defend, Meteor Strike+, Defend] Enemies: [Bowlbug (Rock) 47/47, Bowlbug (Silk) 42/42, Slumbering Beetle 86/86]
+PlayCard 1 # CARD.DEFEND_DEFECT (35771591) || Hand: [Strike+, Defend, Meteor Strike+] Enemies: [Bowlbug (Rock) 47/47, Bowlbug (Silk) 42/42, Slumbering Beetle 86/86]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 7 # CARD.GLASSWORK (25616412) || Hand: [Iteration+, Strike, Glasswork+, Defend+, Fusion+, Skim+, Lightning Rod, Dualcast+] Enemies: [Bowlbug (Rock) 43/47, Bowlbug (Silk) 42/42, Slumbering Beetle 86/86]
+PlayCard 9 # CARD.FUSION (61663495) || Hand: [Iteration+, Strike, Defend+, Fusion+, Skim+, Lightning Rod, Dualcast+] Enemies: [Bowlbug (Rock) 43/47, Bowlbug (Silk) 42/42, Slumbering Beetle 86/86]
+PlayCard 10 # CARD.SKIM (18100544) || Hand: [Iteration+, Strike, Defend+, Skim+, Lightning Rod, Dualcast+] Enemies: [Bowlbug (Rock) 43/47, Bowlbug (Silk) 42/42, Slumbering Beetle 86/86]
+PlayCard 13 # CARD.ZAP (41959746) || Hand: [Iteration+, Strike, Defend+, Lightning Rod, Dualcast+, Zap+, Charge Battery+, Sweeping Beam, Exterminate] Enemies: [Bowlbug (Rock) 43/47, Bowlbug (Silk) 42/42, Slumbering Beetle 86/86]
+PlayCard 12 # CARD.DUALCAST (56857977) || Hand: [Iteration+, Strike, Defend+, Lightning Rod, Dualcast+, Charge Battery+, Sweeping Beam, Exterminate] Enemies: [Bowlbug (Rock) 34/47, Bowlbug (Silk) 42/42, Slumbering Beetle 86/86]
+PlayCard 15 # CARD.SWEEPING_BEAM (43296226) || Hand: [Iteration+, Strike, Defend+, Lightning Rod, Charge Battery+, Sweeping Beam, Exterminate] Enemies: [Bowlbug (Rock) 14/47, Bowlbug (Silk) 22/42, Slumbering Beetle 81/86]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 18 # CARD.SUPERCRITICAL (21782789) || Hand: [Supercritical+, Compact, Lightning Rod, Zap+, Fusion+] Enemies: [Bowlbug (Rock) 6/47, Bowlbug (Silk) 18/42, Slumbering Beetle 77/86]
+PlayCard 11 # CARD.LIGHTNING_ROD (28687174) || Hand: [Compact, Lightning Rod, Zap+, Fusion+] Enemies: [Bowlbug (Rock) 6/47, Bowlbug (Silk) 18/42, Slumbering Beetle 77/86]
+PlayCard 13 # CARD.ZAP (41959746) || Hand: [Compact, Zap+, Fusion+] Enemies: [Bowlbug (Rock) 6/47, Bowlbug (Silk) 18/42, Slumbering Beetle 77/86]
+PlayCard 19 # CARD.COMPACT (61827375) || Hand: [Compact, Fusion+] Enemies: [Bowlbug (Rock) 6/47, Bowlbug (Silk) 18/42, Slumbering Beetle 77/86]
+PlayCard 9 # CARD.FUSION (61663495) || Hand: [Fusion+] Enemies: [Bowlbug (Rock) 6/47, Bowlbug (Silk) 18/42, Slumbering Beetle 77/86]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 10 # CARD.SKIM (18100544) || Hand: [Strike+, Skim+, Defend, Defend+, Strike] Enemies: [Bowlbug (Rock) 2/47, Bowlbug (Silk) 9/42, Slumbering Beetle 73/86]
+PlayCard 15 # CARD.SWEEPING_BEAM (43296226) || Hand: [Strike+, Defend, Defend+, Strike, Dualcast+, Charge Battery, Sweeping Beam, Meteor Strike+] Enemies: [Bowlbug (Rock) 2/47, Bowlbug (Silk) 9/42, Slumbering Beetle 73/86]
+PlayCard 7 # CARD.GLASSWORK (25616412) || Hand: [Strike+, Defend, Defend+, Strike, Dualcast+, Charge Battery, Meteor Strike+, Glasswork+] Enemies: [Bowlbug (Silk) 5/42, Slumbering Beetle 69/86]
+PlayCard 12 # CARD.DUALCAST (56857977) || Hand: [Strike+, Defend, Defend+, Strike, Dualcast+, Charge Battery, Meteor Strike+] Enemies: [Slumbering Beetle 69/86]
+PlayCard 2 3 # CARD.METEOR_STRIKE (53508868) || Hand: [Strike+, Defend, Defend+, Strike, Charge Battery, Meteor Strike+] Enemies: [Slumbering Beetle 69/86]
+PlayCard 17 # CARD.CHARGE_BATTERY (17333390) || Hand: [Strike+, Defend, Defend+, Strike, Charge Battery] Enemies: [Slumbering Beetle 26/86]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 14 # CARD.CHARGE_BATTERY (42093394) || Hand: [Iteration+, Charge Battery+, Defend, Defend, Exterminate] Enemies: [Slumbering Beetle 26/86]
+PlayCard 1 # CARD.DEFEND_DEFECT (35771591) || Hand: [Iteration+, Defend, Defend, Exterminate] Enemies: [Slumbering Beetle 26/86]
+PlayCard 3 # CARD.DEFEND_DEFECT (11817764) || Hand: [Iteration+, Defend, Exterminate] Enemies: [Slumbering Beetle 26/86]
+PlayCard 5 # CARD.ITERATION (17714846) || Hand: [Iteration+, Exterminate] Enemies: [Slumbering Beetle 26/86]
+PlayCard 16 # CARD.EXTERMINATE (54121715)
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 2 3 # CARD.METEOR_STRIKE (53508868) || Hand: [Defend, Strike+, Meteor Strike+, Zap+, Dualcast+] Enemies: [Slumbering Beetle 10/86]
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # PotionReward
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard sacrifice # sacrifice
+MoveToMapCoord 4
+ChooseRestSiteOption HEAL
+ChooseRestSiteOption SMITH
+SelectGridCard 7
+MoveToMapCoord 3
+UsePotion 0 # POTION.POWER_POTION || Hand: [Charge Battery, Meteor Strike+, Defend, Strike+, Skim+] Enemies: [The Insatiable 321/321]
+SelectCardFromScreen 1
+PlayCard 20 # CARD.CREATIVE_AI (14774678) || Hand: [Charge Battery, Meteor Strike+, Defend, Strike+, Skim+, Creative AI] Enemies: [The Insatiable 321/321]
+PlayCard 4 # CARD.SKIM (41136288) || Hand: [Charge Battery, Meteor Strike+, Defend, Strike+, Skim+] Enemies: [The Insatiable 321/321]
+PlayCard 8 # CARD.SUPERCRITICAL (50443949) || Hand: [Charge Battery, Meteor Strike+, Defend, Strike+, Compact+, Charge Battery+, Defend, Supercritical+] Enemies: [The Insatiable 321/321]
+PlayCard 1 1 # CARD.METEOR_STRIKE (11011098) || Hand: [Charge Battery, Meteor Strike+, Defend, Strike+, Compact+, Charge Battery+, Defend] Enemies: [The Insatiable 321/321]
+PlayCard 6 # CARD.CHARGE_BATTERY (43704998) || Hand: [Charge Battery, Defend, Strike+, Compact+, Charge Battery+, Defend] Enemies: [The Insatiable 279/321]
+PlayCard 0 # CARD.CHARGE_BATTERY (23593076) || Hand: [Charge Battery, Defend, Strike+, Compact+, Defend] Enemies: [The Insatiable 279/321]
+PlayCard 3 1 # CARD.STRIKE_DEFECT (19483779) || Hand: [Defend, Strike+, Compact+, Defend] Enemies: [The Insatiable 279/321]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 27 # CARD.CREATIVE_AI (20410537) || Hand: [Creative AI, Frantic Escape, Exterminate, Fusion+, Iteration+, Zap+] Enemies: [The Insatiable 267/321]
+PlayCard 12 # CARD.ZAP (48943580) || Hand: [Frantic Escape, Exterminate, Fusion+, Iteration+, Zap+] Enemies: [The Insatiable 267/321]
+PlayCard 11 # CARD.ITERATION (65090499) || Hand: [Frantic Escape, Exterminate, Fusion+, Iteration+] Enemies: [The Insatiable 267/321]
+PlayCard 10 # CARD.FUSION (59428060) || Hand: [Frantic Escape, Exterminate, Fusion+] Enemies: [The Insatiable 267/321]
+PlayCard 9 # CARD.EXTERMINATE (51342360) || Hand: [Frantic Escape, Exterminate] Enemies: [The Insatiable 267/321]
+PlayCard 21 # CARD.FRANTIC_ESCAPE (45796965) || Hand: [Frantic Escape] Enemies: [The Insatiable 255/321]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 28 # CARD.ITERATION (31895775) || Hand: [Iteration, Iteration, Sweeping Beam, Strike, Defend, Lightning Rod, Glasswork+] Enemies: [The Insatiable 251/321]
+PlayCard 29 # CARD.ITERATION (26526691) || Hand: [Iteration, Sweeping Beam, Strike, Defend, Lightning Rod, Glasswork+] Enemies: [The Insatiable 251/321]
+PlayCard 17 # CARD.GLASSWORK (26268894) || Hand: [Sweeping Beam, Strike, Defend, Lightning Rod, Glasswork+] Enemies: [The Insatiable 251/321]
+PlayCard 13 # CARD.SWEEPING_BEAM (37839042) || Hand: [Sweeping Beam, Strike, Defend, Lightning Rod] Enemies: [The Insatiable 251/321]
+PlayCard 23 # CARD.FRANTIC_ESCAPE (18566718)
+PlayCard 18 # CARD.DUALCAST (35093455) || Hand: [Strike, Defend, Lightning Rod, Dualcast+, Defend+, Frantic Escape, Skim+, Exterminate, Meteor Strike+] Enemies: [The Insatiable 245/321]
+PlayCard 19 # CARD.DEFEND_DEFECT (47405642) || Hand: [Strike, Defend, Lightning Rod, Defend+, Frantic Escape, Skim+, Exterminate, Meteor Strike+] Enemies: [The Insatiable 227/321]
+PlayCard 15 # CARD.DEFEND_DEFECT (45063550) || Hand: [Strike, Defend, Lightning Rod, Frantic Escape, Skim+, Exterminate, Meteor Strike+] Enemies: [The Insatiable 227/321]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 12 # CARD.ZAP (48943580) || Hand: [Bulk Up, Iteration, Zap+, Frantic Escape, Glasswork+, Frantic Escape, Defend, Charge Battery+, Fusion+, Frantic Escape] Enemies: [The Insatiable 222/321]
+PlayCard 6 # CARD.CHARGE_BATTERY (43704998) || Hand: [Bulk Up, Iteration, Frantic Escape, Glasswork+, Frantic Escape, Defend, Charge Battery+, Fusion+, Frantic Escape] Enemies: [The Insatiable 222/321]
+PlayCard 10 # CARD.FUSION (59428060) || Hand: [Bulk Up, Iteration, Frantic Escape, Glasswork+, Frantic Escape, Defend, Fusion+, Frantic Escape] Enemies: [The Insatiable 222/321]
+PlayCard 31 # CARD.ITERATION (740874) || Hand: [Bulk Up, Iteration, Frantic Escape, Glasswork+, Frantic Escape, Defend, Frantic Escape] Enemies: [The Insatiable 222/321]
+PlayCard 24 # CARD.FRANTIC_ESCAPE (32882739) || Hand: [Bulk Up, Frantic Escape, Glasswork+, Frantic Escape, Defend, Frantic Escape] Enemies: [The Insatiable 222/321]
+PlayCard 17 # CARD.GLASSWORK (26268894) || Hand: [Bulk Up, Glasswork+, Frantic Escape, Defend, Frantic Escape] Enemies: [The Insatiable 222/321]
+PlayCard 26 # CARD.FRANTIC_ESCAPE (46256169) || Hand: [Bulk Up, Frantic Escape, Defend, Frantic Escape] Enemies: [The Insatiable 214/321]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 5 # CARD.COMPACT (34682272) || Hand: [Spinner, Creative AI, Compact+, Defend, Strike+, Charge Battery, Frantic Escape, Defend, Exterminate, Zap+] Enemies: [The Insatiable 205/321]
+PlayCard 34 # CARD.FUEL (38951613) || Hand: [Spinner, Creative AI, Defend, Strike+, Charge Battery, Fuel+, Defend, Exterminate, Zap+] Enemies: [The Insatiable 205/321]
+PlayCard 12 # CARD.ZAP (48943580) || Hand: [Spinner, Creative AI, Defend, Strike+, Charge Battery, Defend, Exterminate, Zap+, Skim+, Defend] Enemies: [The Insatiable 205/321]
+PlayCard 33 # CARD.CREATIVE_AI (60159058) || Hand: [Spinner, Creative AI, Defend, Strike+, Charge Battery, Defend, Exterminate, Skim+, Defend] Enemies: [The Insatiable 196/321]
+PlayCard 4 # CARD.SKIM (41136288) || Hand: [Spinner, Defend, Strike+, Charge Battery, Defend, Exterminate, Skim+, Defend] Enemies: [The Insatiable 196/321]
+PlayCard 0 # CARD.CHARGE_BATTERY (23593076) || Hand: [Spinner, Defend, Strike+, Charge Battery, Defend, Exterminate, Defend, Meteor Strike+, Frantic Escape, Defend+] Enemies: [The Insatiable 196/321]
+PlayCard 32 # CARD.SPINNER (4700898) || Hand: [Spinner, Defend, Strike+, Defend, Exterminate, Defend, Meteor Strike+, Frantic Escape, Defend+] Enemies: [The Insatiable 196/321]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 37 # CARD.BUFFER (9629625) || Hand: [Spinner, Hailstorm, Buffer, Charge Battery+, Frantic Escape, Frantic Escape, Glasswork+, Lightning Rod, Frantic Escape, Fusion+] Enemies: [The Insatiable 188/321]
+PlayCard 6 # CARD.CHARGE_BATTERY (43704998) || Hand: [Spinner, Hailstorm, Charge Battery+, Frantic Escape, Frantic Escape, Glasswork+, Lightning Rod, Frantic Escape, Fusion+] Enemies: [The Insatiable 188/321]
+PlayCard 10 # CARD.FUSION (59428060) || Hand: [Spinner, Hailstorm, Frantic Escape, Frantic Escape, Glasswork+, Lightning Rod, Frantic Escape, Fusion+] Enemies: [The Insatiable 188/321]
+PlayCard 35 # CARD.SPINNER (22912007) || Hand: [Spinner, Hailstorm, Frantic Escape, Frantic Escape, Glasswork+, Lightning Rod, Frantic Escape] Enemies: [The Insatiable 182/321]
+PlayCard 16 # CARD.LIGHTNING_ROD (2918766) || Hand: [Hailstorm, Frantic Escape, Frantic Escape, Glasswork+, Lightning Rod, Frantic Escape] Enemies: [The Insatiable 182/321]
+PlayCard 17 # CARD.GLASSWORK (26268894) || Hand: [Hailstorm, Frantic Escape, Frantic Escape, Glasswork+, Frantic Escape] Enemies: [The Insatiable 182/321]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 40 # CARD.BUFFER (66827081) || Hand: [Iteration, Coolant, Buffer, Strike, Frantic Escape, Sweeping Beam, Dualcast+, Bulk Up, Hailstorm, Charge Battery] Enemies: [The Insatiable 147/321]
+PlayCard 39 # CARD.COOLANT (34511573) || Hand: [Iteration, Coolant, Strike, Frantic Escape, Sweeping Beam, Dualcast+, Bulk Up, Hailstorm, Charge Battery] Enemies: [The Insatiable 147/321]
+PlayCard 38 # CARD.ITERATION (30791227) || Hand: [Iteration, Strike, Frantic Escape, Sweeping Beam, Dualcast+, Bulk Up, Hailstorm, Charge Battery] Enemies: [The Insatiable 147/321]
+PlayCard 24 # CARD.FRANTIC_ESCAPE (32882739) || Hand: [Strike, Frantic Escape, Sweeping Beam, Dualcast+, Bulk Up, Hailstorm, Charge Battery] Enemies: [The Insatiable 147/321]
+PlayCard 18 # CARD.DUALCAST (35093455) || Hand: [Strike, Sweeping Beam, Dualcast+, Bulk Up, Hailstorm, Charge Battery] Enemies: [The Insatiable 147/321]
+PlayCard 0 # CARD.CHARGE_BATTERY (23593076) || Hand: [Strike, Sweeping Beam, Bulk Up, Hailstorm, Charge Battery] Enemies: [The Insatiable 127/321]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 42 # CARD.SUBROUTINE (44214347) || Hand: [Subroutine, Subroutine, Subroutine, Frantic Escape, Fusion+, Exterminate, Frantic Escape, Lightning Rod, Defend, Frantic Escape] Enemies: [The Insatiable 101/321]
+PlayCard 41 # CARD.SUBROUTINE (41077489)
+PlayCard 43 # CARD.SUBROUTINE (48079553) || Hand: [Subroutine, Frantic Escape, Fusion+, Exterminate, Frantic Escape, Lightning Rod, Defend, Frantic Escape] Enemies: [The Insatiable 101/321]
+PlayCard 9 # CARD.EXTERMINATE (51342360) || Hand: [Frantic Escape, Fusion+, Exterminate, Frantic Escape, Lightning Rod, Defend, Frantic Escape] Enemies: [The Insatiable 101/321]
+PlayCard 10 # CARD.FUSION (59428060) || Hand: [Frantic Escape, Fusion+, Frantic Escape, Lightning Rod, Defend, Frantic Escape] Enemies: [The Insatiable 89/321]
+PlayCard 23 # CARD.FRANTIC_ESCAPE (18566718) || Hand: [Frantic Escape, Frantic Escape, Lightning Rod, Defend, Frantic Escape] Enemies: [The Insatiable 79/321]
+PlayCard 22 # CARD.FRANTIC_ESCAPE (9519509) || Hand: [Frantic Escape, Lightning Rod, Defend, Frantic Escape] Enemies: [The Insatiable 79/321]
+EndTurn # EndPlayerTurnAction for player 1 round 8
+PlayCard 44 # CARD.BUFFER (48105581) || Hand: [Buffer, Coolant, Thunder, Defend, Meteor Strike+, Zap+, Defend+, Glasswork+] Enemies: [The Insatiable 53/321]
+PlayCard 1 1 # CARD.METEOR_STRIKE (11011098) || Hand: [Coolant, Thunder, Defend, Meteor Strike+, Zap+, Defend+, Glasswork+] Enemies: [The Insatiable 53/321]
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # CardReward
+TakeCard 1 # Modded
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Coolant, Thunder, Defend, Zap+, Defend+, Glasswork+] Enemies: []
+MoveToMapCoord 3
+ChooseEventOption 0 # NONUPEIPE.pages.INITIAL.options.BRILLIANT_SCARF
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+PlayCard 2 # CARD.SKIM (575510) || Hand: [Defend, Glasswork+, Skim+, Defend+, Meteor Strike+] Enemies: [Scroll of Biting 37/37, Scroll of Biting 35/35, Scroll of Biting 36/36]
+UsePotion 1 # POTION.DEXTERITY_POTION || Hand: [Defend, Glasswork+, Defend+, Meteor Strike+, Sweeping Beam, Iteration+, Fusion+, Lightning Rod] Enemies: [Scroll of Biting 37/37, Scroll of Biting 35/35, Scroll of Biting 36/36]
+PlayCard 1 # CARD.GLASSWORK (37346647) || Hand: [Defend, Glasswork+, Defend+, Meteor Strike+, Sweeping Beam, Iteration+, Fusion+, Lightning Rod] Enemies: [Scroll of Biting 37/37, Scroll of Biting 35/35, Scroll of Biting 36/36]
+PlayCard 0 # CARD.DEFEND_DEFECT (63801951) || Hand: [Defend, Defend+, Meteor Strike+, Sweeping Beam, Iteration+, Fusion+, Lightning Rod] Enemies: [Scroll of Biting 37/37, Scroll of Biting 35/35, Scroll of Biting 36/36]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.SUPERCRITICAL (45811070) || Hand: [Supercritical+, Charge Battery+, Dualcast+, Modded, Zap+, Exterminate, Strike+, Defend] Enemies: [Scroll of Biting 32/37, Scroll of Biting 26/35, Scroll of Biting 31/36]
+PlayCard 12 # CARD.MODDED (43164976) || Hand: [Charge Battery+, Dualcast+, Modded, Zap+, Exterminate, Strike+, Defend] Enemies: [Scroll of Biting 32/37, Scroll of Biting 26/35, Scroll of Biting 31/36]
+PlayCard 14 # CARD.EXTERMINATE (6702171) || Hand: [Charge Battery+, Dualcast+, Zap+, Exterminate, Strike+, Defend, Defend] Enemies: [Scroll of Biting 32/37, Scroll of Biting 26/35, Scroll of Biting 31/36]
+PlayCard 13 # CARD.ZAP (52940468) || Hand: [Charge Battery+, Dualcast+, Zap+, Strike+, Defend, Defend] Enemies: [Scroll of Biting 20/37, Scroll of Biting 14/35, Scroll of Biting 19/36]
+PlayCard 10 # CARD.CHARGE_BATTERY (9646450) || Hand: [Charge Battery+, Dualcast+, Strike+, Defend, Defend] Enemies: [Scroll of Biting 20/37, Scroll of Biting 14/35, Scroll of Biting 19/36]
+PlayCard 15 1 # CARD.STRIKE_DEFECT (60319540) || Hand: [Dualcast+, Strike+, Defend, Defend] Enemies: [Scroll of Biting 20/37, Scroll of Biting 14/35, Scroll of Biting 19/36]
+PlayCard 11 # CARD.DUALCAST (19709189) || Hand: [Dualcast+, Defend, Defend] Enemies: [Scroll of Biting 8/37, Scroll of Biting 14/35, Scroll of Biting 19/36]
+PlayCard 16 # CARD.DEFEND_DEFECT (6004954) || Hand: [Defend, Defend] Enemies: [Scroll of Biting 8/37, Scroll of Biting 14/35, Scroll of Biting 1/36]
+PlayCard 17 # CARD.DEFEND_DEFECT (54044589) || Hand: [Defend] Enemies: [Scroll of Biting 8/37, Scroll of Biting 14/35, Scroll of Biting 1/36]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 1 # CARD.GLASSWORK (37346647) || Hand: [Compact+, Charge Battery, Strike, Strike+, Glasswork+] Enemies: [Scroll of Biting 4/37, Scroll of Biting 6/35]
+PlayCard 18 # CARD.COMPACT (16639254) || Hand: [Compact+, Charge Battery, Strike, Strike+] Enemies: [Scroll of Biting 4/37, Scroll of Biting 6/35]
+PlayCard 15 1 # CARD.STRIKE_DEFECT (60319540) || Hand: [Charge Battery, Strike, Strike+] Enemies: [Scroll of Biting 4/37, Scroll of Biting 6/35]
+PlayCard 19 # CARD.CHARGE_BATTERY (15535558) || Hand: [Charge Battery, Strike] Enemies: [Scroll of Biting 6/35]
+PlayCard 20 2 # CARD.STRIKE_DEFECT (5602294) || Hand: [Strike] Enemies: [Scroll of Biting 6/35]
+ClaimReward 0 # GoldReward: 17
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard sacrifice # sacrifice
+MoveToMapCoord 0
+PlayCard 3 # CARD.GLASSWORK (2589234) || Hand: [Defend+, Strike+, Dualcast+, Glasswork+, Lightning Rod] Enemies: [Devoted Sculptor 162/162]
+PlayCard 4 # CARD.LIGHTNING_ROD (23303109) || Hand: [Defend+, Strike+, Dualcast+, Lightning Rod] Enemies: [Devoted Sculptor 162/162]
+PlayCard 1 1 # CARD.STRIKE_DEFECT (53884757) || Hand: [Defend+, Strike+, Dualcast+] Enemies: [Devoted Sculptor 162/162]
+PlayCard 2 # CARD.DUALCAST (15200773) || Hand: [Defend+, Dualcast+] Enemies: [Devoted Sculptor 150/162]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 5 # CARD.CHARGE_BATTERY (8401391) || Hand: [Charge Battery+, Charge Battery, Defend, Defend, Fusion+] Enemies: [Devoted Sculptor 127/162]
+PlayCard 6 # CARD.CHARGE_BATTERY (8503657) || Hand: [Charge Battery, Defend, Defend, Fusion+] Enemies: [Devoted Sculptor 127/162]
+PlayCard 9 # CARD.FUSION (25150762) || Hand: [Defend, Defend, Fusion+] Enemies: [Devoted Sculptor 127/162]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 17 # CARD.MODDED (19159687) || Hand: [Zap+, Exterminate, Defend, Sweeping Beam, Skim+, Compact+, Strike, Modded] Enemies: [Devoted Sculptor 113/162]
+PlayCard 10 # CARD.ZAP (25030271) || Hand: [Zap+, Exterminate, Defend, Sweeping Beam, Skim+, Compact+, Strike, Iteration+] Enemies: [Devoted Sculptor 113/162]
+PlayCard 14 # CARD.SKIM (8219271) || Hand: [Exterminate, Defend, Sweeping Beam, Skim+, Compact+, Strike, Iteration+] Enemies: [Devoted Sculptor 113/162]
+PlayCard 20 # CARD.SUPERCRITICAL (8768260) || Hand: [Exterminate, Defend, Sweeping Beam, Compact+, Strike, Iteration+, Meteor Strike+, Supercritical+, Defend, Charge Battery+] Enemies: [Devoted Sculptor 113/162]
+PlayCard 19 1 # CARD.METEOR_STRIKE (8430791) || Hand: [Exterminate, Defend, Sweeping Beam, Compact+, Strike, Iteration+, Meteor Strike+, Defend, Charge Battery+] Enemies: [Devoted Sculptor 113/162]
+PlayCard 18 # CARD.ITERATION (38219456) || Hand: [Exterminate, Defend, Sweeping Beam, Compact+, Strike, Iteration+, Defend, Charge Battery+] Enemies: [Devoted Sculptor 62/162]
+PlayCard 5 # CARD.CHARGE_BATTERY (8401391) || Hand: [Exterminate, Defend, Sweeping Beam, Compact+, Strike, Defend, Charge Battery+] Enemies: [Devoted Sculptor 62/162]
+PlayCard 13 # CARD.SWEEPING_BEAM (60565575) || Hand: [Exterminate, Defend, Sweeping Beam, Compact+, Strike, Defend] Enemies: [Devoted Sculptor 62/162]
+PlayCard 1 1 # CARD.STRIKE_DEFECT (53884757) || Hand: [Exterminate, Defend, Compact+, Strike, Defend, Strike+] Enemies: [Devoted Sculptor 56/162]
+PlayCard 16 1 # CARD.STRIKE_DEFECT (61781177) || Hand: [Exterminate, Defend, Compact+, Strike, Defend] Enemies: [Devoted Sculptor 44/162]
+PlayCard 15 # CARD.COMPACT (6864575) || Hand: [Exterminate, Defend, Compact+, Defend] Enemies: [Devoted Sculptor 38/162]
+PlayCard 11 # CARD.EXTERMINATE (23945848) || Hand: [Exterminate, Defend, Defend] Enemies: [Devoted Sculptor 38/162]
+PlayCard 12 # CARD.DEFEND_DEFECT (14186048) || Hand: [Defend, Defend] Enemies: [Devoted Sculptor 26/162]
+PlayCard 7 # CARD.DEFEND_DEFECT (9424052) || Hand: [Defend] Enemies: [Devoted Sculptor 26/162]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 17 # CARD.MODDED (19159687) || Hand: [Glasswork+, Fusion+, Modded, Dualcast+, Zap+] Enemies: [Devoted Sculptor 22/162]
+PlayCard 3 # CARD.GLASSWORK (2589234) || Hand: [Glasswork+, Fusion+, Dualcast+, Zap+, Lightning Rod] Enemies: [Devoted Sculptor 22/162]
+PlayCard 2 # CARD.DUALCAST (15200773) || Hand: [Fusion+, Dualcast+, Zap+, Lightning Rod] Enemies: [Devoted Sculptor 22/162]
+PlayCard 9 # CARD.FUSION (25150762) || Hand: [Fusion+, Zap+, Lightning Rod] Enemies: [Devoted Sculptor 4/162]
+PlayCard 10 # CARD.ZAP (25030271) || Hand: [Zap+, Lightning Rod] Enemies: [Devoted Sculptor 4/162]
+PlayCard 4 # CARD.LIGHTNING_ROD (23303109) || Hand: [Lightning Rod] Enemies: [Devoted Sculptor 4/162]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard sacrifice # sacrifice
+MoveToMapCoord 0
+ChooseEventOption 0 # RANWID_THE_ELDER.pages.INITIAL.options.POTION
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+OpenChest
+TakeChestRelic # Joss Paper
+NetPickRelicAction for player 1 index 0 || Hand: [] Enemies: [Devoted Sculptor 4/162]
+MoveToMapCoord 0
+PlayCard 2 # CARD.SKIM (25633332) || Hand: [Iteration+, Defend, Skim+, Glasswork+, Defend] Enemies: [Fabricator 150/150]
+PlayCard 8 # CARD.SUPERCRITICAL (41569587) || Hand: [Iteration+, Defend, Glasswork+, Defend, Charge Battery, Meteor Strike+, Fusion+, Supercritical+] Enemies: [Fabricator 150/150]
+PlayCard 7 # CARD.FUSION (49358085) || Hand: [Iteration+, Defend, Glasswork+, Defend, Charge Battery, Meteor Strike+, Fusion+] Enemies: [Fabricator 150/150]
+PlayCard 6 1 # CARD.METEOR_STRIKE (5484231) || Hand: [Iteration+, Defend, Glasswork+, Defend, Charge Battery, Meteor Strike+] Enemies: [Fabricator 150/150]
+PlayCard 3 # CARD.GLASSWORK (29373404) || Hand: [Iteration+, Defend, Glasswork+, Defend, Charge Battery] Enemies: [Fabricator 108/150]
+PlayCard 0 # CARD.ITERATION (16058046) || Hand: [Iteration+, Defend, Defend, Charge Battery] Enemies: [Fabricator 108/150]
+PlayCard 5 # CARD.CHARGE_BATTERY (30435520)
+PlayCard 4 # CARD.DEFEND_DEFECT (63034048) || Hand: [Defend, Defend] Enemies: [Fabricator 108/150]
+PlayCard 1 # CARD.DEFEND_DEFECT (10304688) || Hand: [Defend] Enemies: [Fabricator 108/150]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 13 # CARD.MODDED (1677863) || Hand: [Charge Battery+, Defend+, Zap+, Dualcast+, Modded] Enemies: [Zapbot 22/22, Fabricator 103/150]
+PlayCard 9 # CARD.CHARGE_BATTERY (38581971) || Hand: [Charge Battery+, Defend+, Zap+, Dualcast+, Strike+] Enemies: [Zapbot 22/22, Fabricator 103/150]
+PlayCard 10 # CARD.DEFEND_DEFECT (11693420) || Hand: [Defend+, Zap+, Dualcast+, Strike+] Enemies: [Zapbot 22/22, Fabricator 103/150]
+PlayCard 14 2 # CARD.STRIKE_DEFECT (15100771) || Hand: [Zap+, Dualcast+, Strike+] Enemies: [Zapbot 22/22, Fabricator 103/150]
+PlayCard 11 # CARD.ZAP (38131921) || Hand: [Zap+, Dualcast+] Enemies: [Zapbot 10/22, Fabricator 103/150]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 16 # CARD.SWEEPING_BEAM (15202929) || Hand: [Strike, Sweeping Beam, Lightning Rod, Exterminate, Compact+] Enemies: [Zapbot 2/22, Noisebot 19/19, Fabricator 99/150, Stabbot 20/20]
+PlayCard 18 # CARD.EXTERMINATE (23477740) || Hand: [Strike, Lightning Rod, Exterminate, Compact+, Defend] Enemies: [Noisebot 13/19, Fabricator 93/150, Stabbot 14/20]
+PlayCard 20 # CARD.DEFEND_DEFECT (22648763) || Hand: [Strike, Lightning Rod, Compact+, Defend] Enemies: [Noisebot 1/19, Fabricator 81/150, Stabbot 2/20]
+PlayCard 19 # CARD.COMPACT (9973069) || Hand: [Strike, Lightning Rod, Compact+] Enemies: [Noisebot 1/19, Fabricator 81/150, Stabbot 2/20]
+PlayCard 15 1 # CARD.STRIKE_DEFECT (1689214) || Hand: [Strike, Lightning Rod] Enemies: [Noisebot 1/19, Fabricator 81/150, Stabbot 2/20]
+PlayCard 17 # CARD.LIGHTNING_ROD (2608637) || Hand: [Lightning Rod] Enemies: [Noisebot 1/19, Fabricator 75/150, Stabbot 2/20]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 3 # CARD.GLASSWORK (29373404) || Hand: [Defend, Zap+, Defend, Defend, Glasswork+] Enemies: [Fabricator 68/150]
+PlayCard 11 # CARD.ZAP (38131921) || Hand: [Defend, Zap+, Defend, Defend] Enemies: [Fabricator 68/150]
+PlayCard 4 # CARD.DEFEND_DEFECT (63034048) || Hand: [Defend, Defend, Defend] Enemies: [Fabricator 64/150]
+PlayCard 20 # CARD.DEFEND_DEFECT (22648763) || Hand: [Defend, Defend] Enemies: [Fabricator 64/150]
+PlayCard 1 # CARD.DEFEND_DEFECT (10304688) || Hand: [Defend] Enemies: [Fabricator 64/150]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 13 # CARD.MODDED (1677863) || Hand: [Strike, Modded, Charge Battery, Fusion+, Lightning Rod] Enemies: [Guardbot 7/16, Zapbot 22/22, Fabricator 47/150]
+PlayCard 7 # CARD.FUSION (49358085) || Hand: [Strike, Charge Battery, Fusion+, Lightning Rod, Compact+] Enemies: [Guardbot 7/16, Zapbot 22/22, Fabricator 47/150]
+PlayCard 5 # CARD.CHARGE_BATTERY (30435520) || Hand: [Strike, Charge Battery, Lightning Rod, Compact+] Enemies: [Guardbot 7/16, Zapbot 22/22, Fabricator 47/150]
+PlayCard 15 1 # CARD.STRIKE_DEFECT (1689214) || Hand: [Strike, Lightning Rod, Compact+] Enemies: [Guardbot 7/16, Zapbot 22/22, Fabricator 47/150]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 6 1 # CARD.METEOR_STRIKE (5484231) || Hand: [Charge Battery+, Meteor Strike+, Defend+, Dualcast+, Sweeping Beam] Enemies: [Stabbot 19/19, Zapbot 14/22, Fabricator 33/150]
+ClaimReward 0 # GoldReward: 13
+ClaimReward 0 # CardReward
+TakeCard sacrifice # sacrifice
+MoveToMapCoord 0
+PlayCard 4 # CARD.CHARGE_BATTERY (37510316) || Hand: [Charge Battery, Defend+, Lightning Rod, Compact+, Charge Battery+] Enemies: [Soul Nexus 234/234]
+PlayCard 0 # CARD.CHARGE_BATTERY (16545121) || Hand: [Charge Battery, Defend+, Lightning Rod, Compact+] Enemies: [Soul Nexus 234/234]
+PlayCard 1 # CARD.DEFEND_DEFECT (14688367) || Hand: [Defend+, Lightning Rod, Compact+] Enemies: [Soul Nexus 234/234]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 1 # CARD.METEOR_STRIKE (16982281) || Hand: [Sweeping Beam, Defend, Dualcast+, Meteor Strike+, Glasswork+, Zap+, Exterminate, Fusion+] Enemies: [Soul Nexus 230/234]
+PlayCard 7 # CARD.DUALCAST (31713081) || Hand: [Sweeping Beam, Defend, Dualcast+, Glasswork+, Zap+, Exterminate, Fusion+] Enemies: [Soul Nexus 188/234]
+PlayCard 9 # CARD.GLASSWORK (18622803) || Hand: [Sweeping Beam, Defend, Glasswork+, Zap+, Exterminate, Fusion+] Enemies: [Soul Nexus 188/234]
+PlayCard 5 # CARD.SWEEPING_BEAM (2048528) || Hand: [Sweeping Beam, Defend, Zap+, Exterminate, Fusion+] Enemies: [Soul Nexus 188/234]
+PlayCard 12 # CARD.FUSION (20033464) || Hand: [Defend, Zap+, Exterminate, Fusion+, Strike+] Enemies: [Soul Nexus 182/234]
+PlayCard 11 # CARD.EXTERMINATE (32052102) || Hand: [Defend, Zap+, Exterminate, Strike+] Enemies: [Soul Nexus 182/234]
+PlayCard 13 1 # CARD.STRIKE_DEFECT (46083449) || Hand: [Defend, Zap+, Strike+] Enemies: [Soul Nexus 170/234]
+PlayCard 6 # CARD.DEFEND_DEFECT (18436756) || Hand: [Defend, Zap+] Enemies: [Soul Nexus 158/234]
+UsePotion 0 # POTION.COLORLESS_POTION || Hand: [Zap+] Enemies: [Soul Nexus 158/234]
+SelectCardFromScreen 2
+PlayCard 21 # CARD.BEAT_DOWN (49863544) || Hand: [Zap+, Beat Down] Enemies: [Soul Nexus 158/234]
+PlayCard 14 # CARD.SKIM (12097858) || Hand: [Zap+, Skim+] Enemies: [Soul Nexus 97/234]
+PlayCard 16 # CARD.MODDED (40402424) || Hand: [Zap+, Defend, Modded, Defend, Strike] Enemies: [Soul Nexus 97/234]
+PlayCard 10 # CARD.ZAP (33387506) || Hand: [Zap+, Defend, Defend, Strike, Iteration+] Enemies: [Soul Nexus 97/234]
+PlayCard 19 # CARD.ITERATION (59685348) || Hand: [Defend, Defend, Strike, Iteration+] Enemies: [Soul Nexus 97/234]
+PlayCard 15 # CARD.DEFEND_DEFECT (41771860) || Hand: [Defend, Defend, Strike] Enemies: [Soul Nexus 97/234]
+PlayCard 17 # CARD.DEFEND_DEFECT (28077504) || Hand: [Defend, Strike] Enemies: [Soul Nexus 97/234]
+PlayCard 18 1 # CARD.STRIKE_DEFECT (51370948) || Hand: [Strike] Enemies: [Soul Nexus 97/234]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 20 # CARD.SUPERCRITICAL (297227) || Hand: [Supercritical+, Meteor Strike+, Compact+, Skim+, Charge Battery] Enemies: [Soul Nexus 87/234]
+PlayCard 8 1 # CARD.METEOR_STRIKE (16982281) || Hand: [Meteor Strike+, Compact+, Skim+, Charge Battery] Enemies: [Soul Nexus 87/234]
+PlayCard 14 # CARD.SKIM (12097858) || Hand: [Compact+, Skim+, Charge Battery] Enemies: [Soul Nexus 54/234]
+PlayCard 2 # CARD.LIGHTNING_ROD (65086440) || Hand: [Compact+, Charge Battery, Fusion+, Defend+, Lightning Rod, Defend] Enemies: [Soul Nexus 54/234]
+PlayCard 12 # CARD.FUSION (20033464) || Hand: [Compact+, Charge Battery, Fusion+, Defend+, Defend] Enemies: [Soul Nexus 54/234]
+PlayCard 3 # CARD.COMPACT (48907055) || Hand: [Compact+, Charge Battery, Defend+, Defend] Enemies: [Soul Nexus 45/234]
+PlayCard 0 # CARD.CHARGE_BATTERY (16545121) || Hand: [Charge Battery, Defend+, Defend] Enemies: [Soul Nexus 45/234]
+PlayCard 1 # CARD.DEFEND_DEFECT (14688367) || Hand: [Defend+, Defend] Enemies: [Soul Nexus 45/234]
+PlayCard 15 # CARD.DEFEND_DEFECT (41771860) || Hand: [Defend] Enemies: [Soul Nexus 45/234]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 21 # CARD.BEAT_DOWN (49863544) || Hand: [Charge Battery+, Glasswork+, Exterminate, Beat Down, Sweeping Beam] Enemies: [Soul Nexus 45/234]
+PlayCard 11 # CARD.EXTERMINATE (32052102) || Hand: [Charge Battery+, Glasswork+, Exterminate, Sweeping Beam] Enemies: [Soul Nexus 12/234]
+ClaimReward 0 # GoldReward: 36
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Voltaic
+MoveToMapCoord 0
+OpenChest
+TakeChestRelic # Potion Belt
+NetPickRelicAction for player 1 index 0 || Hand: [Charge Battery+, Glasswork+, Sweeping Beam] Enemies: []
+MoveToMapCoord 1
+PlayCard 2 # CARD.CHARGE_BATTERY (63032217) || Hand: [Strike, Lightning Rod, Charge Battery, Compact+, Sweeping Beam] Enemies: [Owl Magistrate 234/234]
+PlayCard 1 # CARD.LIGHTNING_ROD (51742822) || Hand: [Strike, Lightning Rod, Compact+, Sweeping Beam] Enemies: [Owl Magistrate 234/234]
+PlayCard 4 # CARD.SWEEPING_BEAM (5335944) || Hand: [Strike, Compact+, Sweeping Beam] Enemies: [Owl Magistrate 234/234]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 13 # CARD.MODDED (13239638) || Hand: [Defend+, Charge Battery+, Voltaic, Dualcast+, Defend, Strike+, Defend, Modded] Enemies: [Owl Magistrate 224/234]
+PlayCard 7 # CARD.CHARGE_BATTERY (64698510) || Hand: [Defend+, Charge Battery+, Voltaic, Dualcast+, Defend, Strike+, Defend, Meteor Strike+] Enemies: [Owl Magistrate 224/234]
+PlayCard 6 # CARD.DEFEND_DEFECT (29558344) || Hand: [Defend+, Voltaic, Dualcast+, Defend, Strike+, Defend, Meteor Strike+] Enemies: [Owl Magistrate 224/234]
+PlayCard 9 # CARD.DUALCAST (6087946) || Hand: [Voltaic, Dualcast+, Defend, Strike+, Defend, Meteor Strike+] Enemies: [Owl Magistrate 224/234]
+PlayCard 14 1 # CARD.METEOR_STRIKE (52047885) || Hand: [Voltaic, Defend, Strike+, Defend, Meteor Strike+] Enemies: [Owl Magistrate 206/234]
+PlayCard 12 # CARD.DEFEND_DEFECT (8927611) || Hand: [Voltaic, Defend, Strike+, Defend] Enemies: [Owl Magistrate 173/234]
+PlayCard 11 1 # CARD.STRIKE_DEFECT (23361578) || Hand: [Voltaic, Defend, Strike+] Enemies: [Owl Magistrate 173/234]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 18 # CARD.SUPERCRITICAL (36275618) || Hand: [Glasswork+, Zap+, Defend, Supercritical+, Skim+] Enemies: [Owl Magistrate 148/234]
+PlayCard 19 # CARD.SKIM (58045111) || Hand: [Glasswork+, Zap+, Defend, Skim+] Enemies: [Owl Magistrate 148/234]
+PlayCard 5 # CARD.FUSION (48023503) || Hand: [Glasswork+, Zap+, Defend, Iteration+, Exterminate, Fusion+, Strike+] Enemies: [Owl Magistrate 148/234]
+PlayCard 20 # CARD.ITERATION (52643958) || Hand: [Glasswork+, Zap+, Defend, Iteration+, Exterminate, Strike+] Enemies: [Owl Magistrate 148/234]
+PlayCard 15 # CARD.GLASSWORK (65777783) || Hand: [Glasswork+, Zap+, Defend, Exterminate, Strike+] Enemies: [Owl Magistrate 148/234]
+PlayCard 21 # CARD.EXTERMINATE (4033574) || Hand: [Zap+, Defend, Exterminate, Strike+] Enemies: [Owl Magistrate 148/234]
+PlayCard 16 # CARD.ZAP (55129143) || Hand: [Zap+, Defend, Strike+] Enemies: [Owl Magistrate 136/234]
+PlayCard 11 1 # CARD.STRIKE_DEFECT (23361578) || Hand: [Defend, Strike+] Enemies: [Owl Magistrate 136/234]
+PlayCard 17 # CARD.DEFEND_DEFECT (26400245) || Hand: [Defend] Enemies: [Owl Magistrate 124/234]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 7 # CARD.CHARGE_BATTERY (64698510) || Hand: [Defend, Defend, Voltaic, Charge Battery+, Compact+] Enemies: [Owl Magistrate 111/234]
+PlayCard 10 # CARD.DEFEND_DEFECT (54791514) || Hand: [Defend, Defend, Voltaic, Compact+] Enemies: [Owl Magistrate 111/234]
+PlayCard 3 # CARD.COMPACT (30419044) || Hand: [Defend, Voltaic, Compact+] Enemies: [Owl Magistrate 111/234]
+PlayCard 12 # CARD.DEFEND_DEFECT (8927611) || Hand: [Defend, Voltaic] Enemies: [Owl Magistrate 111/234]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 13 # CARD.MODDED (13239638) || Hand: [Strike, Meteor Strike+, Dualcast+, Modded, Sweeping Beam] Enemies: [Owl Magistrate 99/234]
+PlayCard 14 1 # CARD.METEOR_STRIKE (52047885) || Hand: [Strike, Meteor Strike+, Dualcast+, Sweeping Beam, Defend+] Enemies: [Owl Magistrate 99/234]
+PlayCard 9 # CARD.DUALCAST (6087946) || Hand: [Strike, Dualcast+, Sweeping Beam, Defend+] Enemies: [Owl Magistrate 57/234]
+PlayCard 6 # CARD.DEFEND_DEFECT (29558344) || Hand: [Strike, Sweeping Beam, Defend+] Enemies: [Owl Magistrate 45/234]
+PlayCard 4 # CARD.SWEEPING_BEAM (5335944) || Hand: [Strike, Sweeping Beam] Enemies: [Owl Magistrate 45/234]
+PlayCard 1 # CARD.LIGHTNING_ROD (51742822) || Hand: [Strike, Lightning Rod] Enemies: [Owl Magistrate 39/234]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 15 # CARD.GLASSWORK (65777783) || Hand: [Charge Battery, Fusion+, Glasswork+, Strike+, Modded] Enemies: [Owl Magistrate 35/234]
+PlayCard 2 # CARD.CHARGE_BATTERY (63032217) || Hand: [Charge Battery, Fusion+, Strike+, Modded] Enemies: [Owl Magistrate 26/234]
+PlayCard 5 # CARD.FUSION (48023503) || Hand: [Fusion+, Strike+, Modded] Enemies: [Owl Magistrate 26/234]
+PlayCard 11 1 # CARD.STRIKE_DEFECT (23361578) || Hand: [Strike+, Modded] Enemies: [Owl Magistrate 26/234]
+PlayCard 13 # CARD.MODDED (13239638) || Hand: [Modded] Enemies: [Owl Magistrate 14/234]
+PlayCard 9 # CARD.DUALCAST (6087946) || Hand: [Dualcast+] Enemies: [Owl Magistrate 14/234]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 8 # CARD.VOLTAIC (45415681) || Hand: [Voltaic, Charge Battery+, Skim+, Defend+, Defend] Enemies: [Owl Magistrate 5/234]
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard 2 # Hologram+
+MoveToMapCoord 1
+ChooseRestSiteOption HEAL
+ClaimReward 0 # PotionReward
+ClaimReward 0 # PotionReward
+ChooseRestSiteOption SMITH
+SelectGridCard 9
+MoveToMapCoord 2
+ChooseEventOption 0 # ROUND_TEA_PARTY.pages.INITIAL.options.ENJOY_TEA
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+PlayCard 1 # CARD.MODDED (34216850) || Hand: [Charge Battery, Modded, Defend, Lightning Rod, Iteration+] Enemies: [Slimed Berserker 266/266]
+PlayCard 4 # CARD.ITERATION (46695198) || Hand: [Charge Battery, Defend, Lightning Rod, Iteration+, Voltaic+] Enemies: [Slimed Berserker 266/266]
+PlayCard 0 # CARD.CHARGE_BATTERY (3801872) || Hand: [Charge Battery, Defend, Lightning Rod, Voltaic+] Enemies: [Slimed Berserker 266/266]
+PlayCard 3 # CARD.LIGHTNING_ROD (20101436) || Hand: [Defend, Lightning Rod, Voltaic+] Enemies: [Slimed Berserker 266/266]
+PlayCard 5 # CARD.VOLTAIC (17603602) || Hand: [Defend, Voltaic+] Enemies: [Slimed Berserker 266/266]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 7 # CARD.DEFEND_DEFECT (16605694) || Hand: [Hologram+, Defend+, Glasswork+, Defend, Exterminate] Enemies: [Slimed Berserker 258/266]
+PlayCard 8 # CARD.GLASSWORK (15233518) || Hand: [Hologram+, Glasswork+, Defend, Exterminate] Enemies: [Slimed Berserker 258/266]
+PlayCard 6 # CARD.HOLOGRAM (24214698) || Hand: [Hologram+, Defend, Exterminate] Enemies: [Slimed Berserker 258/266]
+SelectGridCard 1
+PlayCard 0 # CARD.CHARGE_BATTERY (3801872) || Hand: [Defend, Exterminate, Charge Battery] Enemies: [Slimed Berserker 258/266]
+PlayCard 10 # CARD.EXTERMINATE (25955475) || Hand: [Defend, Exterminate] Enemies: [Slimed Berserker 258/266]
+PlayCard 9 # CARD.DEFEND_DEFECT (2883941) || Hand: [Defend] Enemies: [Slimed Berserker 246/266]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 14 # CARD.SKIM (38688543) || Hand: [Sweeping Beam, Fusion+, Strike+, Skim+, Charge Battery+] Enemies: [Slimed Berserker 220/266]
+PlayCard 18 # CARD.ZAP (29807500) || Hand: [Sweeping Beam, Fusion+, Strike+, Charge Battery+, Defend, Compact+, Zap+, Dualcast+] Enemies: [Slimed Berserker 220/266]
+PlayCard 19 # CARD.DUALCAST (66940911) || Hand: [Sweeping Beam, Fusion+, Strike+, Charge Battery+, Defend, Compact+, Dualcast+] Enemies: [Slimed Berserker 211/266]
+PlayCard 12 # CARD.FUSION (22018753) || Hand: [Sweeping Beam, Fusion+, Strike+, Charge Battery+, Defend, Compact+] Enemies: [Slimed Berserker 193/266]
+PlayCard 15 # CARD.CHARGE_BATTERY (12652567) || Hand: [Sweeping Beam, Strike+, Charge Battery+, Defend, Compact+] Enemies: [Slimed Berserker 193/266]
+PlayCard 11 # CARD.SWEEPING_BEAM (32272689) || Hand: [Sweeping Beam, Strike+, Defend, Compact+] Enemies: [Slimed Berserker 193/266]
+PlayCard 13 1 # CARD.STRIKE_DEFECT (63951050) || Hand: [Strike+, Defend, Compact+, Meteor Strike+] Enemies: [Slimed Berserker 187/266]
+PlayCard 17 # CARD.COMPACT (18225025) || Hand: [Defend, Compact+, Meteor Strike+] Enemies: [Slimed Berserker 175/266]
+PlayCard 16 # CARD.DEFEND_DEFECT (46764245) || Hand: [Defend, Meteor Strike+] Enemies: [Slimed Berserker 175/266]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 25 # CARD.SLIMED (26156647) || Hand: [Strike, Supercritical+, Dualcast+, Defend, Slimed, Hologram+, Defend+, Slimed] Enemies: [Slimed Berserker 163/266]
+PlayCard 27 # CARD.SLIMED (38313658) || Hand: [Strike, Supercritical+, Dualcast+, Defend, Hologram+, Defend+, Slimed, Zap+] Enemies: [Slimed Berserker 163/266]
+PlayCard 18 # CARD.ZAP (29807500) || Hand: [Strike, Supercritical+, Dualcast+, Defend, Hologram+, Defend+, Zap+, Slimed, Skim+] Enemies: [Slimed Berserker 163/266]
+PlayCard 14 # CARD.SKIM (38688543) || Hand: [Strike, Supercritical+, Dualcast+, Defend, Hologram+, Defend+, Slimed, Skim+] Enemies: [Slimed Berserker 157/266]
+PlayCard 11 # CARD.SWEEPING_BEAM (32272689) || Hand: [Strike, Supercritical+, Dualcast+, Defend, Hologram+, Defend+, Slimed, Sweeping Beam, Defend, Slimed] Enemies: [Slimed Berserker 157/266]
+PlayCard 17 # CARD.COMPACT (18225025) || Hand: [Strike, Supercritical+, Dualcast+, Defend, Hologram+, Defend+, Slimed, Defend, Slimed, Compact+] Enemies: [Slimed Berserker 153/266]
+PlayCard 33 # CARD.FUEL (55901138) || Hand: [Strike, Supercritical+, Dualcast+, Defend, Hologram+, Defend+, Fuel+, Defend, Fuel+] Enemies: [Slimed Berserker 153/266]
+PlayCard 19 # CARD.DUALCAST (66940911) || Hand: [Strike, Supercritical+, Dualcast+, Defend, Hologram+, Defend+, Defend, Fuel+, Defend, Slimed] Enemies: [Slimed Berserker 153/266]
+PlayCard 22 # CARD.SUPERCRITICAL (11780379) || Hand: [Strike, Supercritical+, Defend, Hologram+, Defend+, Defend, Fuel+, Defend, Slimed] Enemies: [Slimed Berserker 135/266]
+PlayCard 21 1 # CARD.STRIKE_DEFECT (53504714) || Hand: [Strike, Defend, Hologram+, Defend+, Defend, Fuel+, Defend, Slimed] Enemies: [Slimed Berserker 135/266]
+PlayCard 6 # CARD.HOLOGRAM (24214698) || Hand: [Defend, Hologram+, Defend+, Defend, Fuel+, Defend, Slimed] Enemies: [Slimed Berserker 131/266]
+SelectGridCard 3
+PlayCard 17 # CARD.COMPACT (18225025) || Hand: [Defend, Defend+, Defend, Fuel+, Defend, Slimed, Compact+] Enemies: [Slimed Berserker 131/266]
+PlayCard 34 # CARD.FUEL (37434883) || Hand: [Defend, Defend+, Defend, Fuel+, Defend, Fuel+] Enemies: [Slimed Berserker 131/266]
+PlayCard 20 1 # CARD.METEOR_STRIKE (65597291) || Hand: [Defend, Defend+, Defend, Defend, Fuel+, Meteor Strike+, Charge Battery] Enemies: [Slimed Berserker 131/266]
+PlayCard 35 # CARD.FUEL (10142266) || Hand: [Defend, Defend+, Defend, Defend, Fuel+, Charge Battery] Enemies: [Slimed Berserker 98/266]
+PlayCard 12 # CARD.FUSION (22018753) || Hand: [Defend, Defend+, Defend, Defend, Charge Battery, Fusion+, Slimed] Enemies: [Slimed Berserker 98/266]
+PlayCard 0 # CARD.CHARGE_BATTERY (3801872) || Hand: [Defend, Defend+, Defend, Defend, Charge Battery, Slimed] Enemies: [Slimed Berserker 89/266]
+PlayCard 24 # CARD.SLIMED (17819375) || Hand: [Defend, Defend+, Defend, Defend, Slimed] Enemies: [Slimed Berserker 89/266]
+PlayCard 7 # CARD.DEFEND_DEFECT (16605694) || Hand: [Defend, Defend+, Defend, Defend, Voltaic+, Slimed] Enemies: [Slimed Berserker 89/266]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 1 # CARD.MODDED (34216850) || Hand: [Slimed, Strike+, Lightning Rod, Modded, Charge Battery+, Slimed, Exterminate, Glasswork+] Enemies: [Slimed Berserker 89/266]
+PlayCard 15 # CARD.CHARGE_BATTERY (12652567) || Hand: [Slimed, Strike+, Lightning Rod, Charge Battery+, Slimed, Exterminate, Glasswork+, Slimed] Enemies: [Slimed Berserker 89/266]
+PlayCard 10 # CARD.EXTERMINATE (25955475) || Hand: [Slimed, Strike+, Lightning Rod, Slimed, Exterminate, Glasswork+, Slimed] Enemies: [Slimed Berserker 89/266]
+PlayCard 13 1 # CARD.STRIKE_DEFECT (63951050) || Hand: [Slimed, Strike+, Lightning Rod, Slimed, Glasswork+, Slimed] Enemies: [Slimed Berserker 81/266]
+PlayCard 8 # CARD.GLASSWORK (15233518) || Hand: [Slimed, Lightning Rod, Slimed, Glasswork+, Slimed] Enemies: [Slimed Berserker 72/266]
+PlayCard 3 # CARD.LIGHTNING_ROD (20101436) || Hand: [Slimed, Lightning Rod, Slimed, Slimed] Enemies: [Slimed Berserker 72/266]
+PlayCard 30 # CARD.SLIMED (13369692) || Hand: [Slimed, Slimed, Slimed] Enemies: [Slimed Berserker 72/266]
+PlayCard 0 # CARD.CHARGE_BATTERY (3801872) || Hand: [Slimed, Slimed, Charge Battery] Enemies: [Slimed Berserker 72/266]
+PlayCard 23 # CARD.SLIMED (39262632) || Hand: [Slimed, Slimed] Enemies: [Slimed Berserker 72/266]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 20 1 # CARD.METEOR_STRIKE (65597291) || Hand: [Meteor Strike+, Lightning Rod, Slimed, Defend, Strike+, Fusion+, Skim+, Exterminate] Enemies: [Slimed Berserker 67/266]
+PlayCard 14 # CARD.SKIM (38688543) || Hand: [Lightning Rod, Slimed, Defend, Strike+, Fusion+, Skim+, Exterminate] Enemies: [Slimed Berserker 43/266]
+PlayCard 19 # CARD.DUALCAST (66940911) || Hand: [Lightning Rod, Slimed, Defend, Strike+, Fusion+, Exterminate, Compact+, Dualcast+, Hologram+, Defend] Enemies: [Slimed Berserker 43/266]
+PlayCard 10 # CARD.EXTERMINATE (25955475) || Hand: [Lightning Rod, Slimed, Defend, Strike+, Fusion+, Exterminate, Compact+, Hologram+, Defend] Enemies: [Slimed Berserker 27/266]
+PlayCard 12 # CARD.FUSION (22018753) || Hand: [Lightning Rod, Slimed, Defend, Strike+, Fusion+, Compact+, Hologram+, Defend] Enemies: [Slimed Berserker 19/266]
+PlayCard 17 # CARD.COMPACT (18225025) || Hand: [Lightning Rod, Slimed, Defend, Strike+, Compact+, Hologram+, Defend] Enemies: [Slimed Berserker 19/266]
+PlayCard 46 # CARD.FUEL (61518818) || Hand: [Lightning Rod, Fuel+, Defend, Strike+, Hologram+, Defend] Enemies: [Slimed Berserker 19/266]
+PlayCard 11 # CARD.SWEEPING_BEAM (32272689) || Hand: [Lightning Rod, Defend, Strike+, Hologram+, Defend, Strike, Sweeping Beam] Enemies: [Slimed Berserker 19/266]
+PlayCard 16 # CARD.DEFEND_DEFECT (46764245) || Hand: [Lightning Rod, Defend, Strike+, Hologram+, Defend, Strike, Defend] Enemies: [Slimed Berserker 15/266]
+PlayCard 21 1 # CARD.STRIKE_DEFECT (53504714) || Hand: [Lightning Rod, Defend, Strike+, Hologram+, Defend, Strike] Enemies: [Slimed Berserker 15/266]
+PlayCard 3 # CARD.LIGHTNING_ROD (20101436) || Hand: [Lightning Rod, Defend, Strike+, Hologram+, Defend] Enemies: [Slimed Berserker 11/266]
+PlayCard 13 1 # CARD.STRIKE_DEFECT (63951050) || Hand: [Defend, Strike+, Hologram+, Defend] Enemies: [Slimed Berserker 11/266]
+PlayCard 6 # CARD.HOLOGRAM (24214698) || Hand: [Defend, Hologram+, Defend] Enemies: [Slimed Berserker 2/266]
+SelectGridCard 2
+PlayCard 15 # CARD.CHARGE_BATTERY (12652567) || Hand: [Defend, Defend, Charge Battery+] Enemies: [Slimed Berserker 2/266]
+PlayCard 2 # CARD.DEFEND_DEFECT (39516195) || Hand: [Defend, Defend] Enemies: [Slimed Berserker 2/266]
+PlayCard 9 # CARD.DEFEND_DEFECT (2883941) || Hand: [Defend] Enemies: [Slimed Berserker 2/266]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+ClaimReward 0 # GoldReward: 20
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard sacrifice # sacrifice
+MoveToMapCoord 2
+OpenShop
+BuyRelic Membership Card
+BuyRelic Mercury Hourglass
+BuyRelic Centennial Puzzle
+BuyCard Skim
+BuyCardRemoval
+SelectGridCard 0
+MoveToMapCoord 2
+ChooseRestSiteOption SMITH
+SelectGridCard 7
+ChooseRestSiteOption HEAL
+DiscardPotion 4
+ClaimReward 1 # PotionReward
+DiscardPotion 3
+ClaimReward 0 # PotionReward
+MoveToMapCoord 3
+UsePotion 2 # POTION.FOCUS_POTION || Hand: [Modded+, Strike+, Charge Battery+, Charge Battery, Iteration+, Zap+, Defend, Defend] Enemies: [Torch Head Amalgam 196/199, Queen 397/400]
+UsePotion 3 # POTION.DEXTERITY_POTION || Hand: [Modded+, Strike+, Charge Battery+, Charge Battery, Iteration+, Zap+, Defend, Defend] Enemies: [Torch Head Amalgam 196/199, Queen 397/400]
+PlayCard 0 # CARD.MODDED (18548186) || Hand: [Modded+, Strike+, Charge Battery+, Charge Battery, Iteration+, Zap+, Defend, Defend] Enemies: [Torch Head Amalgam 196/199, Queen 397/400]
+PlayCard 5 # CARD.ZAP (35204273) || Hand: [Strike+, Charge Battery+, Charge Battery, Iteration+, Zap+, Defend, Defend, Hologram+, Lightning Rod] Enemies: [Torch Head Amalgam 196/199, Queen 397/400]
+UsePotion 4 # POTION.CLARITY || Hand: [Strike+, Charge Battery+, Charge Battery, Iteration+, Defend, Defend, Hologram+, Lightning Rod] Enemies: [Torch Head Amalgam 196/199, Queen 397/400]
+PlayCard 2 # CARD.CHARGE_BATTERY (26008098) || Hand: [Strike+, Charge Battery+, Charge Battery, Iteration+, Defend, Defend, Hologram+, Lightning Rod, Defend] Enemies: [Torch Head Amalgam 196/199, Queen 397/400]
+PlayCard 3 # CARD.CHARGE_BATTERY (32746295) || Hand: [Strike+, Charge Battery, Iteration+, Defend, Defend, Hologram+, Lightning Rod, Defend] Enemies: [Torch Head Amalgam 196/199, Queen 397/400]
+PlayCard 9 # CARD.LIGHTNING_ROD (53639575) || Hand: [Strike+, Iteration+, Defend, Defend, Hologram+, Lightning Rod, Defend] Enemies: [Torch Head Amalgam 196/199, Queen 397/400]
+PlayCard 4 # CARD.ITERATION (26281207) || Hand: [Strike+, Iteration+, Defend, Defend, Hologram+, Defend] Enemies: [Torch Head Amalgam 196/199, Queen 397/400]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 14 # CARD.SKIM (26218386) || Hand: [Supercritical+, Voltaic+, Fusion+, Skim, Sweeping Beam, Dualcast+] Enemies: [Torch Head Amalgam 187/199, Queen 388/400]
+PlayCard 11 # CARD.SUPERCRITICAL (49838290) || Hand: [Supercritical+, Voltaic+, Fusion+, Sweeping Beam, Dualcast+, Defend+, Compact+, Skim+] Enemies: [Torch Head Amalgam 187/199, Queen 388/400]
+PlayCard 19 # CARD.SKIM (35096949) || Hand: [Voltaic+, Fusion+, Sweeping Beam, Dualcast+, Defend+, Compact+, Skim+] Enemies: [Torch Head Amalgam 187/199, Queen 388/400]
+PlayCard 22 2 # CARD.METEOR_STRIKE (17198763) || Hand: [Voltaic+, Fusion+, Sweeping Beam, Dualcast+, Defend+, Compact+, Glasswork+, Exterminate, Meteor Strike+, Hologram+] Enemies: [Torch Head Amalgam 187/199, Queen 388/400]
+PlayCard 15 # CARD.SWEEPING_BEAM (34638882) || Hand: [Voltaic+, Fusion+, Sweeping Beam, Dualcast+, Defend+, Compact+, Glasswork+, Exterminate, Hologram+] Enemies: [Torch Head Amalgam 187/199, Queen 333/400]
+PlayCard 5 # CARD.ZAP (35204273) || Hand: [Voltaic+, Fusion+, Dualcast+, Defend+, Compact+, Glasswork+, Exterminate, Hologram+, Zap+] Enemies: [Torch Head Amalgam 181/199, Queen 327/400]
+PlayCard 8 # CARD.HOLOGRAM (28329574) || Hand: [Voltaic+, Fusion+, Dualcast+, Defend+, Compact+, Glasswork+, Exterminate, Hologram+] Enemies: [Torch Head Amalgam 181/199, Queen 316/400]
+SelectGridCard 1
+PlayCard 16 # CARD.DUALCAST (43314489) || Hand: [Voltaic+, Fusion+, Dualcast+, Defend+, Compact+, Glasswork+, Exterminate, Meteor Strike+] Enemies: [Torch Head Amalgam 181/199, Queen 316/400]
+PlayCard 22 2 # CARD.METEOR_STRIKE (17198763) || Hand: [Voltaic+, Fusion+, Defend+, Compact+, Glasswork+, Exterminate, Meteor Strike+] Enemies: [Torch Head Amalgam 181/199, Queen 316/400]
+PlayCard 21 # CARD.EXTERMINATE (24280595) || Hand: [Voltaic+, Fusion+, Defend+, Compact+, Glasswork+, Exterminate] Enemies: [Torch Head Amalgam 181/199, Queen 283/400]
+PlayCard 20 # CARD.GLASSWORK (47437086) || Hand: [Voltaic+, Fusion+, Defend+, Compact+, Glasswork+] Enemies: [Torch Head Amalgam 169/199, Queen 271/400]
+PlayCard 17 # CARD.DEFEND_DEFECT (54286087) || Hand: [Voltaic+, Fusion+, Defend+, Compact+] Enemies: [Torch Head Amalgam 158/199, Queen 271/400]
+PlayCard 18 # CARD.COMPACT (18812741) || Hand: [Voltaic+, Fusion+, Compact+] Enemies: [Torch Head Amalgam 158/199, Queen 271/400]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 0 # CARD.MODDED (18548186) || Hand: [Strike+, Defend, Modded+, Charge Battery+, Lightning Rod, Skim] Enemies: [Torch Head Amalgam 148/199, Queen 261/400]
+PlayCard 2 # CARD.CHARGE_BATTERY (26008098) || Hand: [Strike+, Defend, Charge Battery+, Lightning Rod, Skim, Charge Battery, Defend] Enemies: [Torch Head Amalgam 148/199, Queen 261/400]
+PlayCard 3 # CARD.CHARGE_BATTERY (32746295) || Hand: [Strike+, Defend, Lightning Rod, Skim, Charge Battery, Defend] Enemies: [Torch Head Amalgam 148/199, Queen 261/400]
+PlayCard 14 # CARD.SKIM (26218386) || Hand: [Strike+, Defend, Lightning Rod, Skim, Defend] Enemies: [Torch Head Amalgam 148/199, Queen 261/400]
+PlayCard 21 # CARD.EXTERMINATE (24280595) || Hand: [Strike+, Defend, Lightning Rod, Defend, Defend, Defend+, Exterminate] Enemies: [Torch Head Amalgam 148/199, Queen 261/400]
+PlayCard 9 # CARD.LIGHTNING_ROD (53639575) || Hand: [Strike+, Defend, Lightning Rod, Defend, Defend, Defend+] Enemies: [Torch Head Amalgam 140/199, Queen 253/400]
+PlayCard 17 # CARD.DEFEND_DEFECT (54286087) || Hand: [Strike+, Defend, Defend, Defend, Defend+] Enemies: [Torch Head Amalgam 140/199, Queen 253/400]
+PlayCard 7 # CARD.DEFEND_DEFECT (32973892) || Hand: [Strike+, Defend, Defend, Defend] Enemies: [Torch Head Amalgam 140/199, Queen 253/400]
+PlayCard 6 # CARD.DEFEND_DEFECT (48403008) || Hand: [Strike+, Defend, Defend] Enemies: [Torch Head Amalgam 140/199, Queen 253/400]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 2 # CARD.CHARGE_BATTERY (26008098) || Hand: [Compact+, Sweeping Beam, Charge Battery+, Fusion+, Glasswork+, Charge Battery] Enemies: [Torch Head Amalgam 125/199, Queen 247/400]
+PlayCard 3 # CARD.CHARGE_BATTERY (32746295) || Hand: [Compact+, Sweeping Beam, Fusion+, Glasswork+, Charge Battery] Enemies: [Torch Head Amalgam 125/199, Queen 247/400]
+PlayCard 13 # CARD.FUSION (10369694) || Hand: [Compact+, Sweeping Beam, Fusion+, Glasswork+] Enemies: [Torch Head Amalgam 125/199, Queen 247/400]
+PlayCard 20 # CARD.GLASSWORK (47437086) || Hand: [Compact+, Sweeping Beam, Glasswork+] Enemies: [Torch Head Amalgam 125/199, Queen 247/400]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 22 2 # CARD.METEOR_STRIKE (17198763) || Hand: [Zap+, Modded+, Meteor Strike+, Hologram+, Dualcast+] Enemies: [Torch Head Amalgam 96/199, Queen 246/400]
+PlayCard 8 # CARD.HOLOGRAM (28329574) || Hand: [Zap+, Modded+, Hologram+, Dualcast+] Enemies: [Torch Head Amalgam 85/199, Queen 220/400]
+SelectGridCard 10
+PlayCard 13 # CARD.FUSION (10369694) || Hand: [Zap+, Modded+, Dualcast+, Fusion+] Enemies: [Torch Head Amalgam 85/199, Queen 220/400]
+PlayCard 16 # CARD.DUALCAST (43314489) || Hand: [Zap+, Modded+, Dualcast+] Enemies: [Torch Head Amalgam 73/199, Queen 208/400]
+UsePotion 1 # POTION.BLOCK_POTION || Hand: [Zap+, Modded+] Enemies: [Torch Head Amalgam 51/199, Queen 208/400]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 19 # CARD.SKIM (35096949) || Hand: [Skim+, Voltaic+, Meteor Strike+, Defend, Skim] Enemies: [Torch Head Amalgam 48/199, Queen 208/400]
+PlayCard 14 # CARD.SKIM (26218386) || Hand: [Voltaic+, Meteor Strike+, Defend, Skim, Charge Battery, Sweeping Beam, Exterminate, Modded+] Enemies: [Torch Head Amalgam 48/199, Queen 208/400]
+PlayCard 20 # CARD.GLASSWORK (47437086) || Hand: [Voltaic+, Meteor Strike+, Defend, Charge Battery, Sweeping Beam, Exterminate, Modded+, Glasswork+, Defend, Defend+] Enemies: [Torch Head Amalgam 48/199, Queen 208/400]
+PlayCard 21 # CARD.EXTERMINATE (24280595) || Hand: [Voltaic+, Meteor Strike+, Defend, Charge Battery, Sweeping Beam, Exterminate, Modded+, Defend, Defend+] Enemies: [Torch Head Amalgam 48/199, Queen 208/400]
+PlayCard 0 # CARD.MODDED (18548186) || Hand: [Voltaic+, Meteor Strike+, Defend, Charge Battery, Sweeping Beam, Modded+, Defend, Defend+] Enemies: [Torch Head Amalgam 40/199, Queen 208/400]
+PlayCard 2 # CARD.CHARGE_BATTERY (26008098) || Hand: [Voltaic+, Meteor Strike+, Defend, Charge Battery, Sweeping Beam, Defend, Defend+, Charge Battery+, Defend] Enemies: [Torch Head Amalgam 40/199, Queen 208/400]
+PlayCard 3 # CARD.CHARGE_BATTERY (32746295) || Hand: [Voltaic+, Meteor Strike+, Defend, Charge Battery, Sweeping Beam, Defend, Defend+, Defend] Enemies: [Torch Head Amalgam 40/199, Queen 208/400]
+PlayCard 17 # CARD.DEFEND_DEFECT (54286087) || Hand: [Voltaic+, Meteor Strike+, Defend, Sweeping Beam, Defend, Defend+, Defend] Enemies: [Torch Head Amalgam 40/199, Queen 208/400]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+UsePotion 0 # POTION.POTION_OF_BINDING || Hand: [Fusion+, Lightning Rod, Zap+, Compact+, Dualcast+] Enemies: [Torch Head Amalgam 30/199, Queen 208/400]
+PlayCard 18 # CARD.COMPACT (18812741) || Hand: [Fusion+, Lightning Rod, Zap+, Compact+, Dualcast+] Enemies: [Torch Head Amalgam 30/199, Queen 208/400]
+PlayCard 9 # CARD.LIGHTNING_ROD (53639575) || Hand: [Fusion+, Lightning Rod, Zap+, Dualcast+] Enemies: [Torch Head Amalgam 30/199, Queen 208/400]
+PlayCard 16 # CARD.DUALCAST (43314489) || Hand: [Fusion+, Zap+, Dualcast+] Enemies: [Torch Head Amalgam 30/199, Queen 208/400]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 14 # CARD.SKIM (26218386) || Hand: [Strike+, Hologram+, Charge Battery, Skim, Sweeping Beam, Defend, Modded+, Defend] Enemies: [Torch Head Amalgam 21/199, Queen 208/400]
+PlayCard 5 # CARD.ZAP (35204273) || Hand: [Strike+, Hologram+, Charge Battery, Sweeping Beam, Defend, Modded+, Defend, Zap+, Skim+, Lightning Rod] Enemies: [Torch Head Amalgam 21/199, Queen 208/400]
+PlayCard 9 # CARD.LIGHTNING_ROD (53639575) || Hand: [Strike+, Hologram+, Charge Battery, Sweeping Beam, Defend, Modded+, Defend, Skim+, Lightning Rod] Enemies: [Torch Head Amalgam 21/199, Queen 208/400]
+PlayCard 10 # CARD.DEFEND_DEFECT (12994128) || Hand: [Strike+, Hologram+, Charge Battery, Sweeping Beam, Defend, Modded+, Defend, Skim+] Enemies: [Torch Head Amalgam 21/199, Queen 208/400]
+PlayCard 0 # CARD.MODDED (18548186) || Hand: [Strike+, Hologram+, Charge Battery, Sweeping Beam, Modded+, Defend, Skim+] Enemies: [Torch Head Amalgam 21/199, Queen 208/400]
+PlayCard 12 # CARD.VOLTAIC (45891430) || Hand: [Strike+, Hologram+, Charge Battery, Sweeping Beam, Defend, Skim+, Glasswork+, Voltaic+] Enemies: [Torch Head Amalgam 21/199, Queen 208/400]
+PlayCard 19 # CARD.SKIM (35096949) || Hand: [Strike+, Hologram+, Charge Battery, Sweeping Beam, Defend, Skim+, Glasswork+] Enemies: [Queen 182/400]
+PlayCard 8 # CARD.HOLOGRAM (28329574) || Hand: [Strike+, Hologram+, Charge Battery, Sweeping Beam, Defend, Glasswork+, Compact+, Defend, Fusion+, Dualcast+] Enemies: [Queen 182/400]
+SelectGridCard 5
+PlayCard 12 # CARD.VOLTAIC (45891430) || Hand: [Strike+, Charge Battery, Sweeping Beam, Defend, Glasswork+, Compact+, Defend, Fusion+, Dualcast+, Voltaic+] Enemies: [Queen 182/400]
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Strike+, Charge Battery, Sweeping Beam, Defend, Glasswork+, Compact+, Defend, Fusion+, Dualcast+] Enemies: []
+ChooseEventOption 0 # THE_ARCHITECT.dialogue.0
+ChooseEventOption 0 # THE_ARCHITECT.dialogue.1
+ChooseEventOption 0 # PROCEED
+ProceedToNextAct

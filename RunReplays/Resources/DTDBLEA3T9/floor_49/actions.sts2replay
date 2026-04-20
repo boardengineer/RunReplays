@@ -1,0 +1,776 @@
+# Character: IRONCLAD
+# Seed: DTDBLEA3T9
+# Ascension: 3
+# Game: v0.103.2
+# Mod: 0.1.0
+ChooseEventOption 2 # NEOW.pages.INITIAL.options.LEAFY_POULTICE
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+PlayCard 4 # CARD.DEFEND_IRONCLAD (42090496) || Hand: [Strike, Bash, Strike, Strike, Defend] Enemies: [Nibbit 45/45]
+PlayCard 1 1 # CARD.BASH (55567538) || Hand: [Strike, Bash, Strike, Strike] Enemies: [Nibbit 45/45]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.PYRE (24931251) || Hand: [Defend, Defend, Strike, Not Yet, Pyre] Enemies: [Nibbit 37/45]
+PlayCard 6 # CARD.DEFEND_IRONCLAD (53886991) || Hand: [Defend, Defend, Strike, Not Yet] Enemies: [Nibbit 37/45]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 1 1 # CARD.BASH (55567538) || Hand: [Strike, Defend, Strike, Strike, Bash] Enemies: [Nibbit 37/45]
+PlayCard 3 1 # CARD.STRIKE_IRONCLAD (4676721) || Hand: [Strike, Defend, Strike, Strike] Enemies: [Nibbit 34/45]
+PlayCard 7 1 # CARD.STRIKE_IRONCLAD (15220874) || Hand: [Strike, Defend, Strike] Enemies: [Nibbit 25/45]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 5 # CARD.DEFEND_IRONCLAD (43270145) || Hand: [Strike, Defend, Defend, Not Yet, Strike] Enemies: [Nibbit 16/45]
+PlayCard 4 # CARD.DEFEND_IRONCLAD (42090496) || Hand: [Strike, Defend, Not Yet, Strike] Enemies: [Nibbit 16/45]
+PlayCard 8 # CARD.NOT_YET (2770139) || Hand: [Strike, Not Yet, Strike] Enemies: [Nibbit 16/45]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 1 1 # CARD.BASH (55567538) || Hand: [Strike, Bash, Strike, Defend, Defend] Enemies: [Nibbit 16/45]
+PlayCard 0 1 # CARD.STRIKE_IRONCLAD (13630711) || Hand: [Strike, Strike, Defend, Defend] Enemies: [Nibbit 8/45]
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # CardReward
+TakeCard 0 # Hemokinesis
+MoveToMapCoord 0
+ChooseEventOption 1 # WELLSPRING.pages.INITIAL.options.BATHE
+SelectGridCard 0
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+OpenShop
+BuyCardRemoval
+SelectGridCard 1
+BuyCard Pommel Strike
+MoveToMapCoord 0
+PlayCard 0 # CARD.DEFEND_IRONCLAD (30761394) || Hand: [Defend, Strike, Bash, Pommel Strike, Hemokinesis] Enemies: [Fuzzy Wurm Crawler 55/55]
+PlayCard 2 1 # CARD.BASH (8644986) || Hand: [Strike, Bash, Pommel Strike, Hemokinesis] Enemies: [Fuzzy Wurm Crawler 55/55]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 5 # CARD.PYRE (61070921) || Hand: [Pyre, Defend, Defend, Strike, Not Yet] Enemies: [Fuzzy Wurm Crawler 47/55]
+PlayCard 8 1 # CARD.STRIKE_IRONCLAD (27525182) || Hand: [Defend, Defend, Strike, Not Yet] Enemies: [Fuzzy Wurm Crawler 47/55]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 3 1 # CARD.POMMEL_STRIKE (10696015) || Hand: [Guilty, Hemokinesis, Pommel Strike, Strike, Not Yet] Enemies: [Fuzzy Wurm Crawler 38/55]
+PlayCard 4 1 # CARD.HEMOKINESIS (29155279) || Hand: [Guilty, Hemokinesis, Strike, Not Yet, Strike] Enemies: [Fuzzy Wurm Crawler 29/55]
+PlayCard 8 1 # CARD.STRIKE_IRONCLAD (27525182) || Hand: [Guilty, Strike, Not Yet, Strike] Enemies: [Fuzzy Wurm Crawler 14/55]
+PlayCard 1 1 # CARD.STRIKE_IRONCLAD (8417094) || Hand: [Guilty, Not Yet, Strike] Enemies: [Fuzzy Wurm Crawler 8/55]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 2 1 # CARD.BASH (8644986) || Hand: [Bash, Defend, Defend, Defend, Guilty] Enemies: [Fuzzy Wurm Crawler 2/55]
+ClaimReward 0 # GoldReward: 9
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Shrug It Off
+MoveToMapCoord 1
+PlayCard 4 1 # CARD.STRIKE_IRONCLAD (17809856) || Hand: [Defend, Defend, Guilty, Strike, Strike] Enemies: [Shrinker Beetle 38/38]
+PlayCard 3 1 # CARD.STRIKE_IRONCLAD (46718115) || Hand: [Defend, Defend, Guilty, Strike] Enemies: [Shrinker Beetle 32/38]
+PlayCard 1 # CARD.DEFEND_IRONCLAD (61057594) || Hand: [Defend, Defend, Guilty] Enemies: [Shrinker Beetle 26/38]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 # CARD.SHRUG_IT_OFF (13933517) || Hand: [Hemokinesis, Pommel Strike, Pyre, Shrug It Off, Defend] Enemies: [Shrinker Beetle 26/38]
+PlayCard 7 # CARD.PYRE (31374330) || Hand: [Hemokinesis, Pommel Strike, Pyre, Defend, Bash] Enemies: [Shrinker Beetle 26/38]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 0 # CARD.DEFEND_IRONCLAD (66436500) || Hand: [Not Yet, Defend, Defend, Strike, Bash] Enemies: [Shrinker Beetle 26/38]
+PlayCard 9 # CARD.DEFEND_IRONCLAD (58292792) || Hand: [Not Yet, Defend, Strike, Bash] Enemies: [Shrinker Beetle 26/38]
+PlayCard 10 1 # CARD.BASH (54873084) || Hand: [Not Yet, Strike, Bash] Enemies: [Shrinker Beetle 26/38]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 8 # CARD.SHRUG_IT_OFF (13933517) || Hand: [Guilty, Pommel Strike, Shrug It Off, Hemokinesis, Defend] Enemies: [Shrinker Beetle 21/38]
+PlayCard 6 1 # CARD.POMMEL_STRIKE (33312198) || Hand: [Guilty, Pommel Strike, Hemokinesis, Defend, Strike] Enemies: [Shrinker Beetle 21/38]
+PlayCard 4 1 # CARD.STRIKE_IRONCLAD (17809856) || Hand: [Guilty, Hemokinesis, Defend, Strike, Strike] Enemies: [Shrinker Beetle 12/38]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 11 # CARD.NOT_YET (24095715) || Hand: [Not Yet, Defend, Bash, Shrug It Off, Defend] Enemies: [Shrinker Beetle 6/38]
+PlayCard 10 1 # CARD.BASH (54873084) || Hand: [Defend, Bash, Shrug It Off, Defend] Enemies: [Shrinker Beetle 6/38]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 6 1 # CARD.POMMEL_STRIKE (33312198) || Hand: [Guilty, Hemokinesis, Bash, Pommel Strike, Shrug It Off] Enemies: [Shrinker Beetle 1/38]
+ClaimReward 0 # GoldReward: 9
+ClaimReward 0 # CardReward
+TakeCard 1 # Fight Me!
+MoveToMapCoord 2
+ChooseEventOption 2 # WOOD_CARVINGS.pages.INITIAL.options.TORUS
+SelectGridCard 2
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 8
+MoveToMapCoord 2
+PlayCard 4 1 # CARD.FIGHT_ME (61630513) || Hand: [Shrug It Off, Defend, Toric Toughness, Bash, Fight Me!] Enemies: [Phrog Parasite 64/64]
+PlayCard 0 # CARD.SHRUG_IT_OFF (55028228) || Hand: [Shrug It Off, Defend, Toric Toughness, Bash] Enemies: [Phrog Parasite 54/64]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 1 # CARD.HEMOKINESIS (40699099) || Hand: [Guilty, Pyre, Defend, Hemokinesis, Strike] Enemies: [Phrog Parasite 54/64]
+PlayCard 10 1 # CARD.STRIKE_IRONCLAD (30747579) || Hand: [Guilty, Pyre, Defend, Strike] Enemies: [Phrog Parasite 36/64]
+PlayCard 8 # CARD.DEFEND_IRONCLAD (26891743) || Hand: [Guilty, Pyre, Defend] Enemies: [Phrog Parasite 27/64]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 9 1 # CARD.HEMOKINESIS (40699099) || Hand: [Strike, Not Yet, Bash, Hemokinesis, Infection] Enemies: [Phrog Parasite 27/64]
+PlayCard 11 1 # CARD.STRIKE_IRONCLAD (8292759) || Hand: [Strike, Not Yet, Bash, Infection] Enemies: [Phrog Parasite 9/64]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+UsePotion 0 # POTION.EXPLOSIVE_AMPOULE || Hand: [Defend, Fight Me!, Toric Toughness, Pommel Strike+, Strike] Enemies: [Wriggler 20/20, Wriggler 18/18, Wriggler 17/17, Wriggler 19/19]
+PlayCard 10 4 # CARD.STRIKE_IRONCLAD (30747579) || Hand: [Defend, Fight Me!, Toric Toughness, Pommel Strike+, Strike] Enemies: [Wriggler 10/20, Wriggler 8/18, Wriggler 7/17, Wriggler 9/19]
+PlayCard 5 2 # CARD.POMMEL_STRIKE (17803707) || Hand: [Defend, Fight Me!, Toric Toughness, Pommel Strike+] Enemies: [Wriggler 10/20, Wriggler 8/18, Wriggler 9/19]
+PlayCard 1 # CARD.DEFEND_IRONCLAD (25492012) || Hand: [Defend, Fight Me!, Toric Toughness, Infection, Pyre] Enemies: [Wriggler 8/18, Wriggler 9/19]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 0 # CARD.SHRUG_IT_OFF (55028228) || Hand: [Guilty, Shrug It Off, Infection, Defend, Pyre] Enemies: [Wriggler 8/18, Wriggler 9/19]
+PlayCard 7 # CARD.PYRE (32814133) || Hand: [Guilty, Infection, Defend, Pyre, Infection] Enemies: [Wriggler 8/18, Wriggler 9/19]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 10 3 # CARD.STRIKE_IRONCLAD (30747579) || Hand: [Infection, Strike, Bash, Infection, Hemokinesis] Enemies: [Wriggler 8/18, Wriggler 9/19]
+PlayCard 3 5 # CARD.BASH (51587077) || Hand: [Infection, Bash, Infection, Hemokinesis] Enemies: [Wriggler 9/19]
+ClaimReward 0 # GoldReward: 31
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+OpenChest
+TakeChestRelic # Horn Cleat
+NetPickRelicAction for player 1 index 0 || Hand: [Infection, Infection, Hemokinesis] Enemies: []
+MoveToMapCoord 2
+ChooseEventOption 1 # SELF_HELP_BOOK.pages.INITIAL.options.READ_PASSAGE
+SelectGridCard 3
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+ChooseRestSiteOption SMITH
+SelectGridCard 8
+MoveToMapCoord 1
+PlayCard 3 # CARD.SHRUG_IT_OFF (10679997) || Hand: [Guilty, Bash+, Strike, Shrug It Off, Defend] Enemies: [Byrdonis 84/84]
+PlayCard 5 # CARD.PYRE (59773418) || Hand: [Guilty, Bash+, Strike, Defend, Pyre] Enemies: [Byrdonis 84/84]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 1 # CARD.POMMEL_STRIKE (1089852) || Hand: [Pommel Strike+, Strike+, Hemokinesis, Defend, Not Yet] Enemies: [Byrdonis 84/84]
+PlayCard 11 # CARD.TORIC_TOUGHNESS (64403139) || Hand: [Strike+, Hemokinesis, Defend, Not Yet, Toric Toughness+, Fight Me!] Enemies: [Byrdonis 74/84]
+PlayCard 7 1 # CARD.STRIKE_IRONCLAD (9808671) || Hand: [Strike+, Hemokinesis, Defend, Not Yet, Fight Me!] Enemies: [Byrdonis 74/84]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 11 # CARD.TORIC_TOUGHNESS (64403139) || Hand: [Strike, Pommel Strike+, Defend, Toric Toughness+, Defend] Enemies: [Byrdonis 65/84]
+PlayCard 6 1 # CARD.POMMEL_STRIKE (1089852) || Hand: [Strike, Pommel Strike+, Defend, Defend] Enemies: [Byrdonis 65/84]
+PlayCard 2 1 # CARD.STRIKE_IRONCLAD (38469368) || Hand: [Strike, Defend, Defend, Guilty, Hemokinesis] Enemies: [Byrdonis 55/84]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 10 # CARD.NOT_YET (36982066) || Hand: [Strike+, Not Yet, Fight Me!, Shrug It Off, Bash+] Enemies: [Byrdonis 49/84]
+PlayCard 1 1 # CARD.BASH (49013616) || Hand: [Strike+, Fight Me!, Shrug It Off, Bash+] Enemies: [Byrdonis 49/84]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 8 1 # CARD.HEMOKINESIS (21169181) || Hand: [Defend, Shrug It Off, Bash+, Hemokinesis, Defend] Enemies: [Byrdonis 39/84]
+PlayCard 3 # CARD.SHRUG_IT_OFF (10679997) || Hand: [Defend, Shrug It Off, Bash+, Defend] Enemies: [Byrdonis 17/84]
+PlayCard 4 # CARD.DEFEND_IRONCLAD (29011112) || Hand: [Defend, Bash+, Defend, Guilty] Enemies: [Byrdonis 17/84]
+PlayCard 9 # CARD.DEFEND_IRONCLAD (56304901) || Hand: [Defend, Bash+, Guilty] Enemies: [Byrdonis 17/84]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 6 1 # CARD.POMMEL_STRIKE (1089852) || Hand: [Strike+, Pommel Strike+, Fight Me!, Strike, Toric Toughness+] Enemies: [Byrdonis 17/84]
+PlayCard 2 1 # CARD.STRIKE_IRONCLAD (38469368) || Hand: [Strike+, Fight Me!, Strike, Toric Toughness+, Shrug It Off, Defend] Enemies: [Byrdonis 2/84]
+ClaimReward 0 # GoldReward: 33
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 1
+PlayCard 2 # CARD.PYRE (13203267) || Hand: [Not Yet, Bash+, Pyre, Guilty, Defend] Enemies: [Twig Slime (S) 10/10, Leaf Slime (S) 11/11, Slithering Strangler 54/54]
+PlayCard 4 # CARD.DEFEND_IRONCLAD (62831701)
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 5 1 # CARD.FIGHT_ME (28614399) || Hand: [Fight Me!, Pommel Strike+, Strike+, Shrug It Off, Hemokinesis] Enemies: [Twig Slime (S) 10/10, Leaf Slime (S) 11/11, Slithering Strangler 54/54]
+PlayCard 6 2 # CARD.POMMEL_STRIKE (56203007) || Hand: [Pommel Strike+, Strike+, Shrug It Off, Hemokinesis] Enemies: [Leaf Slime (S) 11/11, Slithering Strangler 54/54]
+PlayCard 7 3 # CARD.STRIKE_IRONCLAD (36065021) || Hand: [Strike+, Shrug It Off, Hemokinesis, Defend, Strike] Enemies: [Slithering Strangler 54/54]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 12 # CARD.TORIC_TOUGHNESS (37880737) || Hand: [Toric Toughness+, Strike, Pommel Strike+, Not Yet, Shrug It Off] Enemies: [Slithering Strangler 42/54]
+PlayCard 0 # CARD.NOT_YET (38274210) || Hand: [Strike, Pommel Strike+, Not Yet, Shrug It Off] Enemies: [Slithering Strangler 42/54]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 1 3 # CARD.BASH (8923570) || Hand: [Defend, Hemokinesis, Fight Me!, Bash+, Strike+] Enemies: [Slithering Strangler 42/54]
+PlayCard 5 3 # CARD.FIGHT_ME (28614399) || Hand: [Defend, Hemokinesis, Fight Me!, Strike+] Enemies: [Slithering Strangler 29/54]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 11 3 # CARD.STRIKE_IRONCLAD (63861294) || Hand: [Slimed, Guilty, Defend, Strike, Shrug It Off] Enemies: [Slithering Strangler 5/54]
+ClaimReward 0 # GoldReward: 8
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 0
+PlayCard 1 # CARD.PYRE (3136433) || Hand: [Shrug It Off, Pyre, Pommel Strike+, Defend, Strike+] Enemies: [Bygone Effigy 127/127]
+PlayCard 2 1 # CARD.POMMEL_STRIKE (28227900) || Hand: [Shrug It Off, Pommel Strike+, Defend, Strike+] Enemies: [Bygone Effigy 127/127]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 11 1 # CARD.BASH (15761391) || Hand: [Toric Toughness+, Not Yet, Fight Me!, Hemokinesis, Bash+] Enemies: [Bygone Effigy 116/127]
+PlayCard 9 1 # CARD.FIGHT_ME (5165612) || Hand: [Toric Toughness+, Not Yet, Fight Me!, Hemokinesis] Enemies: [Bygone Effigy 106/127]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 2 1 # CARD.POMMEL_STRIKE (28227900) || Hand: [Fight Me!, Hemokinesis, Pommel Strike+, Strike+, Defend] Enemies: [Bygone Effigy 90/127]
+PlayCard 7 # CARD.TORIC_TOUGHNESS (46460024) || Hand: [Fight Me!, Hemokinesis, Strike+, Defend, Not Yet, Toric Toughness+] Enemies: [Bygone Effigy 71/127]
+PlayCard 10 1 # CARD.HEMOKINESIS (46490508) || Hand: [Fight Me!, Hemokinesis, Strike+, Defend, Not Yet] Enemies: [Bygone Effigy 71/127]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 0 # CARD.SHRUG_IT_OFF (60000816) || Hand: [Shrug It Off, Bash+, Defend, Strike, Fight Me!] Enemies: [Bygone Effigy 39/127]
+PlayCard 7 # CARD.TORIC_TOUGHNESS (46460024) || Hand: [Bash+, Defend, Strike, Fight Me!, Toric Toughness+] Enemies: [Bygone Effigy 39/127]
+PlayCard 6 # CARD.DEFEND_IRONCLAD (49901467) || Hand: [Bash+, Defend, Strike, Fight Me!] Enemies: [Bygone Effigy 39/127]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 2 1 # CARD.POMMEL_STRIKE (28227900) || Hand: [Not Yet, Pommel Strike+, Strike+, Hemokinesis, Defend] Enemies: [Bygone Effigy 39/127]
+PlayCard 8 # CARD.NOT_YET (15487037) || Hand: [Not Yet, Strike+, Hemokinesis, Defend, Defend, Bash+] Enemies: [Bygone Effigy 26/127]
+PlayCard 6 # CARD.DEFEND_IRONCLAD (49901467) || Hand: [Strike+, Hemokinesis, Defend, Defend, Bash+] Enemies: [Bygone Effigy 26/127]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 9 1 # CARD.FIGHT_ME (5165612) || Hand: [Fight Me!, Toric Toughness+, Strike, Shrug It Off, Defend] Enemies: [Bygone Effigy 26/127]
+PlayCard 5 1 # CARD.STRIKE_IRONCLAD (42827309) || Hand: [Toric Toughness+, Strike, Shrug It Off, Defend] Enemies: [Bygone Effigy 10/127]
+ClaimReward 0 # GoldReward: 33
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Rampage
+MoveToMapCoord 0
+ChooseRestSiteOption SMITH
+SelectGridCard 3
+MoveToMapCoord 3
+PlayCard 3 # CARD.SHRUG_IT_OFF (8210801) || Hand: [Strike, Bash+, Defend, Shrug It Off, Fight Me!] Enemies: [Vantom 173/173]
+PlayCard 1 1 # CARD.BASH (66381727) || Hand: [Strike, Bash+, Defend, Fight Me!, Not Yet] Enemies: [Vantom 173/173]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 # CARD.PYRE (12985273) || Hand: [Pyre+, Strike+, Toric Toughness+, Hemokinesis, Rampage] Enemies: [Vantom 172/173]
+PlayCard 10 1 # CARD.RAMPAGE (35231850) || Hand: [Strike+, Toric Toughness+, Hemokinesis, Rampage] Enemies: [Vantom 172/173]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 3 # CARD.SHRUG_IT_OFF (8210801) || Hand: [Defend, Pommel Strike+, Shrug It Off, Strike, Bash+] Enemies: [Vantom 171/173]
+PlayCard 12 1 # CARD.POMMEL_STRIKE (35207597) || Hand: [Defend, Pommel Strike+, Strike, Bash+, Strike+] Enemies: [Vantom 171/173]
+PlayCard 11 # CARD.DEFEND_IRONCLAD (48651197) || Hand: [Defend, Strike, Bash+, Strike+, Not Yet, Fight Me!] Enemies: [Vantom 170/173]
+PlayCard 0 1 # CARD.STRIKE_IRONCLAD (52114990) || Hand: [Strike, Bash+, Strike+, Not Yet, Fight Me!] Enemies: [Vantom 170/173]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 10 1 # CARD.RAMPAGE (35231850) || Hand: [Toric Toughness+, Rampage, Defend, Hemokinesis, Not Yet] Enemies: [Vantom 169/173]
+PlayCard 9 1 # CARD.HEMOKINESIS (3914650) || Hand: [Toric Toughness+, Defend, Hemokinesis, Not Yet] Enemies: [Vantom 168/173]
+PlayCard 8 # CARD.TORIC_TOUGHNESS (45174203) || Hand: [Toric Toughness+, Defend, Not Yet] Enemies: [Vantom 167/173]
+PlayCard 2 # CARD.DEFEND_IRONCLAD (60564634) || Hand: [Defend, Not Yet] Enemies: [Vantom 167/173]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 12 1 # CARD.POMMEL_STRIKE (35207597) || Hand: [Wound, Wound, Strike, Pommel Strike+, Wound] Enemies: [Vantom 167/173]
+PlayCard 3 # CARD.SHRUG_IT_OFF (8210801) || Hand: [Wound, Wound, Strike, Wound, Defend, Shrug It Off] Enemies: [Vantom 166/173]
+PlayCard 1 1 # CARD.BASH (66381727) || Hand: [Wound, Wound, Strike, Wound, Defend, Bash+] Enemies: [Vantom 166/173]
+PlayCard 0 1 # CARD.STRIKE_IRONCLAD (52114990) || Hand: [Wound, Wound, Strike, Wound, Defend] Enemies: [Vantom 165/173]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 12 1 # CARD.POMMEL_STRIKE (35207597) || Hand: [Strike+, Fight Me!, Shrug It Off, Toric Toughness+, Pommel Strike+] Enemies: [Vantom 164/173]
+PlayCard 8 # CARD.TORIC_TOUGHNESS (45174203) || Hand: [Strike+, Fight Me!, Shrug It Off, Toric Toughness+, Defend, Bash+] Enemies: [Vantom 145/173]
+PlayCard 3 # CARD.SHRUG_IT_OFF (8210801) || Hand: [Strike+, Fight Me!, Shrug It Off, Defend, Bash+] Enemies: [Vantom 145/173]
+PlayCard 7 1 # CARD.STRIKE_IRONCLAD (49758598) || Hand: [Strike+, Fight Me!, Defend, Bash+, Wound] Enemies: [Vantom 145/173]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 5 # CARD.NOT_YET (61095131) || Hand: [Not Yet, Rampage, Defend, Hemokinesis, Wound] Enemies: [Vantom 127/173]
+PlayCard 10 1 # CARD.RAMPAGE (35231850)
+PlayCard 2 # CARD.DEFEND_IRONCLAD (60564634) || Hand: [Defend, Hemokinesis, Wound] Enemies: [Vantom 94/173]
+PlayCard 9 1 # CARD.HEMOKINESIS (3914650) || Hand: [Hemokinesis, Wound] Enemies: [Vantom 94/173]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 8 # CARD.TORIC_TOUGHNESS (45174203) || Hand: [Strike, Wound, Wound, Defend, Toric Toughness+] Enemies: [Vantom 67/173]
+PlayCard 2 # CARD.DEFEND_IRONCLAD (60564634) || Hand: [Strike, Wound, Wound, Defend] Enemies: [Vantom 67/173]
+PlayCard 0 1 # CARD.STRIKE_IRONCLAD (52114990) || Hand: [Strike, Wound, Wound] Enemies: [Vantom 67/173]
+EndTurn # EndPlayerTurnAction for player 1 round 8
+PlayCard 4 1 # CARD.FIGHT_ME (6788347) || Hand: [Bash+, Hemokinesis, Strike+, Wound, Fight Me!] Enemies: [Vantom 58/173]
+PlayCard 1 1 # CARD.BASH (66381727) || Hand: [Bash+, Hemokinesis, Strike+, Wound] Enemies: [Vantom 42/173]
+PlayCard 9 1 # CARD.HEMOKINESIS (3914650) || Hand: [Hemokinesis, Strike+, Wound] Enemies: [Vantom 26/173]
+ClaimReward 0 # GoldReward: 75
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard 2 # Unmovable
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Strike+, Wound] Enemies: []
+MoveToMapCoord 3
+ChooseEventOption 0 # OROBAS.pages.INITIAL.options.SEA_GLASS
+SelectGridCard 12
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 5
+PlayCard 0 # CARD.TORIC_TOUGHNESS (7509742) || Hand: [Toric Toughness+, Royalties, Unmovable, Defend, Pyre+] Enemies: [Tunneler 87/87]
+PlayCard 3 # CARD.DEFEND_IRONCLAD (38783935) || Hand: [Royalties, Unmovable, Defend, Pyre+] Enemies: [Tunneler 87/87]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 7 1 # CARD.BASH (51696891) || Hand: [Rampage, Shrug It Off, Bash+, Hemokinesis, Not Yet] Enemies: [Tunneler 87/87]
+PlayCard 5 1 # CARD.RAMPAGE (54491025) || Hand: [Rampage, Shrug It Off, Hemokinesis, Not Yet] Enemies: [Tunneler 77/87]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 10 1 # CARD.POMMEL_STRIKE (38961371) || Hand: [Pommel Strike+, Strike+, Defend, Strike, Fight Me!] Enemies: [Tunneler 64/87]
+PlayCard 11 1 # CARD.STRIKE_IRONCLAD (15108026) || Hand: [Strike+, Defend, Strike, Fight Me!, Shrug It Off, Bash+] Enemies: [Tunneler 64/87]
+PlayCard 13 1 # CARD.STRIKE_IRONCLAD (15790557) || Hand: [Defend, Strike, Fight Me!, Shrug It Off, Bash+] Enemies: [Tunneler 64/87]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 4 # CARD.PYRE (13511098) || Hand: [Pyre+, Rampage, Defend, Unmovable, Not Yet] Enemies: [Tunneler 59/87]
+PlayCard 3 # CARD.DEFEND_IRONCLAD (38783935) || Hand: [Rampage, Defend, Unmovable, Not Yet] Enemies: [Tunneler 59/87]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 9 # CARD.NOT_YET (26698662) || Hand: [Hemokinesis, Royalties, Toric Toughness+, Not Yet, Strike] Enemies: [Tunneler 59/87]
+PlayCard 0 # CARD.TORIC_TOUGHNESS (7509742) || Hand: [Hemokinesis, Royalties, Toric Toughness+, Strike] Enemies: [Tunneler 59/87]
+PlayCard 1 # CARD.ROYALTIES (478814) || Hand: [Hemokinesis, Royalties, Strike] Enemies: [Tunneler 59/87]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 2 # CARD.UNMOVABLE (4309326) || Hand: [Defend, Unmovable, Bash+, Strike+, Defend] Enemies: [Tunneler 59/87]
+PlayCard 12 # CARD.DEFEND_IRONCLAD (1754506) || Hand: [Defend, Bash+, Strike+, Defend] Enemies: [Tunneler 59/87]
+PlayCard 3 # CARD.DEFEND_IRONCLAD (38783935) || Hand: [Bash+, Strike+, Defend] Enemies: [Tunneler 59/87]
+PlayCard 11 1 # CARD.STRIKE_IRONCLAD (15108026) || Hand: [Bash+, Strike+] Enemies: [Tunneler 59/87]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 10 1 # CARD.POMMEL_STRIKE (38961371) || Hand: [Pommel Strike+, Rampage, Fight Me!, Shrug It Off, Hemokinesis] Enemies: [Tunneler 59/87]
+PlayCard 0 # CARD.TORIC_TOUGHNESS (7509742) || Hand: [Rampage, Fight Me!, Shrug It Off, Hemokinesis, Defend, Toric Toughness+] Enemies: [Tunneler 59/87]
+PlayCard 5 1 # CARD.RAMPAGE (54491025) || Hand: [Rampage, Fight Me!, Shrug It Off, Hemokinesis, Defend] Enemies: [Tunneler 59/87]
+PlayCard 6 # CARD.SHRUG_IT_OFF (20657179) || Hand: [Fight Me!, Shrug It Off, Hemokinesis, Defend] Enemies: [Tunneler 58/87]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 10 1 # CARD.POMMEL_STRIKE (38961371) || Hand: [Defend, Bash+, Strike, Pommel Strike+, Shrug It Off] Enemies: [Tunneler 58/87]
+PlayCard 5 1 # CARD.RAMPAGE (54491025) || Hand: [Defend, Bash+, Strike, Shrug It Off, Rampage, Strike+] Enemies: [Tunneler 48/87]
+PlayCard 6 # CARD.SHRUG_IT_OFF (20657179) || Hand: [Defend, Bash+, Strike, Shrug It Off, Strike+] Enemies: [Tunneler 29/87]
+PlayCard 11 1 # CARD.STRIKE_IRONCLAD (15108026) || Hand: [Defend, Bash+, Strike, Strike+, Hemokinesis] Enemies: [Tunneler 29/87]
+PlayCard 13 1 # CARD.STRIKE_IRONCLAD (15790557) || Hand: [Defend, Bash+, Strike, Hemokinesis] Enemies: [Tunneler 20/87]
+EndTurn # EndPlayerTurnAction for player 1 round 8
+PlayCard 0 # CARD.TORIC_TOUGHNESS (7509742) || Hand: [Fight Me!, Defend, Toric Toughness+, Bash+, Shrug It Off] Enemies: [Tunneler 14/87]
+PlayCard 7 1 # CARD.BASH (51696891) || Hand: [Fight Me!, Defend, Bash+, Shrug It Off] Enemies: [Tunneler 14/87]
+PlayCard 6 # CARD.SHRUG_IT_OFF (20657179) || Hand: [Fight Me!, Defend, Shrug It Off] Enemies: [Tunneler 4/87]
+EndTurn # EndPlayerTurnAction for player 1 round 9
+PlayCard 5 1 # CARD.RAMPAGE (54491025) || Hand: [Hemokinesis, Defend, Pommel Strike+, Strike, Rampage] Enemies: [Tunneler 4/87]
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # GoldReward: 30
+ClaimReward 0 # CardReward
+TakeCard 2 # Spite
+MoveToMapCoord 5
+UsePotion 2 # POTION.ATTACK_POTION || Hand: [Strike, Rampage, Defend, Bash+, Fight Me!] Enemies: [Exoskeleton 24/24, Exoskeleton 27/27, Exoskeleton 25/25]
+SelectCardFromScreen 1
+PlayCard 3 2 # CARD.BASH (27510820) || Hand: [Strike, Rampage, Defend, Bash+, Fight Me!, Mangle] Enemies: [Exoskeleton 24/24, Exoskeleton 27/27, Exoskeleton 25/25]
+PlayCard 16 2 # CARD.MANGLE (45072405) || Hand: [Strike, Rampage, Defend, Fight Me!, Mangle] Enemies: [Exoskeleton 24/24, Exoskeleton 18/27, Exoskeleton 25/25]
+PlayCard 1 2 # CARD.RAMPAGE (11938702) || Hand: [Strike, Rampage, Defend, Fight Me!] Enemies: [Exoskeleton 24/24, Exoskeleton 9/27, Exoskeleton 25/25]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.UNMOVABLE (40888857) || Hand: [Pyre+, Royalties, Defend, Pommel Strike+, Unmovable] Enemies: [Exoskeleton 24/24, Exoskeleton 25/25]
+PlayCard 8 1 # CARD.POMMEL_STRIKE (49282449) || Hand: [Pyre+, Royalties, Defend, Pommel Strike+] Enemies: [Exoskeleton 24/24, Exoskeleton 25/25]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 12 # CARD.TORIC_TOUGHNESS (11641354) || Hand: [Toric Toughness+, Spite, Shrug It Off, Strike+, Rampage] Enemies: [Exoskeleton 15/24, Exoskeleton 25/25]
+PlayCard 1 1 # CARD.RAMPAGE (11938702) || Hand: [Spite, Shrug It Off, Strike+, Rampage] Enemies: [Exoskeleton 15/24, Exoskeleton 25/25]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 5 # CARD.PYRE (13783954) || Hand: [Defend, Not Yet, Bash+, Royalties, Pyre+] Enemies: [Exoskeleton 6/24, Exoskeleton 25/25]
+PlayCard 6 # CARD.ROYALTIES (56946730) || Hand: [Defend, Not Yet, Bash+, Royalties] Enemies: [Exoskeleton 6/24, Exoskeleton 25/25]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 16 1 # CARD.MANGLE (45072405) || Hand: [Strike, Hemokinesis, Defend, Mangle, Fight Me!] Enemies: [Exoskeleton 6/24, Exoskeleton 25/25]
+PlayCard 7 # CARD.DEFEND_IRONCLAD (42758529) || Hand: [Strike, Hemokinesis, Defend, Fight Me!] Enemies: [Exoskeleton 25/25]
+PlayCard 0 3 # CARD.STRIKE_IRONCLAD (16239603) || Hand: [Strike, Hemokinesis, Fight Me!] Enemies: [Exoskeleton 25/25]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 12 # CARD.TORIC_TOUGHNESS (11641354) || Hand: [Pommel Strike+, Not Yet, Defend, Mangle, Toric Toughness+] Enemies: [Exoskeleton 19/25]
+PlayCard 8 3 # CARD.POMMEL_STRIKE (49282449) || Hand: [Pommel Strike+, Not Yet, Defend, Mangle] Enemies: [Exoskeleton 19/25]
+PlayCard 11 # CARD.NOT_YET (23663105) || Hand: [Not Yet, Defend, Mangle, Hemokinesis, Bash+] Enemies: [Exoskeleton 10/25]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 14 # CARD.SHRUG_IT_OFF (3425646) || Hand: [Spite, Fight Me!, Strike+, Strike, Shrug It Off] Enemies: [Exoskeleton 10/25]
+PlayCard 15 3 # CARD.STRIKE_IRONCLAD (30830818) || Hand: [Spite, Fight Me!, Strike+, Strike, Defend] Enemies: [Exoskeleton 10/25]
+PlayCard 0 3 # CARD.STRIKE_IRONCLAD (16239603) || Hand: [Spite, Fight Me!, Strike, Defend] Enemies: [Exoskeleton 1/25]
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # GoldReward: 30
+ClaimReward 0 # CardReward
+TakeCard 2 # Shrug It Off
+MoveToMapCoord 5
+PlayCard 2 1 # CARD.POMMEL_STRIKE (23170867) || Hand: [Rampage, Bash+, Pommel Strike+, Defend, Fight Me!] Enemies: [Chomper 61/61, Chomper 64/64]
+PlayCard 5 # CARD.TORIC_TOUGHNESS (47237852) || Hand: [Rampage, Bash+, Defend, Fight Me!, Toric Toughness+, Shrug It Off] Enemies: [Chomper 51/61, Chomper 64/64]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 8 # CARD.ROYALTIES (9547219) || Hand: [Not Yet, Royalties, Defend, Spite, Strike] Enemies: [Chomper 51/61, Chomper 64/64]
+PlayCard 10 1 # CARD.SPITE (35127246) || Hand: [Not Yet, Defend, Spite, Strike] Enemies: [Chomper 51/61, Chomper 64/64]
+PlayCard 11 1 # CARD.STRIKE_IRONCLAD (47709762) || Hand: [Not Yet, Defend, Strike] Enemies: [Chomper 46/61, Chomper 64/64]
+PlayCard 9 # CARD.DEFEND_IRONCLAD (18816108) || Hand: [Not Yet, Defend] Enemies: [Chomper 40/61, Chomper 64/64]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 14 # CARD.UNMOVABLE (18025630) || Hand: [Hemokinesis, Strike+, Unmovable, Pyre+, Shrug It Off] Enemies: [Chomper 40/61, Chomper 64/64]
+PlayCard 16 # CARD.SHRUG_IT_OFF (50789955) || Hand: [Hemokinesis, Strike+, Pyre+, Shrug It Off] Enemies: [Chomper 40/61, Chomper 64/64]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 0 1 # CARD.RAMPAGE (11056618) || Hand: [Dazed, Bash+, Dazed, Rampage, Dazed] Enemies: [Chomper 40/61, Chomper 64/64]
+PlayCard 1 1 # CARD.BASH (32400702) || Hand: [Dazed, Bash+, Dazed, Dazed] Enemies: [Chomper 31/61, Chomper 64/64]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 6 # CARD.SHRUG_IT_OFF (22487488) || Hand: [Dazed, Dazed, Shrug It Off, Defend, Dazed] Enemies: [Chomper 21/61, Chomper 64/64]
+PlayCard 9 # CARD.DEFEND_IRONCLAD (18816108) || Hand: [Dazed, Dazed, Defend, Dazed, Strike] Enemies: [Chomper 21/61, Chomper 64/64]
+PlayCard 11 1 # CARD.STRIKE_IRONCLAD (47709762) || Hand: [Dazed, Dazed, Dazed, Strike] Enemies: [Chomper 21/61, Chomper 64/64]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 5 # CARD.TORIC_TOUGHNESS (47237852) || Hand: [Fight Me!, Pommel Strike+, Spite, Not Yet, Toric Toughness+] Enemies: [Chomper 15/61, Chomper 64/64]
+PlayCard 2 1 # CARD.POMMEL_STRIKE (23170867) || Hand: [Fight Me!, Pommel Strike+, Spite, Not Yet] Enemies: [Chomper 15/61, Chomper 64/64]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 15 # CARD.PYRE (28012949) || Hand: [Dazed, Bash+, Shrug It Off, Pyre+, Dazed] Enemies: [Chomper 5/61, Chomper 64/64]
+PlayCard 16 # CARD.SHRUG_IT_OFF (50789955) || Hand: [Dazed, Bash+, Shrug It Off, Dazed] Enemies: [Chomper 5/61, Chomper 64/64]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 13 1 # CARD.STRIKE_IRONCLAD (39285550) || Hand: [Dazed, Dazed, Dazed, Hemokinesis, Strike+] Enemies: [Chomper 5/61, Chomper 64/64]
+EndTurn # EndPlayerTurnAction for player 1 round 8
+PlayCard 5 # CARD.TORIC_TOUGHNESS (47237852) || Hand: [Toric Toughness+, Dazed, Defend, Shrug It Off, Strike] Enemies: [Chomper 64/64]
+PlayCard 11 2 # CARD.STRIKE_IRONCLAD (47709762) || Hand: [Dazed, Defend, Shrug It Off, Strike] Enemies: [Chomper 64/64]
+PlayCard 6 # CARD.SHRUG_IT_OFF (22487488) || Hand: [Dazed, Defend, Shrug It Off] Enemies: [Chomper 58/64]
+PlayCard 0 2 # CARD.RAMPAGE (11056618) || Hand: [Dazed, Defend, Rampage] Enemies: [Chomper 58/64]
+EndTurn # EndPlayerTurnAction for player 1 round 9
+PlayCard 6 # CARD.SHRUG_IT_OFF (22487488) || Hand: [Defend, Shrug It Off, Dazed, Defend, Fight Me!] Enemies: [Chomper 44/64]
+PlayCard 9 # CARD.DEFEND_IRONCLAD (18816108) || Hand: [Defend, Dazed, Defend, Fight Me!, Dazed] Enemies: [Chomper 44/64]
+PlayCard 3 # CARD.DEFEND_IRONCLAD (7211219) || Hand: [Defend, Dazed, Fight Me!, Dazed] Enemies: [Chomper 44/64]
+EndTurn # EndPlayerTurnAction for player 1 round 10
+PlayCard 10 2 # CARD.SPITE (35127246) || Hand: [Dazed, Dazed, Spite, Dazed, Dazed] Enemies: [Chomper 44/64]
+EndTurn # EndPlayerTurnAction for player 1 round 11
+PlayCard 2 2 # CARD.POMMEL_STRIKE (23170867) || Hand: [Strike+, Dazed, Strike, Pommel Strike+, Not Yet] Enemies: [Chomper 39/64]
+PlayCard 7 # CARD.NOT_YET (1060802) || Hand: [Strike+, Dazed, Strike, Not Yet, Rampage, Dazed] Enemies: [Chomper 29/64]
+PlayCard 0 2 # CARD.RAMPAGE (11056618) || Hand: [Strike+, Dazed, Strike, Rampage, Dazed] Enemies: [Chomper 29/64]
+PlayCard 13 2 # CARD.STRIKE_IRONCLAD (39285550) || Hand: [Strike+, Dazed, Strike, Dazed] Enemies: [Chomper 10/64]
+EndTurn # EndPlayerTurnAction for player 1 round 12
+PlayCard 1 2 # CARD.BASH (32400702) || Hand: [Hemokinesis, Shrug It Off, Toric Toughness+, Bash+, Dazed] Enemies: [Chomper 1/64]
+ClaimReward 0 # GoldReward: 9
+ClaimReward 0 # GoldReward: 30
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 6
+ChooseEventOption 1 # ROOM_FULL_OF_CHEESE.pages.INITIAL.options.SEARCH
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 6
+PlayCard 2 1 # CARD.POMMEL_STRIKE (52270938) || Hand: [Shrug It Off, Fight Me!, Pommel Strike+, Toric Toughness+, Defend] Enemies: [Ovicopter 125/125]
+PlayCard 5 # CARD.PYRE (54788553) || Hand: [Shrug It Off, Fight Me!, Toric Toughness+, Defend, Pyre+, Hemokinesis] Enemies: [Ovicopter 112/125]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.SHRUG_IT_OFF (32622609) || Hand: [Strike, Strike+, Shrug It Off, Royalties, Rampage] Enemies: [Tough Egg 16/16, Tough Egg 18/18, Tough Egg 15/15, Ovicopter 112/125]
+PlayCard 10 # CARD.ROYALTIES (25168030) || Hand: [Strike, Strike+, Royalties, Rampage, Bash+] Enemies: [Tough Egg 16/16, Tough Egg 18/18, Tough Egg 15/15, Ovicopter 112/125]
+PlayCard 12 4 # CARD.BASH (25344550) || Hand: [Strike, Strike+, Rampage, Bash+] Enemies: [Tough Egg 16/16, Tough Egg 18/18, Tough Egg 15/15, Ovicopter 112/125]
+PlayCard 11 4 # CARD.RAMPAGE (25185682) || Hand: [Strike, Strike+, Rampage] Enemies: [Tough Egg 3/16, Tough Egg 18/18, Tough Egg 15/15, Ovicopter 112/125]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 13 # CARD.UNMOVABLE (26774363) || Hand: [Unmovable, Defend, Not Yet, Spite, Shrug It Off] Enemies: [Hatchling 21/21, Hatchling 19/19, Ovicopter 112/125]
+PlayCard 9 # CARD.SHRUG_IT_OFF (32622609) || Hand: [Defend, Not Yet, Spite, Shrug It Off] Enemies: [Hatchling 21/21, Hatchling 19/19, Ovicopter 112/125]
+PlayCard 14 # CARD.DEFEND_IRONCLAD (39642683) || Hand: [Defend, Not Yet, Spite, Bash+] Enemies: [Hatchling 21/21, Hatchling 19/19, Ovicopter 112/125]
+PlayCard 16 3 # CARD.SPITE (56940740) || Hand: [Not Yet, Spite, Bash+] Enemies: [Hatchling 21/21, Hatchling 19/19, Ovicopter 112/125]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 3 # CARD.TORIC_TOUGHNESS (676401) || Hand: [Hemokinesis, Toric Toughness+, Defend, Strike, Pommel Strike+] Enemies: [Hatchling 13/21, Hatchling 19/19, Ovicopter 112/125]
+PlayCard 2 3 # CARD.POMMEL_STRIKE (52270938) || Hand: [Hemokinesis, Defend, Strike, Pommel Strike+] Enemies: [Hatchling 13/21, Hatchling 19/19, Ovicopter 112/125]
+PlayCard 11 2 # CARD.RAMPAGE (25185682) || Hand: [Hemokinesis, Defend, Strike, Rampage, Shrug It Off] Enemies: [Hatchling 19/19, Ovicopter 112/125]
+PlayCard 7 2 # CARD.STRIKE_IRONCLAD (8687793) || Hand: [Hemokinesis, Defend, Strike, Shrug It Off] Enemies: [Hatchling 2/19, Ovicopter 112/125]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 1 7 # CARD.FIGHT_ME (20720962) || Hand: [Fight Me!, Strike+, Rampage, Spite, Not Yet] Enemies: [Tough Egg 14/14, Tough Egg 17/17, Tough Egg 18/18, Ovicopter 112/125]
+PlayCard 11 5 # CARD.RAMPAGE (25185682) || Hand: [Strike+, Rampage, Spite, Not Yet] Enemies: [Tough Egg 17/17, Tough Egg 18/18, Ovicopter 112/125]
+PlayCard 8 6 # CARD.STRIKE_IRONCLAD (11081274) || Hand: [Strike+, Spite, Not Yet] Enemies: [Tough Egg 17/17, Ovicopter 112/125]
+PlayCard 16 6 # CARD.SPITE (56940740) || Hand: [Spite, Not Yet] Enemies: [Tough Egg 2/17, Ovicopter 112/125]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 2 1 # CARD.POMMEL_STRIKE (52270938) || Hand: [Strike, Hemokinesis, Defend, Pommel Strike+, Shrug It Off] Enemies: [Ovicopter 112/125]
+PlayCard 9 # CARD.SHRUG_IT_OFF (32622609) || Hand: [Strike, Hemokinesis, Defend, Shrug It Off, Bash+, Shrug It Off] Enemies: [Ovicopter 96/125]
+PlayCard 12 1 # CARD.BASH (25344550) || Hand: [Strike, Hemokinesis, Defend, Shrug It Off, Bash+, Defend] Enemies: [Ovicopter 96/125]
+PlayCard 7 1 # CARD.STRIKE_IRONCLAD (8687793) || Hand: [Strike, Hemokinesis, Defend, Shrug It Off, Defend] Enemies: [Ovicopter 80/125]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 3 # CARD.TORIC_TOUGHNESS (676401) || Hand: [Toric Toughness+, Pommel Strike+, Not Yet, Fight Me!, Defend] Enemies: [Ovicopter 62/125]
+PlayCard 1 1 # CARD.FIGHT_ME (20720962) || Hand: [Pommel Strike+, Not Yet, Fight Me!, Defend] Enemies: [Ovicopter 62/125]
+PlayCard 2 1 # CARD.POMMEL_STRIKE (52270938) || Hand: [Pommel Strike+, Not Yet, Defend] Enemies: [Ovicopter 30/125]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 11 1 # CARD.RAMPAGE (25185682) || Hand: [Spite, Shrug It Off, Defend, Rampage, Shrug It Off] Enemies: [Tough Egg 14/14, Tough Egg 17/17, Tough Egg 18/18, Ovicopter 2/125]
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # GoldReward: 30
+ClaimReward 0 # CardReward
+TakeCard 0 # Pommel Strike+
+MoveToMapCoord 6
+ChooseRestSiteOption SMITH
+SelectGridCard 8
+MoveToMapCoord 6
+PlayCard 3 # CARD.UNMOVABLE (25706043) || Hand: [Royalties, Defend, Shrug It Off, Unmovable+, Bash+] Enemies: [Entomancer 145/145]
+PlayCard 2 # CARD.SHRUG_IT_OFF (25225848) || Hand: [Royalties, Defend, Shrug It Off, Bash+] Enemies: [Entomancer 145/145]
+PlayCard 1 # CARD.DEFEND_IRONCLAD (25172493) || Hand: [Royalties, Defend, Bash+, Hemokinesis] Enemies: [Entomancer 145/145]
+UsePotion 0 # POTION.STABLE_SERUM || Hand: [Royalties, Bash+, Hemokinesis] Enemies: [Entomancer 145/145]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 10 # CARD.TORIC_TOUGHNESS (52964601) || Hand: [Royalties, Bash+, Hemokinesis, Defend, Strike+, Rampage, Not Yet, Toric Toughness+] Enemies: [Entomancer 145/145]
+PlayCard 8 1 # CARD.RAMPAGE (47878640) || Hand: [Royalties, Bash+, Hemokinesis, Defend, Strike+, Rampage, Not Yet] Enemies: [Entomancer 145/145]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 0 # CARD.ROYALTIES (32623105) || Hand: [Royalties, Bash+, Hemokinesis, Defend, Strike+, Not Yet, Strike, Shrug It Off, Spite, Dazed] Enemies: [Entomancer 133/145]
+PlayCard 4 1 # CARD.BASH (30027799) || Hand: [Bash+, Hemokinesis, Defend, Strike+, Not Yet, Strike, Shrug It Off, Spite, Dazed] Enemies: [Entomancer 133/145]
+PlayCard 13 1 # CARD.SPITE (23597341) || Hand: [Hemokinesis, Defend, Strike+, Not Yet, Strike, Shrug It Off, Spite, Dazed] Enemies: [Entomancer 120/145]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+UsePotion 2 # POTION.SWIFT_POTION || Hand: [Pommel Strike+, Pyre+, Fight Me!, Dazed, Pommel Strike+] Enemies: [Entomancer 108/145]
+PlayCard 15 # CARD.PYRE (32336494) || Hand: [Pommel Strike+, Pyre+, Fight Me!, Dazed, Pommel Strike+, Dazed, Hemokinesis, Defend] Enemies: [Entomancer 108/145]
+PlayCard 1 # CARD.DEFEND_IRONCLAD (25172493) || Hand: [Pommel Strike+, Fight Me!, Dazed, Pommel Strike+, Dazed, Hemokinesis, Defend] Enemies: [Entomancer 108/145]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 10 # CARD.TORIC_TOUGHNESS (52964601) || Hand: [Rampage, Bash+, Toric Toughness+, Strike+, Shrug It Off] Enemies: [Entomancer 108/145]
+PlayCard 2 # CARD.SHRUG_IT_OFF (25225848) || Hand: [Rampage, Bash+, Strike+, Shrug It Off] Enemies: [Entomancer 108/145]
+PlayCard 8 1 # CARD.RAMPAGE (47878640) || Hand: [Rampage, Bash+, Strike+, Shrug It Off] Enemies: [Entomancer 108/145]
+PlayCard 7 1 # CARD.STRIKE_IRONCLAD (12776389) || Hand: [Bash+, Strike+, Shrug It Off] Enemies: [Entomancer 83/145]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 6 # CARD.DEFEND_IRONCLAD (16332679) || Hand: [Dazed, Dazed, Spite, Strike, Defend] Enemies: [Entomancer 65/145]
+UsePotion 1 # POTION.STABLE_SERUM || Hand: [Dazed, Dazed, Spite, Strike] Enemies: [Entomancer 65/145]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 10 # CARD.TORIC_TOUGHNESS (52964601) || Hand: [Spite, Strike, Dazed, Dazed, Not Yet, Toric Toughness+, Shrug It Off] Enemies: [Entomancer 65/145]
+PlayCard 9 # CARD.NOT_YET (28254577) || Hand: [Spite, Strike, Dazed, Dazed, Not Yet, Shrug It Off] Enemies: [Entomancer 65/145]
+PlayCard 2 # CARD.SHRUG_IT_OFF (25225848) || Hand: [Spite, Strike, Dazed, Dazed, Shrug It Off] Enemies: [Entomancer 65/145]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 16 1 # CARD.FIGHT_ME (22592998) || Hand: [Spite, Strike, Pommel Strike+, Fight Me!, Pommel Strike+, Shrug It Off, Defend, Strike+] Enemies: [Entomancer 65/145]
+PlayCard 14 1 # CARD.POMMEL_STRIKE (11049484) || Hand: [Spite, Strike, Pommel Strike+, Pommel Strike+, Shrug It Off, Defend, Strike+] Enemies: [Entomancer 55/145]
+PlayCard 17 1 # CARD.POMMEL_STRIKE (2010396) || Hand: [Spite, Strike, Pommel Strike+, Shrug It Off, Defend, Strike+, Dazed, Dazed] Enemies: [Entomancer 42/145]
+PlayCard 7 1 # CARD.STRIKE_IRONCLAD (12776389) || Hand: [Spite, Strike, Shrug It Off, Defend, Strike+, Dazed, Dazed, Bash+, Dazed] Enemies: [Entomancer 29/145]
+PlayCard 13 1 # CARD.SPITE (23597341) || Hand: [Spite, Strike, Shrug It Off, Defend, Dazed, Dazed, Bash+, Dazed] Enemies: [Entomancer 17/145]
+EndTurn # EndPlayerTurnAction for player 1 round 8
+PlayCard 6 # CARD.DEFEND_IRONCLAD (16332679) || Hand: [Dazed, Dazed, Dazed, Dazed, Defend] Enemies: [Entomancer 9/145]
+EndTurn # EndPlayerTurnAction for player 1 round 9
+PlayCard 8 1 # CARD.RAMPAGE (47878640) || Hand: [Dazed, Dazed, Dazed, Dazed, Rampage] Enemies: [Entomancer 9/145]
+ClaimReward 0 # GoldReward: 32
+ClaimReward 0 # GoldReward: 30
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 6
+OpenChest
+TakeChestRelic # Blood Vial
+NetPickRelicAction for player 1 index 0 || Hand: [Dazed, Dazed, Dazed, Dazed] Enemies: []
+MoveToMapCoord 6
+ChooseRestSiteOption SMITH
+SelectGridCard 
+ChooseRestSiteOption DIG
+MoveToMapCoord 6
+OpenShop
+BuyCardRemoval
+SelectGridCard 1
+OpenShop
+BuyPotion Dexterity Potion
+MoveToMapCoord 6
+UsePotion 0 # POTION.DEXTERITY_POTION || Hand: [Toric Toughness+, Hemokinesis, Defend, Rampage, Pommel Strike+] Enemies: [Decimillipede 40/40, Decimillipede 42/42, Decimillipede 46/46]
+PlayCard 0 # CARD.TORIC_TOUGHNESS (20316931) || Hand: [Toric Toughness+, Hemokinesis, Defend, Rampage, Pommel Strike+] Enemies: [Decimillipede 40/40, Decimillipede 42/42, Decimillipede 46/46]
+PlayCard 3 1 # CARD.RAMPAGE (47093212) || Hand: [Hemokinesis, Defend, Rampage, Pommel Strike+] Enemies: [Decimillipede 40/40, Decimillipede 42/42, Decimillipede 46/46]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 6 # CARD.UNMOVABLE (38322580) || Hand: [Royalties, Unmovable+, Strike+, Bash+, Defend] Enemies: [Decimillipede 28/40, Decimillipede 39/42, Decimillipede 40/46]
+PlayCard 9 # CARD.DEFEND_IRONCLAD (19873966) || Hand: [Royalties, Strike+, Bash+, Defend] Enemies: [Decimillipede 28/40, Decimillipede 39/42, Decimillipede 40/46]
+PlayCard 7 1 # CARD.STRIKE_IRONCLAD (9358907) || Hand: [Royalties, Strike+, Bash+] Enemies: [Decimillipede 28/40, Decimillipede 39/42, Decimillipede 40/46]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 10 # CARD.PYRE (44647974) || Hand: [Pyre+, Pommel Strike+, Fight Me!, Spite, Shrug It Off] Enemies: [Decimillipede 16/40, Decimillipede 36/42, Decimillipede 37/46]
+PlayCard 14 # CARD.SHRUG_IT_OFF (5169962) || Hand: [Pommel Strike+, Fight Me!, Spite, Shrug It Off] Enemies: [Decimillipede 16/40, Decimillipede 36/42, Decimillipede 37/46]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 11 1 # CARD.POMMEL_STRIKE (66287451) || Hand: [Shrug It Off, Strike+, Defend, Pommel Strike+, Pommel Strike+] Enemies: [Decimillipede 13/40, Decimillipede 30/42, Decimillipede 34/46]
+PlayCard 0 # CARD.TORIC_TOUGHNESS (20316931) || Hand: [Shrug It Off, Strike+, Defend, Pommel Strike+, Toric Toughness+, Royalties] Enemies: [Decimillipede 6/40, Decimillipede 30/42, Decimillipede 34/46]
+PlayCard 4 1 # CARD.POMMEL_STRIKE (21185730) || Hand: [Shrug It Off, Strike+, Defend, Pommel Strike+, Royalties] Enemies: [Decimillipede 6/40, Decimillipede 30/42, Decimillipede 34/46]
+PlayCard 2 # CARD.DEFEND_IRONCLAD (35058740) || Hand: [Shrug It Off, Strike+, Defend, Royalties, Not Yet, Bash+] Enemies: [Decimillipede 0/40, Decimillipede 30/42, Decimillipede 34/46]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 12 2 # CARD.FIGHT_ME (59716150) || Hand: [Rampage, Fight Me!, Spite, Shrug It Off, Defend] Enemies: [Decimillipede 0/40, Decimillipede 27/42, Decimillipede 28/46]
+PlayCard 13 2 # CARD.SPITE (574440) || Hand: [Rampage, Spite, Shrug It Off, Defend] Enemies: [Decimillipede 0/40, Decimillipede 21/42, Decimillipede 28/46]
+PlayCard 3 2 # CARD.RAMPAGE (47093212) || Hand: [Rampage, Shrug It Off, Defend] Enemies: [Decimillipede 0/40, Decimillipede 15/42, Decimillipede 28/46]
+PlayCard 14 # CARD.SHRUG_IT_OFF (5169962) || Hand: [Shrug It Off, Defend] Enemies: [Decimillipede 0/40, Decimillipede 3/42, Decimillipede 28/46]
+PlayCard 9 # CARD.DEFEND_IRONCLAD (19873966) || Hand: [Defend, Hemokinesis] Enemies: [Decimillipede 0/40, Decimillipede 3/42, Decimillipede 28/46]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 14 # CARD.SHRUG_IT_OFF (5169962) || Hand: [Hemokinesis, Shrug It Off, Rampage, Not Yet, Shrug It Off] Enemies: [Decimillipede 25/40, Decimillipede 0/42, Decimillipede 25/46]
+PlayCard 0 # CARD.TORIC_TOUGHNESS (20316931) || Hand: [Hemokinesis, Rampage, Not Yet, Shrug It Off, Toric Toughness+] Enemies: [Decimillipede 25/40, Decimillipede 0/42, Decimillipede 25/46]
+PlayCard 3 1 # CARD.RAMPAGE (47093212) || Hand: [Hemokinesis, Rampage, Not Yet, Shrug It Off] Enemies: [Decimillipede 25/40, Decimillipede 0/42, Decimillipede 25/46]
+PlayCard 16 # CARD.SHRUG_IT_OFF (16113771) || Hand: [Hemokinesis, Not Yet, Shrug It Off] Enemies: [Decimillipede 9/40, Decimillipede 0/42, Decimillipede 25/46]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 11 1 # CARD.POMMEL_STRIKE (66287451) || Hand: [Strike+, Bash+, Defend, Pommel Strike+, Fight Me!] Enemies: [Decimillipede 3/40, Decimillipede 25/42, Decimillipede 22/46]
+PlayCard 12 2 # CARD.FIGHT_ME (59716150) || Hand: [Strike+, Bash+, Defend, Fight Me!, Spite, Pommel Strike+] Enemies: [Decimillipede 0/40, Decimillipede 25/42, Decimillipede 22/46]
+PlayCard 4 2 # CARD.POMMEL_STRIKE (21185730) || Hand: [Strike+, Bash+, Defend, Spite, Pommel Strike+] Enemies: [Decimillipede 0/40, Decimillipede 9/42, Decimillipede 22/46]
+PlayCard 14 # CARD.SHRUG_IT_OFF (5169962) || Hand: [Strike+, Bash+, Defend, Spite, Royalties, Shrug It Off] Enemies: [Decimillipede 0/40, Decimillipede 0/42, Decimillipede 22/46]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 15 # CARD.NOT_YET (46529661) || Hand: [Shrug It Off, Not Yet, Rampage, Hemokinesis, Fight Me!] Enemies: [Decimillipede 0/40, Decimillipede 0/42, Decimillipede 16/46]
+PlayCard 3 3 # CARD.RAMPAGE (47093212) || Hand: [Shrug It Off, Rampage, Hemokinesis, Fight Me!] Enemies: [Decimillipede 0/40, Decimillipede 0/42, Decimillipede 16/46]
+ClaimReward 0 # GoldReward: 28
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 6
+OpenShop
+BuyCardRemoval
+SelectGridCard 1
+BuyRelic Bag of Preparation
+MoveToMapCoord 6
+ChooseEventOption 0 # COLORFUL_PHILOSOPHERS.pages.INITIAL.options.NECROBINDER
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+ClaimReward 2 # CardReward
+TakeCard 0 # Neurosurge
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 6
+ChooseRestSiteOption SMITH
+SelectGridCard 9
+MoveToMapCoord 3
+UsePotion 0 # POTION.STRENGTH_POTION || Hand: [Strike+, Not Yet, Toric Toughness+, Unmovable+, Hemokinesis, Neurosurge+, Defend] Enemies: [The Insatiable 321/321]
+PlayCard 5 # CARD.NEUROSURGE (14025790) || Hand: [Strike+, Not Yet, Toric Toughness+, Unmovable+, Hemokinesis, Neurosurge+, Defend] Enemies: [The Insatiable 321/321]
+PlayCard 3 # CARD.UNMOVABLE (56511463) || Hand: [Strike+, Not Yet, Toric Toughness+, Unmovable+, Hemokinesis, Defend, Pommel Strike+, Rampage] Enemies: [The Insatiable 321/321]
+PlayCard 2 # CARD.TORIC_TOUGHNESS (43561753) || Hand: [Strike+, Not Yet, Toric Toughness+, Hemokinesis, Defend, Pommel Strike+, Rampage] Enemies: [The Insatiable 321/321]
+PlayCard 7 1 # CARD.POMMEL_STRIKE (62347197) || Hand: [Strike+, Not Yet, Hemokinesis, Defend, Pommel Strike+, Rampage] Enemies: [The Insatiable 321/321]
+PlayCard 10 # CARD.ROYALTIES (18406267) || Hand: [Strike+, Not Yet, Hemokinesis, Defend, Rampage, Fight Me!, Royalties] Enemies: [The Insatiable 309/321]
+PlayCard 9 1 # CARD.FIGHT_ME (16958221) || Hand: [Strike+, Not Yet, Hemokinesis, Defend, Rampage, Fight Me!] Enemies: [The Insatiable 309/321]
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 13 # CARD.SHRUG_IT_OFF (63504959) || Hand: [Shrug It Off, Frantic Escape, Spite, Shrug It Off, Frantic Escape] Enemies: [The Insatiable 295/321]
+PlayCard 19 # CARD.FRANTIC_ESCAPE (30178481) || Hand: [Shrug It Off, Frantic Escape, Spite, Frantic Escape, Bash+] Enemies: [The Insatiable 295/321]
+PlayCard 17 # CARD.FRANTIC_ESCAPE (14457150) || Hand: [Shrug It Off, Frantic Escape, Spite, Bash+] Enemies: [The Insatiable 295/321]
+PlayCard 12 1 # CARD.SPITE (14512647) || Hand: [Shrug It Off, Spite, Bash+] Enemies: [The Insatiable 295/321]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 16 # CARD.PYRE (57107827) || Hand: [Pommel Strike+, Pyre+, Frantic Escape, Frantic Escape, Strike+] Enemies: [The Insatiable 279/321]
+PlayCard 15 1 # CARD.POMMEL_STRIKE (43628016) || Hand: [Pommel Strike+, Frantic Escape, Frantic Escape, Strike+] Enemies: [The Insatiable 279/321]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 2 # CARD.TORIC_TOUGHNESS (43561753) || Hand: [Defend, Rampage, Toric Toughness+, Fight Me!, Spite, Pommel Strike+, Frantic Escape, Shrug It Off] Enemies: [The Insatiable 261/321]
+PlayCard 9 1 # CARD.FIGHT_ME (16958221) || Hand: [Defend, Rampage, Fight Me!, Spite, Pommel Strike+, Frantic Escape, Shrug It Off] Enemies: [The Insatiable 261/321]
+PlayCard 12 1 # CARD.SPITE (14512647) || Hand: [Defend, Rampage, Spite, Pommel Strike+, Frantic Escape, Shrug It Off] Enemies: [The Insatiable 241/321]
+PlayCard 7 1 # CARD.POMMEL_STRIKE (62347197) || Hand: [Defend, Rampage, Pommel Strike+, Frantic Escape, Shrug It Off] Enemies: [The Insatiable 228/321]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 13 # CARD.SHRUG_IT_OFF (63504959) || Hand: [Frantic Escape, Frantic Escape, Not Yet, Strike+, Shrug It Off] Enemies: [The Insatiable 210/321]
+PlayCard 1 # CARD.NOT_YET (42122897) || Hand: [Frantic Escape, Frantic Escape, Not Yet, Strike+, Defend] Enemies: [The Insatiable 210/321]
+PlayCard 17 # CARD.FRANTIC_ESCAPE (14457150) || Hand: [Frantic Escape, Frantic Escape, Strike+, Defend] Enemies: [The Insatiable 210/321]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 14 1 # CARD.BASH (34673719) || Hand: [Bash+, Fight Me!, Frantic Escape, Frantic Escape, Pommel Strike+] Enemies: [The Insatiable 204/321]
+PlayCard 15 1 # CARD.POMMEL_STRIKE (43628016) || Hand: [Fight Me!, Frantic Escape, Frantic Escape, Pommel Strike+] Enemies: [The Insatiable 186/321]
+PlayCard 2 # CARD.TORIC_TOUGHNESS (43561753) || Hand: [Fight Me!, Frantic Escape, Frantic Escape, Pommel Strike+, Toric Toughness+] Enemies: [The Insatiable 159/321]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 4 1 # CARD.HEMOKINESIS (38841123) || Hand: [Spite, Hemokinesis, Frantic Escape, Frantic Escape, Shrug It Off] Enemies: [The Insatiable 153/321]
+PlayCard 12 1 # CARD.SPITE (14512647) || Hand: [Spite, Frantic Escape, Frantic Escape, Shrug It Off] Enemies: [The Insatiable 119/321]
+PlayCard 11 # CARD.SHRUG_IT_OFF (31438678) || Hand: [Frantic Escape, Frantic Escape, Shrug It Off] Enemies: [The Insatiable 81/321]
+PlayCard 8 1 # CARD.RAMPAGE (24253868) || Hand: [Frantic Escape, Frantic Escape, Rampage] Enemies: [The Insatiable 81/321]
+PlayCard 19 # CARD.FRANTIC_ESCAPE (30178481) || Hand: [Frantic Escape, Frantic Escape] Enemies: [The Insatiable 56/321]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 7 1 # CARD.POMMEL_STRIKE (62347197) || Hand: [Pommel Strike+, Defend, Frantic Escape, Frantic Escape, Bash+] Enemies: [The Insatiable 53/321]
+PlayCard 14 1 # CARD.BASH (34673719) || Hand: [Defend, Frantic Escape, Frantic Escape, Bash+, Frantic Escape, Frantic Escape] Enemies: [The Insatiable 26/321]
+ClaimReward 0 # GoldReward: 75
+ClaimReward 0 # GoldReward: 30
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Offering
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Defend, Frantic Escape, Frantic Escape, Frantic Escape, Frantic Escape] Enemies: []
+MoveToMapCoord 3
+ChooseEventOption 0 # VAKUU.pages.INITIAL.options.WHISPERING_EARRING
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 4
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 14 # CARD.UNMOVABLE (36190236) || Hand: [Strike+, Pommel Strike+, Shrug It Off, Unmovable+, Defend] Enemies: [Devoted Sculptor 79/162]
+PlayCard 8 1 # CARD.POMMEL_STRIKE (9061338) || Hand: [Strike+, Pommel Strike+, Shrug It Off, Defend] Enemies: [Devoted Sculptor 79/162]
+PlayCard 12 1 # CARD.FIGHT_ME (60099116) || Hand: [Strike+, Shrug It Off, Defend, Shrug It Off, Fight Me!] Enemies: [Devoted Sculptor 64/162]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 16 # CARD.PYRE (45727984) || Hand: [Bash+, Pommel Strike+, Pyre+, Not Yet, Toric Toughness+] Enemies: [Devoted Sculptor 47/162]
+PlayCard 13 1 # CARD.POMMEL_STRIKE (4021137) || Hand: [Bash+, Pommel Strike+, Not Yet, Toric Toughness+] Enemies: [Devoted Sculptor 47/162]
+PlayCard 0 1 # CARD.RAMPAGE (35392397) || Hand: [Bash+, Not Yet, Toric Toughness+, Spite, Rampage] Enemies: [Devoted Sculptor 28/162]
+PlayCard 6 1 # CARD.SPITE (34080552) || Hand: [Bash+, Not Yet, Toric Toughness+, Spite] Enemies: [Devoted Sculptor 3/162]
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # GoldReward: 30
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Pommel Strike+
+MoveToMapCoord 4
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 17 # CARD.UNMOVABLE (49847683) || Hand: [Unmovable+, Pommel Strike+, Rampage, Pyre+, Toric Toughness+] Enemies: [Scroll of Biting 20/38, Scroll of Biting 37/37]
+PlayCard 6 # CARD.TORIC_TOUGHNESS (31364993) || Hand: [Pommel Strike+, Rampage, Pyre+, Toric Toughness+] Enemies: [Scroll of Biting 20/38, Scroll of Biting 37/37]
+PlayCard 18 2 # CARD.POMMEL_STRIKE (45975967) || Hand: [Pommel Strike+, Rampage, Pyre+] Enemies: [Scroll of Biting 20/38, Scroll of Biting 37/37]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 0 2 # CARD.SPITE (36453625) || Hand: [Spite, Fight Me!, Bash+, Defend, Hemokinesis] Enemies: [Scroll of Biting 4/38, Scroll of Biting 31/37]
+PlayCard 7 3 # CARD.FIGHT_ME (13849486) || Hand: [Fight Me!, Bash+, Defend, Hemokinesis] Enemies: [Scroll of Biting 31/37]
+PlayCard 13 3 # CARD.BASH (20147416) || Hand: [Bash+, Defend, Hemokinesis] Enemies: [Scroll of Biting 15/37]
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+ChooseEventOption 2 # RELIC_TRADER.pages.INITIAL.options.BOTTOM
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+OpenShop
+BuyCardRemoval
+SelectGridCard 1
+MoveToMapCoord 2
+ChooseEventOption 1 # SYMBIOTE.pages.INITIAL.options.KILL_WITH_FIRE
+SelectGridCard 0
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+ChooseRestSiteOption DIG
+MoveToMapCoord 1
+OpenChest
+TakeChestRelic # Orichalcum
+NetPickRelicAction for player 1 index 0 || Hand: [Defend, Hemokinesis] Enemies: []
+MoveToMapCoord 1
+ChooseRestSiteOption DIG
+MoveToMapCoord 2
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 9 # CARD.TORIC_TOUGHNESS (29718009) || Hand: [Shrug It Off, Pommel Strike+, Pommel Strike+, Pyre+, Toric Toughness+] Enemies: [Mecha Knight 234/300]
+PlayCard 10 # CARD.PYRE (66135494) || Hand: [Shrug It Off, Pommel Strike+, Pommel Strike+, Pyre+] Enemies: [Mecha Knight 234/300]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 16 1 # CARD.FIGHT_ME (53847898) || Hand: [Burn, Burn, Burn, Burn, Spite, Bash+, Pommel Strike+, Fight Me!, Shrug It Off] Enemies: [Mecha Knight 234/300]
+PlayCard 8 1 # CARD.POMMEL_STRIKE (48041243) || Hand: [Burn, Burn, Burn, Burn, Spite, Bash+, Pommel Strike+, Shrug It Off] Enemies: [Mecha Knight 222/300]
+PlayCard 4 1 # CARD.RAMPAGE (35540959) || Hand: [Burn, Burn, Burn, Burn, Spite, Bash+, Shrug It Off, Rampage, Shrug It Off] Enemies: [Mecha Knight 208/300]
+PlayCard 13 1 # CARD.BASH (28611242) || Hand: [Burn, Burn, Burn, Burn, Spite, Bash+, Shrug It Off, Shrug It Off] Enemies: [Mecha Knight 190/300]
+PlayCard 14 1 # CARD.SPITE (56174589) || Hand: [Burn, Burn, Burn, Burn, Spite, Shrug It Off, Shrug It Off] Enemies: [Mecha Knight 176/300]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 8 1 # CARD.POMMEL_STRIKE (48041243) || Hand: [Hemokinesis, Burn, Shrug It Off, Pommel Strike+, Shrug It Off] Enemies: [Mecha Knight 167/300]
+PlayCard 5 # CARD.SHRUG_IT_OFF (51433178) || Hand: [Hemokinesis, Burn, Shrug It Off, Shrug It Off, Shrug It Off, Burn] Enemies: [Mecha Knight 167/300]
+PlayCard 3 1 # CARD.POMMEL_STRIKE (48688238) || Hand: [Hemokinesis, Burn, Shrug It Off, Shrug It Off, Burn, Pommel Strike+] Enemies: [Mecha Knight 167/300]
+PlayCard 9 # CARD.TORIC_TOUGHNESS (29718009) || Hand: [Hemokinesis, Burn, Shrug It Off, Shrug It Off, Burn, Bash+, Toric Toughness+] Enemies: [Mecha Knight 154/300]
+PlayCard 17 1 # CARD.HEMOKINESIS (14869037) || Hand: [Hemokinesis, Burn, Shrug It Off, Shrug It Off, Burn, Bash+] Enemies: [Mecha Knight 154/300]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 16 1 # CARD.FIGHT_ME (53847898) || Hand: [Burn, Fight Me!, Pommel Strike+, Rampage, Burn] Enemies: [Mecha Knight 132/300]
+PlayCard 7 1 # CARD.POMMEL_STRIKE (5337915) || Hand: [Burn, Pommel Strike+, Rampage, Burn] Enemies: [Mecha Knight 114/300]
+PlayCard 4 1 # CARD.RAMPAGE (35540959) || Hand: [Burn, Rampage, Burn, Spite, Hemokinesis] Enemies: [Mecha Knight 97/300]
+PlayCard 14 1 # CARD.SPITE (56174589) || Hand: [Burn, Burn, Spite, Hemokinesis] Enemies: [Mecha Knight 71/300]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 8 1 # CARD.POMMEL_STRIKE (48041243) || Hand: [Burn, Burn, Burn, Burn, Bash+, Pommel Strike+, Shrug It Off, Pommel Strike+, Shrug It Off] Enemies: [Mecha Knight 59/300]
+PlayCard 3 1 # CARD.POMMEL_STRIKE (48688238) || Hand: [Burn, Burn, Burn, Burn, Bash+, Shrug It Off, Pommel Strike+, Shrug It Off, Fight Me!, Burn] Enemies: [Mecha Knight 42/300]
+PlayCard 16 1 # CARD.FIGHT_ME (53847898) || Hand: [Burn, Burn, Burn, Burn, Bash+, Shrug It Off, Shrug It Off, Fight Me!, Burn, Toric Toughness+] Enemies: [Mecha Knight 25/300]
+PlayCard 13 1 # CARD.BASH (28611242) || Hand: [Burn, Burn, Burn, Burn, Bash+, Shrug It Off, Shrug It Off, Burn, Toric Toughness+] Enemies: [Mecha Knight 1/300]
+ClaimReward 0 # GoldReward: 27
+ClaimReward 0 # GoldReward: 30
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 1
+ChooseRestSiteOption SMITH
+SelectGridCard 8
+MoveToMapCoord 1
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 12 # CARD.UNMOVABLE (20551768) || Hand: [Shrug It Off, Toric Toughness+, Neurosurge+, Unmovable+, Pommel Strike+] Enemies: [Owl Magistrate 231/234]
+PlayCard 10 # CARD.TORIC_TOUGHNESS (40021941) || Hand: [Shrug It Off, Toric Toughness+, Neurosurge+, Pommel Strike+] Enemies: [Owl Magistrate 231/234]
+PlayCard 11 # CARD.NEUROSURGE (24653151) || Hand: [Shrug It Off, Neurosurge+, Pommel Strike+] Enemies: [Owl Magistrate 231/234]
+PlayCard 14 1 # CARD.RAMPAGE (54080483) || Hand: [Shrug It Off, Pommel Strike+, Rampage, Royalties] Enemies: [Owl Magistrate 231/234]
+PlayCard 15 # CARD.ROYALTIES (16962303) || Hand: [Shrug It Off, Pommel Strike+, Royalties] Enemies: [Owl Magistrate 213/234]
+PlayCard 13 1 # CARD.POMMEL_STRIKE (50748185) || Hand: [Shrug It Off, Pommel Strike+] Enemies: [Owl Magistrate 213/234]
+PlayCard 16 # CARD.OFFERING (18443007) || Hand: [Shrug It Off, Offering+, Spite] Enemies: [Owl Magistrate 202/234]
+PlayCard 17 1 # CARD.SPITE (31769339) || Hand: [Shrug It Off, Spite, Pommel Strike+, Toric Toughness+, Pommel Strike+, Pommel Strike+, Rampage, Hemokinesis, Fight Me!, Pyre+] Enemies: [Owl Magistrate 202/234]
+PlayCard 8 # CARD.PYRE (28663250) || Hand: [Shrug It Off, Pommel Strike+, Toric Toughness+, Pommel Strike+, Pommel Strike+, Rampage, Hemokinesis, Fight Me!, Pyre+] Enemies: [Owl Magistrate 190/234]
+PlayCard 10 # CARD.TORIC_TOUGHNESS (40021941) || Hand: [Shrug It Off, Pommel Strike+, Toric Toughness+, Pommel Strike+, Pommel Strike+, Rampage, Hemokinesis, Fight Me!] Enemies: [Owl Magistrate 190/234]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 6 1 # CARD.FIGHT_ME (50064136) || Hand: [Shrug It Off, Bash+, Shrug It Off, Fight Me!, Pommel Strike+] Enemies: [Owl Magistrate 172/234]
+PlayCard 13 1 # CARD.POMMEL_STRIKE (50748185) || Hand: [Shrug It Off, Bash+, Shrug It Off, Pommel Strike+] Enemies: [Owl Magistrate 160/234]
+PlayCard 2 1 # CARD.BASH (64211614) || Hand: [Shrug It Off, Bash+, Shrug It Off, Spite, Shrug It Off] Enemies: [Owl Magistrate 146/234]
+PlayCard 17 1 # CARD.SPITE (31769339) || Hand: [Shrug It Off, Shrug It Off, Spite, Shrug It Off] Enemies: [Owl Magistrate 132/234]
+PlayCard 9 # CARD.SHRUG_IT_OFF (56642665) || Hand: [Shrug It Off, Shrug It Off, Shrug It Off] Enemies: [Owl Magistrate 119/234]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 10 # CARD.TORIC_TOUGHNESS (40021941) || Hand: [Rampage, Toric Toughness+, Pommel Strike+, Pommel Strike+, Pommel Strike+] Enemies: [Owl Magistrate 119/234]
+PlayCard 4 1 # CARD.POMMEL_STRIKE (33758255) || Hand: [Rampage, Pommel Strike+, Pommel Strike+, Pommel Strike+] Enemies: [Owl Magistrate 119/234]
+PlayCard 7 1 # CARD.POMMEL_STRIKE (47924048) || Hand: [Rampage, Pommel Strike+, Pommel Strike+, Shrug It Off, Hemokinesis] Enemies: [Owl Magistrate 109/234]
+PlayCard 13 1 # CARD.POMMEL_STRIKE (50748185) || Hand: [Rampage, Pommel Strike+, Shrug It Off, Hemokinesis, Fight Me!, Bash+] Enemies: [Owl Magistrate 99/234]
+PlayCard 1 # CARD.SHRUG_IT_OFF (7134623) || Hand: [Rampage, Shrug It Off, Hemokinesis, Fight Me!, Bash+, Spite, Shrug It Off] Enemies: [Owl Magistrate 89/234]
+PlayCard 17 1 # CARD.SPITE (31769339) || Hand: [Rampage, Shrug It Off, Hemokinesis, Fight Me!, Bash+, Spite, Shrug It Off] Enemies: [Owl Magistrate 89/234]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 4 1 # CARD.POMMEL_STRIKE (33758255) || Hand: [Pommel Strike+, Fight Me!, Shrug It Off, Bash+, Hemokinesis] Enemies: [Owl Magistrate 80/234]
+PlayCard 7 1 # CARD.POMMEL_STRIKE (47924048) || Hand: [Fight Me!, Shrug It Off, Bash+, Hemokinesis, Pommel Strike+, Rampage] Enemies: [Owl Magistrate 59/234]
+PlayCard 10 # CARD.TORIC_TOUGHNESS (40021941) || Hand: [Fight Me!, Shrug It Off, Bash+, Hemokinesis, Rampage, Toric Toughness+, Spite] Enemies: [Owl Magistrate 38/234]
+PlayCard 14 1 # CARD.RAMPAGE (54080483) || Hand: [Fight Me!, Shrug It Off, Bash+, Hemokinesis, Rampage, Spite] Enemies: [Owl Magistrate 38/234]
+PlayCard 17 1 # CARD.SPITE (31769339) || Hand: [Fight Me!, Shrug It Off, Bash+, Hemokinesis, Spite] Enemies: [Owl Magistrate 11/234]
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # GoldReward: 30
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 1
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 3 2 # CARD.POMMEL_STRIKE (19194534) || Hand: [Shrug It Off, Shrug It Off, Pommel Strike+, Rampage, Pommel Strike+] Enemies: [Flail Knight 34/101, Spectral Knight 93/93, Magi Knight 79/82]
+UsePotion 2 # POTION.FLEX_POTION || Hand: [Shrug It Off, Shrug It Off, Rampage, Pommel Strike+, Bash+, Unmovable+] Enemies: [Flail Knight 34/101, Spectral Knight 82/93, Magi Knight 79/82]
+PlayCard 16 2 # CARD.POMMEL_STRIKE (44208191) || Hand: [Shrug It Off, Shrug It Off, Rampage, Pommel Strike+, Bash+, Unmovable+] Enemies: [Flail Knight 34/101, Spectral Knight 82/93, Magi Knight 79/82]
+PlayCard 11 2 # CARD.POMMEL_STRIKE (9735960) || Hand: [Shrug It Off, Shrug It Off, Rampage, Bash+, Unmovable+, Hemokinesis, Pommel Strike+] Enemies: [Flail Knight 34/101, Spectral Knight 66/93, Magi Knight 79/82]
+UsePotion 0 # POTION.ATTACK_POTION || Hand: [Shrug It Off, Shrug It Off, Rampage, Bash+, Unmovable+, Hemokinesis, Fight Me!, Not Yet] Enemies: [Flail Knight 34/101, Spectral Knight 50/93, Magi Knight 79/82]
+SelectCardFromScreen 1
+PlayCard 18 2 # CARD.BLUDGEON (5777169) || Hand: [Shrug It Off, Shrug It Off, Rampage, Bash+, Unmovable+, Hemokinesis, Fight Me!, Not Yet, Bludgeon] Enemies: [Flail Knight 34/101, Spectral Knight 50/93, Magi Knight 79/82]
+PlayCard 7 2 # CARD.RAMPAGE (39115078) || Hand: [Shrug It Off, Shrug It Off, Rampage, Bash+, Unmovable+, Hemokinesis, Fight Me!, Not Yet] Enemies: [Flail Knight 34/101, Spectral Knight 12/93, Magi Knight 79/82]
+PlayCard 17 # CARD.UNMOVABLE (62329405) || Hand: [Shrug It Off, Shrug It Off, Bash+, Unmovable+, Hemokinesis, Fight Me!, Not Yet] Enemies: [Flail Knight 34/101, Magi Knight 79/82]
+PlayCard 1 # CARD.SHRUG_IT_OFF (34205653)
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 7 1 # CARD.RAMPAGE (39115078) || Hand: [Shrug It Off, Spite, Shrug It Off, Rampage, Not Yet] Enemies: [Flail Knight 31/101, Magi Knight 79/82]
+PlayCard 1 # CARD.SHRUG_IT_OFF (34205653) || Hand: [Shrug It Off, Spite, Shrug It Off, Not Yet] Enemies: [Flail Knight 1/101, Magi Knight 79/82]
+PlayCard 10 1 # CARD.SPITE (60734096) || Hand: [Shrug It Off, Spite, Not Yet, Pommel Strike] Enemies: [Flail Knight 1/101, Magi Knight 79/82]
+PlayCard 3 3 # CARD.POMMEL_STRIKE (19194534) || Hand: [Shrug It Off, Not Yet, Pommel Strike] Enemies: [Magi Knight 79/82]
+PlayCard 11 3 # CARD.POMMEL_STRIKE (9735960) || Hand: [Shrug It Off, Not Yet, Pommel Strike] Enemies: [Magi Knight 69/82]
+PlayCard 8 3 # CARD.BASH (16491389) || Hand: [Shrug It Off, Not Yet, Bash] Enemies: [Magi Knight 59/82]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 16 3 # CARD.POMMEL_STRIKE (44208191) || Hand: [Hemokinesis, Shrug It Off, Bludgeon, Pommel Strike, Toric Toughness] Enemies: [Magi Knight 47/82]
+PlayCard 14 3 # CARD.FIGHT_ME (51084554) || Hand: [Hemokinesis, Shrug It Off, Bludgeon, Toric Toughness, Fight Me!] Enemies: [Magi Knight 32/82]
+PlayCard 18 3 # CARD.BLUDGEON (5777169) || Hand: [Hemokinesis, Shrug It Off, Bludgeon, Toric Toughness] Enemies: [Magi Knight 14/82]
+ClaimReward 0 # GoldReward: 26
+ClaimReward 0 # GoldReward: 30
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 0
+ChooseRestSiteOption DIG
+MoveToMapCoord 3
+UsePotion 1 # POTION.LIQUID_BRONZE || Hand: [Hemokinesis, Shrug It Off, Toric Toughness] Enemies: []
+EndTurn # EndPlayerTurnAction for player 1 round 1
+PlayCard 2 1 # CARD.HEMOKINESIS (8813675) || Hand: [Bash+, Toric Toughness+, Fight Me!, Hemokinesis, Spite] Enemies: [Doormaker 489/489]
+PlayCard 10 1 # CARD.SPITE (66329283) || Hand: [Bash+, Toric Toughness+, Fight Me!, Spite] Enemies: [Doormaker 473/489]
+PlayCard 15 1 # CARD.FIGHT_ME (3206040) || Hand: [Bash+, Toric Toughness+, Fight Me!] Enemies: [Doormaker 461/489]
+EndTurn # EndPlayerTurnAction for player 1 round 2
+PlayCard 9 # CARD.SHRUG_IT_OFF (29739541) || Hand: [Pommel Strike+, Rampage, Pyre+, Royalties, Shrug It Off] Enemies: [Doormaker 443/489]
+PlayCard 8 # CARD.PYRE (18217474) || Hand: [Pommel Strike+, Rampage, Pyre+, Royalties] Enemies: [Doormaker 443/489]
+PlayCard 17 # CARD.ROYALTIES (58362720) || Hand: [Pommel Strike+, Rampage, Royalties] Enemies: [Doormaker 443/489]
+EndTurn # EndPlayerTurnAction for player 1 round 3
+PlayCard 11 1 # CARD.POMMEL_STRIKE (60092635) || Hand: [Shrug It Off, Pommel Strike+, Pommel Strike+, Shrug It Off, Bash+] Enemies: [Doormaker 437/489]
+PlayCard 6 # CARD.SHRUG_IT_OFF (45792654) || Hand: [Shrug It Off, Pommel Strike+, Shrug It Off, Bash+, Pommel Strike+, Rampage] Enemies: [Doormaker 423/489]
+PlayCard 14 # CARD.TORIC_TOUGHNESS (52552009) || Hand: [Shrug It Off, Pommel Strike+, Bash+, Pommel Strike+, Rampage, Toric Toughness+] Enemies: [Doormaker 423/489]
+EndTurn # EndPlayerTurnAction for player 1 round 4
+PlayCard 5 # CARD.SHRUG_IT_OFF (49827315) || Hand: [Shrug It Off, Shrug It Off, Bash+, Rampage, Toric Toughness+] Enemies: [Doormaker 411/489]
+EndTurn # EndPlayerTurnAction for player 1 round 5
+PlayCard 13 1 # CARD.RAMPAGE (35665273) || Hand: [Pommel Strike+, Shrug It Off, Pommel Strike+, Pommel Strike+, Rampage] Enemies: [Doormaker 405/489]
+PlayCard 6 # CARD.SHRUG_IT_OFF (45792654) || Hand: [Pommel Strike+, Shrug It Off, Pommel Strike+, Pommel Strike+] Enemies: [Doormaker 392/489]
+PlayCard 11 1 # CARD.POMMEL_STRIKE (60092635) || Hand: [Pommel Strike+, Pommel Strike+, Pommel Strike+] Enemies: [Doormaker 392/489]
+PlayCard 3 1 # CARD.POMMEL_STRIKE (12214214) || Hand: [Pommel Strike+, Pommel Strike+] Enemies: [Doormaker 378/489]
+PlayCard 16 1 # CARD.POMMEL_STRIKE (28854368) || Hand: [Pommel Strike+] Enemies: [Doormaker 364/489]
+EndTurn # EndPlayerTurnAction for player 1 round 6
+PlayCard 14 # CARD.TORIC_TOUGHNESS (52552009) || Hand: [Bash+, Toric Toughness+, Shrug It Off, Pommel Strike+, Shrug It Off] Enemies: [Doormaker 344/489]
+PlayCard 7 1 # CARD.BASH (9480704) || Hand: [Bash+, Shrug It Off, Pommel Strike+, Shrug It Off] Enemies: [Doormaker 344/489]
+EndTurn # EndPlayerTurnAction for player 1 round 7
+PlayCard 14 # CARD.TORIC_TOUGHNESS (52552009) || Hand: [Pommel Strike+, Rampage, Pommel Strike+, Bash+, Toric Toughness+] Enemies: [Doormaker 318/489]
+PlayCard 7 1 # CARD.BASH (9480704) || Hand: [Pommel Strike+, Rampage, Pommel Strike+, Bash+] Enemies: [Doormaker 318/489]
+EndTurn # EndPlayerTurnAction for player 1 round 8
+PlayCard 13 1 # CARD.RAMPAGE (35665273) || Hand: [Shrug It Off, Pommel Strike+, Shrug It Off, Rampage, Pommel Strike+] Enemies: [Doormaker 291/489]
+PlayCard 3 1 # CARD.POMMEL_STRIKE (12214214) || Hand: [Shrug It Off, Pommel Strike+, Shrug It Off, Pommel Strike+] Enemies: [Doormaker 264/489]
+PlayCard 11 1 # CARD.POMMEL_STRIKE (60092635) || Hand: [Shrug It Off, Pommel Strike+, Shrug It Off] Enemies: [Doormaker 243/489]
+PlayCard 6 # CARD.SHRUG_IT_OFF (45792654) || Hand: [Shrug It Off, Shrug It Off] Enemies: [Doormaker 222/489]
+PlayCard 9 # CARD.SHRUG_IT_OFF (29739541) || Hand: [Shrug It Off] Enemies: [Doormaker 222/489]
+EndTurn # EndPlayerTurnAction for player 1 round 9
+PlayCard 6 # CARD.SHRUG_IT_OFF (45792654) || Hand: [Pommel Strike+, Shrug It Off, Rampage, Pommel Strike+, Shrug It Off] Enemies: [Doormaker 216/489]
+PlayCard 16 1 # CARD.POMMEL_STRIKE (28854368) || Hand: [Pommel Strike+, Rampage, Pommel Strike+, Shrug It Off, Pommel Strike+] Enemies: [Doormaker 216/489]
+PlayCard 11 1 # CARD.POMMEL_STRIKE (60092635) || Hand: [Rampage, Pommel Strike+, Shrug It Off, Pommel Strike+, Shrug It Off] Enemies: [Doormaker 195/489]
+EndTurn # EndPlayerTurnAction for player 1 round 10
+PlayCard 9 # CARD.SHRUG_IT_OFF (29739541) || Hand: [Pommel Strike+, Pommel Strike+, Shrug It Off, Pommel Strike+, Rampage] Enemies: [Doormaker 162/489]
+PlayCard 6 # CARD.SHRUG_IT_OFF (45792654) || Hand: [Pommel Strike+, Pommel Strike+, Pommel Strike+, Rampage, Shrug It Off] Enemies: [Doormaker 162/489]
+EndTurn # EndPlayerTurnAction for player 1 round 11
+PlayCard 16 1 # CARD.POMMEL_STRIKE (28854368) || Hand: [Rampage, Pommel Strike+, Pommel Strike+, Pommel Strike+] Enemies: [Doormaker 156/489]
+PlayCard 3 1 # CARD.POMMEL_STRIKE (12214214) || Hand: [Rampage, Pommel Strike+, Pommel Strike+] Enemies: [Doormaker 135/489]
+PlayCard 11 1 # CARD.POMMEL_STRIKE (60092635) || Hand: [Rampage, Pommel Strike+] Enemies: [Doormaker 114/489]
+PlayCard 13 1 # CARD.RAMPAGE (35665273) || Hand: [Rampage] Enemies: [Doormaker 93/489]
+EndTurn # EndPlayerTurnAction for player 1 round 12
+PlayCard 16 1 # CARD.POMMEL_STRIKE (28854368) || Hand: [Pommel Strike+, Pommel Strike+, Pommel Strike+, Rampage] Enemies: [Doormaker 53/489]
+PlayCard 3 1 # CARD.POMMEL_STRIKE (12214214) || Hand: [Pommel Strike+, Pommel Strike+, Rampage] Enemies: [Doormaker 39/489]
+PlayCard 13 1 # CARD.RAMPAGE (35665273) || Hand: [Pommel Strike+, Rampage, Pommel Strike+] Enemies: [Doormaker 25/489]
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Pommel Strike+, Pommel Strike+] Enemies: []
+ChooseEventOption 0 # THE_ARCHITECT.dialogue.0
+ChooseEventOption 0 # THE_ARCHITECT.dialogue.1
+ChooseEventOption 0 # PROCEED
+ProceedToNextAct

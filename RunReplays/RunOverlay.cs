@@ -94,9 +94,6 @@ internal static class RunOverlay
 
     internal static void InitForRun()
     {
-        // Show automatically for replays, hide for normal runs.
-        OverlayVisible = ReplayEngine.IsActive;
-
         // Unsubscribe stale handlers from the previous run.
         PlayerActionBuffer.EntryRecorded -= OnEntryRecorded;
         ReplayEngine.ContextChanged      -= OnContextChanged;

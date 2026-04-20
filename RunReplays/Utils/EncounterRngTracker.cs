@@ -82,13 +82,15 @@ internal static class RngLog
 [HarmonyPatch(typeof(ActModel), nameof(ActModel.GetRandomList))]
 public static class GetRandomListTracker
 {
+    // First arg changed from `string seed` to `Rng rng` in the game update.
     [HarmonyPrefix]
-    public static void Prefix(string seed, UnlockState unlockState, bool isMultiplayer)
+    public static void Prefix(Rng rng, UnlockState unlockState, bool isMultiplayer)
     {
         RngLog.EnsureInitialized();
         bool isAll = ReferenceEquals(unlockState, UnlockState.all);
-        var msg = $"[EncounterTracker] GetRandomList called — seed='{seed}', isMultiplayer={isMultiplayer}, unlockState.isAll={isAll}, epochCount={unlockState.EpochUnlockCount()}";
+        var msg = $"[EncounterTracker] GetRandomList called — rng.Seed={rng.Seed}, rng.Counter={rng.Counter}, isMultiplayer={isMultiplayer}, unlockState.isAll={isAll}, epochCount={unlockState.EpochUnlockCount()}";
         RngLog.Write(msg);
+        DiagnosticLog.Write("Rng", msg);
     }
 }
 
@@ -99,8 +101,19 @@ public static class GetRandomListTracker
 [HarmonyPatch(typeof(MegaCrit.Sts2.Core.Nodes.NGame), nameof(MegaCrit.Sts2.Core.Nodes.NGame.StartNewSingleplayerRun))]
 public static class StartRunActOverride
 {
+    // Signature changed: added `GameMode gameMode` at position 6 and
+    // `int ascensionLevel` at position 7 (was DateTimeOffset? at tail).
+    // Harmony binds Prefix params by name — extra game params that we don't
+    // list are ignored, but any param we do list must match exactly.
     [HarmonyPrefix]
-    public static void Prefix(ref System.Collections.Generic.IReadOnlyList<ActModel> acts, ref string seed)
+    public static void Prefix(
+        MegaCrit.Sts2.Core.Models.CharacterModel character,
+        bool shouldSave,
+        ref System.Collections.Generic.IReadOnlyList<ActModel> acts,
+        System.Collections.Generic.IReadOnlyList<MegaCrit.Sts2.Core.Models.ModifierModel> modifiers,
+        ref string seed,
+        MegaCrit.Sts2.Core.Runs.GameMode gameMode,
+        int ascensionLevel)
     {
         RngLog.EnsureInitialized();
 
@@ -108,8 +121,13 @@ public static class StartRunActOverride
         var origIds = new System.Collections.Generic.List<string>();
         foreach (var a in acts) origIds.Add(a.Id.ToString());
         string mode = ReplayEngine.IsActive ? "REPLAY" : "RECORD";
-        var origMsg = $"[EncounterTracker] NGame.StartNewSingleplayerRun [{mode}] original — seed='{seed}', acts=[{string.Join(", ", origIds)}]";
+        var origMsg = $"[EncounterTracker] NGame.StartNewSingleplayerRun [{mode}] original — " +
+                      $"character={character.Id} shouldSave={shouldSave} seed='{seed}' " +
+                      $"gameMode={gameMode} ascension={ascensionLevel} " +
+                      $"modifiers=[{string.Join(",", System.Linq.Enumerable.Select(modifiers, m => m.Id.ToString()))}] " +
+                      $"acts=[{string.Join(", ", origIds)}]";
         RngLog.Write(origMsg);
+        DiagnosticLog.Write("RunStart", origMsg);
 
         // Use the active replay/save seed if available, otherwise the forced seed.
         string? activeSeed = ReplayEngine.ActiveSeed;
@@ -120,12 +138,16 @@ public static class StartRunActOverride
         seed = useSeed;
 
         // Override acts with deterministic list
+        var seedRng = new Rng((uint)MegaCrit.Sts2.Core.Helpers.StringHelper.GetDeterministicHashCode(useSeed));
         var newActs = new System.Collections.Generic.List<ActModel>(
-            ActModel.GetRandomList(useSeed, UnlockState.all, false));
+            ActModel.GetRandomList(seedRng, UnlockState.all, false));
         acts = newActs;
 
-        var msg = $"[EncounterTracker] NGame.StartNewSingleplayerRun [{mode}] overridden — seed='{seed}', acts=[{string.Join(", ", newActs.ConvertAll(a => a.Id.ToString()))}]";
+        var msg = $"[EncounterTracker] NGame.StartNewSingleplayerRun [{mode}] overridden — " +
+                  $"seed='{seed}' gameMode={gameMode} ascension={ascensionLevel} " +
+                  $"acts=[{string.Join(", ", newActs.ConvertAll(a => a.Id.ToString()))}]";
         RngLog.Write(msg);
+        DiagnosticLog.Write("RunStart", msg);
     }
 }
 
@@ -136,14 +158,21 @@ public static class StartRunActOverride
 public static class CreateForNewRunTracker
 {
     [HarmonyPostfix]
-    public static void Postfix(RunState __result)
+    public static void Postfix(
+        RunState __result,
+        MegaCrit.Sts2.Core.Runs.GameMode gameMode,
+        int ascensionLevel,
+        string seed)
     {
         RngLog.Reset();
         string mode = ReplayEngine.IsActive ? "REPLAY" : "RECORD";
         UpFrontRngTracker.TrackedRng = __result.Rng.UpFront;
         UpFrontRngTracker.Active = true;
-        var msg = $"[RngTracker] CreateForNewRun done [{mode}] — UpFront seed={__result.Rng.UpFront.Seed}, counter={__result.Rng.UpFront.Counter}";
+        var msg = $"[RngTracker] CreateForNewRun done [{mode}] — stringSeed='{seed}' " +
+                  $"gameMode={gameMode} ascension={ascensionLevel} " +
+                  $"UpFront.seed={__result.Rng.UpFront.Seed} UpFront.counter={__result.Rng.UpFront.Counter}";
         RngLog.Write(msg);
+        DiagnosticLog.Write("RunStart", msg);
     }
 }
 
