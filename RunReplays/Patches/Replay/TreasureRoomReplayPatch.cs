@@ -1,9 +1,9 @@
 using HarmonyLib;
+using Godot;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Screens.TreasureRoomRelic;
 
 namespace RunReplays.Patches.Replay;
-
 
 public static class TreasureRoomReplayPatch
 {
@@ -19,6 +19,7 @@ public static class TreasureRoomReplayPatch
                 return;
 
             ActiveRoom = __instance;
+            GD.Print($"[RunReplays] TreasureRoom _Ready captured; insideTree={__instance.IsInsideTree()}");
             ReplayDispatcher.TryDispatch();
         }
     }
@@ -32,6 +33,8 @@ public static class TreasureRoomReplayPatch
             if (!ReplayEngine.IsActive)
                 return;
 
+            var sync = MegaCrit.Sts2.Core.Runs.RunManager.Instance.TreasureRoomRelicSynchronizer;
+            GD.Print($"[RunReplays] TreasureRelics initialized; {RunReplays.Commands.TreasureSyncDebug.Describe(sync)}");
             ReplayDispatcher.TryDispatch();
         }
     }
