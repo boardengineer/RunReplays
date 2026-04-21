@@ -70,9 +70,24 @@ public sealed class TakeChestRelicCommand : ReplayCommand
     public override ExecuteResult Execute()
     {
         var sync = RunManager.Instance.TreasureRoomRelicSynchronizer;
-        PlayerActionBuffer.LogDispatcher("[TakeChestRelic] PickRelicLocally(0)");
-        Callable.From(() => sync.PickRelicLocally(0)).CallDeferred();
-        return ExecuteResult.Ok();
+        var relics = sync.CurrentRelics;
+        if (relics == null || relics.Count == 0)
+        {
+            PlayerActionBuffer.LogDispatcher("[TakeChestRelic] Relics not ready yet; retrying.");
+            return ExecuteResult.Retry(200);
+        }
+
+        try
+        {
+            PlayerActionBuffer.LogDispatcher("[TakeChestRelic] PickRelicLocally(0)");
+            sync.PickRelicLocally(0);
+            return ExecuteResult.Ok();
+        }
+        catch (System.InvalidOperationException ex)
+        {
+            PlayerActionBuffer.LogDispatcher($"[TakeChestRelic] Pick not ready ({ex.Message}); retrying.");
+            return ExecuteResult.Retry(200);
+        }
     }
 
     public static TakeChestRelicCommand? TryParse(string raw)
