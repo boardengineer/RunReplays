@@ -612,9 +612,24 @@ public static class ReplayDispatcher
     /// </summary>
     public static void Step()
     {
+        if (!ReplayEngine.IsActive)
+            return;
+
         if (!_paused) Paused = true;
+
+        if (_dispatchInProgress
+            || ReplayState.ActionInFlight
+            || ReplayState.CardPlayInFlight
+            || ReplayState.PotionInFlight
+            || CardPlayReplayPatch.IsAwaitingEndTurnCompletion
+            || MapMoveInFlight)
+        {
+            GD.Print("[RunReplays] Step ignored: dispatcher is busy.");
+            return;
+        }
+
         _stepping = true;
-        DispatchNow();
+        Callable.From(ExecuteNext).CallDeferred();
     }
     private static float _delayBetweenCommands = 1.0f;
     /// <summary>
