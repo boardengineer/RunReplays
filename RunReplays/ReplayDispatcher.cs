@@ -623,10 +623,7 @@ public static class ReplayDispatcher
             || ReplayState.PotionInFlight
             || CardPlayReplayPatch.IsAwaitingEndTurnCompletion
             || MapMoveInFlight)
-        {
-            GD.Print("[RunReplays] Step ignored: dispatcher is busy.");
             return;
-        }
 
         _stepping = true;
         Callable.From(ExecuteNext).CallDeferred();
@@ -894,11 +891,7 @@ public static class ReplayDispatcher
             && cmd is MapMoveCommand)
         {
             var room = GetCurrentRoom();
-            if (room != null)
-            {
-                GD.Print($"[RunReplays] Watchdog holding MapMove; still in room={room.GetType().Name}");
-            }
-            else
+            if (room == null)
             {
                 // Force-clear blockers so dispatch can proceed.
                 ReplayState.ClearActionInFlight();
@@ -941,22 +934,14 @@ public static class ReplayDispatcher
             GD.Print($"[RunReplays] TryDispatch miss — cmd={cmd.GetType().Name} dispatchable=[{dispatchableNames}]");
             DiagnosticLog.Write("Dispatch",
                 $"miss — cmd={cmd.GetType().Name}({cmd}) dispatchable=[{dispatchableNames}]");
-
             if (cmd is MapMoveCommand && GetCurrentRoom() is TreasureRoom)
             {
                 var sync = RunManager.Instance.TreasureRoomRelicSynchronizer;
                 var relics = sync.CurrentRelics;
                 if (relics != null && relics.Count > 0)
                 {
-                    try
-                    {
-                        GD.Print($"[RunReplays] TreasureFlow fallback — pending MapMove in TreasureRoom; auto-picking relic.");
-                        sync.PickRelicLocally(0);
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        GD.Print($"[RunReplays] TreasureFlow fallback pick failed: {ex.Message}");
-                    }
+                    try { sync.PickRelicLocally(0); }
+                    catch (InvalidOperationException) { }
                 }
             }
             return;

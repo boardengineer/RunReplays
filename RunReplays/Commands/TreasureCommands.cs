@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Reflection;
 using Godot;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
-using MegaCrit.Sts2.Core.Multiplayer.Game;
 using MegaCrit.Sts2.Core.Runs;
 
 using RunReplays.Patches.Replay;
@@ -31,17 +28,8 @@ public sealed class OpenChestCommand : ReplayCommand
     public override ExecuteResult Execute()
     {
         NTreasureRoom? room = TreasureRoomReplayPatch.ActiveRoom;
-        if (room == null)
-        {
-            PlayerActionBuffer.LogDispatcher("[OpenChest] ActiveRoom is null; retrying.");
+        if (room == null || !room.IsInsideTree())
             return ExecuteResult.Retry(200);
-        }
-
-        if (!room.IsInsideTree())
-        {
-            PlayerActionBuffer.LogDispatcher("[OpenChest] ActiveRoom is not in tree; retrying.");
-            return ExecuteResult.Retry(200);
-        }
 
         NButton? chest = room.GetNodeOrNull<NButton>("%Chest");
         if (chest == null)
@@ -50,8 +38,6 @@ public sealed class OpenChestCommand : ReplayCommand
             return ExecuteResult.Retry(200);
         }
 
-        PlayerActionBuffer.LogDispatcher(
-            $"[OpenChest] Emit Released; chestInside={chest.IsInsideTree()} sync={TreasureSyncDebug.Describe(RunManager.Instance.TreasureRoomRelicSynchronizer)}");
         chest.EmitSignal(NClickableControl.SignalName.Released, chest);
         return ExecuteResult.Ok();
     }
@@ -84,25 +70,18 @@ public sealed class TakeChestRelicCommand : ReplayCommand
     public override ExecuteResult Execute()
     {
         var sync = RunManager.Instance.TreasureRoomRelicSynchronizer;
-        PlayerActionBuffer.LogDispatcher($"[TakeChestRelic] Attempt; {TreasureSyncDebug.Describe(sync)}");
 
         var relics = sync.CurrentRelics;
         if (relics == null || relics.Count == 0)
-        {
-            PlayerActionBuffer.LogDispatcher($"[TakeChestRelic] Relics not ready; {TreasureSyncDebug.Describe(sync)}; retrying.");
             return ExecuteResult.Retry(200);
-        }
 
         try
         {
-            PlayerActionBuffer.LogDispatcher("[TakeChestRelic] PickRelicLocally(0)");
             sync.PickRelicLocally(0);
             return ExecuteResult.Ok();
         }
-        catch (System.InvalidOperationException ex)
+        catch (System.InvalidOperationException)
         {
-            PlayerActionBuffer.LogDispatcher(
-                $"[TakeChestRelic] Pick not ready ({ex.Message}); {TreasureSyncDebug.Describe(sync)}; retrying.");
             return ExecuteResult.Retry(200);
         }
     }
@@ -113,27 +92,5 @@ public sealed class TakeChestRelicCommand : ReplayCommand
             return new TakeChestRelicCommand();
 
         return null;
-    }
-}
-
-internal static class TreasureSyncDebug
-{
-    private static readonly FieldInfo? VotesField =
-        typeof(TreasureRoomRelicSynchronizer).GetField("_votes", BindingFlags.NonPublic | BindingFlags.Instance);
-
-    private static readonly FieldInfo? PredictedVoteField =
-        typeof(TreasureRoomRelicSynchronizer).GetField("_predictedVote", BindingFlags.NonPublic | BindingFlags.Instance);
-
-    private static readonly FieldInfo? SinglePlayerSkippedField =
-        typeof(TreasureRoomRelicSynchronizer).GetField("_singlePlayerSkipped", BindingFlags.NonPublic | BindingFlags.Instance);
-
-    internal static string Describe(TreasureRoomRelicSynchronizer sync)
-    {
-        int currentRelics = sync.CurrentRelics?.Count ?? -1;
-        int votes = (VotesField?.GetValue(sync) as ICollection)?.Count ?? -1;
-        bool singlePlayerSkipped = SinglePlayerSkippedField?.GetValue(sync) is bool b && b;
-        string predictedVote = PredictedVoteField?.GetValue(sync)?.ToString() ?? "null";
-
-        return $"syncState(relics={currentRelics}, votes={votes}, predicted={predictedVote}, skipped={singlePlayerSkipped})";
     }
 }

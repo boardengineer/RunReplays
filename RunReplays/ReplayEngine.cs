@@ -34,13 +34,6 @@ public static class ReplayEngine
         if (_recentConsumed.Count >= 2)
             _recentConsumed.RemoveAt(0);
         _recentConsumed.Add(cmd);
-
-        if (cmd is OpenChestCommand || cmd is TakeChestRelicCommand || cmd is MapMoveCommand)
-        {
-            string next = _pending.Count > 0 ? _pending.Peek().ToString() : "<empty>";
-            GD.Print($"[RunReplays] Consumed {cmd.GetType().Name} ({cmd}); next={next}; pending={_pending.Count}");
-        }
-
         ContextChanged?.Invoke();
         if (_replayActive && _pending.Count == 0)
         {
