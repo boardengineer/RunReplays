@@ -86,15 +86,6 @@ public static class RunReplayMenu
         title.HorizontalAlignment = HorizontalAlignment.Center;
         vbox.AddChild(title);
 
-        // ── Show overlay checkbox ───────────────────────────────────────────
-        var overlayCheck = new CheckBox();
-        overlayCheck.Text = "Show Replay Overlay";
-        overlayCheck.ButtonPressed = RunOverlay.OverlayVisible;
-        overlayCheck.Toggled += on => RunOverlay.OverlayVisible = on;
-        vbox.AddChild(overlayCheck);
-
-        vbox.AddChild(new HSeparator());
-
         // ── Replay list ───────────────────────────────────────────────────────
         var scroll = new ScrollContainer();
         scroll.SizeFlagsVertical = Control.SizeFlags.ExpandFill;

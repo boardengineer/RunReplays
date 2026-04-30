@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using BaseLib.Config;
 using Godot;
 using MegaCrit.Sts2.Core.Nodes;
 
@@ -49,20 +50,20 @@ internal static class RunOverlay
     private static Label?    _speedLabel;
 
     /// <summary>
-    /// Controls whether the overlay is visible. Persists across runs within
-    /// the same session. Toggled from the Run Replays menu.
+    /// Controls whether the overlay is visible. Backed by <see cref="RunReplaysConfig.ShowOverlay"/>
+    /// so it persists across sessions. Toggled from the Run Replays menu.
     /// </summary>
     internal static bool OverlayVisible
     {
-        get => _overlayVisible;
+        get => RunReplaysConfig.ShowOverlay;
         set
         {
-            _overlayVisible = value;
+            RunReplaysConfig.ShowOverlay = value;
             if (_canvas != null && GodotObject.IsInstanceValid(_canvas))
                 _canvas.Visible = value;
+            ModConfig.SaveDebounced<RunReplaysConfig>();
         }
     }
-    private static bool _overlayVisible = false;
 
     // Rolling buffer of the last LineCount recorded entries (recording mode).
     private static readonly Queue<string> _recentEntries = new();
@@ -121,7 +122,7 @@ internal static class RunOverlay
         // ── CanvasLayer (always on top) ───────────────────────────────────────
         _canvas = new CanvasLayer();
         _canvas.Layer = 64;
-        _canvas.Visible = _overlayVisible;
+        _canvas.Visible = RunReplaysConfig.ShowOverlay;
         NGame.Instance.AddChild(_canvas);
 
         // Full-rect control so child anchors work relative to the viewport.

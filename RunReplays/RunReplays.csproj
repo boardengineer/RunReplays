@@ -12,6 +12,10 @@
       <Reference Include="sts2">
         <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\data_sts2_windows_x86_64\sts2.dll</HintPath>
       </Reference>
+      <Reference Include="BaseLib">
+        <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\BaseLib.dll</HintPath>
+        <Private>false</Private>
+      </Reference>
     </ItemGroup>
 
     <ItemGroup>
@@ -31,7 +35,7 @@
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command=":: For Windows&#xA;xcopy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\&quot; /Y" />
+      <Exec Command=":: For Windows&#xA;xcopy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\&quot; /Y&#xA;xcopy &quot;$(ProjectDir)RunReplays.json&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\&quot; /Y" />
     </Target>
 
 </Project>

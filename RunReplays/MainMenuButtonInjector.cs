@@ -81,6 +81,33 @@ public static class MainMenuButtonInjector
         // the `label` child reference and connects internal button signals.
         buttonContainer.AddChild(replayButton);
 
+        // NMainMenu._Ready() calls ConnectMainMenuTextButtonFocusLogic() before our
+        // postfix runs, so our button is never included. Replicate those connections
+        // via reflection so the gold reticle arrows animate on focus/unfocus.
+        var menuType = typeof(NMainMenu);
+        var focusedMethod = menuType.GetMethod("MainMenuButtonFocused",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+        var unfocusedMethod = menuType.GetMethod("MainMenuButtonUnfocused",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+        if (focusedMethod != null && unfocusedMethod != null)
+        {
+            var mainMenu = __instance;
+            replayButton.Connect(
+                NClickableControl.SignalName.Focused,
+                Callable.From(delegate(NMainMenuTextButton b)
+                {
+                    Callable.From(delegate
+                    {
+                        focusedMethod.Invoke(mainMenu, new object[] { b });
+                    }).CallDeferred();
+                }));
+            replayButton.Connect(
+                NClickableControl.SignalName.Unfocused,
+                Callable.From<NMainMenuTextButton>(b =>
+                    unfocusedMethod.Invoke(mainMenu, new object[] { b })));
+        }
+
         // Place directly above Quit.
         buttonContainer.MoveChild(replayButton, quitIndex);
 

@@ -1,0 +1,11 @@
+{
+  "id": "RunReplays",
+  "name": "RunReplays",
+  "author": "boardengineer",
+  "description": "Replay your runs!",
+  "version": "v0.1.2",
+  "has_pck": true,
+  "has_dll": true,
+  "dependencies": ["BaseLib"],
+  "affects_gameplay": true
+}
