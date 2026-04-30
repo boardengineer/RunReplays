@@ -132,10 +132,80 @@ public static class MainMenuButtonInjector
 #endif
     }
 
+    private static RunReplaySubmenu? _replaySubmenu;
+
     private static void OnRunReplaysPressed(NMainMenu mainMenu)
     {
-        var menu = RunReplayMenu.Create(mainMenu);
-        mainMenu.AddChild(menu);
+        DiagnosticLog.Write("Submenu", "OnRunReplaysPressed called");
+
+        // Create the submenu once per main-menu session and cache it.
+        if (!GodotObject.IsInstanceValid(_replaySubmenu))
+        {
+            _replaySubmenu = new RunReplaySubmenu();
+            _replaySubmenu.Theme = mainMenu.Theme;
+
+            // FullRect must be set BEFORE AddChild so the layout is resolved before
+            // _Ready() (and thus ConnectSignals()) runs.
+            _replaySubmenu.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+
+            // Clone an existing NBackButton so our submenu has the same animated
+            // back button as the game's built-in submenus.  NTimelineScreen is
+            // pushed by NMainMenu._Ready(), so a source button always exists.
+            var sourceBack = mainMenu.SubmenuStack
+                .GetChildren()
+                .OfType<NSubmenu>()
+                .SelectMany(s => s.GetChildren().OfType<NBackButton>())
+                .FirstOrDefault();
+
+            DiagnosticLog.Write("Submenu", $"sourceBack={(sourceBack != null ? sourceBack.Name : "NULL")}");
+
+            if (sourceBack != null)
+            {
+                var cloned = (NBackButton)sourceBack.Duplicate(6); // Groups + Scripts, no Signals
+                cloned.Name = "BackButton";
+                _replaySubmenu.AddChild(cloned); // added BEFORE entering tree
+            }
+
+            // Give the submenu a direct pop action so it never depends on _stack
+            // being set by NSubmenuStack.Push() (which may not call SetStack() on
+            // subclass instances in the game's compiled code).
+            var stack = mainMenu.SubmenuStack;
+            _replaySubmenu.PopAction = () =>
+            {
+                DiagnosticLog.Write("Submenu", "PopAction invoked → stack.Pop()");
+                stack.Pop();
+            };
+
+            _replaySubmenu.Visible = false;
+            mainMenu.SubmenuStack.AddChild(_replaySubmenu); // triggers _Ready() → ConnectSignals()
+
+            // The cloned NBackButton computes its _showPos/_hidePos in _Ready() using
+            // OffsetLeft values from the original scene, which may produce the wrong
+            // screen coordinates when the parent is at a different layout position.
+            // Copy the screen-absolute positions from the live source button instead.
+            FixBackButtonPositions(_replaySubmenu, sourceBack);
+
+            DiagnosticLog.Write("Submenu", "Submenu created and added to tree");
+        }
+
+        DiagnosticLog.Write("Submenu", $"Calling Push — stack={mainMenu.SubmenuStack.Name}");
+        mainMenu.SubmenuStack.Push(_replaySubmenu);
+    }
+
+    private static void FixBackButtonPositions(RunReplaySubmenu submenu, NBackButton? source)
+    {
+        if (source == null) return;
+        var cloned = submenu.GetChildren().OfType<NBackButton>().FirstOrDefault();
+        if (cloned == null) return;
+
+        var t = typeof(NBackButton);
+        var showField = t.GetField("_showPos", BindingFlags.NonPublic | BindingFlags.Instance);
+        var hideField = t.GetField("_hidePos", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (showField == null || hideField == null) return;
+
+        showField.SetValue(cloned, showField.GetValue(source));
+        hideField.SetValue(cloned, hideField.GetValue(source));
+        cloned.MoveToHidePosition(); // snap GlobalPosition to the corrected _hidePos
     }
 
     // ── Bundled replay extraction ────────────────────────────────────────────

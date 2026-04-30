@@ -11,7 +11,6 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Multiplayer;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Audio;
-using MegaCrit.Sts2.Core.Nodes.Screens.MainMenu;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
 using MegaCrit.Sts2.Core.Saves.Managers;
@@ -20,22 +19,12 @@ using RunReplays.Utils;
 namespace RunReplays;
 
 /// <summary>
-/// Builds and manages the Run Replays browse screen that opens when the player
-/// presses the "Run Replays" button from the main menu.
-///
-/// The menu is a plain Godot Control tree created entirely from code — no .tscn
-/// required. It is added as a direct child of NMainMenu so it covers the menu
-/// layout, and inherits the main menu's active theme so buttons and labels
-/// automatically adopt the game's visual style.
+/// Scanning, loading, and replay-starting logic for the Run Replays mod.
+/// The UI is built in <see cref="RunReplaySubmenu"/>; this class exposes the
+/// helpers that the submenu calls.
 ///
 /// Directory layout scanned:
 ///   {UserDataDir}/RunReplays/logs/{seed}/floor_{N}/{datetime}.verbose.log
-///
-/// The verbose log header supplies the seed, character ID, and save date.
-/// Each unique (seed, floor) pair is represented by its most recent log pair.
-/// Entries are sorted newest-first. Selecting an entry loads the matching
-/// minimal log into ReplayEngine and starts a new run with the stored seed and
-/// character.
 /// </summary>
 public static class RunReplayMenu
 {
@@ -48,66 +37,6 @@ public static class RunReplayMenu
         string MinimalLogPath,
         string? SavePath,
         bool IsSample = false);
-
-    public static Control Create(NMainMenu mainMenu)
-    {
-        // Root: full-rect, stops mouse events reaching the menu behind it.
-        var root = new Control();
-        root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        root.MouseFilter = Control.MouseFilterEnum.Stop;
-
-        // Inherit the main menu's theme so all child controls use the game's fonts/styles.
-        root.Theme = mainMenu.Theme;
-
-        // Dim overlay behind the panel.
-        var bg = new ColorRect();
-        bg.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        bg.Color = new Color(0f, 0f, 0f, 0.75f);
-        root.AddChild(bg);
-
-        // CenterContainer places the panel in the middle of the screen.
-        var center = new CenterContainer();
-        center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        root.AddChild(center);
-
-        // Outer panel (game-styled background box).
-        var panel = new PanelContainer();
-        panel.CustomMinimumSize = new Vector2(960, 600);
-        center.AddChild(panel);
-
-        // Inner layout.
-        var vbox = new VBoxContainer();
-        vbox.AddThemeConstantOverride("separation", 12);
-        panel.AddChild(vbox);
-
-        // ── Title row ────────────────────────────────────────────────────────
-        var title = new Label();
-        title.Text = "Run Replays";
-        title.HorizontalAlignment = HorizontalAlignment.Center;
-        vbox.AddChild(title);
-
-        // ── Replay list ───────────────────────────────────────────────────────
-        var scroll = new ScrollContainer();
-        scroll.SizeFlagsVertical = Control.SizeFlags.ExpandFill;
-        vbox.AddChild(scroll);
-
-        var list = new VBoxContainer();
-        list.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-        list.AddThemeConstantOverride("separation", 4);
-        scroll.AddChild(list);
-
-        PopulateList(list, root);
-
-        // ── Back button ───────────────────────────────────────────────────────
-        vbox.AddChild(new HSeparator());
-
-        var backBtn = new Button();
-        backBtn.Text = "Back";
-        backBtn.Pressed += () => root.QueueFree();
-        vbox.AddChild(backBtn);
-
-        return root;
-    }
 
     // ── Auto-play ──────────────────────────────────────────────────────────────
 
@@ -169,7 +98,7 @@ public static class RunReplayMenu
 
     // ── List population ───────────────────────────────────────────────────────
 
-    private static void PopulateList(VBoxContainer list, Control root)
+    internal static void PopulateList(VBoxContainer list, Action closeMenu)
     {
         var entries = LoadEntries();
 
@@ -193,7 +122,7 @@ public static class RunReplayMenu
             userHeader.HorizontalAlignment = HorizontalAlignment.Center;
             list.AddChild(userHeader);
 
-            PopulateGroups(list, root, userEntries);
+            PopulateGroups(list, closeMenu, userEntries);
         }
 
         if (sampleEntries.Count > 0)
@@ -204,11 +133,11 @@ public static class RunReplayMenu
             sampleHeader.HorizontalAlignment = HorizontalAlignment.Center;
             list.AddChild(sampleHeader);
 
-            PopulateGroups(list, root, sampleEntries);
+            PopulateGroups(list, closeMenu, sampleEntries);
         }
     }
 
-    private static void PopulateGroups(VBoxContainer list, Control root, List<ReplayEntry> entries)
+    private static void PopulateGroups(VBoxContainer list, Action closeMenu, List<ReplayEntry> entries)
     {
         // Group by seed; within each group order floors highest-first.
         // Groups themselves are ordered by the most recent save in each group.
@@ -298,7 +227,7 @@ public static class RunReplayMenu
                 replayBtn.Pressed += () =>
                 {
                     int sel = capturedDropdown?.Selected ?? 0;
-                    root.QueueFree();
+                    closeMenu();
                     if (sel == 0 || capturedOptions.Count == 0)
                         StartReplay(captured);
                     else
@@ -312,7 +241,7 @@ public static class RunReplayMenu
                     row.AddChild(loadSaveBtn);
                     loadSaveBtn.Pressed += () =>
                     {
-                        root.QueueFree();
+                        closeMenu();
                         LoadSave(captured);
                     };
                 }
@@ -331,7 +260,7 @@ public static class RunReplayMenu
                     var capturedNext = nextFloor;
                     replayFloorBtn.Pressed += () =>
                     {
-                        root.QueueFree();
+                        closeMenu();
                         StartReplayFromFloor(capturedNext, captured);
                     };
                 }
