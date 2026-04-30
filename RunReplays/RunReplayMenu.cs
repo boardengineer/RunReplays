@@ -137,6 +137,34 @@ public static class RunReplayMenu
         }
     }
 
+    internal static void PopulateSeparate(
+        VBoxContainer userContainer,
+        VBoxContainer samplesContainer,
+        Action closeMenu)
+    {
+        var entries = LoadEntries();
+        var userEntries   = entries.Where(e => !e.IsSample).ToList();
+        var sampleEntries = entries.Where(e =>  e.IsSample).ToList();
+
+        if (userEntries.Count > 0)
+            PopulateGroups(userContainer, closeMenu, userEntries);
+        else
+        {
+            var lbl = new Label { Text = "No replays recorded yet." };
+            lbl.HorizontalAlignment = HorizontalAlignment.Center;
+            userContainer.AddChild(lbl);
+        }
+
+        if (sampleEntries.Count > 0)
+            PopulateGroups(samplesContainer, closeMenu, sampleEntries);
+        else
+        {
+            var lbl = new Label { Text = "No sample runs found." };
+            lbl.HorizontalAlignment = HorizontalAlignment.Center;
+            samplesContainer.AddChild(lbl);
+        }
+    }
+
     private static void PopulateGroups(VBoxContainer list, Action closeMenu, List<ReplayEntry> entries)
     {
         // Group by seed; within each group order floors highest-first.

@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Screens.MainMenu;
@@ -51,8 +52,12 @@ public class RunReplaySubmenu : NSubmenu
 
         DiagnosticLog.Write("Submenu",
             $"ConnectSignals: backButton={(backButton != null ? backButton.Name : "NULL")}, childCount={GetChildCount()}");
-        foreach (Node child in GetChildren())
-            DiagnosticLog.Write("Submenu", $"  child: {child.Name} ({child.GetType().Name})");
+
+        Action closeMenu = () =>
+        {
+            if (PopAction != null) PopAction();
+            else _stack?.Pop();
+        };
 
         if (backButton != null)
         {
@@ -60,19 +65,14 @@ public class RunReplaySubmenu : NSubmenu
                 Callable.From<NButton>(_ =>
                 {
                     DiagnosticLog.Write("Submenu",
-                        $"Back Released — PopAction={(PopAction != null ? "set" : "NULL")}, _stack={(_stack != null ? _stack.Name : "NULL")}");
-                    if (PopAction != null)
-                        PopAction();
-                    else
-                        _stack?.Pop();
+                        $"Back Released — PopAction={(PopAction != null ? "set" : "NULL")}");
+                    closeMenu();
                 }));
 
             backButton.Disable();
 
             Connect(CanvasItem.SignalName.VisibilityChanged, Callable.From(() =>
             {
-                DiagnosticLog.Write("Submenu",
-                    $"VisibilityChanged: Visible={Visible}, backButton valid={GodotObject.IsInstanceValid(backButton)}");
                 if (Visible)
                 {
                     backButton.MoveToHidePosition();
@@ -90,52 +90,154 @@ public class RunReplaySubmenu : NSubmenu
 
         var center = new CenterContainer();
         center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        // Pass events through so the NBackButton sibling (drawn below) can receive clicks.
         center.MouseFilter = Control.MouseFilterEnum.Ignore;
         AddChild(center);
 
         var panel = new PanelContainer();
-        panel.CustomMinimumSize = new Vector2(960, 600);
+        panel.CustomMinimumSize = new Vector2(1100, 650);
         center.AddChild(panel);
 
-        var vbox = new VBoxContainer();
-        vbox.AddThemeConstantOverride("separation", 12);
-        panel.AddChild(vbox);
+        var outer = new VBoxContainer();
+        outer.AddThemeConstantOverride("separation", 8);
+        panel.AddChild(outer);
 
         var title = new Label();
         title.Text = "Run Replays";
         title.HorizontalAlignment = HorizontalAlignment.Center;
-        vbox.AddChild(title);
+        outer.AddChild(title);
 
-        var scroll = new ScrollContainer();
-        scroll.SizeFlagsVertical = Control.SizeFlags.ExpandFill;
-        vbox.AddChild(scroll);
+        // ── Two-panel layout ────────────────────────────────────────────────────
 
-        var list = new VBoxContainer();
-        list.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-        list.AddThemeConstantOverride("separation", 4);
-        scroll.AddChild(list);
+        var hbox = new HBoxContainer();
+        hbox.SizeFlagsVertical = Control.SizeFlags.ExpandFill;
+        hbox.AddThemeConstantOverride("separation", 0);
+        outer.AddChild(hbox);
 
-        RunReplayMenu.PopulateList(list, () =>
+        // Left: tab buttons
+        var tabs = new VBoxContainer();
+        tabs.CustomMinimumSize = new Vector2(220, 0);
+        tabs.AddThemeConstantOverride("separation", 2);
+        hbox.AddChild(tabs);
+
+        var myReplaysBtn = new Button { Text = "My Replays" };
+        var samplesBtn   = new Button { Text = "Sample Runs" };
+        tabs.AddChild(myReplaysBtn);
+        tabs.AddChild(samplesBtn);
+
+        // ── Tab button styling — mirrors NModListButton from BaseLib ────────────
+        // Colors match BaseLib exactly.
+        var bgNormal   = new Color(0f,    0f,    0f,    0.2f);
+        var bgSelected = new Color(0.15f, 0.15f, 0.15f, 0.5f);
+        var colorNormal   = new Color(0.7f, 0.7f, 0.7f);
+        var colorSelected = StsColors.gold;
+
+        Font? kreonFont = null;
+        try { kreonFont = GD.Load<Font>("res://themes/kreon_regular_glyph_space_one.tres"); }
+        catch { }
+
+        // One StyleBoxFlat per button so they can be independently animated.
+        StyleBoxFlat MakeTabBox(Color bg)
         {
-            if (PopAction != null)
-                PopAction();
-            else
-                _stack?.Pop();
-        });
+            var s = new StyleBoxFlat();
+            s.BgColor = bg;
+            s.SetBorderWidthAll(0);
+            s.BorderColor = colorSelected;
+            s.CornerRadiusTopLeft    = 8;
+            s.CornerRadiusTopRight   = 8;
+            s.CornerRadiusBottomLeft  = 8;
+            s.CornerRadiusBottomRight = 8;
+            s.ContentMarginLeft   = 16;
+            s.ContentMarginRight  = 8;
+            s.ContentMarginTop    = 8;
+            s.ContentMarginBottom = 8;
+            return s;
+        }
 
+        var myBox  = MakeTabBox(bgNormal);
+        var samBox = MakeTabBox(bgNormal);
+
+        string[] states = { "normal", "hover", "pressed", "focus" };
+        foreach (var st in states) { myReplaysBtn.AddThemeStyleboxOverride(st, myBox); }
+        foreach (var st in states) { samplesBtn.AddThemeStyleboxOverride(st, samBox); }
+
+        foreach (var btn in new[] { myReplaysBtn, samplesBtn })
+        {
+            if (kreonFont != null) btn.AddThemeFontOverride("font", kreonFont);
+            btn.AddThemeFontSizeOverride("font_size", 24);
+            btn.Alignment = HorizontalAlignment.Left;
+        }
+
+        hbox.AddChild(new VSeparator());
+
+        // Right: two scroll containers, one per tab
+        var userScroll = new ScrollContainer();
+        userScroll.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+        userScroll.SizeFlagsVertical   = Control.SizeFlags.ExpandFill;
+        hbox.AddChild(userScroll);
+
+        var userList = new VBoxContainer();
+        userList.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+        userList.AddThemeConstantOverride("separation", 4);
+        userScroll.AddChild(userList);
+
+        var samplesScroll = new ScrollContainer();
+        samplesScroll.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+        samplesScroll.SizeFlagsVertical   = Control.SizeFlags.ExpandFill;
+        hbox.AddChild(samplesScroll);
+
+        var samplesList = new VBoxContainer();
+        samplesList.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+        samplesList.AddThemeConstantOverride("separation", 4);
+        samplesScroll.AddChild(samplesList);
+
+        RunReplayMenu.PopulateSeparate(userList, samplesList, closeMenu);
+
+        // Tab switching: swap bg + animate border width in over 200 ms (matching BaseLib).
+        void SelectTab(bool showUser, bool animate = true)
+        {
+            userScroll.Visible    =  showUser;
+            samplesScroll.Visible = !showUser;
+
+            var selBox   = showUser ? myBox  : samBox;
+            var deselBox = showUser ? samBox : myBox;
+
+            // Deselect instantly
+            deselBox.BgColor = bgNormal;
+            deselBox.BorderWidthLeft = 0;
+
+            // Select: background immediately, border animates in
+            selBox.BgColor = bgSelected;
+            if (animate)
+            {
+                selBox.BorderWidthLeft = 0;
+                var tween = CreateTween();
+                tween.TweenProperty(selBox, "border_width_left", Variant.From(4), 0.2);
+            }
+            else
+            {
+                selBox.BorderWidthLeft = 4;
+            }
+
+            // Font colors per state
+            myReplaysBtn.AddThemeColorOverride("font_color",          showUser  ? colorSelected : colorNormal);
+            myReplaysBtn.AddThemeColorOverride("font_hover_color",    showUser  ? colorSelected : Colors.White);
+            myReplaysBtn.AddThemeColorOverride("font_pressed_color",  showUser  ? colorSelected : Colors.White);
+            samplesBtn.AddThemeColorOverride("font_color",           !showUser ? colorSelected : colorNormal);
+            samplesBtn.AddThemeColorOverride("font_hover_color",     !showUser ? colorSelected : Colors.White);
+            samplesBtn.AddThemeColorOverride("font_pressed_color",   !showUser ? colorSelected : Colors.White);
+        }
+
+        myReplaysBtn.Pressed += () => SelectTab(true);
+        samplesBtn.Pressed   += () => SelectTab(false);
+        SelectTab(true, animate: false);
+
+        // Fallback back button if no NBackButton was cloned
         if (backButton == null)
         {
-            vbox.AddChild(new HSeparator());
+            outer.AddChild(new HSeparator());
             _fallbackBackBtn = new Button { Text = "Back" };
-            _fallbackBackBtn.Pressed += () =>
-            {
-                if (PopAction != null)
-                    PopAction();
-                else
-                    _stack?.Pop();
-            };
-            vbox.AddChild(_fallbackBackBtn);
+            _fallbackBackBtn.Pressed += closeMenu;
+            outer.AddChild(_fallbackBackBtn);
         }
     }
 }
