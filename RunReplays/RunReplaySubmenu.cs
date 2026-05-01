@@ -190,7 +190,7 @@ public class RunReplaySubmenu : NSubmenu
         samplesList.AddThemeConstantOverride("separation", 4);
         samplesScroll.AddChild(samplesList);
 
-        RunReplayMenu.PopulateSeparate(userList, samplesList, closeMenu);
+        RunReplayMenu.PopulateSeparateDeferred(userList, samplesList, closeMenu);
 
         // Tab switching: swap bg + animate border width in over 200 ms (matching BaseLib).
         void SelectTab(bool showUser, bool animate = true)

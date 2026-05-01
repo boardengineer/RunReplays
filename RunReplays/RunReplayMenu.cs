@@ -165,6 +165,49 @@ public static class RunReplayMenu
         }
     }
 
+    internal static void PopulateSeparateDeferred(
+        VBoxContainer userContainer,
+        VBoxContainer samplesContainer,
+        Action closeMenu)
+    {
+        var userLoading = new Label { Text = "Loading…", HorizontalAlignment = HorizontalAlignment.Center };
+        userContainer.AddChild(userLoading);
+
+        var samplesLoading = new Label { Text = "Loading…", HorizontalAlignment = HorizontalAlignment.Center };
+        samplesContainer.AddChild(samplesLoading);
+
+        Task.Run(LoadEntries).ContinueWith(task =>
+            Callable.From(() =>
+            {
+                if (!GodotObject.IsInstanceValid(userContainer)) return;
+
+                userLoading.QueueFree();
+                samplesLoading.QueueFree();
+
+                if (task.IsFaulted)
+                {
+                    DiagnosticLog.Write("Menu", $"LoadEntries failed: {task.Exception}");
+                    userContainer.AddChild(new Label { Text = "Error loading replays." });
+                    return;
+                }
+
+                var entries       = task.Result;
+                var userEntries   = entries.Where(e => !e.IsSample).ToList();
+                var sampleEntries = entries.Where(e =>  e.IsSample).ToList();
+
+                if (userEntries.Count > 0)
+                    PopulateGroups(userContainer, closeMenu, userEntries);
+                else
+                    userContainer.AddChild(new Label { Text = "No replays recorded yet.", HorizontalAlignment = HorizontalAlignment.Center });
+
+                if (sampleEntries.Count > 0)
+                    PopulateGroups(samplesContainer, closeMenu, sampleEntries);
+                else
+                    samplesContainer.AddChild(new Label { Text = "No sample runs found.", HorizontalAlignment = HorizontalAlignment.Center });
+
+            }).CallDeferred());
+    }
+
     private static void PopulateGroups(VBoxContainer list, Action closeMenu, List<ReplayEntry> entries)
     {
         // Group by seed; within each group order floors highest-first.
@@ -196,101 +239,106 @@ public static class RunReplayMenu
             floorContainer.Visible = false;
             list.AddChild(floorContainer);
 
-            bool expanded = false;
-            var capturedBtn       = headerBtn;
-            var capturedContainer = floorContainer;
+            bool expanded  = false;
+            bool populated = false;
             headerBtn.Pressed += () =>
             {
                 expanded = !expanded;
-                capturedContainer.Visible = expanded;
-                capturedBtn.Text = (expanded ? "▼" : "▶") + capturedBtn.Text[1..];
+                if (expanded && !populated)
+                {
+                    populated = true;
+                    BuildFloorRows();
+                }
+                floorContainer.Visible = expanded;
+                headerBtn.Text = (expanded ? "▼" : "▶") + headerBtn.Text[1..];
             };
 
-            // ── Floor rows ─────────────────────────────────────────────────
-
-            // Collect earlier floors with saves as potential starting points.
-            var floorsWithSaves = seedEntries
-                .Where(e => e.SavePath != null)
-                .OrderBy(e => e.Floor)
-                .ToList();
-
-            foreach (ReplayEntry entry in seedEntries)
+            void BuildFloorRows()
             {
-                var row = new HBoxContainer();
-                row.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-                row.AddThemeConstantOverride("separation", 4);
-                floorContainer.AddChild(row);
-
-                // Visual indent.
-                var indent = new Label();
-                indent.Text = "    ";
-                row.AddChild(indent);
-
-                var replayBtn = new Button();
-                replayBtn.Text = $"Replay to floor {entry.Floor}";
-                replayBtn.Alignment = HorizontalAlignment.Left;
-                replayBtn.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-                row.AddChild(replayBtn);
-
-                // "Start from" dropdown — lists earlier floors that have saves.
-                var startOptions = floorsWithSaves
-                    .Where(e => e.Floor < entry.Floor)
-                    .OrderByDescending(e => e.Floor)
+                // Collect earlier floors with saves as potential starting points.
+                var floorsWithSaves = seedEntries
+                    .Where(e => e.SavePath != null)
+                    .OrderBy(e => e.Floor)
                     .ToList();
 
-                OptionButton? dropdown = null;
-                if (startOptions.Count > 0)
+                foreach (ReplayEntry entry in seedEntries)
                 {
-                    dropdown = new OptionButton();
-                    dropdown.AddItem("From start", 0);
-                    for (int i = 0; i < startOptions.Count; i++)
-                        dropdown.AddItem($"From Floor {startOptions[i].Floor}", i + 1);
-                    dropdown.Selected = 0;
-                    row.AddChild(dropdown);
-                }
+                    var row = new HBoxContainer();
+                    row.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+                    row.AddThemeConstantOverride("separation", 4);
+                    floorContainer.AddChild(row);
 
-                var captured = entry;
-                var capturedOptions = startOptions;
-                var capturedDropdown = dropdown;
-                replayBtn.Pressed += () =>
-                {
-                    int sel = capturedDropdown?.Selected ?? 0;
-                    closeMenu();
-                    if (sel == 0 || capturedOptions.Count == 0)
-                        StartReplay(captured);
-                    else
-                        StartReplayFromFloor(captured, capturedOptions[sel - 1]);
-                };
+                    // Visual indent.
+                    var indent = new Label();
+                    indent.Text = "    ";
+                    row.AddChild(indent);
 
-                if (entry.SavePath != null)
-                {
-                    var loadSaveBtn = new Button();
-                    loadSaveBtn.Text = "Load Save";
-                    row.AddChild(loadSaveBtn);
-                    loadSaveBtn.Pressed += () =>
+                    var replayBtn = new Button();
+                    replayBtn.Text = $"Replay to floor {entry.Floor}";
+                    replayBtn.Alignment = HorizontalAlignment.Left;
+                    replayBtn.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+                    row.AddChild(replayBtn);
+
+                    // "Start from" dropdown — lists earlier floors that have saves.
+                    var startOptions = floorsWithSaves
+                        .Where(e => e.Floor < entry.Floor)
+                        .OrderByDescending(e => e.Floor)
+                        .ToList();
+
+                    OptionButton? dropdown = null;
+                    if (startOptions.Count > 0)
                     {
-                        closeMenu();
-                        LoadSave(captured);
-                    };
-                }
+                        dropdown = new OptionButton();
+                        dropdown.AddItem("From start", 0);
+                        for (int i = 0; i < startOptions.Count; i++)
+                            dropdown.AddItem($"From Floor {startOptions[i].Floor}", i + 1);
+                        dropdown.Selected = 0;
+                        row.AddChild(dropdown);
+                    }
 
-                // "Replay Floor" — loads this floor's save and replays only
-                // the commands between this floor and the next floor's log.
-                var nextFloor = seedEntries
-                    .Where(e => e.Floor > entry.Floor)
-                    .OrderBy(e => e.Floor)
-                    .FirstOrDefault();
-                if (entry.SavePath != null && nextFloor != null)
-                {
-                    var replayFloorBtn = new Button();
-                    replayFloorBtn.Text = "Replay Floor";
-                    row.AddChild(replayFloorBtn);
-                    var capturedNext = nextFloor;
-                    replayFloorBtn.Pressed += () =>
+                    var captured = entry;
+                    var capturedOptions = startOptions;
+                    var capturedDropdown = dropdown;
+                    replayBtn.Pressed += () =>
                     {
+                        int sel = capturedDropdown?.Selected ?? 0;
                         closeMenu();
-                        StartReplayFromFloor(capturedNext, captured);
+                        if (sel == 0 || capturedOptions.Count == 0)
+                            StartReplay(captured);
+                        else
+                            StartReplayFromFloor(captured, capturedOptions[sel - 1]);
                     };
+
+                    if (entry.SavePath != null)
+                    {
+                        var loadSaveBtn = new Button();
+                        loadSaveBtn.Text = "Load Save";
+                        row.AddChild(loadSaveBtn);
+                        loadSaveBtn.Pressed += () =>
+                        {
+                            closeMenu();
+                            LoadSave(captured);
+                        };
+                    }
+
+                    // "Replay Floor" — loads this floor's save and replays only
+                    // the commands between this floor and the next floor's log.
+                    var nextFloor = seedEntries
+                        .Where(e => e.Floor > entry.Floor)
+                        .OrderBy(e => e.Floor)
+                        .FirstOrDefault();
+                    if (entry.SavePath != null && nextFloor != null)
+                    {
+                        var replayFloorBtn = new Button();
+                        replayFloorBtn.Text = "Replay Floor";
+                        row.AddChild(replayFloorBtn);
+                        var capturedNext = nextFloor;
+                        replayFloorBtn.Pressed += () =>
+                        {
+                            closeMenu();
+                            StartReplayFromFloor(capturedNext, captured);
+                        };
+                    }
                 }
             }
         }
