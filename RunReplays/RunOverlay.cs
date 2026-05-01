@@ -78,6 +78,13 @@ internal static class RunOverlay
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
+    /// <summary>Hides the overlay canvas while in the main menu without changing the saved config.</summary>
+    internal static void HideForMainMenu()
+    {
+        if (_canvas != null && GodotObject.IsInstanceValid(_canvas))
+            _canvas.Visible = false;
+    }
+
     /// <summary>
     /// Called after a continued run restores the action buffer so the overlay
     /// immediately shows the last entries instead of appearing empty.

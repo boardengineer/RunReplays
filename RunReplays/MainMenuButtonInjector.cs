@@ -51,6 +51,7 @@ public static class MainMenuButtonInjector
 
         // Reset any replay in progress so the game returns to record mode.
         ReplayDispatcher.Clear();
+        RunOverlay.HideForMainMenu();
 
         // Start polling for dispatchable command changes (diagnostic).
         ReplayDispatcher.StartDispatchPoll();
