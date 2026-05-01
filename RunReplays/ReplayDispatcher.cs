@@ -765,6 +765,7 @@ public static class ReplayDispatcher
         ReplayEngine._pending.Clear();
         ReplayEngine._recentConsumed.Clear();
         ReplayEngine._replayActive = false;
+        ReplayEngine.IsReplayRun = false;
         RestoreGameSpeed();
         ResetAllPatchState();
     }

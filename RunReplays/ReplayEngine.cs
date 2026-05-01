@@ -99,6 +99,13 @@ public static class ReplayEngine
 
     public static bool IsActive => _pending.Count > 0 || _replayActive;
 
+    /// <summary>
+    /// True for the entire lifetime of a run that was started as a replay
+    /// (including after all commands are consumed). Cleared on return to main menu.
+    /// Use this — not IsActive — to suppress history recording at run-end.
+    /// </summary>
+    public static bool IsReplayRun { get; internal set; }
+
     public static string? ActiveSeed { get; set; }
 
     /// <summary>State suffix separator embedded in minimal log entries.</summary>
