@@ -50,15 +50,15 @@ internal static class RunOverlay
     private static Label?    _speedLabel;
 
     /// <summary>
-    /// Controls whether the overlay is visible. Backed by <see cref="RunReplaysConfig.ShowOverlay"/>
+    /// Controls whether the overlay is visible. Backed by <see cref="RunReplaysConfig.ShowReplayOverlay"/>
     /// so it persists across sessions. Toggled from the Run Replays menu.
     /// </summary>
     internal static bool OverlayVisible
     {
-        get => RunReplaysConfig.ShowOverlay;
+        get => RunReplaysConfig.ShowReplayOverlay;
         set
         {
-            RunReplaysConfig.ShowOverlay = value;
+            RunReplaysConfig.ShowReplayOverlay = value;
             if (_canvas != null && GodotObject.IsInstanceValid(_canvas))
                 _canvas.Visible = value;
             ModConfig.SaveDebounced<RunReplaysConfig>();
@@ -129,7 +129,7 @@ internal static class RunOverlay
         // ── CanvasLayer (always on top) ───────────────────────────────────────
         _canvas = new CanvasLayer();
         _canvas.Layer = 64;
-        _canvas.Visible = RunReplaysConfig.ShowOverlay;
+        _canvas.Visible = RunReplaysConfig.ShowReplayOverlay;
         NGame.Instance.AddChild(_canvas);
 
         // Full-rect control so child anchors work relative to the viewport.

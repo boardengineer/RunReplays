@@ -64,6 +64,9 @@ public static class MainMenuButtonInjector
         // Ensure bundled sample replays exist in the user's samples directory.
         ExtractBundledReplay();
 
+        if (!RunReplaysConfig.ShowRunReplaysButton)
+            return;
+
         // The container holding all vertical menu buttons.
         // Uses the Godot unique-name accessor ("%MainMenuTextButtons").
         var buttonContainer = __instance.GetNode<Control>("%MainMenuTextButtons");
