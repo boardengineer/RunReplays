@@ -612,9 +612,21 @@ public static class ReplayDispatcher
     /// </summary>
     public static void Step()
     {
+        if (!ReplayEngine.IsActive)
+            return;
+
         if (!_paused) Paused = true;
+
+        if (_dispatchInProgress
+            || ReplayState.ActionInFlight
+            || ReplayState.CardPlayInFlight
+            || ReplayState.PotionInFlight
+            || CardPlayReplayPatch.IsAwaitingEndTurnCompletion
+            || MapMoveInFlight)
+            return;
+
         _stepping = true;
-        DispatchNow();
+        Callable.From(ExecuteNext).CallDeferred();
     }
     private static float _delayBetweenCommands = 1.0f;
     /// <summary>
@@ -879,14 +891,18 @@ public static class ReplayDispatcher
             && ReplayEngine.PeekNext(out ReplayCommand? cmd) && cmd != null
             && cmd is MapMoveCommand)
         {
-            // Force-clear blockers so dispatch can proceed.
-            ReplayState.ClearActionInFlight();
-            MapMoveInFlight = false;
-            _dispatchInProgress = false;
-            _lastDispatchedCmd = null;
-            NMapScreen.Instance?.Open();
-            NMapScreen.Instance?.SetTravelEnabled(true);
-            DispatchNow();
+            var room = GetCurrentRoom();
+            if (room == null)
+            {
+                // Force-clear blockers so dispatch can proceed.
+                ReplayState.ClearActionInFlight();
+                MapMoveInFlight = false;
+                _dispatchInProgress = false;
+                _lastDispatchedCmd = null;
+                NMapScreen.Instance?.Open();
+                NMapScreen.Instance?.SetTravelEnabled(true);
+                DispatchNow();
+            }
         }
 
         ScheduleWatchdogTick();
@@ -919,6 +935,16 @@ public static class ReplayDispatcher
             GD.Print($"[RunReplays] TryDispatch miss — cmd={cmd.GetType().Name} dispatchable=[{dispatchableNames}]");
             DiagnosticLog.Write("Dispatch",
                 $"miss — cmd={cmd.GetType().Name}({cmd}) dispatchable=[{dispatchableNames}]");
+            if (cmd is MapMoveCommand && GetCurrentRoom() is TreasureRoom)
+            {
+                var sync = RunManager.Instance.TreasureRoomRelicSynchronizer;
+                var relics = sync.CurrentRelics;
+                if (relics != null && relics.Count > 0)
+                {
+                    try { sync.PickRelicLocally(0); }
+                    catch (InvalidOperationException) { }
+                }
+            }
             return;
         }
 

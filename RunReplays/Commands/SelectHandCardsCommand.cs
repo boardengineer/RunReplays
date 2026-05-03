@@ -79,7 +79,16 @@ public sealed class SelectHandCardsCommand : ReplayCommand
             HandSelectionCapture.PressHolder(nHand, holder);
         }
 
-        HandSelectionCapture.ConfirmSelection(nHand);
+        try
+        {
+            HandSelectionCapture.ConfirmSelection(nHand);
+        }
+        catch (System.Reflection.TargetInvocationException)
+        {
+            // Single-card selections auto-complete when PressHolder toggles the
+            // card, so the TaskCompletionSource is already resolved.  Swallow the
+            // "task already completed" exception — the selection succeeded.
+        }
         HandSelectionCapture.ActiveHand = null;
         return ExecuteResult.Ok();
     }
