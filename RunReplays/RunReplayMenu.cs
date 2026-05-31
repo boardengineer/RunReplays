@@ -37,6 +37,17 @@ public static class RunReplayMenu
         int? Ascension = null,
         string? LogPath = null);
 
+    public sealed record ReplayListEntry(
+        string Seed,
+        string CharacterId,
+        int Floor,
+        int Ascension,
+        DateTime SavedAt,
+        string MinimalLogPath,
+        string? SavePath,
+        bool IsSample,
+        string Target);
+
     private record ReplayEntry(
         string Seed,
         string CharacterId,
@@ -127,6 +138,22 @@ public static class RunReplayMenu
             entry.CharacterId,
             entry.Ascension,
             entry.MinimalLogPath);
+    }
+
+    public static IReadOnlyList<ReplayListEntry> ListReplays()
+    {
+        return LoadEntries()
+            .Select(entry => new ReplayListEntry(
+                entry.Seed,
+                entry.CharacterId,
+                entry.Floor,
+                entry.Ascension,
+                entry.SavedAt,
+                entry.MinimalLogPath,
+                entry.SavePath,
+                entry.IsSample,
+                $"{entry.Seed}:floor_{entry.Floor}"))
+            .ToList();
     }
 
     // ── List population ───────────────────────────────────────────────────────
