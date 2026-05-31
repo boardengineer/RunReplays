@@ -1,5 +1,6 @@
 using System;
 using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Models;
@@ -64,9 +65,17 @@ public sealed class UsePotionCommand : ReplayCommand
             target = CardPlayReplayPatch._currentCombatState?.GetCreature(TargetId);
         }
 
-        // Default to self when no target is specified.
-        if (target == null)
-            target = player.Creature;
+        if (target == null && !TargetId.HasValue)
+        {
+            target = potion.TargetType switch
+            {
+                TargetType.Self or TargetType.AnyPlayer => player.Creature,
+                TargetType.AnyEnemy => CardPlayReplayPatch._currentCombatState
+                    ?.Enemies
+                    ?.FirstOrDefault(enemy => enemy.IsAlive),
+                _ => null,
+            };
+        }
 
         try
         {

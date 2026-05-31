@@ -1042,12 +1042,24 @@ public static class ReplayDispatcher
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
             int gen = ++_dispatchGeneration;
-            NGame.Instance?.GetTree()?.CreateTimer(0.5f).Connect(
-                "timeout", Callable.From(() =>
+            float delay = PostSuccessDelay(cmd);
+            if (delay <= 0f)
+            {
+                Callable.From(() =>
                 {
                     if (_dispatchGeneration == gen)
                         TryDispatch();
-                }));
+                }).CallDeferred();
+            }
+            else
+            {
+                NGame.Instance?.GetTree()?.CreateTimer(delay).Connect(
+                    "timeout", Callable.From(() =>
+                    {
+                        if (_dispatchGeneration == gen)
+                            TryDispatch();
+                    }));
+            }
             return;
         }
         if (result.RetryDelayMs > 0)
@@ -1068,6 +1080,13 @@ public static class ReplayDispatcher
 
         DiagnosticLog.Write("Dispatch", $"UNRECOGNISED result from {cmd.GetType().Name}({cmd})");
         PlayerActionBuffer.LogMigrationWarning($"[Dispatcher] Unrecognised command: {cmd}");
+    }
+
+    private static float PostSuccessDelay(ReplayCommand cmd)
+    {
+        return cmd is ClaimRewardCommand or TakeCardCommand or SkipRewardsCommand
+            ? 0.05f
+            : 0.5f;
     }
 
 

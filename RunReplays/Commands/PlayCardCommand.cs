@@ -87,6 +87,9 @@ public class PlayCardCommand : ReplayCommand
         if (hand == null)
             return resolved;
 
+        if (hand.Any(card => ReferenceEquals(card, resolved)))
+            return resolved;
+
         string? recordedId = RecordedCardId();
         if (recordedId != null)
         {
@@ -102,9 +105,6 @@ public class PlayCardCommand : ReplayCommand
                 return matching;
             }
         }
-
-        if (hand.Any(card => ReferenceEquals(card, resolved)))
-            return resolved;
 
         return resolved;
     }

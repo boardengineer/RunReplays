@@ -5,6 +5,8 @@ using MegaCrit.Sts2.Core.Entities.Merchant;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Nodes.Events.Custom;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
+using MegaCrit.Sts2.Core.Rooms;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace RunReplays.Commands;
 
@@ -14,6 +16,10 @@ namespace RunReplays.Commands;
 /// </summary>
 public sealed class OpenShopCommand : ReplayCommand
 {
+    private static readonly PropertyInfo? RunStateProp =
+        typeof(RunManager).GetProperty("State",
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
     public OpenShopCommand() : base("")
     {
     }
@@ -24,7 +30,7 @@ public sealed class OpenShopCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        var room = ReplayState.ActiveMerchantRoom;
+        var room = ResolveRoom();
         if (room == null || !room.IsInsideTree())
             return ExecuteResult.Retry(200);
 
@@ -37,12 +43,23 @@ public sealed class OpenShopCommand : ReplayCommand
         return raw == "OpenShop" ? new OpenShopCommand() : null;
     }
 
+    internal static NMerchantRoom? ResolveRoom()
+    {
+        if (NMerchantRoom.Instance is { } instance)
+        {
+            ReplayState.ActiveMerchantRoom = instance;
+            return instance;
+        }
+
+        return ReplayState.ActiveMerchantRoom;
+    }
+
     /// <summary>
     ///     Invokes OnTryPurchaseWrapper on the most-derived type of the entry,
     ///     filling any extra parameters (e.g. MerchantCardRemovalEntry.cancelable)
     ///     with their declared default values.
     /// </summary>
-    internal static void InvokePurchase(MerchantEntry entry)
+    internal static void InvokePurchase(MerchantEntry entry, MerchantInventory? inventory = null)
     {
         var method = entry.GetType()
                          .GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
@@ -60,11 +77,13 @@ public sealed class OpenShopCommand : ReplayCommand
         }
 
         var args = method.GetParameters()
-            .Select(p => p.HasDefaultValue
-                ? p.DefaultValue
-                : p.ParameterType.IsValueType
-                    ? Activator.CreateInstance(p.ParameterType)
-                    : null)
+            .Select(p => inventory != null && p.ParameterType.IsInstanceOfType(inventory)
+                ? inventory
+                : p.HasDefaultValue
+                    ? p.DefaultValue
+                    : p.ParameterType.IsValueType
+                        ? Activator.CreateInstance(p.ParameterType)
+                        : null)
             .ToArray();
 
         var result = method.Invoke(entry, args);
@@ -112,8 +131,8 @@ public sealed class OpenShopCommand : ReplayCommand
                 foreach (var item in enumerable)
                     if (item is MerchantEntry e)
                         all.Add(e);
-                    else if (value is MerchantEntry single)
-                        all.Add(single);
+            else if (value is MerchantEntry single)
+                all.Add(single);
         }
 
         foreach (var prop in inventory.GetType().GetProperties(bf))
@@ -135,8 +154,8 @@ public sealed class OpenShopCommand : ReplayCommand
                 foreach (var item in enumerable)
                     if (item is MerchantEntry e && !all.Contains(e))
                         all.Add(e);
-                    else if (value is MerchantEntry single && !all.Contains(single))
-                        all.Add(single);
+            else if (value is MerchantEntry single && !all.Contains(single))
+                all.Add(single);
         }
 
         if (all.Count > 0)
@@ -147,9 +166,31 @@ public sealed class OpenShopCommand : ReplayCommand
             return all;
         }
 
+        var localInventoryEntries = GetLocalInventory()?.AllEntries?.ToList();
+        if (localInventoryEntries is { Count: > 0 })
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[ShopReplayPatch] Found {localInventoryEntries.Count} entries in MerchantRoom.GetLocalInventory " +
+                $"({string.Join(", ", localInventoryEntries.Select(e => e.GetType().Name))}).");
+            return localInventoryEntries;
+        }
+
         PlayerActionBuffer.LogToDevConsole(
             $"[ShopReplayPatch] Inventory ({inventory.GetType().Name}) yielded no MerchantEntry objects.");
         return null;
+    }
+
+    internal static MerchantInventory? GetLocalInventory()
+    {
+        var state = RunStateProp?.GetValue(RunManager.Instance);
+        var currentRoom = state?.GetType()
+            .GetProperty("CurrentRoom", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+            ?.GetValue(state);
+
+        if (currentRoom is not MerchantRoom merchantRoom)
+            return null;
+
+        return merchantRoom.GetLocalInventory();
     }
 }
 
@@ -175,11 +216,10 @@ public sealed class BuyCardCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        var room = ReplayState.ActiveMerchantRoom;
-        if (room == null || !room.IsInsideTree())
-            return ExecuteResult.Retry(200);
-
-        var entries = OpenShopCommand.GetEntries(room);
+        var room = OpenShopCommand.ResolveRoom();
+        var entries = room != null ? OpenShopCommand.GetEntries(room) : null;
+        var inventory = OpenShopCommand.GetLocalInventory();
+        entries ??= inventory?.AllEntries?.ToList();
         if (entries == null || entries.Count == 0)
             return ExecuteResult.Retry(200);
 
@@ -192,7 +232,7 @@ public sealed class BuyCardCommand : ReplayCommand
             return ExecuteResult.Ok();
         }
 
-        OpenShopCommand.InvokePurchase(entry);
+        OpenShopCommand.InvokePurchase(entry, inventory);
         return ExecuteResult.Ok();
     }
 
@@ -239,9 +279,11 @@ public sealed class BuyRelicCommand : ReplayCommand
     {
         List<MerchantEntry>? entries = null;
 
-        var room = ReplayState.ActiveMerchantRoom;
+        var room = OpenShopCommand.ResolveRoom();
         if (room != null && room.IsInsideTree())
             entries = OpenShopCommand.GetEntries(room);
+        var inventory = OpenShopCommand.GetLocalInventory();
+        entries ??= inventory?.AllEntries?.ToList();
 
         // Fall back to fake merchant if regular shop isn't active.
         if ((entries == null || entries.Count == 0) && ReplayState.FakeMerchantInstance != null)
@@ -259,7 +301,7 @@ public sealed class BuyRelicCommand : ReplayCommand
             return ExecuteResult.Ok();
         }
 
-        OpenShopCommand.InvokePurchase(entry);
+        OpenShopCommand.InvokePurchase(entry, inventory);
         return ExecuteResult.Ok();
     }
 
@@ -306,8 +348,8 @@ public sealed class BuyRelicCommand : ReplayCommand
                 foreach (var item in enumerable)
                     if (item is MerchantEntry e)
                         all.Add(e);
-                    else if (value is MerchantEntry single)
-                        all.Add(single);
+            else if (value is MerchantEntry single)
+                all.Add(single);
         }
 
         foreach (var prop in inventory.GetType().GetProperties(bf))
@@ -327,8 +369,8 @@ public sealed class BuyRelicCommand : ReplayCommand
                 foreach (var item in enumerable)
                     if (item is MerchantEntry e && !all.Contains(e))
                         all.Add(e);
-                    else if (value is MerchantEntry single && !all.Contains(single))
-                        all.Add(single);
+            else if (value is MerchantEntry single && !all.Contains(single))
+                all.Add(single);
         }
 
         return all.Count > 0 ? all : null;
@@ -354,11 +396,10 @@ public sealed class BuyCardRemovalCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        var room = ReplayState.ActiveMerchantRoom;
-        if (room == null || !room.IsInsideTree())
-            return ExecuteResult.Retry(200);
-
-        var entries = OpenShopCommand.GetEntries(room);
+        var room = OpenShopCommand.ResolveRoom();
+        var entries = room != null ? OpenShopCommand.GetEntries(room) : null;
+        var inventory = OpenShopCommand.GetLocalInventory();
+        entries ??= inventory?.AllEntries?.ToList();
         if (entries == null || entries.Count == 0)
             return ExecuteResult.Retry(200);
 
@@ -369,7 +410,7 @@ public sealed class BuyCardRemovalCommand : ReplayCommand
             return ExecuteResult.Ok();
         }
 
-        OpenShopCommand.InvokePurchase(entry);
+        OpenShopCommand.InvokePurchase(entry, inventory);
         return ExecuteResult.Ok();
     }
 
@@ -401,11 +442,10 @@ public sealed class BuyPotionCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        var room = ReplayState.ActiveMerchantRoom;
-        if (room == null || !room.IsInsideTree())
-            return ExecuteResult.Retry(200);
-
-        var entries = OpenShopCommand.GetEntries(room);
+        var room = OpenShopCommand.ResolveRoom();
+        var entries = room != null ? OpenShopCommand.GetEntries(room) : null;
+        var inventory = OpenShopCommand.GetLocalInventory();
+        entries ??= inventory?.AllEntries?.ToList();
         if (entries == null || entries.Count == 0)
             return ExecuteResult.Retry(200);
 
@@ -418,7 +458,7 @@ public sealed class BuyPotionCommand : ReplayCommand
             return ExecuteResult.Ok();
         }
 
-        OpenShopCommand.InvokePurchase(entry);
+        OpenShopCommand.InvokePurchase(entry, inventory);
         return ExecuteResult.Ok();
     }
 

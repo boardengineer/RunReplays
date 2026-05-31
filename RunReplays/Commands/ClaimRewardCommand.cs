@@ -49,18 +49,50 @@ public class ClaimRewardCommand : ReplayCommand
             return ExecuteResult.Retry(200);
 
         var buttons = EnumerateRewardButtons(screen).ToList();
-        if (RewardIndex < 0 || RewardIndex >= buttons.Count)
+        int index = ResolveRewardIndex(buttons);
+        if (index < 0 || index >= buttons.Count)
         {
             PlayerActionBuffer.LogMigrationWarning(
                 $"[ClaimReward] Index {RewardIndex} out of range (count={buttons.Count}) — retrying.");
             return ExecuteResult.Retry(200);
         }
 
-        var (button, reward) = buttons[RewardIndex];
+        var (button, reward) = buttons[index];
         InvokeGetReward(button);
         PlayerActionBuffer.LogDispatcher(
-            $"[ClaimReward] Claimed reward [{RewardIndex}] ({reward.GetType().Name}).");
+            $"[ClaimReward] Claimed reward [{index}] ({reward.GetType().Name}).");
         return ExecuteResult.Ok();
+    }
+
+    private int ResolveRewardIndex(IReadOnlyList<(Node button, object reward)> buttons)
+    {
+        string? expectedType = ExpectedRewardType();
+        if (expectedType == null)
+            return RewardIndex;
+
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            if (IsRewardOfType(buttons[i].reward, expectedType))
+            {
+                if (i != RewardIndex)
+                {
+                    PlayerActionBuffer.LogMigrationWarning(
+                        $"[ClaimReward] Remapped {Comment} from index {RewardIndex} to {i}.");
+                }
+                return i;
+            }
+        }
+
+        return RewardIndex;
+    }
+
+    private string? ExpectedRewardType()
+    {
+        if (string.IsNullOrWhiteSpace(Comment))
+            return null;
+
+        string type = Comment.Split(':', 2)[0].Trim();
+        return string.IsNullOrEmpty(type) ? null : type;
     }
 
     public static ClaimRewardCommand? TryParse(string raw)

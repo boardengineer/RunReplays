@@ -15,5 +15,6 @@ public static class CardRewardReplayPatch
             return;
 
         ReplayState.CardRewardSelectionScreen = __instance;
+        ReplayDispatcher.DispatchNow();
     }
 }
