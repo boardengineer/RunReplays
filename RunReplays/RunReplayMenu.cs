@@ -28,6 +28,15 @@ namespace RunReplays;
 /// </summary>
 public static class RunReplayMenu
 {
+    public sealed record ReplayStartResult(
+        bool Success,
+        string Message,
+        string? Seed = null,
+        int? Floor = null,
+        string? CharacterId = null,
+        int? Ascension = null,
+        string? LogPath = null);
+
     private record ReplayEntry(
         string Seed,
         string CharacterId,
@@ -47,6 +56,11 @@ public static class RunReplayMenu
     /// </summary>
     internal static void AutoPlay(string target)
     {
+        _ = StartReplayTarget(target);
+    }
+
+    public static ReplayStartResult StartReplayTarget(string target)
+    {
         string seed;
         int? targetFloor = null;
 
@@ -59,13 +73,22 @@ public static class RunReplayMenu
                 int.TryParse(floorPart["floor_".Length..], out int f))
                 targetFloor = f;
             else
-                GD.PrintErr($"[RunReplays] AutoPlay: invalid floor specifier '{floorPart}', replaying highest floor.");
+                GD.PrintErr($"[RunReplays] StartReplayTarget: invalid floor specifier '{floorPart}', replaying highest floor.");
         }
         else
         {
             seed = target;
         }
 
+        return StartReplayBySeed(seed, targetFloor);
+    }
+
+    public static ReplayStartResult StartReplayBySeed(string seed, int? targetFloor = null)
+    {
+        if (string.IsNullOrWhiteSpace(seed))
+            return new ReplayStartResult(false, "Missing replay seed.");
+
+        seed = seed.Trim();
         var entries = LoadEntries()
             .Where(e => string.Equals(e.Seed, seed, StringComparison.OrdinalIgnoreCase))
             .OrderByDescending(e => e.Floor)
@@ -73,8 +96,9 @@ public static class RunReplayMenu
 
         if (entries.Count == 0)
         {
-            GD.PrintErr($"[RunReplays] AutoPlay: no replays found for seed '{seed}'.");
-            return;
+            string message = $"No replays found for seed '{seed}'.";
+            GD.PrintErr($"[RunReplays] StartReplayBySeed: {message}");
+            return new ReplayStartResult(false, message, Seed: seed);
         }
 
         ReplayEntry entry;
@@ -83,8 +107,9 @@ public static class RunReplayMenu
             entry = entries.FirstOrDefault(e => e.Floor == targetFloor.Value)!;
             if (entry == null)
             {
-                GD.PrintErr($"[RunReplays] AutoPlay: no replay found for seed '{seed}' floor {targetFloor.Value}.");
-                return;
+                string message = $"No replay found for seed '{seed}' floor {targetFloor.Value}.";
+                GD.PrintErr($"[RunReplays] StartReplayBySeed: {message}");
+                return new ReplayStartResult(false, message, Seed: seed, Floor: targetFloor);
             }
         }
         else
@@ -92,8 +117,16 @@ public static class RunReplayMenu
             entry = entries.First();
         }
 
-        GD.Print($"[RunReplays] AutoPlay: launching seed={entry.Seed} floor={entry.Floor}");
+        GD.Print($"[RunReplays] StartReplayBySeed: launching seed={entry.Seed} floor={entry.Floor}");
         StartReplay(entry);
+        return new ReplayStartResult(
+            true,
+            $"Starting replay seed={entry.Seed} floor={entry.Floor}.",
+            entry.Seed,
+            entry.Floor,
+            entry.CharacterId,
+            entry.Ascension,
+            entry.MinimalLogPath);
     }
 
     // ── List population ───────────────────────────────────────────────────────
