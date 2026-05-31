@@ -140,6 +140,53 @@ public static class RunReplayMenu
             entry.MinimalLogPath);
     }
 
+    public static ReplayStartResult StartReplayFromFloorBySeed(
+        string seed,
+        int targetFloor,
+        int startFloor)
+    {
+        if (string.IsNullOrWhiteSpace(seed))
+            return new ReplayStartResult(false, "Missing replay seed.");
+
+        seed = seed.Trim();
+        var entries = LoadEntries()
+            .Where(e => string.Equals(e.Seed, seed, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        ReplayEntry? target = entries.FirstOrDefault(e => e.Floor == targetFloor);
+        if (target == null)
+            return new ReplayStartResult(
+                false,
+                $"No replay found for seed '{seed}' floor {targetFloor}.",
+                Seed: seed,
+                Floor: targetFloor);
+
+        ReplayEntry? startFrom = entries.FirstOrDefault(e => e.Floor == startFloor);
+        if (startFrom == null)
+            return new ReplayStartResult(
+                false,
+                $"No starting save found for seed '{seed}' floor {startFloor}.",
+                Seed: seed,
+                Floor: targetFloor);
+
+        if (startFrom.SavePath == null)
+            return new ReplayStartResult(
+                false,
+                $"Replay seed '{seed}' floor {startFloor} has no run.save.",
+                Seed: seed,
+                Floor: targetFloor);
+
+        StartReplayFromFloor(target, startFrom);
+        return new ReplayStartResult(
+            true,
+            $"Starting replay seed={target.Seed} from floor {startFrom.Floor} to floor {target.Floor}.",
+            target.Seed,
+            target.Floor,
+            target.CharacterId,
+            target.Ascension,
+            target.MinimalLogPath);
+    }
+
     public static IReadOnlyList<ReplayListEntry> ListReplays()
     {
         return LoadEntries()

@@ -368,7 +368,7 @@ public static class CardPlayReplayPatch
     /// before dispatching the next command.  Extra frames allow enemy
     /// animations (damage numbers, status effects, deaths) to finish.
     /// </summary>
-    private const int QuietFramesRequired = 3;
+    private const int QuietFramesRequired = 12;
 
     
     

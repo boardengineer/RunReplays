@@ -1,4 +1,5 @@
 using RunReplays.Patches.Replay;
+using MegaCrit.Sts2.Core.Combat;
 namespace RunReplays.Commands;
 
 /// <summary>
@@ -17,6 +18,11 @@ public class EndTurnCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
+        if (CombatManager.Instance == null
+            || !CombatManager.Instance.IsInProgress
+            || CombatManager.Instance.IsOverOrEnding)
+            return ExecuteResult.Ok();
+
         if (CardPlayReplayPatch.TryEndTurn())
             return ExecuteResult.Ok();
         return ExecuteResult.Retry(200);
