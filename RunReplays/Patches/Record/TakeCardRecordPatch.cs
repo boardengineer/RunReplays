@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Reflection;
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Entities.CardRewardAlternatives;
 using MegaCrit.Sts2.Core.Entities.Rewards;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
@@ -18,6 +20,10 @@ public static class TakeCardRecordPatch
     private static readonly FieldInfo? CardRowField =
         typeof(NCardRewardSelectionScreen).GetField(
             "_cardRow", BindingFlags.NonPublic | BindingFlags.Instance);
+
+    private static readonly FieldInfo? ExtraOptionsField =
+        typeof(NCardRewardSelectionScreen).GetField(
+            "_extraOptions", BindingFlags.NonPublic | BindingFlags.Instance);
 
     /// <summary>
     /// Fired when the player clicks a card holder to take it.
@@ -66,22 +72,27 @@ public static class TakeCardRecordPatch
 
     /// <summary>
     /// Fired when the player selects an alternate reward option.
-    /// Sacrifice (DismissScreenAndRemoveReward) records "TakeCard sacrifice".
-    /// Skip (DismissScreenAndKeepReward) records "TakeCard skip".
+    /// Sacrifice (EndSelectionAndCompleteReward) records "TakeCard sacrifice".
+    /// Skip (EndSelectionAndDoNotCompleteReward) records "TakeCard skip".
     /// </summary>
     [HarmonyPrefix]
     [HarmonyPatch("OnAlternateRewardSelected")]
-    public static void OnAlternatePrefix(PostAlternateCardRewardAction afterSelected)
+    public static void OnAlternatePrefix(NCardRewardSelectionScreen __instance, int index)
     {
         if (ReplayEngine.IsActive) return;
 
-        if (afterSelected == PostAlternateCardRewardAction.DismissScreenAndRemoveReward)
+        var extras = ExtraOptionsField?.GetValue(__instance) as IReadOnlyList<CardRewardAlternative>;
+        if (extras == null || index < 0 || index >= extras.Count) return;
+
+        var afterSelected = extras[index].AfterSelected;
+
+        if (afterSelected == PostAlternateCardRewardAction.EndSelectionAndCompleteReward)
         {
             var cmd = TakeCardCommand.Sacrifice();
             cmd.Comment = "sacrifice";
             PlayerActionBuffer.Record(cmd.ToLogString());
         }
-        else if (afterSelected == PostAlternateCardRewardAction.DismissScreenAndKeepReward)
+        else if (afterSelected == PostAlternateCardRewardAction.EndSelectionAndDoNotCompleteReward)
         {
             var cmd = TakeCardCommand.Skip();
             cmd.Comment = "skip";
