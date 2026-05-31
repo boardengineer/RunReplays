@@ -318,7 +318,7 @@ public static class ReplayDispatcher
                 if (combatState != null)
                 {
                     var p = combatState.Players.FirstOrDefault();
-                    if (p != null)
+                    if (p?.PlayerCombatState != null)
                         for (int i = 0; i < p.PlayerCombatState.Hand.Cards.Count; i++)
                             commands.Add(new SelectHandCardsCommand(new[] { i }));
                 }
