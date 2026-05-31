@@ -1,3 +1,5 @@
+using System.Linq;
+using Godot;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
@@ -56,7 +58,8 @@ public class PlayCardCommand : ReplayCommand
             return ExecuteResult.Retry(100);
         }
 
-        PlayerActionBuffer.LogDispatcher("Found card to play");
+        card = ResolveCurrentHandCard(card);
+        PlayerActionBuffer.LogDispatcher($"Found card to play: {card.Id.Entry}");
 
         Creature? target = null;
         if (TargetId.HasValue)
@@ -73,6 +76,52 @@ public class PlayCardCommand : ReplayCommand
         if (played)
             return ExecuteResult.Ok();
         return ExecuteResult.Retry(100);
+    }
+
+    private CardModel ResolveCurrentHandCard(CardModel resolved)
+    {
+        var hand = CardPlayReplayPatch.ResolveLocalPlayer()
+            ?.PlayerCombatState
+            ?.Hand
+            ?.Cards;
+        if (hand == null)
+            return resolved;
+
+        if (hand.Any(card => ReferenceEquals(card, resolved)))
+            return resolved;
+
+        string? recordedId = RecordedCardId();
+        if (recordedId != null)
+        {
+            GD.Print(
+                $"[RunReplays] [PlayCard] command={ToLogString()} hand=[{string.Join(", ", hand.Select(card => card.Id.Entry))}] resolved={resolved.Id.Entry}");
+            var matching = hand.LastOrDefault(card => card.Id.Entry == recordedId);
+            if (matching != null)
+            {
+                GD.Print(
+                    $"[RunReplays] [PlayCard] selected recorded card {recordedId} from hand for command {ToLogString()}");
+                PlayerActionBuffer.LogDispatcher(
+                    $"[RunReplays] Resolved replay combat card {CombatCardIndex} via recorded hand card {recordedId}.");
+                return matching;
+            }
+        }
+
+        return resolved;
+    }
+
+    private string? RecordedCardId()
+    {
+        if (string.IsNullOrWhiteSpace(Comment))
+            return null;
+
+        const string prefix = "CARD.";
+        int start = Comment.IndexOf(prefix, StringComparison.Ordinal);
+        if (start < 0)
+            return null;
+
+        start += prefix.Length;
+        int end = Comment.IndexOfAny([' ', ')'], start);
+        return end > start ? Comment[start..end] : Comment[start..];
     }
 
     public static PlayCardCommand? TryParse(string raw)

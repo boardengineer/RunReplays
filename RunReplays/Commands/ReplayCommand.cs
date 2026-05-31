@@ -46,6 +46,12 @@ public abstract class ReplayCommand
     /// </summary>
     public string? Comment { get; set; }
 
+    /// <summary>
+    /// Optional state snapshot suffix from minimal replay entries, delimited by
+    /// " || ". Commands can use this to recover recorder context.
+    /// </summary>
+    public string? StateSuffix { get; set; }
+
     protected ReplayCommand(string rawText)
     {
         RawText = rawText;

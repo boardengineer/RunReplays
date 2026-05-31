@@ -9,6 +9,7 @@ using MegaCrit.Sts2.Core.Map;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 using MegaCrit.Sts2.Core.Nodes.Screens.Map;
+using MegaCrit.Sts2.Core.Nodes.Screens.Overlays;
 using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 using RunReplays.Commands;
@@ -38,6 +39,23 @@ public static class ReplayDispatcher
     {
         var state = RunStateProp?.GetValue(RunManager.Instance) as IRunState;
         return state?.CurrentRoom;
+    }
+
+    private static NCardGridSelectionScreen? ActiveCardGridSelectionScreen()
+    {
+        var captured = CardGridScreenCapture.ActiveScreen;
+        if (captured != null
+            && GodotObject.IsInstanceValid(captured)
+            && captured.IsInsideTree())
+            return captured;
+
+        var overlay = NOverlayStack.Instance?.Peek() as NCardGridSelectionScreen;
+        if (overlay != null
+            && GodotObject.IsInstanceValid(overlay)
+            && overlay.IsInsideTree())
+            return overlay;
+
+        return null;
     }
 
     private static bool LocalPlayerHasPotions()
@@ -260,7 +278,7 @@ public static class ReplayDispatcher
             // -- selection screens --
             else if (type == typeof(SelectGridCardCommand))
             {
-                var screen = CardGridScreenCapture.ActiveScreen;
+                var screen = ActiveCardGridSelectionScreen();
                 if (screen != null)
                 {
                     var cards = CardGridScreenCapture.CardsField?.GetValue(screen)
@@ -272,7 +290,7 @@ public static class ReplayDispatcher
             }
             else if (type == typeof(ClickGridCardCommand))
             {
-                var screen = CardGridScreenCapture.ActiveScreen;
+                var screen = ActiveCardGridSelectionScreen();
                 if (screen != null)
                 {
                     var cards = CardGridScreenCapture.CardsField?.GetValue(screen)
@@ -318,7 +336,7 @@ public static class ReplayDispatcher
                 if (combatState != null)
                 {
                     var p = combatState.Players.FirstOrDefault();
-                    if (p != null)
+                    if (p?.PlayerCombatState != null)
                         for (int i = 0; i < p.PlayerCombatState.Hand.Cards.Count; i++)
                             commands.Add(new SelectHandCardsCommand(new[] { i }));
                 }
@@ -402,10 +420,10 @@ public static class ReplayDispatcher
 
         
         var types = new HashSet<Type>();
+        if (ReplayEngine.PeekNext(out ReplayCommand? nextCommand) && nextCommand?.IsSelectionCommand == true)
+            types.Add(nextCommand.GetType());
         
-        if (CardGridScreenCapture.ActiveScreen != null
-            && GodotObject.IsInstanceValid(CardGridScreenCapture.ActiveScreen)
-            && CardGridScreenCapture.ActiveScreen.IsInsideTree())
+        if (ActiveCardGridSelectionScreen() != null)
         {
             types.Add(typeof(SelectGridCardCommand));
             types.Add(typeof(ClickGridCardCommand));
@@ -434,9 +452,7 @@ public static class ReplayDispatcher
             types.Add(typeof(DiscardPotionCommand));
         }
 
-        if (CardGridScreenCapture.ActiveScreen != null
-            && GodotObject.IsInstanceValid(CardGridScreenCapture.ActiveScreen)
-            && CardGridScreenCapture.ActiveScreen.IsInsideTree())
+        if (ActiveCardGridSelectionScreen() != null)
         {
             types.Add(typeof(SelectGridCardCommand));
             types.Add(typeof(ClickGridCardCommand));
@@ -456,7 +472,7 @@ public static class ReplayDispatcher
             && GodotObject.IsInstanceValid(CrystalSphereReplayPatch.ActiveScreen))
             types.Add(typeof(CrystalSphereClickCommand));
 
-        if (CombatManager.Instance.IsInProgress && CombatManager.Instance.IsPlayPhase)
+        if (CardPlayReplayPatch.IsCombatPlayPhase())
         {
             types.Add(typeof(PlayCardCommand));
             types.Add(typeof(EndTurnCommand));
@@ -987,7 +1003,14 @@ public static class ReplayDispatcher
         if (!ReplayEngine.PeekNext(out ReplayCommand? cmd) || cmd == null)
             return;
 
-        if (!GetDispatchableTypes().Contains(cmd.GetType()))
+        bool terminalEndTurn = cmd is EndTurnCommand
+            && (CombatManager.Instance == null
+                || !CombatManager.Instance.IsInProgress
+                || CombatManager.Instance.IsOverOrEnding);
+
+        if (!terminalEndTurn
+            && !cmd.IsSelectionCommand
+            && !GetDispatchableTypes().Contains(cmd.GetType()))
         {
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
@@ -997,6 +1020,7 @@ public static class ReplayDispatcher
 
         _lastDispatchTick = System.Environment.TickCount64;
 
+        GD.Print($"[RunReplays] ExecuteNext dispatching {cmd.GetType().Name} selection={cmd.IsSelectionCommand}");
         DiagnosticLog.Write("Dispatch", $"execute → {cmd.GetType().Name}({cmd})");
         ExecuteResult result;
         try
@@ -1018,12 +1042,24 @@ public static class ReplayDispatcher
             _dispatchInProgress = false;
             _lastDispatchedCmd = null;
             int gen = ++_dispatchGeneration;
-            NGame.Instance?.GetTree()?.CreateTimer(0.5f).Connect(
-                "timeout", Callable.From(() =>
+            float delay = PostSuccessDelay(cmd);
+            if (delay <= 0f)
+            {
+                Callable.From(() =>
                 {
                     if (_dispatchGeneration == gen)
                         TryDispatch();
-                }));
+                }).CallDeferred();
+            }
+            else
+            {
+                NGame.Instance?.GetTree()?.CreateTimer(delay).Connect(
+                    "timeout", Callable.From(() =>
+                    {
+                        if (_dispatchGeneration == gen)
+                            TryDispatch();
+                    }));
+            }
             return;
         }
         if (result.RetryDelayMs > 0)
@@ -1044,6 +1080,13 @@ public static class ReplayDispatcher
 
         DiagnosticLog.Write("Dispatch", $"UNRECOGNISED result from {cmd.GetType().Name}({cmd})");
         PlayerActionBuffer.LogMigrationWarning($"[Dispatcher] Unrecognised command: {cmd}");
+    }
+
+    private static float PostSuccessDelay(ReplayCommand cmd)
+    {
+        return cmd is ClaimRewardCommand or TakeCardCommand or SkipRewardsCommand
+            ? 0.05f
+            : 0.5f;
     }
 
 

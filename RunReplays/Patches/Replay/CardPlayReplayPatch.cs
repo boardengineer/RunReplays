@@ -194,6 +194,29 @@ public static class CardPlayReplayPatch
         return player;
     }
 
+    // STS2 v0.104.0 removed CombatManager.IsPlayPhase.
+    internal static bool IsCombatPlayPhase(Player? player = null)
+    {
+        try
+        {
+            player ??= ResolveLocalPlayer();
+            var combatState = CombatManager.Instance.DebugOnlyGetState();
+            bool playerTurn = player != null
+                ? CombatManager.Instance.IsPartOfPlayerTurn(player)
+                : combatState?.CurrentSide.ToString().Equals("Player", StringComparison.OrdinalIgnoreCase) == true;
+
+            return CombatManager.Instance.IsInProgress
+                && playerTurn
+                && !CombatManager.Instance.EndingPlayerTurnPhaseOne
+                && !CombatManager.Instance.EndingPlayerTurnPhaseTwo
+                && !CombatManager.Instance.PlayerActionsDisabled;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     /// <summary>
     /// Returns true when combat is in progress, a local player exists, and
     /// the player's hand has been drawn (i.e. cards are available).
@@ -206,7 +229,7 @@ public static class CardPlayReplayPatch
                 return false;
 
             // Cards can't be played while the game is drawing cards.
-            if (!CombatManager.Instance.IsPlayPhase)
+            if (!IsCombatPlayPhase())
                 return false;
 
             var state = CombatManager.Instance.DebugOnlyGetState();
@@ -345,7 +368,7 @@ public static class CardPlayReplayPatch
     /// before dispatching the next command.  Extra frames allow enemy
     /// animations (damage numbers, status effects, deaths) to finish.
     /// </summary>
-    private const int QuietFramesRequired = 3;
+    private const int QuietFramesRequired = 12;
 
     
     
@@ -492,7 +515,7 @@ public static class CardPlayReplayPatch
         }
 
         // Wait until combat is in progress, in the play phase, and a player is available.
-        if (!CombatManager.Instance.IsInProgress || !CombatManager.Instance.IsPlayPhase || ResolveLocalPlayer() == null)
+        if (!IsCombatPlayPhase() || ResolveLocalPlayer() == null)
         {
             return false;
         }

@@ -14,6 +14,19 @@ namespace RunReplays;
 /// </summary>
 public static class ReplayEngine
 {
+    public sealed record ReplayStatus(
+        bool IsActive,
+        bool IsReplayRun,
+        string? ActiveSeed,
+        int LoadedCount,
+        int PendingCount,
+        int ConsumedCount,
+        string? CurrentCommand,
+        string? CurrentStateSuffix,
+        IReadOnlyList<string> NextCommands,
+        IReadOnlyList<string?> NextStateSuffixes,
+        IReadOnlyList<string> RecentConsumed);
+
     internal static readonly Queue<ReplayCommand> _pending = new();
 
     // ── Overlay context ───────────────────────────────────────────────────────
@@ -108,6 +121,24 @@ public static class ReplayEngine
 
     public static string? ActiveSeed { get; set; }
 
+    public static ReplayStatus GetStatus()
+    {
+        int pendingCount = _pending.Count;
+        ReplayCommand[] pending = _pending.ToArray();
+        return new ReplayStatus(
+            IsActive,
+            IsReplayRun,
+            ActiveSeed,
+            _loadedCommands.Count,
+            pendingCount,
+            Math.Max(0, _loadedCommands.Count - pendingCount),
+            pending.Length > 0 ? pending[0].ToLogString() : null,
+            pending.Length > 0 ? pending[0].StateSuffix : null,
+            pending.Skip(1).Take(3).Select(command => command.ToLogString()).ToList(),
+            pending.Skip(1).Take(3).Select(command => command.StateSuffix).ToList(),
+            _recentConsumed.Select(command => command.ToLogString()).ToList());
+    }
+
     /// <summary>State suffix separator embedded in minimal log entries.</summary>
     private const string StateSeparator = " || ";
 
@@ -129,6 +160,7 @@ public static class ReplayEngine
 
             int sepIdx = raw.IndexOf(StateSeparator, StringComparison.Ordinal);
             string cmdText = sepIdx >= 0 ? raw[..sepIdx] : raw;
+            string? stateSuffix = sepIdx >= 0 ? raw[(sepIdx + StateSeparator.Length)..] : null;
 
             // Strip inline comment: "CommandText # comment"
             string? comment = null;
@@ -148,6 +180,7 @@ public static class ReplayEngine
             }
 
             parsed.Comment = comment;
+            parsed.StateSuffix = stateSuffix;
             _loadedCommands.Add(parsed);
             _pending.Enqueue(parsed);
         }

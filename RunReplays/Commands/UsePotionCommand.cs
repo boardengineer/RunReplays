@@ -1,4 +1,6 @@
 using System;
+using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Models;
@@ -40,8 +42,7 @@ public sealed class UsePotionCommand : ReplayCommand
     public override ExecuteResult Execute()
     {
         // Wait until the game is in the play phase before using a combat potion.
-        var combat = MegaCrit.Sts2.Core.Combat.CombatManager.Instance;
-        if (combat != null && !combat.IsPlayPhase)
+        if (!CardPlayReplayPatch.IsCombatPlayPhase())
             return ExecuteResult.Retry(200);
 
         Player? player = CardPlayReplayPatch.ResolveLocalPlayer();
@@ -64,13 +65,21 @@ public sealed class UsePotionCommand : ReplayCommand
             target = CardPlayReplayPatch._currentCombatState?.GetCreature(TargetId);
         }
 
-        // Default to self when no target is specified.
-        if (target == null)
-            target = player.Creature;
+        if (target == null && !TargetId.HasValue)
+        {
+            target = potion.TargetType switch
+            {
+                TargetType.Self or TargetType.AnyPlayer => player.Creature,
+                TargetType.AnyEnemy => CardPlayReplayPatch._currentCombatState
+                    ?.Enemies
+                    ?.FirstOrDefault(enemy => enemy.IsAlive),
+                _ => null,
+            };
+        }
 
         try
         {
-            if (combat != null)
+            if (CombatManager.Instance != null)
                 ReplayState.PotionInFlight = true;
 
             potion.EnqueueManualUse(target);

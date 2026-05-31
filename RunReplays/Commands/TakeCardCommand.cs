@@ -116,15 +116,17 @@ public class TakeCardCommand : ReplayCommand
         var extras = ExtraOptionsField?.GetValue(screen)
             as IReadOnlyList<CardRewardAlternative>;
 
-        // Find the skip option (AfterSelected == DismissScreenAndKeepReward).
+        // Find the skip option (AfterSelected == EndSelectionAndDoNotCompleteReward).
         CardRewardAlternative? skipAlt = null;
+        int skipIndex = -1;
         if (extras != null)
         {
-            foreach (var alt in extras)
+            for (int i = 0; i < extras.Count; i++)
             {
-                if (alt.AfterSelected == MegaCrit.Sts2.Core.Entities.Rewards.PostAlternateCardRewardAction.DismissScreenAndKeepReward)
+                if (extras[i].AfterSelected == MegaCrit.Sts2.Core.Entities.Rewards.PostAlternateCardRewardAction.EndSelectionAndDoNotCompleteReward)
                 {
-                    skipAlt = alt;
+                    skipAlt = extras[i];
+                    skipIndex = i;
                     break;
                 }
             }
@@ -133,15 +135,12 @@ public class TakeCardCommand : ReplayCommand
         if (skipAlt != null)
         {
             TaskHelper.RunSafely(skipAlt.OnSelect());
-            OnAlternateRewardSelectedMethod?.Invoke(screen, new object[] { skipAlt.AfterSelected });
+            OnAlternateRewardSelectedMethod?.Invoke(screen, new object[] { skipIndex });
         }
         else
         {
-            // Fallback: dismiss with KeepReward directly.
-            OnAlternateRewardSelectedMethod?.Invoke(screen, new object[]
-            {
-                MegaCrit.Sts2.Core.Entities.Rewards.PostAlternateCardRewardAction.DismissScreenAndKeepReward
-            });
+            // Fallback: use index 0.
+            OnAlternateRewardSelectedMethod?.Invoke(screen, new object[] { 0 });
         }
 
         ReplayState.CardRewardSelectionScreen = null;
@@ -162,19 +161,25 @@ public class TakeCardCommand : ReplayCommand
         }
 
         CardRewardAlternative? sacrifice = null;
-        foreach (var alt in extras)
+        int sacrificeIndex = -1;
+        for (int i = 0; i < extras.Count; i++)
         {
-            if (alt.OptionId.Contains("sacrifice", System.StringComparison.OrdinalIgnoreCase)
-                || alt.OptionId.Contains("pael", System.StringComparison.OrdinalIgnoreCase))
+            if (extras[i].OptionId.Contains("sacrifice", System.StringComparison.OrdinalIgnoreCase)
+                || extras[i].OptionId.Contains("pael", System.StringComparison.OrdinalIgnoreCase))
             {
-                sacrifice = alt;
+                sacrifice = extras[i];
+                sacrificeIndex = i;
                 break;
             }
         }
-        sacrifice ??= extras[0];
+        if (sacrifice == null)
+        {
+            sacrifice = extras[0];
+            sacrificeIndex = 0;
+        }
 
         TaskHelper.RunSafely(sacrifice.OnSelect());
-        OnAlternateRewardSelectedMethod?.Invoke(screen, new object[] { sacrifice.AfterSelected });
+        OnAlternateRewardSelectedMethod?.Invoke(screen, new object[] { sacrificeIndex });
 
         ReplayState.CardRewardSelectionScreen = null;
         ReplayDispatcher.DispatchNow();

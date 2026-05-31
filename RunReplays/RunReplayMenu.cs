@@ -28,6 +28,26 @@ namespace RunReplays;
 /// </summary>
 public static class RunReplayMenu
 {
+    public sealed record ReplayStartResult(
+        bool Success,
+        string Message,
+        string? Seed = null,
+        int? Floor = null,
+        string? CharacterId = null,
+        int? Ascension = null,
+        string? LogPath = null);
+
+    public sealed record ReplayListEntry(
+        string Seed,
+        string CharacterId,
+        int Floor,
+        int Ascension,
+        DateTime SavedAt,
+        string MinimalLogPath,
+        string? SavePath,
+        bool IsSample,
+        string Target);
+
     private record ReplayEntry(
         string Seed,
         string CharacterId,
@@ -47,6 +67,11 @@ public static class RunReplayMenu
     /// </summary>
     internal static void AutoPlay(string target)
     {
+        _ = StartReplayTarget(target);
+    }
+
+    public static ReplayStartResult StartReplayTarget(string target)
+    {
         string seed;
         int? targetFloor = null;
 
@@ -59,13 +84,22 @@ public static class RunReplayMenu
                 int.TryParse(floorPart["floor_".Length..], out int f))
                 targetFloor = f;
             else
-                GD.PrintErr($"[RunReplays] AutoPlay: invalid floor specifier '{floorPart}', replaying highest floor.");
+                GD.PrintErr($"[RunReplays] StartReplayTarget: invalid floor specifier '{floorPart}', replaying highest floor.");
         }
         else
         {
             seed = target;
         }
 
+        return StartReplayBySeed(seed, targetFloor);
+    }
+
+    public static ReplayStartResult StartReplayBySeed(string seed, int? targetFloor = null)
+    {
+        if (string.IsNullOrWhiteSpace(seed))
+            return new ReplayStartResult(false, "Missing replay seed.");
+
+        seed = seed.Trim();
         var entries = LoadEntries()
             .Where(e => string.Equals(e.Seed, seed, StringComparison.OrdinalIgnoreCase))
             .OrderByDescending(e => e.Floor)
@@ -73,8 +107,9 @@ public static class RunReplayMenu
 
         if (entries.Count == 0)
         {
-            GD.PrintErr($"[RunReplays] AutoPlay: no replays found for seed '{seed}'.");
-            return;
+            string message = $"No replays found for seed '{seed}'.";
+            GD.PrintErr($"[RunReplays] StartReplayBySeed: {message}");
+            return new ReplayStartResult(false, message, Seed: seed);
         }
 
         ReplayEntry entry;
@@ -83,8 +118,9 @@ public static class RunReplayMenu
             entry = entries.FirstOrDefault(e => e.Floor == targetFloor.Value)!;
             if (entry == null)
             {
-                GD.PrintErr($"[RunReplays] AutoPlay: no replay found for seed '{seed}' floor {targetFloor.Value}.");
-                return;
+                string message = $"No replay found for seed '{seed}' floor {targetFloor.Value}.";
+                GD.PrintErr($"[RunReplays] StartReplayBySeed: {message}");
+                return new ReplayStartResult(false, message, Seed: seed, Floor: targetFloor);
             }
         }
         else
@@ -92,8 +128,79 @@ public static class RunReplayMenu
             entry = entries.First();
         }
 
-        GD.Print($"[RunReplays] AutoPlay: launching seed={entry.Seed} floor={entry.Floor}");
+        GD.Print($"[RunReplays] StartReplayBySeed: launching seed={entry.Seed} floor={entry.Floor}");
         StartReplay(entry);
+        return new ReplayStartResult(
+            true,
+            $"Starting replay seed={entry.Seed} floor={entry.Floor}.",
+            entry.Seed,
+            entry.Floor,
+            entry.CharacterId,
+            entry.Ascension,
+            entry.MinimalLogPath);
+    }
+
+    public static ReplayStartResult StartReplayFromFloorBySeed(
+        string seed,
+        int targetFloor,
+        int startFloor)
+    {
+        if (string.IsNullOrWhiteSpace(seed))
+            return new ReplayStartResult(false, "Missing replay seed.");
+
+        seed = seed.Trim();
+        var entries = LoadEntries()
+            .Where(e => string.Equals(e.Seed, seed, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        ReplayEntry? target = entries.FirstOrDefault(e => e.Floor == targetFloor);
+        if (target == null)
+            return new ReplayStartResult(
+                false,
+                $"No replay found for seed '{seed}' floor {targetFloor}.",
+                Seed: seed,
+                Floor: targetFloor);
+
+        ReplayEntry? startFrom = entries.FirstOrDefault(e => e.Floor == startFloor);
+        if (startFrom == null)
+            return new ReplayStartResult(
+                false,
+                $"No starting save found for seed '{seed}' floor {startFloor}.",
+                Seed: seed,
+                Floor: targetFloor);
+
+        if (startFrom.SavePath == null)
+            return new ReplayStartResult(
+                false,
+                $"Replay seed '{seed}' floor {startFloor} has no run.save.",
+                Seed: seed,
+                Floor: targetFloor);
+
+        StartReplayFromFloor(target, startFrom);
+        return new ReplayStartResult(
+            true,
+            $"Starting replay seed={target.Seed} from floor {startFrom.Floor} to floor {target.Floor}.",
+            target.Seed,
+            target.Floor,
+            target.CharacterId,
+            target.Ascension,
+            target.MinimalLogPath);
+    }
+
+    public static IReadOnlyList<ReplayListEntry> ListReplays()
+    {
+        return LoadEntries()
+            .Select(entry => new ReplayListEntry(
+                entry.Seed,
+                entry.CharacterId,
+                entry.Floor,
+                entry.Ascension,
+                entry.SavedAt,
+                entry.MinimalLogPath,
+                entry.SavePath,
+                entry.IsSample,
+                $"{entry.Seed}:floor_{entry.Floor}"))
+            .ToList();
     }
 
     // ── List population ───────────────────────────────────────────────────────
@@ -565,7 +672,7 @@ public static class RunReplayMenu
             $"gameMode={serializableRun.GameMode} ascension={serializableRun.Ascension} " +
             $"character={serializableRun.Players?.FirstOrDefault()?.CharacterId?.Entry}");
         RunState runState = RunState.FromSerializable(serializableRun);
-        RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
+        await RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
 
         NAudioManager.Instance?.StopMusic();
         SfxCmd.Play(runState.Players[0].Character.CharacterTransitionSfx);
@@ -695,7 +802,7 @@ public static class RunReplayMenu
             $"gameMode={serializableRun.GameMode} ascension={serializableRun.Ascension} " +
             $"character={serializableRun.Players?.FirstOrDefault()?.CharacterId?.Entry}");
         RunState runState = RunState.FromSerializable(serializableRun);
-        RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
+        await RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
 
         NAudioManager.Instance?.StopMusic();
         SfxCmd.Play(runState.Players[0].Character.CharacterTransitionSfx);
