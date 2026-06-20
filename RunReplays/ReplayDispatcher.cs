@@ -456,7 +456,7 @@ public static class ReplayDispatcher
             && GodotObject.IsInstanceValid(CrystalSphereReplayPatch.ActiveScreen))
             types.Add(typeof(CrystalSphereClickCommand));
 
-        if (CombatManager.Instance.IsInProgress && CombatManager.Instance.IsPlayPhase)
+        if (CombatManager.Instance.IsInProgress && MegaCrit.Sts2.Core.Runs.RunManager.Instance.ActionQueueSynchronizer.CombatState == MegaCrit.Sts2.Core.Entities.Multiplayer.ActionSynchronizerCombatState.PlayPhase)
         {
             types.Add(typeof(PlayCardCommand));
             types.Add(typeof(EndTurnCommand));
