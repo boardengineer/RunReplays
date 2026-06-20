@@ -41,7 +41,7 @@ public sealed class UsePotionCommand : ReplayCommand
     {
         // Wait until the game is in the play phase before using a combat potion.
         var combat = MegaCrit.Sts2.Core.Combat.CombatManager.Instance;
-        if (combat != null && !combat.IsPlayPhase)
+        if (combat != null && MegaCrit.Sts2.Core.Runs.RunManager.Instance.ActionQueueSynchronizer.CombatState != MegaCrit.Sts2.Core.Entities.Multiplayer.ActionSynchronizerCombatState.PlayPhase)
             return ExecuteResult.Retry(200);
 
         Player? player = CardPlayReplayPatch.ResolveLocalPlayer();

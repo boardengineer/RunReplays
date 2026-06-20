@@ -11,6 +11,7 @@
     <ItemGroup>
       <Reference Include="sts2">
         <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\data_sts2_windows_x86_64\sts2.dll</HintPath>
+        <Private>false</Private>
       </Reference>
       <Reference Include="BaseLib">
         <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\BaseLib.dll</HintPath>

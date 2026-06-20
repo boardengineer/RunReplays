@@ -565,7 +565,7 @@ public static class RunReplayMenu
             $"gameMode={serializableRun.GameMode} ascension={serializableRun.Ascension} " +
             $"character={serializableRun.Players?.FirstOrDefault()?.CharacterId?.Entry}");
         RunState runState = RunState.FromSerializable(serializableRun);
-        RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
+        await RunManager.Instance.SetUpSavedSingleplayer(runState, serializableRun);
 
         NAudioManager.Instance?.StopMusic();
         SfxCmd.Play(runState.Players[0].Character.CharacterTransitionSfx);
@@ -695,7 +695,7 @@ public static class RunReplayMenu
             $"gameMode={serializableRun.GameMode} ascension={serializableRun.Ascension} " +
             $"character={serializableRun.Players?.FirstOrDefault()?.CharacterId?.Entry}");
         RunState runState = RunState.FromSerializable(serializableRun);
-        RunManager.Instance.SetUpSavedSinglePlayer(runState, serializableRun);
+        await RunManager.Instance.SetUpSavedSingleplayer(runState, serializableRun);
 
         NAudioManager.Instance?.StopMusic();
         SfxCmd.Play(runState.Players[0].Character.CharacterTransitionSfx);

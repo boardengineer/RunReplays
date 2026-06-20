@@ -206,7 +206,7 @@ public static class CardPlayReplayPatch
                 return false;
 
             // Cards can't be played while the game is drawing cards.
-            if (!CombatManager.Instance.IsPlayPhase)
+            if (MegaCrit.Sts2.Core.Runs.RunManager.Instance.ActionQueueSynchronizer.CombatState != MegaCrit.Sts2.Core.Entities.Multiplayer.ActionSynchronizerCombatState.PlayPhase)
                 return false;
 
             var state = CombatManager.Instance.DebugOnlyGetState();
@@ -492,7 +492,7 @@ public static class CardPlayReplayPatch
         }
 
         // Wait until combat is in progress, in the play phase, and a player is available.
-        if (!CombatManager.Instance.IsInProgress || !CombatManager.Instance.IsPlayPhase || ResolveLocalPlayer() == null)
+        if (!CombatManager.Instance.IsInProgress || MegaCrit.Sts2.Core.Runs.RunManager.Instance.ActionQueueSynchronizer.CombatState != MegaCrit.Sts2.Core.Entities.Multiplayer.ActionSynchronizerCombatState.PlayPhase || ResolveLocalPlayer() == null)
         {
             return false;
         }
