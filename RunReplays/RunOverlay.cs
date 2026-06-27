@@ -140,8 +140,10 @@ internal static class RunOverlay
 
 
         // ── Load STS2 fonts ──────────────────────────────────────────────────
-        Font? fontBold = GD.Load<Font>("res://themes/kreon_bold.ttf");
-        Font? fontRegular = GD.Load<Font>("res://themes/kreon_regular.ttf");
+        const string BoldPath    = "res://themes/kreon_bold.ttf";
+        const string RegularPath = "res://themes/kreon_regular.ttf";
+        Font? fontBold    = ResourceLoader.Exists(BoldPath)    ? GD.Load<Font>(BoldPath)    : null;
+        Font? fontRegular = ResourceLoader.Exists(RegularPath) ? GD.Load<Font>(RegularPath) : null;
 
         // ── Panel anchored to the top-right corner ────────────────────────────
         var panel = new PanelContainer();

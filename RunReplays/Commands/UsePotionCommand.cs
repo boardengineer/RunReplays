@@ -39,17 +39,16 @@ public sealed class UsePotionCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        // Wait until the game is in the play phase before using a combat potion.
-        var combat = MegaCrit.Sts2.Core.Combat.CombatManager.Instance;
-        if (combat != null && !combat.IsPlayPhase)
-            return ExecuteResult.Retry(200);
-
         Player? player = CardPlayReplayPatch.ResolveLocalPlayer();
         if (player == null)
         {
             PlayerActionBuffer.LogToDevConsole("[UsePotionCommand] Could not resolve local player.");
             return ExecuteResult.Retry(200);
         }
+
+        // Wait until the game is in the play phase before using a combat potion.
+        if (player.PlayerCombatState?.Phase != MegaCrit.Sts2.Core.Combat.PlayerTurnPhase.Play)
+            return ExecuteResult.Retry(200);
 
         PotionModel? potion = player.GetPotionAtSlotIndex((int)PotionIndex);
         if (potion == null)
@@ -70,9 +69,7 @@ public sealed class UsePotionCommand : ReplayCommand
 
         try
         {
-            if (combat != null)
-                ReplayState.PotionInFlight = true;
-
+            ReplayState.PotionInFlight = true;
             potion.EnqueueManualUse(target);
         }
         catch (Exception ex)

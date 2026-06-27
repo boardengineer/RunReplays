@@ -11,13 +11,13 @@ namespace RunReplays.Patches.Record;
 using RunReplays;
 
 /// <summary>
-/// Harmony postfix on RunManager.SetUpSavedSinglePlayer() that restores the
+/// Harmony postfix on RunManager.SetUpSavedSingleplayer() that restores the
 /// action buffer from the most recent log files for the continued run.
 ///
 /// Timing: this postfix fires after InitializeShared() has already constructed
 /// a fresh ActionExecutor and cleared the buffer, so enqueuing here is safe.
 /// </summary>
-[HarmonyPatch(typeof(RunManager), nameof(RunManager.SetUpSavedSinglePlayer))]
+[HarmonyPatch(typeof(RunManager), nameof(RunManager.SetUpSavedSingleplayer))]
 public static class RunContinuePatch
 {
     [HarmonyPostfix]

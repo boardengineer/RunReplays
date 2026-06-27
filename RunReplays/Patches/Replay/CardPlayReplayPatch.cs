@@ -205,10 +205,6 @@ public static class CardPlayReplayPatch
             if (!CombatManager.Instance.IsInProgress)
                 return false;
 
-            // Cards can't be played while the game is drawing cards.
-            if (!CombatManager.Instance.IsPlayPhase)
-                return false;
-
             var state = CombatManager.Instance.DebugOnlyGetState();
             if (state == null)
                 return false;
@@ -218,6 +214,10 @@ public static class CardPlayReplayPatch
             catch { player = state.Players.FirstOrDefault(); }
 
             if (player == null)
+                return false;
+
+            // Cards can't be played while the game is drawing cards.
+            if (player.PlayerCombatState?.Phase != PlayerTurnPhase.Play)
                 return false;
 
             var hand = player.PlayerCombatState?.Hand?.Cards;
@@ -492,12 +492,13 @@ public static class CardPlayReplayPatch
         }
 
         // Wait until combat is in progress, in the play phase, and a player is available.
-        if (!CombatManager.Instance.IsInProgress || !CombatManager.Instance.IsPlayPhase || ResolveLocalPlayer() == null)
+        Player? localPlayer = ResolveLocalPlayer();
+        if (!CombatManager.Instance.IsInProgress || localPlayer == null || localPlayer.PlayerCombatState?.Phase != PlayerTurnPhase.Play)
         {
             return false;
         }
 
-        Player player = ResolveLocalPlayer()!;
+        Player player = localPlayer;
 
         // Block all further dispatch until both TurnEnded and TurnStarted fire.
         _awaitingEndTurnCompletion = true;
