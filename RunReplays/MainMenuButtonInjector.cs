@@ -217,13 +217,7 @@ public static class MainMenuButtonInjector
     // Each entry names a seed + floor directory under Resources/. Every file
     // in that directory must also appear as an <EmbeddedResource> in the
     // csproj, or extraction will log a "resource not found" warning.
-    private static readonly (string seed, string floor, string[] files)[] BundledReplays =
-    {
-        ("T97Q92FYMZ", "floor_49", new[] { "actions.sts2replay", "run.save" }),
-        ("4M42XQ1BSA", "floor_49", new[] { "actions.sts2replay", "run.save" }),
-        ("YHREJXEUX2", "floor_49", new[] { "actions.sts2replay", "run.save" }),
-        ("DTDBLEA3T9", "floor_49", new[] { "actions.sts2replay", "run.save" }),
-    };
+    private static readonly (string seed, string floor, string[] files)[] BundledReplays = [];
 
     private static void ExtractBundledReplay()
     {

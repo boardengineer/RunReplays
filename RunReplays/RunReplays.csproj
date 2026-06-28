@@ -23,16 +23,6 @@
       <PackageReference Include="Lib.Harmony" Version="2.4.2" />
     </ItemGroup>
 
-    <ItemGroup>
-      <EmbeddedResource Include="Resources\T97Q92FYMZ\floor_49\actions.sts2replay" />
-      <EmbeddedResource Include="Resources\T97Q92FYMZ\floor_49\run.save" />
-      <EmbeddedResource Include="Resources\4M42XQ1BSA\floor_49\actions.sts2replay" />
-      <EmbeddedResource Include="Resources\4M42XQ1BSA\floor_49\run.save" />
-      <EmbeddedResource Include="Resources\YHREJXEUX2\floor_49\actions.sts2replay" />
-      <EmbeddedResource Include="Resources\YHREJXEUX2\floor_49\run.save" />
-      <EmbeddedResource Include="Resources\DTDBLEA3T9\floor_49\actions.sts2replay" />
-      <EmbeddedResource Include="Resources\DTDBLEA3T9\floor_49\run.save" />
-    </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
       <Exec Command=":: For Windows&#xA;xcopy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\&quot; /Y&#xA;xcopy &quot;$(ProjectDir)RunReplays.json&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\&quot; /Y" />
