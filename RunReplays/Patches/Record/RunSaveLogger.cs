@@ -65,8 +65,15 @@ public static class RunSaveLogger
 
         var minimalActions = PlayerActionBuffer.SnapshotMinimal();
 
+        // Act order is not derivable from the seed alone (the game's act roll
+        // depends on discovery progress and a non-seed rng), so persist the
+        // actual acts for the replay to force.
+        string acts = string.Join(", ",
+            run.Acts?.Select(a => a.Id?.ToString()).Where(id => id != null)
+            ?? Enumerable.Empty<string>());
+
         WriteMinimal(Path.Combine(logsDir, "actions.sts2replay"),
-            seed, character, run.Ascension, minimalActions);
+            seed, character, run.Ascension, acts, minimalActions);
 
         CopySaveBackup(logsDir);
 
@@ -94,7 +101,7 @@ public static class RunSaveLogger
     }
 
     private static void WriteMinimal(string filePath, string seed, string character,
-        int ascension, IReadOnlyList<string> actions)
+        int ascension, string acts, IReadOnlyList<string> actions)
     {
         string gameVersion;
         try
@@ -110,6 +117,8 @@ public static class RunSaveLogger
         sb.AppendLine($"# Character: {character}");
         sb.AppendLine($"# Seed: {seed}");
         sb.AppendLine($"# Ascension: {ascension}");
+        if (acts.Length > 0)
+            sb.AppendLine($"# Acts: {acts}");
         sb.AppendLine($"# Game: {gameVersion}");
         sb.AppendLine($"# Mod: {ModVersion.Current}");
         foreach (string entry in actions)

@@ -137,10 +137,20 @@ public static class StartRunActOverride
         ReplayEngine.ActiveSeed = null;
         seed = useSeed;
 
-        // Override acts with deterministic list
-        var seedRng = new Rng((uint)MegaCrit.Sts2.Core.Helpers.StringHelper.GetDeterministicHashCode(useSeed));
-        var newActs = new System.Collections.Generic.List<ActModel>(
-            ActModel.GetRandomList(seedRng, UnlockState.all, false));
+        // Prefer the exact act list from the replay log's "# Acts:" header.
+        // The game's own act roll depends on discovery progress and an rng not
+        // derived from the run seed, so re-rolling cannot reproduce a recording
+        // that was started outside the forced-seed path.
+        var newActs = ResolveRecordedActs();
+
+        // Legacy fallback for logs without the header: deterministic roll from
+        // the seed hash (matches how those runs were recorded).
+        if (newActs == null)
+        {
+            var seedRng = new Rng((uint)MegaCrit.Sts2.Core.Helpers.StringHelper.GetDeterministicHashCode(useSeed));
+            newActs = new System.Collections.Generic.List<ActModel>(
+                ActModel.GetRandomList(seedRng, UnlockState.all, false));
+        }
         acts = newActs;
 
         var msg = $"[EncounterTracker] NGame.StartNewSingleplayerRun [{mode}] overridden — " +
@@ -148,6 +158,47 @@ public static class StartRunActOverride
                   $"acts=[{string.Join(", ", newActs.ConvertAll(a => a.Id.ToString()))}]";
         RngLog.Write(msg);
         DiagnosticLog.Write("RunStart", msg);
+    }
+
+    /// <summary>
+    /// Resolves ReplayEngine.ActiveActs (ids from the "# Acts:" header) against
+    /// ModelDb. Returns null when no header was present or any id is unknown
+    /// (e.g. an act renamed by a game update) — callers then fall back to the
+    /// legacy seed-hash roll.
+    /// </summary>
+    private static System.Collections.Generic.List<ActModel>? ResolveRecordedActs()
+    {
+        var recorded = ReplayEngine.ActiveActs;
+        ReplayEngine.ActiveActs = null;
+        if (recorded == null || recorded.Length == 0)
+            return null;
+
+        var resolved = new System.Collections.Generic.List<ActModel>(recorded.Length);
+        foreach (var id in recorded)
+        {
+            ActModel? act = null;
+            foreach (var candidate in ModelDb.Acts)
+            {
+                if (candidate.Id.ToString() == id)
+                {
+                    act = candidate;
+                    break;
+                }
+            }
+
+            if (act == null)
+            {
+                DiagnosticLog.Write("RunStart",
+                    $"[EncounterTracker] Recorded act '{id}' not found in ModelDb — " +
+                    "falling back to seed-hash act roll.");
+                return null;
+            }
+            resolved.Add(act);
+        }
+
+        DiagnosticLog.Write("RunStart",
+            $"[EncounterTracker] Using recorded acts from replay header: [{string.Join(", ", recorded)}]");
+        return resolved;
     }
 }
 

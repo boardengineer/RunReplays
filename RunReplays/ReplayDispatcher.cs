@@ -263,8 +263,7 @@ public static class ReplayDispatcher
                 var screen = CardGridScreenCapture.ActiveScreen;
                 if (screen != null)
                 {
-                    var cards = CardGridScreenCapture.CardsField?.GetValue(screen)
-                        as IReadOnlyList<MegaCrit.Sts2.Core.Models.CardModel>;
+                    var cards = CardGridScreenCapture.GetSelectableCards(screen);
                     if (cards != null)
                         for (int i = 0; i < cards.Count; i++)
                             commands.Add(new SelectGridCardCommand(new[] { i }));
@@ -275,8 +274,7 @@ public static class ReplayDispatcher
                 var screen = CardGridScreenCapture.ActiveScreen;
                 if (screen != null)
                 {
-                    var cards = CardGridScreenCapture.CardsField?.GetValue(screen)
-                        as IReadOnlyList<MegaCrit.Sts2.Core.Models.CardModel>;
+                    var cards = CardGridScreenCapture.GetSelectableCards(screen);
                     if (cards != null)
                         for (int i = 0; i < cards.Count; i++)
                             commands.Add(new ClickGridCardCommand(i));
@@ -766,6 +764,7 @@ public static class ReplayDispatcher
         ReplayEngine._recentConsumed.Clear();
         ReplayEngine._replayActive = false;
         ReplayEngine.IsReplayRun = false;
+        ReplayEngine.ActiveActs = null;
         RestoreGameSpeed();
         ResetAllPatchState();
     }

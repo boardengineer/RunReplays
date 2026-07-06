@@ -108,6 +108,13 @@ public static class ReplayEngine
 
     public static string? ActiveSeed { get; set; }
 
+    /// <summary>
+    /// Act ids from the replay log's "# Acts:" header (in run order), or null
+    /// for logs that predate the header. Consumed by StartRunActOverride so the
+    /// replay uses the exact acts of the recording instead of re-rolling them.
+    /// </summary>
+    public static string[]? ActiveActs { get; set; }
+
     /// <summary>State suffix separator embedded in minimal log entries.</summary>
     private const string StateSeparator = " || ";
 

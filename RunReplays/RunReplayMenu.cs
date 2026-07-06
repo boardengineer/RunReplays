@@ -491,6 +491,32 @@ public static class RunReplayMenu
     }
 
     /// <summary>
+    /// Reads the "# Acts: A, B, C" line from a minimal log header.
+    /// Returns null for logs that predate the header.
+    /// </summary>
+    private static string[]? ReadMinimalHeaderActs(string filePath)
+    {
+        const string prefix = "# Acts: ";
+        try
+        {
+            foreach (string line in File.ReadLines(filePath))
+            {
+                if (!line.StartsWith('#'))
+                    break; // Past the header.
+                if (line.StartsWith(prefix))
+                {
+                    var acts = line[prefix.Length..]
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                    return acts.Length > 0 ? acts : null;
+                }
+            }
+        }
+        catch { /* malformed log */ }
+
+        return null;
+    }
+
+    /// <summary>
     /// Reads seed and character from a minimal log header (# comments).
     /// SavedAt is derived from the file's last-write time.
     /// </summary>
@@ -585,6 +611,7 @@ public static class RunReplayMenu
         var      commands = lines.Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith('#')).ToList();
         ReplayDispatcher.Load(commands);
         ReplayEngine.ActiveSeed = entry.Seed;
+        ReplayEngine.ActiveActs = ReadMinimalHeaderActs(entry.MinimalLogPath);
         ReplayEngine.IsReplayRun = true;
 
         // Resolve the character model by matching the stored entry string against

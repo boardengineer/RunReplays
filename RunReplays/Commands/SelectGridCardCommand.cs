@@ -36,7 +36,7 @@ public class SelectGridCardCommand : ReplayCommand
         if (screen == null)
             return ExecuteResult.Retry(300);
 
-        var cards = CardGridScreenCapture.CardsField?.GetValue(screen) as IReadOnlyList<CardModel>;
+        var cards = CardGridScreenCapture.GetSelectableCards(screen);
         if (cards == null)
             return ExecuteResult.Retry(300);
 

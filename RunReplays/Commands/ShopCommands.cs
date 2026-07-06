@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.Entities.Merchant;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Nodes.Events.Custom;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
+using RunReplays.Utils;
 
 namespace RunReplays.Commands;
 
@@ -73,83 +74,103 @@ public sealed class OpenShopCommand : ReplayCommand
     }
 
     /// <summary>
-    ///     Navigates NMerchantRoom → Room → Inventory and aggregates every
-    ///     MerchantEntry found across all fields of the inventory object.
+    ///     Scans NMerchantRoom.Inventory (NMerchantInventory) and its fields
+    ///     for every MerchantEntry reachable from the open shop.
     /// </summary>
     internal static List<MerchantEntry>? GetEntries(NMerchantRoom room)
     {
         const BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic
                                                     | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
 
-        var roomModel = room.GetType()
-            .GetProperty("Room", BindingFlags.Public | BindingFlags.Instance)
-            ?.GetValue(room);
-
-        if (roomModel == null)
-            return null;
-
-        var inventory = roomModel.GetType()
-            .GetProperty("Inventory", BindingFlags.Public | BindingFlags.Instance)
-            ?.GetValue(roomModel);
+        // NMerchantRoom.Inventory is the NMerchantInventory Godot node —
+        // access it directly (the old path via room.Room.Inventory was wrong;
+        // NMerchantRoom has no "Room" property).
+        var inventory = room.Inventory;
 
         if (inventory == null)
+        {
+            DiagnosticLog.Write("GetEntries", "room.Inventory is null");
             return null;
+        }
 
         List<MerchantEntry> all = new();
+
+        // Scan fields and properties of NMerchantInventory itself.
+        ScanObject(inventory, bf, all);
+
+        if (all.Count > 0)
+        {
+            DiagnosticLog.Write("GetEntries",
+                $"Found {all.Count} entries on NMerchantInventory: {string.Join(", ", all.Select(e => e.GetType().Name))}");
+            PlayerActionBuffer.LogToDevConsole(
+                $"[GetEntries] Found {all.Count}: {string.Join(", ", all.Select(e => e.GetType().Name))}");
+            return all;
+        }
+
+        // NMerchantInventory may wrap an inner data model — scan one level of
+        // non-Node, non-primitive fields so we reach it without false positives
+        // from the entire Godot scene graph.
         foreach (var field in inventory.GetType().GetFields(bf))
         {
             object? value;
-            try
-            {
-                value = field.GetValue(inventory);
-            }
-            catch
-            {
-                continue;
-            }
-
-            if (value is IEnumerable enumerable)
-                foreach (var item in enumerable)
-                    if (item is MerchantEntry e)
-                        all.Add(e);
-                    else if (value is MerchantEntry single)
-                        all.Add(single);
-        }
-
-        foreach (var prop in inventory.GetType().GetProperties(bf))
-        {
-            if (prop.GetIndexParameters().Length > 0)
-                continue;
-
-            object? value;
-            try
-            {
-                value = prop.GetValue(inventory);
-            }
-            catch
-            {
-                continue;
-            }
-
-            if (value is IEnumerable enumerable)
-                foreach (var item in enumerable)
-                    if (item is MerchantEntry e && !all.Contains(e))
-                        all.Add(e);
-                    else if (value is MerchantEntry single && !all.Contains(single))
-                        all.Add(single);
+            try { value = field.GetValue(inventory); }
+            catch { continue; }
+            if (value == null || value is string || value is Godot.GodotObject) continue;
+            if (value.GetType().IsPrimitive || value.GetType().IsEnum) continue;
+            ScanObject(value, bf, all);
         }
 
         if (all.Count > 0)
         {
-            PlayerActionBuffer.LogToDevConsole(
-                $"[ShopReplayPatch] Found {all.Count} entries in Room.Inventory " +
-                $"({string.Join(", ", all.Select(e => e.GetType().Name))}).");
+            DiagnosticLog.Write("GetEntries",
+                $"Found {all.Count} entries via NMerchantInventory inner model: {string.Join(", ", all.Select(e => e.GetType().Name))}");
             return all;
         }
 
-        PlayerActionBuffer.LogToDevConsole(
-            $"[ShopReplayPatch] Inventory ({inventory.GetType().Name}) yielded no MerchantEntry objects.");
+        DiagnosticLog.Write("GetEntries",
+            $"NMerchantInventory ({inventory.GetType().Name}) yielded no MerchantEntry objects. " +
+            $"Fields: [{string.Join(", ", inventory.GetType().GetFields(bf).Select(f => f.Name))}]");
         return null;
+    }
+
+    private static void ScanObject(object obj, BindingFlags bf, List<MerchantEntry> all)
+    {
+        foreach (var field in obj.GetType().GetFields(bf))
+        {
+            object? value;
+            try { value = field.GetValue(obj); }
+            catch { continue; }
+            CollectEntry(value, all);
+        }
+
+        foreach (var prop in obj.GetType().GetProperties(bf))
+        {
+            if (prop.GetIndexParameters().Length > 0) continue;
+            object? value;
+            try { value = prop.GetValue(obj); }
+            catch { continue; }
+            CollectEntry(value, all);
+        }
+    }
+
+    private static void CollectEntry(object? value, List<MerchantEntry> all)
+    {
+        if (value == null) return;
+        if (value is string) return;
+
+        if (value is MerchantEntry single)
+        {
+            if (!all.Contains(single))
+                all.Add(single);
+            return;
+        }
+
+        if (value is IEnumerable enumerable)
+        {
+            foreach (var item in enumerable)
+                if (item is MerchantEntry e && !all.Contains(e))
+                    all.Add(e);
+        }
     }
 }
 
@@ -338,12 +359,14 @@ public sealed class BuyRelicCommand : ReplayCommand
 /// <summary>
 ///     Buys card removal from the shop.
 ///     Recorded as: "BuyCardRemoval"
-///     Card removal opens an async deck selection UI.  Execute triggers the purchase
-///     and sets CardRemovalInProgress so the existing ShopCardRemovalCompleted/Failed
-///     patches resume the shop loop after the selection finishes.
+///     Card removal opens an async deck selection UI (NCardGridSelectionScreen).
+///     Execute blocks until that screen is captured by CardGridScreenCapture.Prefix
+///     so the following SelectGridCard command is immediately dispatchable.
 /// </summary>
 public sealed class BuyCardRemovalCommand : ReplayCommand
 {
+    private bool _purchaseTriggered;
+
     public BuyCardRemovalCommand() : base("")
     {
     }
@@ -358,18 +381,30 @@ public sealed class BuyCardRemovalCommand : ReplayCommand
         if (room == null || !room.IsInsideTree())
             return ExecuteResult.Retry(200);
 
-        var entries = OpenShopCommand.GetEntries(room);
-        if (entries == null || entries.Count == 0)
-            return ExecuteResult.Retry(200);
-
-        var entry = entries.OfType<MerchantCardRemovalEntry>().FirstOrDefault();
-        if (entry == null)
+        if (!_purchaseTriggered)
         {
-            PlayerActionBuffer.LogMigrationWarning("[BuyCardRemoval] Card removal entry not found — skipping.");
-            return ExecuteResult.Ok();
+            var entries = OpenShopCommand.GetEntries(room);
+            if (entries == null || entries.Count == 0)
+                return ExecuteResult.Retry(200);
+
+            var entry = entries.OfType<MerchantCardRemovalEntry>().FirstOrDefault();
+            if (entry == null)
+            {
+                PlayerActionBuffer.LogMigrationWarning("[BuyCardRemoval] Card removal entry not found — skipping.");
+                return ExecuteResult.Ok();
+            }
+
+            OpenShopCommand.InvokePurchase(entry);
+            _purchaseTriggered = true;
+            PlayerActionBuffer.LogDispatcher("[BuyCardRemoval] Purchase triggered — waiting for deck selection screen.");
         }
 
-        OpenShopCommand.InvokePurchase(entry);
+        // Wait for NCardGridSelectionScreen.CardsSelected to fire.
+        // CardGridScreenCapture.Prefix sets ActiveScreen then calls DispatchNow(),
+        // which re-invokes Execute() directly — bypassing the retry delay.
+        if (CardGridScreenCapture.ActiveScreen == null)
+            return ExecuteResult.Retry(200);
+
         return ExecuteResult.Ok();
     }
 
