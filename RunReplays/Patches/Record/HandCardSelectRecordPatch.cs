@@ -107,7 +107,11 @@ public static class HandCardSelectRecordPatch
 public static class HandCardSelectForDiscardRecordPatch
 {
     [HarmonyPostfix]
-    public static void Postfix(Task<IEnumerable<CardModel>> __result, AbstractModel source)
+    public static void Postfix(
+        Task<IEnumerable<CardModel>> __result,
+        MegaCrit.Sts2.Core.CardSelection.CardSelectorPrefs prefs,
+        Func<CardModel, bool>? filter,
+        AbstractModel source)
     {
         if (ReplayEngine.IsActive)
             return;
@@ -119,8 +123,7 @@ public static class HandCardSelectForDiscardRecordPatch
             $"[HandCardSelectForDiscardRecord] FromHandForDiscard called — source='{source}' ({source?.GetType().Name ?? "null"})");
 
         // Capture the hand NOW (before the player selects) so RecordAsync can
-        // find indices and distinguish a genuine full-hand selection (e.g. Gambler's Brew)
-        // from an auto-resolved no-choice scenario (e.g. Survivor last card).
+        // find indices against the same list the player saw.
         List<CardModel>? handBefore = null;
         try
         {
@@ -131,6 +134,23 @@ public static class HandCardSelectForDiscardRecordPatch
                 handBefore = new List<CardModel>(hand);
         }
         catch { /* ignore */ }
+
+        // Replicate FromHand's own auto-resolve condition: with no eligible
+        // cards, or eligible count within MinSelect and no manual confirmation,
+        // the game returns immediately — no UI opens and SyncLocalChoice never
+        // fires, so nothing must be recorded (or suppressed).  Selecting zero
+        // or ALL cards through the real UI (e.g. Gambler's Brew) is a genuine
+        // choice and must be recorded — selection size is not a valid signal.
+        int eligibleCount = handBefore?.Count(c => filter == null || filter(c)) ?? 0;
+        bool autoResolves = eligibleCount == 0
+            || (!prefs.RequireManualConfirmation && eligibleCount <= prefs.MinSelect);
+        if (autoResolves)
+        {
+            PlayerActionBuffer.LogToDevConsole(
+                $"[HandCardSelectForDiscardRecord] Skipping — auto-resolves " +
+                $"(eligible={eligibleCount}, minSelect={prefs.MinSelect}).");
+            return;
+        }
 
         // Suppress SyncLocalChoice BEFORE the async await — SyncLocalChoice
         // fires synchronously when the player picks a card, which is before
@@ -149,8 +169,9 @@ public static class HandCardSelectForDiscardRecordPatch
         if (handBefore == null || handBefore.Count == 0)
             return;
 
+        var selected = cards.ToList();
         var indices = new List<int>();
-        foreach (CardModel card in cards)
+        foreach (CardModel card in selected)
         {
             for (int i = 0; i < handBefore.Count; i++)
             {
@@ -162,22 +183,22 @@ public static class HandCardSelectForDiscardRecordPatch
             }
         }
 
-        if (indices.Count == 0)
-            return;
-
-        // Skip auto-resolved discards where there was no real choice.
-        // If every card in hand was selected, the game auto-resolved
-        // (e.g. Hidden Daggers with 2 cards, Survivor with 1 card).
-        if (indices.Count >= handBefore.Count)
+        if (indices.Count < selected.Count)
         {
             PlayerActionBuffer.LogToDevConsole(
-                $"[HandCardSelectForDiscardRecord] Skipping — auto-resolved (handBefore={handBefore.Count}, selected={indices.Count}).");
+                $"[HandCardSelectForDiscardRecord] Only resolved {indices.Count}/{selected.Count} " +
+                "selected cards to hand indices — selection NOT recorded.");
+            Utils.DiagnosticLog.Write("HandCardSelect",
+                $"FromHandForDiscard: resolved {indices.Count}/{selected.Count} indices — not recorded.");
             return;
         }
 
+        // An empty selection ("discard nothing") is a real choice on min=0
+        // screens — record it so replay confirms the empty selection instead
+        // of waiting on the UI forever.
         var cmd = new SelectHandCardsCommand(indices.ToArray());
         PlayerActionBuffer.LogToDevConsole($"[HandCardSelectForDiscardRecord] Recording: {cmd}");
-        PlayerActionBuffer.Record(cmd.ToString());
+        PlayerActionBuffer.Record(cmd.ToString()!);
     }
 
 }
