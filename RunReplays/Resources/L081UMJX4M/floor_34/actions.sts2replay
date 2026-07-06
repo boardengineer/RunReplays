@@ -1,0 +1,584 @@
+# Character: SILENT
+# Seed: L081UMJX4M
+# Ascension: 1
+# Acts: ACT.OVERGROWTH, ACT.HIVE, ACT.GLORY
+# Game: v0.107.1
+# Mod: 0.1.0
+ChooseEventOption 2 # NEOW.pages.INITIAL.options.LEAFY_POULTICE
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 4
+PlayCard 2 # CARD.BULLET_TIME (30885782)
+PlayCard 4 3 # CARD.EXPOSE (18720422)
+PlayCard 1 3 # CARD.STRIKE_SILENT (25801374)
+PlayCard 3 3 # CARD.NEUTRALIZE (9536587)
+PlayCard 6 # CARD.DEFEND_SILENT (39959194)
+PlayCard 5 # CARD.DEFEND_SILENT (34266072)
+PlayCard 0 # CARD.DEFEND_SILENT (2866819)
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 1 # CARD.STRIKE_SILENT (5005747)
+PlayCard 8 1 # CARD.STRIKE_SILENT (15469275)
+PlayCard 11 # CARD.SURVIVOR (2812369)
+SelectHandCards 1
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 3 2 # CARD.NEUTRALIZE (9536587)
+PlayCard 12 # CARD.SLIMED (6907272)
+PlayCard 7 2 # CARD.STRIKE_SILENT (24088429)
+PlayCard 1 2 # CARD.STRIKE_SILENT (25801374)
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 11 # CARD.SURVIVOR (2812369)
+SelectHandCards 1
+PlayCard 13 # CARD.SLIMED (2236910)
+PlayCard 9 2 # CARD.STRIKE_SILENT (5005747)
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 9 2 # CARD.STRIKE_SILENT (5005747)
+PlayCard 8 2 # CARD.STRIKE_SILENT (15469275)
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+PlayCard 7 2 # CARD.STRIKE_SILENT (24088429)
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Prepared
+MoveToMapCoord 5
+PlayCard 0 1 # CARD.NEUTRALIZE (39054946)
+PlayCard 5 # CARD.DEFEND_SILENT (26539956)
+PlayCard 1 # CARD.DEFEND_SILENT (15950199)
+PlayCard 4 1 # CARD.STRIKE_SILENT (17861964)
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 7 1 # CARD.EXPOSE (2252813)
+PlayCard 9 1 # CARD.STRIKE_SILENT (48260163)
+PlayCard 11 # CARD.SURVIVOR (16759101)
+SelectHandCards 1
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 3 1 # CARD.STRIKE_SILENT (16897743)
+PlayCard 1 # CARD.DEFEND_SILENT (15950199)
+PlayCard 5 # CARD.DEFEND_SILENT (26539956)
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 0 1 # CARD.NEUTRALIZE (39054946)
+PlayCard 2 # CARD.PREPARED (9334067)
+SelectHandCards 1
+PlayCard 6 1 # CARD.STRIKE_SILENT (37533014)
+PlayCard 8 # CARD.DEFEND_SILENT (20275321)
+PlayCard 11 # CARD.SURVIVOR (16759101)
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 0 1 # CARD.NEUTRALIZE (39054946)
+PlayCard 12 # CARD.BULLET_TIME (16614183)
+PlayCard 9 1 # CARD.STRIKE_SILENT (48260163)
+PlayCard 3 1 # CARD.STRIKE_SILENT (16897743)
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Prepared
+MoveToMapCoord 4
+ChooseEventOption 0 # MORPHIC_GROVE.pages.INITIAL.options.GROUP
+SelectGridCard 0 5
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 5
+PlayCard 4 # CARD.ACROBATICS (46815560)
+SelectHandCards 5
+PlayCard 0 1 # CARD.NEUTRALIZE (22857493)
+PlayCard 9 # CARD.PREPARED (63720954)
+SelectHandCards 2
+PlayCard 7 # CARD.SURVIVOR (37240876)
+SelectHandCards 3
+PlayCard 2 1 # CARD.STRIKE_SILENT (39517681)
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 12 # CARD.SPEEDSTER (13241636)
+PlayCard 13 1 # CARD.EXPOSE (52065863)
+PlayCard 2 1 # CARD.STRIKE_SILENT (39517681)
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 5 # CARD.PREPARED (18686862)
+SelectHandCards 4
+PlayCard 9 # CARD.PREPARED (63720954)
+SelectHandCards 1
+PlayCard 0 1 # CARD.NEUTRALIZE (22857493)
+PlayCard 10 # CARD.DEFEND_SILENT (36617674)
+PlayCard 7 # CARD.SURVIVOR (37240876)
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 4 # CARD.ACROBATICS (46815560)
+SelectHandCards 0
+PlayCard 5 # CARD.PREPARED (18686862)
+SelectHandCards 2
+PlayCard 0 1 # CARD.NEUTRALIZE (22857493)
+PlayCard 7 # CARD.SURVIVOR (37240876)
+SelectHandCards 1
+PlayCard 1 1 # CARD.STRIKE_SILENT (4390853)
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 5 # CARD.PREPARED (18686862)
+SelectHandCards 3
+PlayCard 11 1 # CARD.STRIKE_SILENT (61123616)
+PlayCard 2 1 # CARD.STRIKE_SILENT (39517681)
+ClaimReward 0 # GoldReward: 14
+ClaimReward 0 # CardReward
+TakeCard 1 # Dagger Throw
+MoveToMapCoord 5
+PlayCard 1 # CARD.SPEEDSTER (57108582)
+PlayCard 0 # CARD.PREPARED (58541181)
+SelectHandCards 5
+PlayCard 4 1 # CARD.NEUTRALIZE (24660599)
+PlayCard 5 1 # CARD.STRIKE_SILENT (20618802)
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 # CARD.ACROBATICS (65830579)
+SelectHandCards 5
+PlayCard 11 1 # CARD.EXPOSE (7654867)
+PlayCard 9 1 # CARD.DAGGER_THROW (55604305)
+SelectHandCards 3
+PlayCard 13 # CARD.SURVIVOR (16064514)
+SelectHandCards 2
+PlayCard 12 # CARD.PREPARED (1784946)
+SelectHandCards 0
+PlayCard 4 1 # CARD.NEUTRALIZE (24660599)
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 0 # CARD.PREPARED (58541181)
+SelectHandCards 2
+PlayCard 2 2 # CARD.STRIKE_SILENT (44215190)
+PlayCard 13 # CARD.SURVIVOR (16064514)
+SelectHandCards 0
+PlayCard 3 # CARD.DEFEND_SILENT (62392390)
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 8 # CARD.ACROBATICS (65830579)
+SelectHandCards 4
+PlayCard 12 # CARD.PREPARED (1784946)
+SelectHandCards 2
+PlayCard 9 1 # CARD.DAGGER_THROW (55604305)
+SelectHandCards 4
+PlayCard 4 1 # CARD.NEUTRALIZE (24660599)
+PlayCard 3 # CARD.DEFEND_SILENT (62392390)
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 4 1 # CARD.NEUTRALIZE (24660599)
+PlayCard 0 # CARD.PREPARED (58541181)
+SelectHandCards 3
+PlayCard 13 # CARD.SURVIVOR (16064514)
+SelectHandCards 0
+PlayCard 10 # CARD.DEFEND_SILENT (30676702)
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+PlayCard 12 # CARD.PREPARED (1784946)
+SelectHandCards 3
+PlayCard 8 # CARD.ACROBATICS (65830579)
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Tactician
+MoveToMapCoord 5
+ChooseRestSiteOption SMITH
+SelectGridCard 10
+MoveToMapCoord 5
+PlayCard 4 1 # CARD.EXPOSE (18929034)
+PlayCard 3 # CARD.SPEEDSTER (31929387)
+PlayCard 5 # CARD.ACROBATICS (36143584)
+SelectHandCards 2
+PlayCard 0 # CARD.PREPARED (15233047)
+SelectHandCards 4 3
+PlayCard 1 1 # CARD.NEUTRALIZE (2879703)
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 12 # CARD.PREPARED (3868646)
+SelectHandCards 1
+PlayCard 10 1 # CARD.STRIKE_SILENT (46444012)
+PlayCard 6 1 # CARD.STRIKE_SILENT (56856806)
+PlayCard 15 # CARD.DEFEND_SILENT (1670920)
+PlayCard 13 # CARD.SURVIVOR (34817817)
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 5 # CARD.ACROBATICS (36143584)
+SelectHandCards 1
+PlayCard 0 # CARD.PREPARED (15233047)
+SelectHandCards 0 6
+PlayCard 5 # CARD.ACROBATICS (36143584)
+SelectHandCards 4
+PlayCard 8 1 # CARD.DAGGER_THROW (41998607)
+SelectHandCards 4
+PlayCard 12 # CARD.PREPARED (3868646)
+SelectHandCards 4
+PlayCard 1 1 # CARD.NEUTRALIZE (2879703)
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # CardReward
+TakeCard 0 # Escape Plan
+MoveToMapCoord 5
+ChooseRestSiteOption SMITH
+SelectGridCard 10
+MoveToMapCoord 5
+OpenChest
+TakeChestRelic # Pantograph
+MoveToMapCoord 4
+ChooseRestSiteOption SMITH
+SelectGridCard 13
+MoveToMapCoord 4
+ChooseEventOption 1 # AROMA_OF_CHAOS.pages.INITIAL.options.MAINTAIN_CONTROL
+SelectGridCard 10
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+MoveToMapCoord 3
+PlayCard 15 # CARD.SPEEDSTER (11034215)
+PlayCard 4 # CARD.ESCAPE_PLAN (20515688)
+PlayCard 3 # CARD.PREPARED (54475304)
+SelectHandCards 1 0
+PlayCard 8 # CARD.ACROBATICS (50157685)
+SelectHandCards 5
+PlayCard 6 # CARD.PREPARED (51158004)
+SelectHandCards 4 6
+PlayCard 12 1 # CARD.EXPOSE (49817461)
+PlayCard 5 1 # CARD.NEUTRALIZE (50423465)
+PlayCard 7 1 # CARD.DAGGER_THROW (57768859)
+SelectHandCards 2
+PlayCard 9 # CARD.SURVIVOR (48765989)
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 7 1 # CARD.DAGGER_THROW (57768859)
+SelectHandCards 1
+PlayCard 4 # CARD.ESCAPE_PLAN (20515688)
+PlayCard 14 # CARD.BULLET_TIME (8682564)
+PlayCard 11 # CARD.DEFEND_SILENT (57731056)
+PlayCard 2 # CARD.DEFEND_SILENT (13509352)
+PlayCard 9 # CARD.SURVIVOR (48765989)
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 8 # CARD.ACROBATICS (50157685)
+SelectHandCards 3
+PlayCard 3 # CARD.PREPARED (54475304)
+SelectHandCards 6 5
+PlayCard 6 # CARD.PREPARED (51158004)
+SelectHandCards 3 2
+PlayCard 4 # CARD.ESCAPE_PLAN (20515688)
+PlayCard 0 2 # CARD.STRIKE_SILENT (37449484)
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+PlayCard 15 # CARD.SPEEDSTER (65425558)
+PlayCard 1 # CARD.PREPARED (36241398)
+SelectHandCards 5 3
+PlayCard 5 1 # CARD.EXPOSE (13113187)
+PlayCard 3 # CARD.ACROBATICS (49872160)
+SelectHandCards 5
+PlayCard 8 # CARD.PREPARED (30054807)
+SelectHandCards 4 1
+PlayCard 0 1 # CARD.DAGGER_THROW (63679145)
+SelectHandCards 1
+PlayCard 13 # CARD.ESCAPE_PLAN (12406785)
+PlayCard 12 1 # CARD.NEUTRALIZE (23748153)
+PlayCard 7 1 # CARD.STRIKE_SILENT (55535206)
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 1 # CARD.PREPARED (36241398)
+SelectHandCards 3 5
+PlayCard 3 # CARD.ACROBATICS (49872160)
+SelectHandCards 4
+PlayCard 13 # CARD.ESCAPE_PLAN (12406785)
+PlayCard 7 1 # CARD.STRIKE_SILENT (55535206)
+PlayCard 0 4 # CARD.DAGGER_THROW (63679145)
+SelectHandCards 2
+UsePotion 2 # POTION.RADIANT_TINCTURE
+PlayCard 10 # CARD.SURVIVOR (18520285)
+SelectHandCards 0
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 8 # CARD.PREPARED (30054807)
+SelectHandCards 0 3
+PlayCard 13 # CARD.ESCAPE_PLAN (12406785)
+PlayCard 0 2 # CARD.DAGGER_THROW (63679145)
+SelectHandCards 2
+PlayCard 1 # CARD.PREPARED (36241398)
+SelectHandCards 3 1
+PlayCard 3 # CARD.ACROBATICS (49872160)
+ClaimReward 0 # GoldReward: 35
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 9
+MoveToMapCoord 3
+PlayCard 12 # CARD.SPEEDSTER (63599296)
+PlayCard 4 # CARD.ACROBATICS (13675545)
+SelectHandCards 6
+PlayCard 9 # CARD.ESCAPE_PLAN (6347053)
+PlayCard 6 # CARD.PREPARED (33977390)
+SelectHandCards 3 0
+PlayCard 1 1 # CARD.EXPOSE (51386037)
+PlayCard 10 # CARD.PREPARED (57123482)
+SelectHandCards 4 3
+PlayCard 5 1 # CARD.NEUTRALIZE (55971048)
+PlayCard 15 1 # CARD.DAGGER_THROW (58770978)
+SelectHandCards 1
+PlayCard 2 1 # CARD.STRIKE_SILENT (59821157)
+PlayCard 13 # CARD.DEFEND_SILENT (35522756)
+PlayCard 14 # CARD.SURVIVOR (51269351)
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 4 # CARD.ACROBATICS (13675545)
+SelectHandCards 7
+PlayCard 10 # CARD.PREPARED (57123482)
+SelectHandCards 4 3
+PlayCard 4 # CARD.ACROBATICS (13675545)
+SelectHandCards 6
+PlayCard 9 # CARD.ESCAPE_PLAN (6347053)
+PlayCard 6 # CARD.PREPARED (33977390)
+SelectHandCards 7 5
+PlayCard 10 # CARD.PREPARED (57123482)
+SelectHandCards 7 5
+PlayCard 4 # CARD.ACROBATICS (13675545)
+SelectHandCards 6
+PlayCard 9 # CARD.ESCAPE_PLAN (6347053)
+PlayCard 6 # CARD.PREPARED (33977390)
+SelectHandCards 7 5
+PlayCard 10 # CARD.PREPARED (57123482)
+SelectHandCards 5 7
+PlayCard 2 1 # CARD.STRIKE_SILENT (59821157)
+PlayCard 5 1 # CARD.NEUTRALIZE (55971048)
+PlayCard 0 # CARD.DEFEND_SILENT (35535721)
+PlayCard 15 1 # CARD.DAGGER_THROW (58770978)
+SelectHandCards 2
+PlayCard 3 # CARD.BULLET_TIME (1519505)
+PlayCard 14 # CARD.SURVIVOR (51269351)
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 4 # CARD.ACROBATICS (13675545)
+SelectHandCards 4
+PlayCard 6 # CARD.PREPARED (33977390)
+SelectHandCards 6 3
+PlayCard 9 # CARD.ESCAPE_PLAN (6347053)
+PlayCard 10 # CARD.PREPARED (57123482)
+SelectHandCards 6 3
+PlayCard 15 1 # CARD.DAGGER_THROW (58770978)
+SelectHandCards 3
+PlayCard 5 1 # CARD.NEUTRALIZE (55971048)
+PlayCard 6 # CARD.PREPARED (33977390)
+SelectHandCards 1 0
+PlayCard 4 # CARD.ACROBATICS (13675545)
+SelectHandCards 3
+PlayCard 9 # CARD.ESCAPE_PLAN (6347053)
+PlayCard 10 # CARD.PREPARED (57123482)
+SelectHandCards 1 2
+PlayCard 14 # CARD.SURVIVOR (51269351)
+SelectHandCards 0
+PlayCard 2 1 # CARD.STRIKE_SILENT (59821157)
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 6 # CARD.PREPARED (33977390)
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Corrosive Wave
+ProceedToNextAct
+MoveToMapCoord 3
+ChooseEventOption 0 # TEZCATARA.pages.INITIAL.options.VERY_HOT_COCOA
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+PlayCard 8 # CARD.SPEEDSTER (31306387)
+PlayCard 2 # CARD.CORROSIVE_WAVE (49076922)
+PlayCard 4 # CARD.ACROBATICS (15807727)
+SelectHandCards 7
+PlayCard 9 # CARD.ESCAPE_PLAN (13322035)
+PlayCard 6 1 # CARD.EXPOSE (5357525)
+PlayCard 7 # CARD.PREPARED (48217730)
+SelectHandCards 2 1
+PlayCard 13 1 # CARD.DAGGER_THROW (30136460)
+SelectHandCards 2
+PlayCard 5 1 # CARD.NEUTRALIZE (8051821)
+PlayCard 0 1 # CARD.STRIKE_SILENT (9719437)
+PlayCard 12 # CARD.DEFEND_SILENT (48087738)
+PlayCard 14 # CARD.SURVIVOR (2792690)
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 13 1 # CARD.DAGGER_THROW (30136460)
+SelectHandCards 4
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard 1 # Speedster+
+MoveToMapCoord 3
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+MoveToMapCoord 3
+ChooseEventOption 0 # THIS_OR_THAT.pages.INITIAL.options.PLAIN
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+ChooseEventOption 1 # SLIPPERY_BRIDGE.pages.INITIAL.options.HOLD_ON_0
+ChooseEventOption 0 # SLIPPERY_BRIDGE.pages.INITIAL.options.OVERCOME
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+PlayCard 13 # CARD.SPEEDSTER (17951925)
+PlayCard 6 # CARD.SPEEDSTER (57413194)
+PlayCard 1 # CARD.ESCAPE_PLAN (676050)
+PlayCard 5 1 # CARD.NEUTRALIZE (6379243)
+PlayCard 2 2 # CARD.STRIKE_SILENT (6084450)
+PlayCard 4 # CARD.DEFEND_SILENT (23078426)
+PlayCard 3 # CARD.DEFEND_SILENT (54760052)
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 11 # CARD.PREPARED (53245916)
+SelectHandCards 2 0
+PlayCard 14 # CARD.ACROBATICS (27349601)
+ClaimReward 0 # GoldReward: 17
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+PlayCard 14 # CARD.SPEEDSTER (47766505)
+PlayCard 1 # CARD.SPEEDSTER (31420853)
+PlayCard 2 # CARD.CORROSIVE_WAVE (14352228)
+PlayCard 4 # CARD.ESCAPE_PLAN (21679818)
+PlayCard 0 # CARD.PREPARED (25860827)
+SelectHandCards 2 0
+PlayCard 8 2 # CARD.EXPOSE (37603914)
+PlayCard 5 2 # CARD.DAGGER_THROW (60900635)
+SelectHandCards 0
+PlayCard 9 # CARD.ACROBATICS (2890914)
+SelectHandCards 1
+PlayCard 10 3 # CARD.NEUTRALIZE (26018230)
+PlayCard 13 # CARD.DEFEND_SILENT (42590091)
+PlayCard 12 # CARD.DEFEND_SILENT (27101853)
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+ClaimReward 0 # GoldReward: 37
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 4
+ChooseRestSiteOption SMITH
+SelectGridCard 9
+MoveToMapCoord 5
+OpenChest
+TakeChestRelic # Blood Vial
+MoveToMapCoord 4
+PlayCard 12 # CARD.SPEEDSTER (57921468)
+PlayCard 9 # CARD.SPEEDSTER (65347196)
+PlayCard 1 # CARD.ESCAPE_PLAN (19658690)
+PlayCard 4 # CARD.PREPARED (36997412)
+SelectHandCards 0 1
+PlayCard 6 # CARD.CORROSIVE_WAVE (44000377)
+PlayCard 3 1 # CARD.EXPOSE (48850066)
+UsePotion 0 # POTION.GAMBLERS_BREW
+SelectHandCards 0 1
+PlayCard 10 # CARD.DEFEND_SILENT (51253853)
+PlayCard 8 1 # CARD.STRIKE_SILENT (7260799)
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 15 # CARD.ACROBATICS (13275366)
+SelectHandCards 7
+PlayCard 6 # CARD.CORROSIVE_WAVE (44000377)
+PlayCard 4 # CARD.PREPARED (36997412)
+SelectHandCards 5 6
+PlayCard 14 # CARD.PREPARED (61127364)
+SelectHandCards 4 1
+PlayCard 13 1 # CARD.DAGGER_THROW (51531172)
+SelectHandCards 3
+PlayCard 5 # CARD.DEFEND_SILENT (64541254)
+PlayCard 10 # CARD.DEFEND_SILENT (51253853)
+PlayCard 11 1 # CARD.NEUTRALIZE (58631501)
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 1 # CARD.ESCAPE_PLAN (19658690)
+PlayCard 7 # CARD.DEFEND_SILENT (60459079)
+PlayCard 11 1 # CARD.NEUTRALIZE (58631501)
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+ClaimReward 0 # GoldReward: 38
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 4
+OpenShop
+BuyCardRemoval
+SelectGridCard 5
+MoveToMapCoord 5
+PlayCard 10 # CARD.SPEEDSTER (14683776) || Hand: [Speedster+, Speedster+, Defend, Corrosive Wave+, Tactician+, Defend, Escape Plan] Enemies: [Ovicopter 127/127]
+PlayCard 3 # CARD.SPEEDSTER (3986615) || Hand: [Speedster+, Defend, Corrosive Wave+, Tactician+, Defend, Escape Plan] Enemies: [Ovicopter 127/127]
+PlayCard 1 # CARD.CORROSIVE_WAVE (6677253) || Hand: [Defend, Corrosive Wave+, Tactician+, Defend, Escape Plan] Enemies: [Ovicopter 127/127]
+PlayCard 5 # CARD.ESCAPE_PLAN (54480385) || Hand: [Defend, Tactician+, Defend, Escape Plan] Enemies: [Ovicopter 127/127]
+PlayCard 6 # CARD.PREPARED (20561423) || Hand: [Defend, Tactician+, Defend, Prepared+] Enemies: [Ovicopter 123/127]
+SelectHandCards 1 0
+PlayCard 8 1 # CARD.EXPOSE (54862577)
+PlayCard 7 # CARD.DEFEND_SILENT (50835084) || Hand: [Defend, Defend, Expose] Enemies: [Ovicopter 115/127]
+PlayCard 4 # CARD.DEFEND_SILENT (35879537) || Hand: [Defend] Enemies: [Ovicopter 115/127]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 # CARD.ACROBATICS (24001152) || Hand: [Acrobatics+, Dagger Throw, Neutralize, Prepared+, Strike] Enemies: [Tough Egg 16/16, Tough Egg 17/17, Tough Egg 18/18, Ovicopter 106/127]
+SelectHandCards 7
+PlayCard 6 # CARD.PREPARED (20561423) || Hand: [Dagger Throw, Neutralize, Prepared+, Strike, Prepared+, Tactician+, Corrosive Wave+] Enemies: [Tough Egg 1/17, Tough Egg 2/18, Ovicopter 90/127]
+SelectHandCards 4 3
+PlayCard 1 # CARD.CORROSIVE_WAVE (6677253) || Hand: [Dagger Throw, Neutralize, Prepared+, Corrosive Wave+, Escape Plan, Defend] Enemies: [Ovicopter 82/127]
+PlayCard 5 # CARD.ESCAPE_PLAN (54480385) || Hand: [Dagger Throw, Neutralize, Prepared+, Escape Plan, Defend] Enemies: [Ovicopter 82/127]
+PlayCard 13 # CARD.PREPARED (34163648) || Hand: [Dagger Throw, Neutralize, Prepared+, Defend, Defend] Enemies: [Ovicopter 78/127]
+SelectHandCards 4 2
+PlayCard 1 # CARD.CORROSIVE_WAVE (6677253) || Hand: [Dagger Throw, Neutralize, Defend, Corrosive Wave+] Enemies: [Ovicopter 70/127]
+PlayCard 11 1 # CARD.DAGGER_THROW (65045123) || Hand: [Dagger Throw, Neutralize, Defend] Enemies: [Ovicopter 70/127]
+SelectHandCards 2
+PlayCard 12 1 # CARD.NEUTRALIZE (48535203) || Hand: [Neutralize, Defend] Enemies: [Ovicopter 53/127]
+PlayCard 7 # CARD.DEFEND_SILENT (50835084) || Hand: [Defend] Enemies: [Ovicopter 49/127]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 9 # CARD.ACROBATICS (24001152) || Hand: [Acrobatics+, Defend, Escape Plan, Prepared+, Prepared+] Enemies: [Ovicopter 26/127]
+SelectHandCards 7
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 4
+PlayCard 13 # CARD.SPEEDSTER (66318808) || Hand: [Speedster+, Speedster+, Dagger Throw, Acrobatics+, Escape Plan, Defend, Prepared+] Enemies: [The Obscura 123/123]
+PlayCard 9 # CARD.SPEEDSTER (52461602) || Hand: [Speedster+, Dagger Throw, Acrobatics+, Escape Plan, Defend, Prepared+] Enemies: [The Obscura 123/123]
+PlayCard 2 # CARD.ESCAPE_PLAN (45948147) || Hand: [Dagger Throw, Acrobatics+, Escape Plan, Defend, Prepared+] Enemies: [The Obscura 123/123]
+PlayCard 1 # CARD.ACROBATICS (57301132) || Hand: [Dagger Throw, Acrobatics+, Defend, Prepared+, Tactician+] Enemies: [The Obscura 119/123]
+SelectHandCards 3
+PlayCard 7 # CARD.CORROSIVE_WAVE (47872430) || Hand: [Dagger Throw, Defend, Prepared+, Defend, Corrosive Wave+, Neutralize, Defend] Enemies: [The Obscura 103/123]
+PlayCard 4 # CARD.PREPARED (30812390) || Hand: [Dagger Throw, Defend, Prepared+, Defend, Neutralize, Defend] Enemies: [The Obscura 103/123]
+SelectHandCards 4 2
+PlayCard 11 1 # CARD.EXPOSE (21531363) || Hand: [Dagger Throw, Defend, Neutralize, Expose, Strike] Enemies: [The Obscura 95/123]
+PlayCard 0 1 # CARD.DAGGER_THROW (58562575) || Hand: [Dagger Throw, Defend, Neutralize, Strike] Enemies: [The Obscura 95/123]
+SelectHandCards 0
+PlayCard 14 # CARD.PREPARED (59998361) || Hand: [Neutralize, Strike, Prepared+] Enemies: [The Obscura 78/123]
+SelectHandCards 2 1
+PlayCard 1 # CARD.ACROBATICS (57301132) || Hand: [Neutralize, Acrobatics+] Enemies: [The Obscura 70/123]
+SelectHandCards 1
+PlayCard 7 # CARD.CORROSIVE_WAVE (47872430) || Hand: [Neutralize, Defend, Prepared+, Corrosive Wave+] Enemies: [The Obscura 54/123]
+PlayCard 4 # CARD.PREPARED (30812390) || Hand: [Neutralize, Defend, Prepared+] Enemies: [The Obscura 54/123]
+SelectHandCards 2 1
+PlayCard 0 1 # CARD.DAGGER_THROW (58562575) || Hand: [Neutralize, Dagger Throw] Enemies: [The Obscura 46/123]
+SelectHandCards 0
+PlayCard 2 # CARD.ESCAPE_PLAN (45948147) || Hand: [Escape Plan] Enemies: [The Obscura 29/123]
+PlayCard 10 # CARD.DEFEND_SILENT (2392373) || Hand: [Defend] Enemies: [The Obscura 25/123]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # CardReward
+TakeCard 2 # Grand Finale
+MoveToMapCoord 5
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+MoveToMapCoord 4
+ChooseRestSiteOption SMITH
+SelectGridCard 7
+MoveToMapCoord 3
+UsePotion 1 # POTION.POWER_POTION || Hand: [Speedster+, Speedster+, Prepared+, Corrosive Wave+, Dagger Throw, Expose, Prepared+] Enemies: [The Insatiable 321/321]
+SelectCardFromScreen 2
+PlayCard 15 # CARD.TOOLS_OF_THE_TRADE (21426668) || Hand: [Speedster+, Speedster+, Prepared+, Corrosive Wave+, Dagger Throw, Expose, Prepared+, Tools of the Trade] Enemies: [The Insatiable 321/321]
+PlayCard 6 # CARD.SPEEDSTER (52630446) || Hand: [Speedster+, Speedster+, Prepared+, Corrosive Wave+, Dagger Throw, Expose, Prepared+] Enemies: [The Insatiable 321/321]
+PlayCard 2 # CARD.SPEEDSTER (48276079)
+PlayCard 1 # CARD.CORROSIVE_WAVE (65016332) || Hand: [Prepared+, Corrosive Wave+, Dagger Throw, Expose, Prepared+] Enemies: [The Insatiable 321/321]
+PlayCard 4 1 # CARD.EXPOSE (18048352) || Hand: [Prepared+, Dagger Throw, Expose, Prepared+] Enemies: [The Insatiable 321/321]
+PlayCard 5 # CARD.PREPARED (28217448) || Hand: [Prepared+, Dagger Throw, Prepared+] Enemies: [The Insatiable 321/321]
+SelectHandCards 3 1
+PlayCard 7 # CARD.ACROBATICS (3911971) || Hand: [Prepared+, Acrobatics+] Enemies: [The Insatiable 313/321]
+SelectHandCards 4
+PlayCard 11 # CARD.ESCAPE_PLAN (30859898) || Hand: [Prepared+, Defend, Defend, Escape Plan] Enemies: [The Insatiable 297/321]
+PlayCard 0 # CARD.PREPARED (44506739) || Hand: [Prepared+, Defend, Defend, Grand Finale+] Enemies: [The Insatiable 293/321]
+SelectHandCards 0 1
+PlayCard 14 1 # CARD.NEUTRALIZE (15396898) || Hand: [Grand Finale+, Neutralize, Corrosive Wave+] Enemies: [The Insatiable 285/321]
+UsePotion 2 # POTION.STABLE_SERUM || Hand: [Grand Finale+, Corrosive Wave+] Enemies: [The Insatiable 281/321]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+SelectHandCards 6
+PlayCard 5 # CARD.PREPARED (28217448) || Hand: [Grand Finale+, Corrosive Wave+, Frantic Escape, Acrobatics+, Escape Plan, Defend, Tactician+, Prepared+] Enemies: [The Insatiable 254/321]
+SelectHandCards 5 6
+PlayCard 11 # CARD.ESCAPE_PLAN (30859898) || Hand: [Grand Finale+, Corrosive Wave+, Frantic Escape, Acrobatics+, Escape Plan, Frantic Escape] Enemies: [The Insatiable 246/321]
+PlayCard 1 # CARD.CORROSIVE_WAVE (65016332) || Hand: [Grand Finale+, Corrosive Wave+, Frantic Escape, Acrobatics+, Frantic Escape, Dagger Throw] Enemies: [The Insatiable 242/321]
+PlayCard 13 # CARD.GRAND_FINALE (16623847) || Hand: [Grand Finale+, Frantic Escape, Acrobatics+, Frantic Escape, Dagger Throw] Enemies: [The Insatiable 242/321]
+PlayCard 7 # CARD.ACROBATICS (3911971) || Hand: [Frantic Escape, Acrobatics+, Frantic Escape, Dagger Throw] Enemies: [The Insatiable 130/321]
+SelectHandCards 5
+PlayCard 3 1 # CARD.DAGGER_THROW (31831534) || Hand: [Frantic Escape, Frantic Escape, Dagger Throw, Corrosive Wave+, Frantic Escape, Defend] Enemies: [The Insatiable 114/321]
+SelectHandCards 3
+PlayCard 9 # CARD.DEFEND_SILENT (48434247) || Hand: [Frantic Escape, Frantic Escape, Corrosive Wave+, Defend, Defend] Enemies: [The Insatiable 97/321]
+PlayCard 10 # CARD.DEFEND_SILENT (33255039) || Hand: [Frantic Escape, Frantic Escape, Corrosive Wave+, Defend] Enemies: [The Insatiable 97/321]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+SelectHandCards 5
+PlayCard 1 # CARD.CORROSIVE_WAVE (65016332) || Hand: [Frantic Escape, Frantic Escape, Corrosive Wave+, Escape Plan, Defend, Tactician+, Frantic Escape, Grand Finale+, Frantic Escape] Enemies: [The Insatiable 56/321]
+PlayCard 11 # CARD.ESCAPE_PLAN (30859898) || Hand: [Frantic Escape, Frantic Escape, Escape Plan, Defend, Frantic Escape, Grand Finale+, Frantic Escape] Enemies: [The Insatiable 56/321]
+PlayCard 0 # CARD.PREPARED (44506739) || Hand: [Frantic Escape, Frantic Escape, Defend, Frantic Escape, Grand Finale+, Frantic Escape, Prepared+] Enemies: [The Insatiable 52/321]
+SelectHandCards 5 3
+PlayCard 13 # CARD.GRAND_FINALE (16623847) || Hand: [Frantic Escape, Frantic Escape, Defend, Grand Finale+, Neutralize, Prepared+] Enemies: [The Insatiable 44/321]
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Abrasive
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Frantic Escape, Frantic Escape, Defend, Neutralize, Prepared+] Enemies: []
+MoveToMapCoord 3

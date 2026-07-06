@@ -1,0 +1,360 @@
+# Character: SILENT
+# Seed: L081UMJX4M
+# Ascension: 1
+# Acts: ACT.OVERGROWTH, ACT.HIVE, ACT.GLORY
+# Game: v0.107.1
+# Mod: 0.1.0
+ChooseEventOption 2 # NEOW.pages.INITIAL.options.LEAFY_POULTICE
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 4
+PlayCard 2 # CARD.BULLET_TIME (30885782) || Hand: [Defend, Strike, Bullet Time, Neutralize, Expose, Defend, Defend] Enemies: [Twig Slime (S) 11/11, Leaf Slime (M) 34/34, Leaf Slime (S) 12/12]
+PlayCard 4 3 # CARD.EXPOSE (18720422) || Hand: [Defend, Strike, Neutralize, Expose, Defend, Defend] Enemies: [Twig Slime (S) 11/11, Leaf Slime (M) 34/34, Leaf Slime (S) 12/12]
+PlayCard 1 3 # CARD.STRIKE_SILENT (25801374) || Hand: [Defend, Strike, Neutralize, Defend, Defend] Enemies: [Twig Slime (S) 11/11, Leaf Slime (M) 34/34, Leaf Slime (S) 12/12]
+PlayCard 3 3 # CARD.NEUTRALIZE (9536587) || Hand: [Defend, Neutralize, Defend, Defend] Enemies: [Twig Slime (S) 11/11, Leaf Slime (M) 34/34, Leaf Slime (S) 3/12]
+PlayCard 6 # CARD.DEFEND_SILENT (39959194) || Hand: [Defend, Defend, Defend] Enemies: [Twig Slime (S) 11/11, Leaf Slime (M) 34/34]
+PlayCard 5 # CARD.DEFEND_SILENT (34266072) || Hand: [Defend, Defend] Enemies: [Twig Slime (S) 11/11, Leaf Slime (M) 34/34]
+PlayCard 0 # CARD.DEFEND_SILENT (2866819) || Hand: [Defend] Enemies: [Twig Slime (S) 11/11, Leaf Slime (M) 34/34]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 1 # CARD.STRIKE_SILENT (5005747) || Hand: [Strike, Strike, Strike, Defend, Survivor] Enemies: [Twig Slime (S) 11/11, Leaf Slime (M) 34/34]
+PlayCard 8 1 # CARD.STRIKE_SILENT (15469275) || Hand: [Strike, Strike, Defend, Survivor] Enemies: [Twig Slime (S) 5/11, Leaf Slime (M) 34/34]
+PlayCard 11 # CARD.SURVIVOR (2812369) || Hand: [Strike, Defend, Survivor] Enemies: [Leaf Slime (M) 34/34]
+SelectHandCards 1
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 3 2 # CARD.NEUTRALIZE (9536587) || Hand: [Slimed, Strike, Defend, Neutralize, Strike] Enemies: [Leaf Slime (M) 34/34]
+PlayCard 12 # CARD.SLIMED (6907272) || Hand: [Slimed, Strike, Defend, Strike] Enemies: [Leaf Slime (M) 31/34]
+PlayCard 7 2 # CARD.STRIKE_SILENT (24088429) || Hand: [Strike, Defend, Strike, Defend] Enemies: [Leaf Slime (M) 31/34]
+PlayCard 1 2 # CARD.STRIKE_SILENT (25801374) || Hand: [Strike, Defend, Defend] Enemies: [Leaf Slime (M) 25/34]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 11 # CARD.SURVIVOR (2812369) || Hand: [Defend, Survivor, Defend, Slimed, Strike] Enemies: [Leaf Slime (M) 19/34]
+SelectHandCards 1
+PlayCard 13 # CARD.SLIMED (2236910) || Hand: [Defend, Slimed, Strike] Enemies: [Leaf Slime (M) 19/34]
+PlayCard 9 2 # CARD.STRIKE_SILENT (5005747) || Hand: [Defend, Strike, Bullet Time] Enemies: [Leaf Slime (M) 19/34]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 9 2 # CARD.STRIKE_SILENT (5005747) || Hand: [Strike, Defend, Strike, Survivor, Defend] Enemies: [Leaf Slime (M) 13/34]
+PlayCard 8 2 # CARD.STRIKE_SILENT (15469275) || Hand: [Strike, Defend, Survivor, Defend] Enemies: [Leaf Slime (M) 7/34]
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+PlayCard 7 2 # CARD.STRIKE_SILENT (24088429) || Hand: [Neutralize, Slimed, Strike, Bullet Time, Strike] Enemies: [Leaf Slime (M) 1/34]
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Prepared
+MoveToMapCoord 5
+PlayCard 0 1 # CARD.NEUTRALIZE (39054946) || Hand: [Neutralize, Defend, Prepared, Strike, Strike, Defend, Strike] Enemies: [Nibbit 45/45]
+PlayCard 5 # CARD.DEFEND_SILENT (26539956) || Hand: [Defend, Prepared, Strike, Strike, Defend, Strike] Enemies: [Nibbit 42/45]
+PlayCard 1 # CARD.DEFEND_SILENT (15950199) || Hand: [Defend, Prepared, Strike, Strike, Strike] Enemies: [Nibbit 42/45]
+PlayCard 4 1 # CARD.STRIKE_SILENT (17861964) || Hand: [Prepared, Strike, Strike, Strike] Enemies: [Nibbit 42/45]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 7 1 # CARD.EXPOSE (2252813) || Hand: [Expose, Defend, Strike, Defend, Survivor] Enemies: [Nibbit 36/45]
+PlayCard 9 1 # CARD.STRIKE_SILENT (48260163) || Hand: [Defend, Strike, Defend, Survivor] Enemies: [Nibbit 36/45]
+PlayCard 11 # CARD.SURVIVOR (16759101) || Hand: [Defend, Defend, Survivor] Enemies: [Nibbit 27/45]
+SelectHandCards 1
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 3 1 # CARD.STRIKE_SILENT (16897743) || Hand: [Bullet Time, Defend, Defend, Strike, Defend] Enemies: [Nibbit 27/45]
+PlayCard 1 # CARD.DEFEND_SILENT (15950199) || Hand: [Bullet Time, Defend, Defend, Defend] Enemies: [Nibbit 23/45]
+PlayCard 5 # CARD.DEFEND_SILENT (26539956) || Hand: [Bullet Time, Defend, Defend] Enemies: [Nibbit 23/45]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 0 1 # CARD.NEUTRALIZE (39054946) || Hand: [Strike, Prepared, Neutralize, Strike, Defend] Enemies: [Nibbit 23/45]
+PlayCard 2 # CARD.PREPARED (9334067) || Hand: [Strike, Prepared, Strike, Defend] Enemies: [Nibbit 20/45]
+SelectHandCards 1
+PlayCard 6 1 # CARD.STRIKE_SILENT (37533014) || Hand: [Strike, Defend, Survivor] Enemies: [Nibbit 20/45]
+PlayCard 8 # CARD.DEFEND_SILENT (20275321) || Hand: [Defend, Survivor] Enemies: [Nibbit 14/45]
+PlayCard 11 # CARD.SURVIVOR (16759101) || Hand: [Survivor] Enemies: [Nibbit 14/45]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 0 1 # CARD.NEUTRALIZE (39054946) || Hand: [Strike, Neutralize, Bullet Time, Strike, Defend] Enemies: [Nibbit 14/45]
+PlayCard 12 # CARD.BULLET_TIME (16614183) || Hand: [Strike, Bullet Time, Strike, Defend] Enemies: [Nibbit 11/45]
+PlayCard 9 1 # CARD.STRIKE_SILENT (48260163) || Hand: [Strike, Strike, Defend] Enemies: [Nibbit 11/45]
+PlayCard 3 1 # CARD.STRIKE_SILENT (16897743) || Hand: [Strike, Defend] Enemies: [Nibbit 5/45]
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Prepared
+MoveToMapCoord 4
+ChooseEventOption 0 # MORPHIC_GROVE.pages.INITIAL.options.GROUP
+SelectGridCard 0 5
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 5
+PlayCard 4 # CARD.ACROBATICS (46815560) || Hand: [Neutralize, Strike, Strike, Bullet Time, Acrobatics, Prepared, Defend] Enemies: [Fuzzy Wurm Crawler 56/56]
+SelectHandCards 5
+PlayCard 0 1 # CARD.NEUTRALIZE (22857493) || Hand: [Neutralize, Strike, Strike, Bullet Time, Prepared, Survivor, Defend, Prepared] Enemies: [Fuzzy Wurm Crawler 56/56]
+PlayCard 9 # CARD.PREPARED (63720954) || Hand: [Strike, Strike, Bullet Time, Prepared, Survivor, Defend, Prepared] Enemies: [Fuzzy Wurm Crawler 53/56]
+SelectHandCards 2
+PlayCard 7 # CARD.SURVIVOR (37240876) || Hand: [Strike, Strike, Prepared, Survivor, Defend, Defend] Enemies: [Fuzzy Wurm Crawler 53/56]
+SelectHandCards 3
+PlayCard 2 1 # CARD.STRIKE_SILENT (39517681) || Hand: [Strike, Strike, Prepared, Defend] Enemies: [Fuzzy Wurm Crawler 53/56]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 12 # CARD.SPEEDSTER (13241636) || Hand: [Strike, Speedster, Expose, Defend, Strike] Enemies: [Fuzzy Wurm Crawler 47/56]
+PlayCard 13 1 # CARD.EXPOSE (52065863) || Hand: [Strike, Expose, Defend, Strike] Enemies: [Fuzzy Wurm Crawler 47/56]
+PlayCard 2 1 # CARD.STRIKE_SILENT (39517681) || Hand: [Strike, Defend, Strike] Enemies: [Fuzzy Wurm Crawler 47/56]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 5 # CARD.PREPARED (18686862) || Hand: [Defend, Prepared, Strike, Survivor, Prepared] Enemies: [Fuzzy Wurm Crawler 38/56]
+SelectHandCards 4
+PlayCard 9 # CARD.PREPARED (63720954) || Hand: [Defend, Prepared, Strike, Survivor] Enemies: [Fuzzy Wurm Crawler 36/56]
+SelectHandCards 1
+PlayCard 0 1 # CARD.NEUTRALIZE (22857493) || Hand: [Defend, Survivor, Neutralize] Enemies: [Fuzzy Wurm Crawler 34/56]
+PlayCard 10 # CARD.DEFEND_SILENT (36617674) || Hand: [Defend, Survivor] Enemies: [Fuzzy Wurm Crawler 30/56]
+PlayCard 7 # CARD.SURVIVOR (37240876) || Hand: [Survivor] Enemies: [Fuzzy Wurm Crawler 30/56]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 4 # CARD.ACROBATICS (46815560) || Hand: [Bullet Time, Acrobatics, Defend, Defend, Prepared] Enemies: [Fuzzy Wurm Crawler 30/56]
+SelectHandCards 0
+PlayCard 5 # CARD.PREPARED (18686862) || Hand: [Defend, Defend, Prepared, Defend, Survivor, Strike] Enemies: [Fuzzy Wurm Crawler 24/56]
+SelectHandCards 2
+PlayCard 0 1 # CARD.NEUTRALIZE (22857493) || Hand: [Defend, Defend, Survivor, Strike, Neutralize] Enemies: [Fuzzy Wurm Crawler 22/56]
+PlayCard 7 # CARD.SURVIVOR (37240876) || Hand: [Defend, Defend, Survivor, Strike] Enemies: [Fuzzy Wurm Crawler 19/56]
+SelectHandCards 1
+PlayCard 1 1 # CARD.STRIKE_SILENT (4390853) || Hand: [Defend, Strike] Enemies: [Fuzzy Wurm Crawler 19/56]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 5 # CARD.PREPARED (18686862) || Hand: [Prepared, Strike, Strike, Defend, Prepared] Enemies: [Fuzzy Wurm Crawler 13/56]
+SelectHandCards 3
+PlayCard 11 1 # CARD.STRIKE_SILENT (61123616) || Hand: [Prepared, Strike, Strike, Survivor] Enemies: [Fuzzy Wurm Crawler 11/56]
+PlayCard 2 1 # CARD.STRIKE_SILENT (39517681) || Hand: [Prepared, Strike, Survivor] Enemies: [Fuzzy Wurm Crawler 5/56]
+ClaimReward 0 # GoldReward: 14
+ClaimReward 0 # CardReward
+TakeCard 1 # Dagger Throw
+MoveToMapCoord 5
+PlayCard 1 # CARD.SPEEDSTER (57108582) || Hand: [Prepared, Speedster, Strike, Defend, Neutralize, Strike, Strike] Enemies: [Fogmog 74/74]
+PlayCard 0 # CARD.PREPARED (58541181) || Hand: [Prepared, Strike, Defend, Neutralize, Strike, Strike] Enemies: [Fogmog 74/74]
+SelectHandCards 5
+PlayCard 4 1 # CARD.NEUTRALIZE (24660599) || Hand: [Strike, Defend, Neutralize, Strike, Strike] Enemies: [Fogmog 72/74]
+PlayCard 5 1 # CARD.STRIKE_SILENT (20618802) || Hand: [Strike, Defend, Strike, Strike] Enemies: [Fogmog 69/74]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 # CARD.ACROBATICS (65830579) || Hand: [Acrobatics, Dagger Throw, Defend, Expose, Prepared] Enemies: [Eye with Teeth 6/6, Fogmog 63/74]
+SelectHandCards 5
+PlayCard 11 1 # CARD.EXPOSE (7654867) || Hand: [Dagger Throw, Defend, Expose, Prepared, Survivor, Defend] Enemies: [Eye with Teeth 0/6, Fogmog 57/74]
+PlayCard 9 1 # CARD.DAGGER_THROW (55604305) || Hand: [Dagger Throw, Defend, Prepared, Survivor, Defend] Enemies: [Eye with Teeth 0/6, Fogmog 57/74]
+SelectHandCards 3
+PlayCard 13 # CARD.SURVIVOR (16064514) || Hand: [Defend, Prepared, Survivor, Defend] Enemies: [Eye with Teeth 0/6, Fogmog 42/74]
+SelectHandCards 2
+PlayCard 12 # CARD.PREPARED (1784946) || Hand: [Defend, Prepared] Enemies: [Eye with Teeth 0/6, Fogmog 42/74]
+SelectHandCards 0
+PlayCard 4 1 # CARD.NEUTRALIZE (24660599) || Hand: [Neutralize] Enemies: [Eye with Teeth 0/6, Fogmog 40/74]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 0 # CARD.PREPARED (58541181) || Hand: [Prepared, Strike, Strike, Strike, Defend] Enemies: [Eye with Teeth 6/6, Fogmog 36/74]
+SelectHandCards 2
+PlayCard 2 2 # CARD.STRIKE_SILENT (44215190) || Hand: [Strike, Strike, Defend, Survivor] Enemies: [Eye with Teeth 4/6, Fogmog 34/74]
+PlayCard 13 # CARD.SURVIVOR (16064514) || Hand: [Strike, Defend, Survivor] Enemies: [Eye with Teeth 0/6, Fogmog 34/74]
+SelectHandCards 0
+PlayCard 3 # CARD.DEFEND_SILENT (62392390) || Hand: [Defend] Enemies: [Eye with Teeth 0/6, Fogmog 34/74]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 8 # CARD.ACROBATICS (65830579) || Hand: [Acrobatics, Neutralize, Defend, Defend, Prepared] Enemies: [Eye with Teeth 6/6, Fogmog 34/74]
+SelectHandCards 4
+PlayCard 12 # CARD.PREPARED (1784946) || Hand: [Neutralize, Defend, Defend, Prepared, Dagger Throw, Strike] Enemies: [Eye with Teeth 0/6, Fogmog 28/74]
+SelectHandCards 2
+PlayCard 9 1 # CARD.DAGGER_THROW (55604305) || Hand: [Neutralize, Defend, Dagger Throw, Strike, Defend] Enemies: [Eye with Teeth 0/6, Fogmog 26/74]
+SelectHandCards 4
+PlayCard 4 1 # CARD.NEUTRALIZE (24660599) || Hand: [Neutralize, Defend, Strike, Defend] Enemies: [Eye with Teeth 0/6, Fogmog 15/74]
+PlayCard 3 # CARD.DEFEND_SILENT (62392390) || Hand: [Defend, Strike, Defend] Enemies: [Eye with Teeth 0/6, Fogmog 12/74]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 4 1 # CARD.NEUTRALIZE (24660599) || Hand: [Prepared, Strike, Survivor, Neutralize, Defend] Enemies: [Eye with Teeth 6/6, Fogmog 12/74]
+PlayCard 0 # CARD.PREPARED (58541181) || Hand: [Prepared, Strike, Survivor, Defend] Enemies: [Eye with Teeth 6/6, Fogmog 9/74]
+SelectHandCards 3
+PlayCard 13 # CARD.SURVIVOR (16064514) || Hand: [Strike, Survivor, Defend] Enemies: [Eye with Teeth 4/6, Fogmog 7/74]
+SelectHandCards 0
+PlayCard 10 # CARD.DEFEND_SILENT (30676702) || Hand: [Defend] Enemies: [Eye with Teeth 4/6, Fogmog 7/74]
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+PlayCard 12 # CARD.PREPARED (1784946) || Hand: [Defend, Strike, Defend, Prepared, Strike] Enemies: [Eye with Teeth 4/6, Fogmog 7/74]
+SelectHandCards 3
+PlayCard 8 # CARD.ACROBATICS (65830579) || Hand: [Defend, Strike, Defend, Acrobatics] Enemies: [Eye with Teeth 2/6, Fogmog 5/74]
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Tactician
+MoveToMapCoord 5
+ChooseRestSiteOption SMITH
+SelectGridCard 10
+MoveToMapCoord 5
+PlayCard 4 1 # CARD.EXPOSE (18929034) || Hand: [Prepared+, Neutralize, Bullet Time, Speedster, Expose, Acrobatics, Strike] Enemies: [Cubex Construct 65/65]
+PlayCard 3 # CARD.SPEEDSTER (31929387) || Hand: [Prepared+, Neutralize, Bullet Time, Speedster, Acrobatics, Strike] Enemies: [Cubex Construct 65/65]
+PlayCard 5 # CARD.ACROBATICS (36143584) || Hand: [Prepared+, Neutralize, Bullet Time, Acrobatics, Strike] Enemies: [Cubex Construct 65/65]
+SelectHandCards 2
+PlayCard 0 # CARD.PREPARED (15233047) || Hand: [Prepared+, Neutralize, Strike, Strike, Dagger Throw, Defend] Enemies: [Cubex Construct 59/65]
+SelectHandCards 4 3
+PlayCard 1 1 # CARD.NEUTRALIZE (2879703) || Hand: [Neutralize, Strike, Strike, Strike, Defend] Enemies: [Cubex Construct 55/65]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 12 # CARD.PREPARED (3868646) || Hand: [Prepared, Survivor, Tactician, Defend, Strike] Enemies: [Cubex Construct 51/65]
+SelectHandCards 1
+PlayCard 10 1 # CARD.STRIKE_SILENT (46444012) || Hand: [Survivor, Defend, Strike, Strike] Enemies: [Cubex Construct 49/65]
+PlayCard 6 1 # CARD.STRIKE_SILENT (56856806) || Hand: [Survivor, Defend, Strike] Enemies: [Cubex Construct 40/65]
+PlayCard 15 # CARD.DEFEND_SILENT (1670920) || Hand: [Survivor, Defend] Enemies: [Cubex Construct 31/65]
+PlayCard 13 # CARD.SURVIVOR (34817817) || Hand: [Survivor] Enemies: [Cubex Construct 31/65]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 5 # CARD.ACROBATICS (36143584) || Hand: [Strike, Acrobatics, Bullet Time, Prepared+, Defend] Enemies: [Cubex Construct 31/65]
+SelectHandCards 1
+PlayCard 0 # CARD.PREPARED (15233047) || Hand: [Strike, Prepared+, Defend, Dagger Throw, Neutralize, Defend] Enemies: [Cubex Construct 25/65]
+SelectHandCards 0 6
+PlayCard 5 # CARD.ACROBATICS (36143584) || Hand: [Defend, Dagger Throw, Neutralize, Defend, Acrobatics] Enemies: [Cubex Construct 21/65]
+SelectHandCards 4
+PlayCard 8 1 # CARD.DAGGER_THROW (41998607) || Hand: [Defend, Dagger Throw, Neutralize, Defend, Prepared, Strike] Enemies: [Cubex Construct 15/65]
+SelectHandCards 4
+PlayCard 12 # CARD.PREPARED (3868646) || Hand: [Defend, Neutralize, Defend, Prepared, Survivor] Enemies: [Cubex Construct 4/65]
+SelectHandCards 4
+PlayCard 1 1 # CARD.NEUTRALIZE (2879703) || Hand: [Defend, Neutralize, Defend, Survivor] Enemies: [Cubex Construct 2/65]
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # CardReward
+TakeCard 0 # Escape Plan
+MoveToMapCoord 5
+ChooseRestSiteOption SMITH
+SelectGridCard 10
+MoveToMapCoord 5
+OpenChest
+TakeChestRelic # Pantograph
+NetPickRelicAction for player 1 index 0 || Hand: [Defend, Defend, Survivor] Enemies: []
+MoveToMapCoord 4
+ChooseRestSiteOption SMITH
+SelectGridCard 13
+MoveToMapCoord 4
+ChooseEventOption 1 # AROMA_OF_CHAOS.pages.INITIAL.options.MAINTAIN_CONTROL
+SelectGridCard 10
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+MoveToMapCoord 3
+PlayCard 15 # CARD.SPEEDSTER (11034215) || Hand: [Speedster+, Strike, Strike, Defend, Prepared+, Escape Plan, Neutralize] Enemies: [Nibbit 45/45, Nibbit 43/43]
+PlayCard 4 # CARD.ESCAPE_PLAN (20515688) || Hand: [Strike, Strike, Defend, Prepared+, Escape Plan, Neutralize] Enemies: [Nibbit 45/45, Nibbit 43/43]
+PlayCard 3 # CARD.PREPARED (54475304) || Hand: [Strike, Strike, Defend, Prepared+, Neutralize, Prepared+] Enemies: [Nibbit 43/45, Nibbit 41/43]
+SelectHandCards 1 0
+PlayCard 8 # CARD.ACROBATICS (50157685) || Hand: [Defend, Neutralize, Prepared+, Dagger Throw, Acrobatics] Enemies: [Nibbit 39/45, Nibbit 37/43]
+SelectHandCards 5
+PlayCard 6 # CARD.PREPARED (51158004) || Hand: [Defend, Neutralize, Prepared+, Dagger Throw, Survivor, Defend] Enemies: [Nibbit 33/45, Nibbit 31/43]
+SelectHandCards 4 6
+PlayCard 12 1 # CARD.EXPOSE (49817461) || Hand: [Defend, Neutralize, Dagger Throw, Survivor, Expose] Enemies: [Nibbit 29/45, Nibbit 27/43]
+PlayCard 5 1 # CARD.NEUTRALIZE (50423465) || Hand: [Defend, Neutralize, Dagger Throw, Survivor] Enemies: [Nibbit 29/45, Nibbit 27/43]
+PlayCard 7 1 # CARD.DAGGER_THROW (57768859) || Hand: [Defend, Dagger Throw, Survivor] Enemies: [Nibbit 25/45, Nibbit 27/43]
+SelectHandCards 2
+PlayCard 9 # CARD.SURVIVOR (48765989) || Hand: [Defend, Survivor] Enemies: [Nibbit 10/45, Nibbit 25/43]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 7 1 # CARD.DAGGER_THROW (57768859) || Hand: [Defend, Tactician+, Defend, Dagger Throw, Survivor] Enemies: [Nibbit 10/45, Nibbit 25/43]
+SelectHandCards 1
+PlayCard 4 # CARD.ESCAPE_PLAN (20515688) || Hand: [Defend, Defend, Survivor, Escape Plan] Enemies: [Nibbit 23/43]
+PlayCard 14 # CARD.BULLET_TIME (8682564) || Hand: [Defend, Defend, Survivor, Bullet Time] Enemies: [Nibbit 21/43]
+PlayCard 11 # CARD.DEFEND_SILENT (57731056) || Hand: [Defend, Defend, Survivor] Enemies: [Nibbit 21/43]
+PlayCard 2 # CARD.DEFEND_SILENT (13509352) || Hand: [Defend, Survivor] Enemies: [Nibbit 21/43]
+PlayCard 9 # CARD.SURVIVOR (48765989) || Hand: [Survivor] Enemies: [Nibbit 21/43]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 8 # CARD.ACROBATICS (50157685) || Hand: [Acrobatics, Prepared+, Strike, Prepared+, Defend] Enemies: [Nibbit 21/43]
+SelectHandCards 3
+PlayCard 3 # CARD.PREPARED (54475304) || Hand: [Prepared+, Strike, Prepared+, Neutralize, Strike, Survivor] Enemies: [Nibbit 15/43]
+SelectHandCards 6 5
+PlayCard 6 # CARD.PREPARED (51158004) || Hand: [Prepared+, Strike, Neutralize, Strike, Survivor] Enemies: [Nibbit 11/43]
+SelectHandCards 3 2
+PlayCard 4 # CARD.ESCAPE_PLAN (20515688) || Hand: [Strike, Neutralize, Escape Plan, Defend] Enemies: [Nibbit 7/43]
+PlayCard 0 2 # CARD.STRIKE_SILENT (37449484) || Hand: [Strike, Neutralize, Defend, Bullet Time] Enemies: [Nibbit 5/43]
+ClaimReward 0 # GoldReward: 12
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+PlayCard 15 # CARD.SPEEDSTER (65425558) || Hand: [Speedster+, Dagger Throw, Prepared+, Defend, Acrobatics, Defend, Expose] Enemies: [Phrog Parasite 62/62]
+PlayCard 1 # CARD.PREPARED (36241398) || Hand: [Dagger Throw, Prepared+, Defend, Acrobatics, Defend, Expose] Enemies: [Phrog Parasite 62/62]
+SelectHandCards 5 3
+PlayCard 5 1 # CARD.EXPOSE (13113187) || Hand: [Dagger Throw, Defend, Acrobatics, Expose, Strike] Enemies: [Phrog Parasite 58/62]
+PlayCard 3 # CARD.ACROBATICS (49872160) || Hand: [Dagger Throw, Defend, Acrobatics, Strike] Enemies: [Phrog Parasite 58/62]
+SelectHandCards 5
+PlayCard 8 # CARD.PREPARED (30054807) || Hand: [Dagger Throw, Defend, Strike, Prepared+, Strike] Enemies: [Phrog Parasite 52/62]
+SelectHandCards 4 1
+PlayCard 0 1 # CARD.DAGGER_THROW (63679145) || Hand: [Dagger Throw, Strike, Strike, Neutralize] Enemies: [Phrog Parasite 48/62]
+SelectHandCards 1
+PlayCard 13 # CARD.ESCAPE_PLAN (12406785) || Hand: [Strike, Neutralize, Escape Plan] Enemies: [Phrog Parasite 33/62]
+PlayCard 12 1 # CARD.NEUTRALIZE (23748153) || Hand: [Strike, Neutralize, Bullet Time] Enemies: [Phrog Parasite 31/62]
+PlayCard 7 1 # CARD.STRIKE_SILENT (55535206) || Hand: [Strike, Bullet Time] Enemies: [Phrog Parasite 27/62]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 1 # CARD.PREPARED (36241398) || Hand: [Dagger Throw, Prepared+, Escape Plan, Survivor, Bullet Time] Enemies: [Phrog Parasite 18/62]
+SelectHandCards 3 5
+PlayCard 3 # CARD.ACROBATICS (49872160) || Hand: [Dagger Throw, Escape Plan, Survivor, Acrobatics] Enemies: [Phrog Parasite 14/62]
+SelectHandCards 4
+PlayCard 13 # CARD.ESCAPE_PLAN (12406785) || Hand: [Dagger Throw, Escape Plan, Survivor, Infection, Infection] Enemies: [Phrog Parasite 8/62]
+PlayCard 7 1 # CARD.STRIKE_SILENT (55535206) || Hand: [Dagger Throw, Survivor, Infection, Infection, Strike] Enemies: [Phrog Parasite 6/62]
+PlayCard 0 4 # CARD.DAGGER_THROW (63679145) || Hand: [Dagger Throw, Survivor, Infection, Infection] Enemies: [Wriggler 21/21, Wriggler 19/19, Wriggler 20/20, Wriggler 17/17]
+SelectHandCards 2
+UsePotion 2 # POTION.RADIANT_TINCTURE || Hand: [Survivor, Infection, Defend] Enemies: [Wriggler 19/21, Wriggler 17/19, Wriggler 9/20, Wriggler 15/17]
+PlayCard 10 # CARD.SURVIVOR (18520285) || Hand: [Survivor, Infection, Defend] Enemies: [Wriggler 19/21, Wriggler 17/19, Wriggler 9/20, Wriggler 15/17]
+SelectHandCards 0
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 8 # CARD.PREPARED (30054807) || Hand: [Tactician+, Neutralize, Strike, Prepared+, Defend] Enemies: [Wriggler 19/21, Wriggler 17/19, Wriggler 9/20, Wriggler 15/17]
+SelectHandCards 0 3
+PlayCard 13 # CARD.ESCAPE_PLAN (12406785) || Hand: [Neutralize, Strike, Strike, Escape Plan] Enemies: [Wriggler 15/21, Wriggler 13/19, Wriggler 5/20, Wriggler 11/17]
+PlayCard 0 2 # CARD.DAGGER_THROW (63679145) || Hand: [Neutralize, Strike, Strike, Dagger Throw] Enemies: [Wriggler 13/21, Wriggler 11/19, Wriggler 3/20, Wriggler 9/17]
+SelectHandCards 2
+PlayCard 1 # CARD.PREPARED (36241398) || Hand: [Neutralize, Strike, Prepared+] Enemies: [Wriggler 2/21, Wriggler 9/19, Wriggler 1/20, Wriggler 7/17]
+SelectHandCards 3 1
+PlayCard 3 # CARD.ACROBATICS (49872160) || Hand: [Neutralize, Acrobatics] Enemies: [Wriggler 5/19, Wriggler 3/17]
+ClaimReward 0 # GoldReward: 35
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 9
+MoveToMapCoord 3
+PlayCard 12 # CARD.SPEEDSTER (63599296) || Hand: [Speedster+, Defend, Expose, Strike, Bullet Time, Acrobatics+, Neutralize] Enemies: [Vantom 173/173]
+PlayCard 4 # CARD.ACROBATICS (13675545) || Hand: [Defend, Expose, Strike, Bullet Time, Acrobatics+, Neutralize] Enemies: [Vantom 173/173]
+SelectHandCards 6
+PlayCard 9 # CARD.ESCAPE_PLAN (6347053) || Hand: [Defend, Expose, Strike, Bullet Time, Neutralize, Prepared+, Strike, Escape Plan] Enemies: [Vantom 169/173]
+PlayCard 6 # CARD.PREPARED (33977390) || Hand: [Defend, Expose, Strike, Bullet Time, Neutralize, Prepared+, Strike, Prepared+] Enemies: [Vantom 168/173]
+SelectHandCards 3 0
+PlayCard 1 1 # CARD.EXPOSE (51386037) || Hand: [Expose, Strike, Neutralize, Strike, Prepared+, Defend, Defend] Enemies: [Vantom 166/173]
+PlayCard 10 # CARD.PREPARED (57123482) || Hand: [Strike, Neutralize, Strike, Prepared+, Defend, Defend] Enemies: [Vantom 166/173]
+SelectHandCards 4 3
+PlayCard 5 1 # CARD.NEUTRALIZE (55971048) || Hand: [Strike, Neutralize, Strike, Survivor, Dagger Throw] Enemies: [Vantom 163/173]
+PlayCard 15 1 # CARD.DAGGER_THROW (58770978) || Hand: [Strike, Strike, Survivor, Dagger Throw] Enemies: [Vantom 159/173]
+SelectHandCards 1
+PlayCard 2 1 # CARD.STRIKE_SILENT (59821157) || Hand: [Strike, Survivor, Defend] Enemies: [Vantom 144/173]
+PlayCard 13 # CARD.DEFEND_SILENT (35522756) || Hand: [Survivor, Defend] Enemies: [Vantom 135/173]
+PlayCard 14 # CARD.SURVIVOR (51269351) || Hand: [Survivor] Enemies: [Vantom 135/173]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 4 # CARD.ACROBATICS (13675545) || Hand: [Prepared+, Acrobatics+, Defend, Escape Plan, Defend] Enemies: [Vantom 135/173]
+SelectHandCards 7
+PlayCard 10 # CARD.PREPARED (57123482) || Hand: [Prepared+, Defend, Escape Plan, Defend, Prepared+, Bullet Time, Neutralize] Enemies: [Vantom 127/173]
+SelectHandCards 4 3
+PlayCard 4 # CARD.ACROBATICS (13675545) || Hand: [Prepared+, Defend, Escape Plan, Neutralize, Strike, Acrobatics+] Enemies: [Vantom 123/173]
+SelectHandCards 6
+PlayCard 9 # CARD.ESCAPE_PLAN (6347053) || Hand: [Prepared+, Defend, Escape Plan, Neutralize, Strike, Dagger Throw, Survivor, Strike] Enemies: [Vantom 115/173]
+PlayCard 6 # CARD.PREPARED (33977390) || Hand: [Prepared+, Defend, Neutralize, Strike, Dagger Throw, Survivor, Strike, Defend] Enemies: [Vantom 113/173]
+SelectHandCards 7 5
+PlayCard 10 # CARD.PREPARED (57123482) || Hand: [Defend, Neutralize, Strike, Dagger Throw, Survivor, Defend, Prepared+] Enemies: [Vantom 109/173]
+SelectHandCards 7 5
+PlayCard 4 # CARD.ACROBATICS (13675545)
+SelectHandCards 6
+PlayCard 9 # CARD.ESCAPE_PLAN (6347053) || Hand: [Defend, Neutralize, Strike, Dagger Throw, Survivor, Escape Plan, Strike, Defend] Enemies: [Vantom 97/173]
+PlayCard 6 # CARD.PREPARED (33977390) || Hand: [Defend, Neutralize, Strike, Dagger Throw, Survivor, Strike, Defend, Prepared+] Enemies: [Vantom 95/173]
+SelectHandCards 7 5
+PlayCard 10 # CARD.PREPARED (57123482) || Hand: [Defend, Neutralize, Strike, Dagger Throw, Survivor, Defend, Prepared+] Enemies: [Vantom 91/173]
+SelectHandCards 5 7
+PlayCard 2 1 # CARD.STRIKE_SILENT (59821157) || Hand: [Defend, Neutralize, Strike, Dagger Throw, Survivor, Bullet Time] Enemies: [Vantom 87/173]
+PlayCard 5 1 # CARD.NEUTRALIZE (55971048) || Hand: [Defend, Neutralize, Dagger Throw, Survivor, Bullet Time] Enemies: [Vantom 78/173]
+PlayCard 0 # CARD.DEFEND_SILENT (35535721) || Hand: [Defend, Dagger Throw, Survivor, Bullet Time] Enemies: [Vantom 74/173]
+PlayCard 15 1 # CARD.DAGGER_THROW (58770978) || Hand: [Dagger Throw, Survivor, Bullet Time] Enemies: [Vantom 74/173]
+SelectHandCards 2
+PlayCard 3 # CARD.BULLET_TIME (1519505) || Hand: [Survivor, Bullet Time] Enemies: [Vantom 59/173]
+PlayCard 14 # CARD.SURVIVOR (51269351) || Hand: [Survivor] Enemies: [Vantom 59/173]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 4 # CARD.ACROBATICS (13675545) || Hand: [Strike, Acrobatics+, Prepared+, Escape Plan, Survivor] Enemies: [Vantom 59/173]
+SelectHandCards 4
+PlayCard 6 # CARD.PREPARED (33977390) || Hand: [Strike, Prepared+, Escape Plan, Survivor, Bullet Time, Neutralize, Prepared+] Enemies: [Vantom 51/173]
+SelectHandCards 6 3
+PlayCard 9 # CARD.ESCAPE_PLAN (6347053) || Hand: [Strike, Escape Plan, Survivor, Neutralize, Prepared+, Defend] Enemies: [Vantom 47/173]
+PlayCard 10 # CARD.PREPARED (57123482) || Hand: [Strike, Survivor, Neutralize, Prepared+, Defend, Dagger Throw] Enemies: [Vantom 45/173]
+SelectHandCards 6 3
+PlayCard 15 1 # CARD.DAGGER_THROW (58770978) || Hand: [Strike, Survivor, Neutralize, Dagger Throw, Defend] Enemies: [Vantom 41/173]
+SelectHandCards 3
+PlayCard 5 1 # CARD.NEUTRALIZE (55971048) || Hand: [Strike, Survivor, Neutralize, Prepared+] Enemies: [Vantom 30/173]
+PlayCard 6 # CARD.PREPARED (33977390) || Hand: [Strike, Survivor, Prepared+] Enemies: [Vantom 27/173]
+SelectHandCards 1 0
+PlayCard 4 # CARD.ACROBATICS (13675545) || Hand: [Prepared+, Acrobatics+] Enemies: [Vantom 23/173]
+SelectHandCards 3
+PlayCard 9 # CARD.ESCAPE_PLAN (6347053) || Hand: [Prepared+, Escape Plan, Bullet Time, Defend] Enemies: [Vantom 15/173]
+PlayCard 10 # CARD.PREPARED (57123482) || Hand: [Prepared+, Bullet Time, Defend, Defend] Enemies: [Vantom 13/173]
+SelectHandCards 1 2
+PlayCard 14 # CARD.SURVIVOR (51269351) || Hand: [Bullet Time, Strike, Survivor] Enemies: [Vantom 9/173]
+SelectHandCards 0
+PlayCard 2 1 # CARD.STRIKE_SILENT (59821157) || Hand: [Strike] Enemies: [Vantom 9/173]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 6 # CARD.PREPARED (33977390) || Hand: [Dagger Throw, Strike, Prepared+, Escape Plan, Defend] Enemies: [Vantom 3/173]
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Corrosive Wave
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Dagger Throw, Strike, Escape Plan, Defend, Acrobatics+, Neutralize] Enemies: []
+MoveToMapCoord 3
