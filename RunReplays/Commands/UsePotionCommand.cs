@@ -46,8 +46,11 @@ public sealed class UsePotionCommand : ReplayCommand
             return ExecuteResult.Retry(200);
         }
 
-        // Wait until the game is in the play phase before using a combat potion.
-        if (player.PlayerCombatState?.Phase != MegaCrit.Sts2.Core.Combat.PlayerTurnPhase.Play)
+        // During combat, wait until the play phase before using a potion.
+        // Outside combat there is no phase to wait on — potions can be used
+        // any time (e.g. Foul Potion thrown at the shopkeep).
+        if (MegaCrit.Sts2.Core.Combat.CombatManager.Instance.IsInProgress
+            && player.PlayerCombatState?.Phase != MegaCrit.Sts2.Core.Combat.PlayerTurnPhase.Play)
             return ExecuteResult.Retry(200);
 
         PotionModel? potion = player.GetPotionAtSlotIndex((int)PotionIndex);
