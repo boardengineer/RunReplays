@@ -46,6 +46,17 @@ public abstract class ReplayCommand
     /// </summary>
     public string? Comment { get; set; }
 
+    /// <summary>
+    /// The battle state recorded just before this command (the " || " suffix
+    /// in minimal log entries), or null when the entry had none. Used by the
+    /// dispatcher to detect replay divergence — diagnostic only, never gates
+    /// execution.
+    /// </summary>
+    public string? ExpectedPreState { get; set; }
+
+    /// <summary>Set once the dispatcher has compared ExpectedPreState (avoids re-logging on retries).</summary>
+    internal bool PreStateChecked;
+
     protected ReplayCommand(string rawText)
     {
         RawText = rawText;

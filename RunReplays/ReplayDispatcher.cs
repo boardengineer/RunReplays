@@ -757,6 +757,82 @@ public static class ReplayDispatcher
         Clear();
     }
 
+    /// <summary>
+    /// Compares the battle state recorded before this command with the live
+    /// state at first execution and logs a divergence to the diagnostic log.
+    /// Diagnostic only — never blocks dispatch. Checked once per command so
+    /// retries don't spam (the state legitimately mutates while a command
+    /// retries, e.g. waiting on an enemy spawn).
+    /// </summary>
+    private static void CheckPreState(ReplayCommand cmd)
+    {
+        if (cmd.PreStateChecked || cmd.ExpectedPreState == null)
+            return;
+        cmd.PreStateChecked = true;
+
+        try
+        {
+            string? actual = PlayerActionBuffer.GetBattleStateSummary();
+            if (actual == null || actual == cmd.ExpectedPreState)
+                return;
+
+            DiagnosticLog.Write("StateCheck",
+                $"divergence before {cmd}:");
+            DiagnosticLog.Write("StateCheck", $"  expected: {cmd.ExpectedPreState}");
+            DiagnosticLog.Write("StateCheck", $"  actual:   {actual}");
+            DiagnosticLog.Write("StateCheck", $"  detail:   {DescribeFullCombatState()}");
+        }
+        catch
+        {
+            // State summaries are best-effort diagnostics only.
+        }
+    }
+
+    /// <summary>
+    /// Full live combat dump for divergence triage: energy, then every creature
+    /// on both sides (allies include the player and minions) with HP, block,
+    /// and power stacks. Recorded pre-states only cover hand + enemy HP, so
+    /// this is what exposes a missing minion or power at the divergence point.
+    /// </summary>
+    private static string DescribeFullCombatState()
+    {
+        try
+        {
+            var state = CombatManager.Instance?.DebugOnlyGetState();
+            if (state == null)
+                return "(no combat state)";
+
+            var sb = new System.Text.StringBuilder();
+
+            MegaCrit.Sts2.Core.Entities.Players.Player? me;
+            try { me = MegaCrit.Sts2.Core.Context.LocalContext.GetMe(state); }
+            catch { me = state.Players.FirstOrDefault(); }
+            if (me?.PlayerCombatState != null)
+                sb.Append($"energy={me.PlayerCombatState.Energy} ");
+
+            sb.Append("creatures=[");
+            bool first = true;
+            foreach (var c in state.Creatures)
+            {
+                if (!first) sb.Append("; ");
+                first = false;
+                sb.Append($"{c.CombatId?.ToString() ?? "?"}:{c.Name} {c.CurrentHp}/{c.MaxHp}");
+                if (c.Block > 0)
+                    sb.Append($" blk{c.Block}");
+                if (c.Powers is { Count: > 0 })
+                    sb.Append(" (")
+                      .Append(string.Join(",", c.Powers.Select(p => $"{p.Id.Entry}:{p.Amount}")))
+                      .Append(')');
+            }
+            sb.Append(']');
+            return sb.ToString();
+        }
+        catch (Exception ex)
+        {
+            return $"(state dump failed: {ex.GetType().Name}: {ex.Message})";
+        }
+    }
+
     /// <summary>Clears the replay queue and resets all patch state.</summary>
     public static void Clear()
     {
@@ -995,6 +1071,8 @@ public static class ReplayDispatcher
         }
 
         _lastDispatchTick = System.Environment.TickCount64;
+
+        CheckPreState(cmd);
 
         DiagnosticLog.Write("Dispatch", $"execute → {cmd.GetType().Name}({cmd})");
         ExecuteResult result;

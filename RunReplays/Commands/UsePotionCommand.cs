@@ -61,11 +61,20 @@ public sealed class UsePotionCommand : ReplayCommand
         if (TargetId.HasValue)
         {
             target = CardPlayReplayPatch._currentCombatState?.GetCreature(TargetId);
+            if (target == null)
+            {
+                // Recorded target not in combat (yet) — retry instead of
+                // misfiring the potion at something else.
+                PlayerActionBuffer.LogToDevConsole(
+                    $"[UsePotionCommand] Target id={TargetId} not found — retrying.");
+                return ExecuteResult.Retry(200);
+            }
         }
 
-        // Default to self when no target is specified.
-        if (target == null)
-            target = player.Creature;
+        // No recorded target → pass null. EnqueueManualUse self-targets only
+        // when that is valid for the potion's TargetType. Forcing self here
+        // made UsePotionAction cancel non-targeted potions (e.g. the
+        // AllEnemies Explosive Ampoule fizzled with 0 damage on replay).
 
         try
         {

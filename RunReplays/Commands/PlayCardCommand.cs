@@ -1,9 +1,11 @@
+using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 
 using RunReplays.Patches;
 using RunReplays.Patches.Replay;
+using RunReplays.Utils;
 namespace RunReplays.Commands;
 
 /// <summary>
@@ -53,6 +55,7 @@ public class PlayCardCommand : ReplayCommand
         {
             PlayerActionBuffer.LogToDevConsole(
                 $"[RunReplays] TryPlayNextCard: GetCard({CombatCardIndex}) threw {ex.GetType().Name}: {ex.Message}");
+            LogStall($"GetCard({CombatCardIndex}) threw {ex.GetType().Name}: {ex.Message}", null);
             return ExecuteResult.Retry(100);
         }
 
@@ -71,8 +74,83 @@ public class PlayCardCommand : ReplayCommand
 
         PlayerActionBuffer.LogDispatcher($"Card play returning {played}");
         if (played)
+        {
+            if (_failedAttempts > 0)
+                DiagnosticLog.Write("PlayCard",
+                    $"{ToString()} recovered after {_failedAttempts} failed attempt(s).");
             return ExecuteResult.Ok();
+        }
+
+        string reason = TargetId.HasValue && target == null
+            ? $"recorded target id={TargetId} not found in combat state"
+            : DescribeUnplayable(card);
+        LogStall($"TryManualPlay=false ({reason})", card);
         return ExecuteResult.Retry(100);
+    }
+
+    private int _failedAttempts;
+
+    /// <summary>
+    /// Writes stall context to the diagnostic log: why the play failed, plus
+    /// the live hand (with combat card ids) and enemy list so a divergence
+    /// from the recording is visible. Throttled — the dispatcher retries every
+    /// 100ms; log the first failure, then every 50th (~5s).
+    /// </summary>
+    private void LogStall(string reason, CardModel? card)
+    {
+        _failedAttempts++;
+        if (_failedAttempts != 1 && _failedAttempts % 50 != 0)
+            return;
+
+        string hand = "?", enemies = "?";
+        try
+        {
+            var state = CardPlayReplayPatch._currentCombatState;
+            if (state != null)
+            {
+                enemies = string.Join(", ", state.Enemies.Select(
+                    e => $"{e.CombatId}:{e.Name} {e.CurrentHp}/{e.MaxHp}"));
+
+                MegaCrit.Sts2.Core.Entities.Players.Player? me;
+                try { me = LocalContext.GetMe(state); }
+                catch { me = state.Players.FirstOrDefault(); }
+
+                var cards = me?.PlayerCombatState?.Hand?.Cards;
+                if (cards != null)
+                    hand = string.Join(", ", cards.Select(c =>
+                        NetCombatCardDb.Instance.TryGetCardId(c, out var id)
+                            ? $"{id}:{c.Title}"
+                            : $"?:{c.Title}"));
+            }
+        }
+        catch { /* diagnostics must never break dispatch */ }
+
+        string cardDesc = card == null
+            ? "unresolved"
+            : $"'{card.Title}' pile={SafePileType(card)}";
+        DiagnosticLog.Write("PlayCard",
+            $"{ToString()} stalled (attempt {_failedAttempts}): {reason}; " +
+            $"card={cardDesc}; hand=[{hand}]; enemies=[{enemies}]");
+    }
+
+    private static string SafePileType(CardModel card)
+    {
+        try { return card.Pile?.Type.ToString() ?? "none"; }
+        catch { return "?"; }
+    }
+
+    private static string DescribeUnplayable(CardModel card)
+    {
+        try
+        {
+            if (card.CanPlay(out var unplayableReason, out var preventer))
+                return "CanPlay=true";
+            return $"CanPlay=false reason={unplayableReason} preventer={preventer?.ToString() ?? "none"}";
+        }
+        catch (Exception ex)
+        {
+            return $"CanPlay threw {ex.GetType().Name}";
+        }
     }
 
     public static PlayCardCommand? TryParse(string raw)

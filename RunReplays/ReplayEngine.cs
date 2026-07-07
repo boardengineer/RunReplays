@@ -136,6 +136,7 @@ public static class ReplayEngine
 
             int sepIdx = raw.IndexOf(StateSeparator, StringComparison.Ordinal);
             string cmdText = sepIdx >= 0 ? raw[..sepIdx] : raw;
+            string? expectedPreState = sepIdx >= 0 ? raw[(sepIdx + StateSeparator.Length)..] : null;
 
             // Strip inline comment: "CommandText # comment"
             string? comment = null;
@@ -155,6 +156,7 @@ public static class ReplayEngine
             }
 
             parsed.Comment = comment;
+            parsed.ExpectedPreState = expectedPreState;
             _loadedCommands.Add(parsed);
             _pending.Enqueue(parsed);
         }
