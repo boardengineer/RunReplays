@@ -236,6 +236,12 @@ public static class MainMenuButtonInjector
         ("DJDCSAQZNR", "floor_49", new[] { "actions.sts2replay", "run.save" }),
         ("DJDCSAQZNR", "floor_18", new[] { "actions.sts2replay", "run.save" }),
         ("DJDCSAQZNR", "floor_34", new[] { "actions.sts2replay", "run.save" }),
+
+        // Necrobinder, Ascension 1, complete 3-act win (recorded 2026-07-07).
+        // Same layout: full run + starts of act 2 / act 3.
+        ("QRWCVDPZN5", "floor_49", new[] { "actions.sts2replay", "run.save" }),
+        ("QRWCVDPZN5", "floor_18", new[] { "actions.sts2replay", "run.save" }),
+        ("QRWCVDPZN5", "floor_34", new[] { "actions.sts2replay", "run.save" }),
     };
 
     private static void ExtractBundledReplay()

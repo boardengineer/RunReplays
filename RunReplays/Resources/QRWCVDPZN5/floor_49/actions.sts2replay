@@ -1,0 +1,784 @@
+# Character: NECROBINDER
+# Seed: QRWCVDPZN5
+# Ascension: 1
+# Acts: ACT.UNDERDOCKS, ACT.HIVE, ACT.GLORY
+# Game: v0.107.1
+# Mod: 0.1.0
+ChooseEventOption 0 # NEOW.pages.INITIAL.options.KALEIDOSCOPE
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+ClaimReward 1 # CardReward
+TakeCard 1 # Make It So
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+PlayCard 4 # CARD.BODYGUARD (51650016) || Hand: [Defend, Strike, Defend, Strike, Bodyguard] Enemies: [Seapunk 45/45]
+PlayCard 0 # CARD.DEFEND_NECROBINDER (35490367) || Hand: [Defend, Strike, Defend, Strike] Enemies: [Seapunk 45/45]
+PlayCard 2 # CARD.DEFEND_NECROBINDER (56147455) || Hand: [Strike, Defend, Strike] Enemies: [Seapunk 45/45]
+PlayCard 7 1 # CARD.MAKE_IT_SO (4789337) || Hand: [Strike, Strike, Make It So] Enemies: [Seapunk 45/45]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 # CARD.DEFEND_NECROBINDER (43104035) || Hand: [Strike, Strike, Defend, Unleash, Defend] Enemies: [Seapunk 39/45]
+PlayCard 10 # CARD.DEFEND_NECROBINDER (1765974) || Hand: [Strike, Strike, Unleash, Defend] Enemies: [Seapunk 39/45]
+PlayCard 9 1 # CARD.UNLEASH (52392002) || Hand: [Strike, Strike, Unleash] Enemies: [Seapunk 39/45]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 3 1 # CARD.STRIKE_NECROBINDER (35565052) || Hand: [Defend, Unleash, Defend, Defend, Strike] Enemies: [Seapunk 27/45]
+PlayCard 9 1 # CARD.UNLEASH (52392002) || Hand: [Defend, Unleash, Defend, Defend] Enemies: [Seapunk 21/45]
+PlayCard 0 # CARD.DEFEND_NECROBINDER (35490367) || Hand: [Defend, Defend, Defend] Enemies: [Seapunk 8/45]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 6 1 # CARD.STRIKE_NECROBINDER (22901769) || Hand: [Strike, Make It So, Strike, Strike, Defend] Enemies: [Seapunk 8/45]
+PlayCard 7 1 # CARD.MAKE_IT_SO (4789337) || Hand: [Strike, Make It So, Strike, Defend] Enemies: [Seapunk 8/45]
+PlayCard 1 1 # CARD.STRIKE_NECROBINDER (50977848) || Hand: [Strike, Strike, Defend] Enemies: [Seapunk 3/45]
+ClaimReward 0 # GoldReward: 20
+ClaimReward 0 # CardReward
+TakeCard 2 # Fetch
+MoveToMapCoord 2
+ChooseEventOption 0 # SELF_HELP_BOOK.pages.INITIAL.options.READ_THE_BACK
+SelectGridCard 5
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+ChooseEventOption 0 # BRAIN_LEECH.pages.INITIAL.options.SHARE_KNOWLEDGE
+SelectGridCard 0
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+ChooseEventOption 1 # DROWNING_BEACON.pages.INITIAL.options.CLIMB
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+MoveToMapCoord 1
+ChooseRestSiteOption SMITH
+SelectGridCard 9
+MoveToMapCoord 0
+PlayCard 2 1 # CARD.MAKE_IT_SO (49323991) || Hand: [Defend, Defend, Make It So+, Defend, Necro Mastery] Enemies: [Sludge Spinner 37/37]
+PlayCard 4 # CARD.NECRO_MASTERY (35820298) || Hand: [Defend, Defend, Defend, Necro Mastery] Enemies: [Sludge Spinner 26/37]
+PlayCard 3 # CARD.DEFEND_NECROBINDER (41262735)
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 1 # CARD.FETCH (1739716) || Hand: [Bodyguard, Strike, Unleash, Fetch, Defend] Enemies: [Sludge Spinner 23/37]
+PlayCard 5 # CARD.BODYGUARD (53947234) || Hand: [Bodyguard, Strike, Unleash, Defend, Strike] Enemies: [Sludge Spinner 20/37]
+PlayCard 7 1 # CARD.UNLEASH (7649842) || Hand: [Strike, Unleash, Defend, Strike] Enemies: [Sludge Spinner 20/37]
+PlayCard 9 # CARD.DEFEND_NECROBINDER (15657446) || Hand: [Strike, Defend, Strike] Enemies: [Sludge Spinner 5/37]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard 2 # Spur
+MoveToMapCoord 1
+PlayCard 0 # CARD.DEFEND_NECROBINDER (19747052) || Hand: [Defend, Strike, Defend, Defend, Strike] Enemies: [Phantasmal Gardener 27/27, Phantasmal Gardener 28/28, Phantasmal Gardener 30/30, Phantasmal Gardener 29/29]
+PlayCard 3 # CARD.DEFEND_NECROBINDER (34304434) || Hand: [Strike, Defend, Defend, Strike] Enemies: [Phantasmal Gardener 27/27, Phantasmal Gardener 28/28, Phantasmal Gardener 30/30, Phantasmal Gardener 29/29]
+PlayCard 2 # CARD.DEFEND_NECROBINDER (56007386) || Hand: [Strike, Defend, Strike] Enemies: [Phantasmal Gardener 27/27, Phantasmal Gardener 28/28, Phantasmal Gardener 30/30, Phantasmal Gardener 29/29]
+PlayCard 8 4 # CARD.MAKE_IT_SO (28624073) || Hand: [Strike, Strike, Make It So+] Enemies: [Phantasmal Gardener 27/27, Phantasmal Gardener 28/28, Phantasmal Gardener 30/30, Phantasmal Gardener 29/29]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 # CARD.NECRO_MASTERY (56290066) || Hand: [Bodyguard, Defend, Unleash, Necro Mastery, Strike] Enemies: [Phantasmal Gardener 27/27, Phantasmal Gardener 28/28, Phantasmal Gardener 30/30, Phantasmal Gardener 18/29]
+PlayCard 5 # CARD.BODYGUARD (27195801) || Hand: [Bodyguard, Defend, Unleash, Strike] Enemies: [Phantasmal Gardener 27/27, Phantasmal Gardener 28/28, Phantasmal Gardener 30/30, Phantasmal Gardener 18/29]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 11 1 # CARD.FETCH (63201526) || Hand: [Fetch, Spur, Defend, Defend, Strike] Enemies: [Phantasmal Gardener 15/27, Phantasmal Gardener 16/28, Phantasmal Gardener 18/30, Phantasmal Gardener 6/29]
+PlayCard 5 # CARD.BODYGUARD (27195801) || Hand: [Spur, Defend, Defend, Strike, Bodyguard] Enemies: [Phantasmal Gardener 12/27, Phantasmal Gardener 16/28, Phantasmal Gardener 18/30, Phantasmal Gardener 6/29]
+PlayCard 12 # CARD.SPUR (31942826) || Hand: [Spur, Defend, Defend, Strike] Enemies: [Phantasmal Gardener 12/27, Phantasmal Gardener 16/28, Phantasmal Gardener 18/30, Phantasmal Gardener 6/29]
+PlayCard 6 # CARD.DEFEND_NECROBINDER (43435617) || Hand: [Defend, Defend, Strike] Enemies: [Phantasmal Gardener 12/27, Phantasmal Gardener 16/28, Phantasmal Gardener 18/30, Phantasmal Gardener 6/29]
+PlayCard 8 4 # CARD.MAKE_IT_SO (28624073) || Hand: [Defend, Strike, Make It So+] Enemies: [Phantasmal Gardener 12/27, Phantasmal Gardener 16/28, Phantasmal Gardener 18/30, Phantasmal Gardener 6/29]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 7 1 # CARD.UNLEASH (55376235) || Hand: [Unleash, Defend, Strike, Defend, Strike] Enemies: [Phantasmal Gardener 7/27, Phantasmal Gardener 11/28, Phantasmal Gardener 13/30]
+PlayCard 2 # CARD.DEFEND_NECROBINDER (56007386) || Hand: [Defend, Strike, Defend, Strike] Enemies: [Phantasmal Gardener 11/28, Phantasmal Gardener 13/30]
+PlayCard 0 # CARD.DEFEND_NECROBINDER (19747052) || Hand: [Defend, Strike, Strike] Enemies: [Phantasmal Gardener 11/28, Phantasmal Gardener 13/30]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 5 # CARD.BODYGUARD (27195801) || Hand: [Make It So+, Defend, Strike, Fetch, Bodyguard] Enemies: [Phantasmal Gardener 11/28, Phantasmal Gardener 13/30]
+PlayCard 8 2 # CARD.MAKE_IT_SO (28624073) || Hand: [Make It So+, Defend, Strike, Fetch] Enemies: [Phantasmal Gardener 11/28, Phantasmal Gardener 13/30]
+PlayCard 11 3 # CARD.FETCH (63201526) || Hand: [Defend, Strike, Fetch] Enemies: [Phantasmal Gardener 13/30]
+PlayCard 3 # CARD.DEFEND_NECROBINDER (34304434) || Hand: [Defend, Strike, Defend] Enemies: [Phantasmal Gardener 10/30]
+PlayCard 0 # CARD.DEFEND_NECROBINDER (19747052) || Hand: [Defend, Strike] Enemies: [Phantasmal Gardener 10/30]
+PlayCard 8 3 # CARD.MAKE_IT_SO (28624073) || Hand: [Strike, Make It So+] Enemies: [Phantasmal Gardener 10/30]
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+PlayCard 7 3 # CARD.UNLEASH (55376235) || Hand: [Defend, Strike, Defend, Unleash, Spur] Enemies: [Phantasmal Gardener 5/30]
+ClaimReward 0 # GoldReward: 36
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Death March
+MoveToMapCoord 2
+OpenChest
+TakeChestRelic # Joss Paper
+NetPickRelicAction for player 1 index 0 || Hand: [Defend, Strike, Defend, Spur] Enemies: []
+MoveToMapCoord 3
+OpenShop
+BuyCard Capture Spirit
+MoveToMapCoord 2
+PlayCard 3 1 # CARD.MAKE_IT_SO (63666599) || Hand: [Spur, Capture Spirit, Strike, Make It So+, Unleash] Enemies: [Terror Eel 140/140]
+PlayCard 1 1 # CARD.CAPTURE_SPIRIT (13213574) || Hand: [Spur, Capture Spirit, Strike, Unleash] Enemies: [Terror Eel 129/140]
+PlayCard 0 # CARD.SPUR (8924715) || Hand: [Spur, Strike, Unleash] Enemies: [Terror Eel 126/140]
+PlayCard 4 1 # CARD.UNLEASH (36128487) || Hand: [Strike, Unleash] Enemies: [Terror Eel 126/140]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 15 # CARD.SOUL (42826748) || Hand: [Soul, Strike, Defend, Bodyguard, Soul] Enemies: [Terror Eel 116/140]
+PlayCard 8 1 # CARD.FETCH (10500390) || Hand: [Soul, Strike, Defend, Bodyguard, Fetch, Defend] Enemies: [Terror Eel 116/140]
+PlayCard 16 # CARD.SOUL (49896417) || Hand: [Soul, Strike, Defend, Bodyguard, Defend, Soul] Enemies: [Terror Eel 113/140]
+PlayCard 17 # CARD.SOUL (46414576) || Hand: [Soul, Strike, Defend, Bodyguard, Defend, Strike, Death March] Enemies: [Terror Eel 113/140]
+PlayCard 3 1 # CARD.MAKE_IT_SO (63666599) || Hand: [Strike, Defend, Bodyguard, Defend, Strike, Death March, Defend, Necro Mastery, Make It So+] Enemies: [Terror Eel 113/140]
+PlayCard 13 # CARD.NECRO_MASTERY (18737497) || Hand: [Strike, Defend, Bodyguard, Defend, Strike, Death March, Defend, Necro Mastery] Enemies: [Terror Eel 102/140]
+PlayCard 11 1 # CARD.DEATH_MARCH (4373849) || Hand: [Strike, Defend, Bodyguard, Defend, Strike, Death March, Defend] Enemies: [Terror Eel 102/140]
+PlayCard 7 # CARD.BODYGUARD (30992871) || Hand: [Strike, Defend, Bodyguard, Defend, Strike, Defend] Enemies: [Terror Eel 66/140]
+PlayCard 10 1 # CARD.STRIKE_NECROBINDER (45225225) || Hand: [Strike, Defend, Defend, Strike, Defend] Enemies: [Terror Eel 66/140]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 1 1 # CARD.CAPTURE_SPIRIT (13213574) || Hand: [Defend, Unleash, Strike, Capture Spirit, Strike] Enemies: [Terror Eel 60/140]
+PlayCard 5 1 # CARD.STRIKE_NECROBINDER (56720933) || Hand: [Defend, Unleash, Strike, Strike] Enemies: [Terror Eel 57/140]
+PlayCard 4 1 # CARD.UNLEASH (36128487) || Hand: [Defend, Unleash, Strike] Enemies: [Terror Eel 51/140]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 3 1 # CARD.MAKE_IT_SO (63666599) || Hand: [Soul, Soul, Soul, Strike, Make It So+] Enemies: [Terror Eel 33/140]
+PlayCard 20 # CARD.SOUL (448744) || Hand: [Soul, Soul, Soul, Strike] Enemies: [Terror Eel 22/140]
+PlayCard 8 1 # CARD.FETCH (10500390) || Hand: [Soul, Soul, Strike, Fetch, Spur] Enemies: [Terror Eel 22/140]
+PlayCard 18 # CARD.SOUL (29831701) || Hand: [Soul, Soul, Strike, Spur, Defend] Enemies: [Terror Eel 19/140]
+PlayCard 19 # CARD.SOUL (49860) || Hand: [Soul, Strike, Spur, Defend, Defend, Death March, Defend] Enemies: [Terror Eel 19/140]
+PlayCard 11 1 # CARD.DEATH_MARCH (4373849) || Hand: [Strike, Spur, Defend, Defend, Death March, Defend, Bodyguard, Strike, Make It So+] Enemies: [Terror Eel 19/140]
+ClaimReward 0 # GoldReward: 45
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Death March
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 14
+MoveToMapCoord 3
+PlayCard 4 1 # CARD.FETCH (30598976) || Hand: [Death March+, Strike, Defend, Capture Spirit, Fetch] Enemies: [Skulking Colony 75/75]
+PlayCard 3 1 # CARD.CAPTURE_SPIRIT (10856426) || Hand: [Death March+, Strike, Defend, Capture Spirit, Necro Mastery] Enemies: [Skulking Colony 72/75]
+PlayCard 5 # CARD.NECRO_MASTERY (6955331) || Hand: [Death March+, Strike, Defend, Necro Mastery] Enemies: [Skulking Colony 69/75]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 16 # CARD.SOUL (23209096) || Hand: [Defend, Defend, Soul, Strike, Strike] Enemies: [Skulking Colony 63/75]
+PlayCard 10 # CARD.BODYGUARD (66207976) || Hand: [Defend, Defend, Strike, Strike, Bodyguard, Spur] Enemies: [Skulking Colony 63/75]
+PlayCard 6 # CARD.DEFEND_NECROBINDER (62597980) || Hand: [Defend, Defend, Strike, Strike, Spur] Enemies: [Skulking Colony 63/75]
+PlayCard 14 1 # CARD.MAKE_IT_SO (61968071) || Hand: [Defend, Strike, Strike, Spur, Make It So+] Enemies: [Skulking Colony 63/75]
+PlayCard 7 # CARD.DEFEND_NECROBINDER (26510908) || Hand: [Defend, Strike, Strike, Spur] Enemies: [Skulking Colony 52/75]
+PlayCard 11 # CARD.SPUR (59000879) || Hand: [Strike, Strike, Spur] Enemies: [Skulking Colony 52/75]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 17 # CARD.SOUL (7555279) || Hand: [Soul, Unleash, Defend, Soul, Death March] Enemies: [Skulking Colony 48/75]
+PlayCard 18 # CARD.SOUL (888651) || Hand: [Soul, Unleash, Defend, Death March, Defend, Strike] Enemies: [Skulking Colony 48/75]
+PlayCard 14 1 # CARD.MAKE_IT_SO (61968071) || Hand: [Unleash, Defend, Death March, Defend, Strike, Strike, Make It So+] Enemies: [Skulking Colony 48/75]
+PlayCard 13 # CARD.DEFEND_NECROBINDER (14341881) || Hand: [Unleash, Defend, Death March, Defend, Strike, Strike] Enemies: [Skulking Colony 37/75]
+PlayCard 14 1 # CARD.MAKE_IT_SO (61968071) || Hand: [Unleash, Death March, Defend, Strike, Strike, Make It So+] Enemies: [Skulking Colony 37/75]
+PlayCard 2 # CARD.DEFEND_NECROBINDER (60858593) || Hand: [Unleash, Death March, Defend, Strike, Strike] Enemies: [Skulking Colony 28/75]
+PlayCard 15 1 # CARD.DEATH_MARCH (20841732) || Hand: [Unleash, Death March, Strike, Strike] Enemies: [Skulking Colony 28/75]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 4 1 # CARD.FETCH (30598976) || Hand: [Fetch, Defend, Bodyguard, Capture Spirit, Death March+] Enemies: [Skulking Colony 28/75]
+PlayCard 10 # CARD.BODYGUARD (66207976) || Hand: [Defend, Bodyguard, Capture Spirit, Death March+, Spur] Enemies: [Skulking Colony 25/75]
+PlayCard 0 1 # CARD.DEATH_MARCH (17321430) || Hand: [Defend, Capture Spirit, Death March+, Spur] Enemies: [Skulking Colony 25/75]
+PlayCard 6 # CARD.DEFEND_NECROBINDER (62597980) || Hand: [Defend, Capture Spirit, Spur] Enemies: [Skulking Colony 10/75]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+ClaimReward 0 # GoldReward: 45
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+PlayCard 3 2 # CARD.FETCH (60297874) || Hand: [Death March+, Defend, Bodyguard, Fetch, Strike] Enemies: [Corpse Slug 27/27, Corpse Slug 25/25]
+PlayCard 5 2 # CARD.CAPTURE_SPIRIT (52289629) || Hand: [Death March+, Defend, Bodyguard, Strike, Capture Spirit] Enemies: [Corpse Slug 27/27, Corpse Slug 22/25]
+PlayCard 2 # CARD.BODYGUARD (66352087) || Hand: [Death March+, Defend, Bodyguard, Strike] Enemies: [Corpse Slug 27/27, Corpse Slug 19/25]
+PlayCard 0 1 # CARD.DEATH_MARCH (12418224) || Hand: [Death March+, Defend, Strike] Enemies: [Corpse Slug 27/27, Corpse Slug 19/25]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 1 # CARD.MAKE_IT_SO (1304927) || Hand: [Defend, Necro Mastery, Make It So+, Strike, Spur] Enemies: [Corpse Slug 12/27, Corpse Slug 19/25]
+PlayCard 9 1 # CARD.STRIKE_NECROBINDER (11744344) || Hand: [Defend, Necro Mastery, Strike, Spur] Enemies: [Corpse Slug 1/27, Corpse Slug 19/25]
+PlayCard 7 # CARD.NECRO_MASTERY (7601532) || Hand: [Defend, Necro Mastery, Spur] Enemies: [Corpse Slug 19/25]
+PlayCard 10 # CARD.SPUR (38590232)
+PlayCard 6 # CARD.DEFEND_NECROBINDER (844614) || Hand: [Defend, Spur] Enemies: [Corpse Slug 19/25]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 16 # CARD.SOUL (41903583) || Hand: [Defend, Unleash, Soul, Soul, Defend] Enemies: [Corpse Slug 19/25]
+PlayCard 18 # CARD.SOUL (38747058) || Hand: [Defend, Unleash, Soul, Defend, Strike, Death March, Soul] Enemies: [Corpse Slug 19/25]
+PlayCard 15 2 # CARD.DEATH_MARCH (33133285) || Hand: [Defend, Unleash, Soul, Defend, Strike, Death March, Make It So+, Strike] Enemies: [Corpse Slug 19/25]
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 13
+MoveToMapCoord 3
+PlayCard 3 # CARD.NECRO_MASTERY (20249988) || Hand: [Spur, Defend, Make It So+, Necro Mastery, Death March] Enemies: [Soul Fysh 211/211]
+PlayCard 2 1 # CARD.MAKE_IT_SO (9706539)
+PlayCard 4 1 # CARD.DEATH_MARCH (48032170) || Hand: [Spur, Defend, Death March] Enemies: [Soul Fysh 200/211]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 # CARD.BODYGUARD (29707511) || Hand: [Spur, Death March+, Strike, Defend, Strike, Bodyguard] Enemies: [Soul Fysh 192/211]
+PlayCard 7 # CARD.DEFEND_NECROBINDER (51734038) || Hand: [Spur, Death March+, Strike, Defend, Strike] Enemies: [Soul Fysh 192/211]
+PlayCard 0 # CARD.SPUR (38231040) || Hand: [Spur, Death March+, Strike, Strike] Enemies: [Soul Fysh 192/211]
+PlayCard 2 1 # CARD.MAKE_IT_SO (9706539) || Hand: [Death March+, Strike, Strike, Make It So+] Enemies: [Soul Fysh 192/211]
+PlayCard 5 1 # CARD.DEATH_MARCH (29636349) || Hand: [Death March+, Strike, Strike] Enemies: [Soul Fysh 181/211]
+PlayCard 8 1 # CARD.STRIKE_NECROBINDER (62953158) || Hand: [Strike, Strike] Enemies: [Soul Fysh 172/211]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 11 1 # CARD.FETCH (57498185) || Hand: [Defend, Fetch, Capture Spirit+, Strike, Unleash] Enemies: [Soul Fysh 155/211]
+PlayCard 12 1 # CARD.CAPTURE_SPIRIT (47721619) || Hand: [Defend, Capture Spirit+, Strike, Unleash, Defend] Enemies: [Soul Fysh 152/211]
+PlayCard 14 1 # CARD.UNLEASH (40245969) || Hand: [Defend, Strike, Unleash, Defend] Enemies: [Soul Fysh 148/211]
+PlayCard 13 1 # CARD.STRIKE_NECROBINDER (26841395) || Hand: [Defend, Strike, Defend] Enemies: [Soul Fysh 137/211]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 21 # CARD.SOUL (57604485) || Hand: [Soul, Soul, Soul, Soul, Beckon] Enemies: [Soul Fysh 130/211]
+PlayCard 20 # CARD.SOUL (28770119) || Hand: [Soul, Soul, Soul, Beckon, Defend, Spur] Enemies: [Soul Fysh 130/211]
+PlayCard 18 # CARD.SOUL (49236951) || Hand: [Soul, Soul, Beckon, Defend, Spur, Death March, Defend] Enemies: [Soul Fysh 130/211]
+PlayCard 2 1 # CARD.MAKE_IT_SO (9706539) || Hand: [Soul, Beckon, Defend, Spur, Death March, Defend, Death March+, Capture Spirit+, Make It So+] Enemies: [Soul Fysh 130/211]
+PlayCard 12 1 # CARD.CAPTURE_SPIRIT (47721619) || Hand: [Soul, Beckon, Defend, Spur, Death March, Defend, Death March+, Capture Spirit+] Enemies: [Soul Fysh 119/211]
+PlayCard 19 # CARD.SOUL (40479382) || Hand: [Soul, Beckon, Defend, Spur, Death March, Defend, Death March+] Enemies: [Soul Fysh 115/211]
+PlayCard 24 # CARD.SOUL (19038884) || Hand: [Beckon, Defend, Spur, Death March, Defend, Death March+, Soul, Defend, Soul] Enemies: [Soul Fysh 115/211]
+PlayCard 5 1 # CARD.DEATH_MARCH (29636349) || Hand: [Beckon, Defend, Spur, Death March, Defend, Death March+, Defend, Soul, Unleash, Beckon] Enemies: [Soul Fysh 115/211]
+PlayCard 4 1 # CARD.DEATH_MARCH (48032170) || Hand: [Beckon, Defend, Spur, Death March, Defend, Defend, Soul, Unleash, Beckon] Enemies: [Soul Fysh 40/211]
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Demesne
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Beckon, Defend, Spur, Defend, Defend, Soul, Unleash, Beckon] Enemies: []
+MoveToMapCoord 3
+ChooseEventOption 2 # OROBAS.pages.INITIAL.options.TOUCH_OF_OROBAS
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+PlayCard 3 1 # CARD.FETCH (40975371) || Hand: [Defend, Necro Mastery, Defend, Fetch, Death March] Enemies: [Thieving Hopper 79/79]
+PlayCard 1 # CARD.NECRO_MASTERY (17904463) || Hand: [Defend, Necro Mastery, Defend, Death March, Death March+] Enemies: [Thieving Hopper 76/79]
+PlayCard 2 # CARD.DEFEND_NECROBINDER (26922440) || Hand: [Defend, Defend, Death March, Death March+] Enemies: [Thieving Hopper 76/79]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 1 # CARD.MAKE_IT_SO (38619676) || Hand: [Spur, Bodyguard, Strike, Make It So+, Defend] Enemies: [Thieving Hopper 64/79]
+PlayCard 8 1 # CARD.STRIKE_NECROBINDER (11747615) || Hand: [Spur, Bodyguard, Strike, Defend] Enemies: [Thieving Hopper 53/79]
+PlayCard 7 # CARD.BODYGUARD (1305290) || Hand: [Spur, Bodyguard, Defend] Enemies: [Thieving Hopper 47/79]
+PlayCard 6 # CARD.SPUR (7601572) || Hand: [Spur, Defend] Enemies: [Thieving Hopper 47/79]
+PlayCard 10 # CARD.DEFEND_NECROBINDER (12032771) || Hand: [Defend] Enemies: [Thieving Hopper 47/79]
+PlayCard 9 1 # CARD.MAKE_IT_SO (38619676) || Hand: [Make It So+] Enemies: [Thieving Hopper 47/79]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 11 1 # CARD.CAPTURE_SPIRIT (41186075) || Hand: [Capture Spirit+, Defend, Unleash, Strike, Strike] Enemies: [Thieving Hopper 36/79]
+PlayCard 13 1 # CARD.UNLEASH (47737774) || Hand: [Defend, Unleash, Strike, Strike] Enemies: [Thieving Hopper 32/79]
+PlayCard 15 1 # CARD.STRIKE_NECROBINDER (41554494) || Hand: [Defend, Strike, Strike] Enemies: [Thieving Hopper 23/79]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 18 # CARD.SOUL (16277468) || Hand: [Demesne, Soul, Soul, Soul, Soul] Enemies: [Thieving Hopper 8/79]
+PlayCard 17 # CARD.SOUL (54004390) || Hand: [Demesne, Soul, Soul, Soul, Spur, Defend] Enemies: [Thieving Hopper 8/79]
+PlayCard 19 # CARD.SOUL (12279485) || Hand: [Demesne, Soul, Soul, Spur, Defend, Strike, Capture Spirit+] Enemies: [Thieving Hopper 8/79]
+PlayCard 9 1 # CARD.MAKE_IT_SO (38619676) || Hand: [Demesne, Soul, Spur, Defend, Strike, Capture Spirit+, Make It So+, Defend] Enemies: [Thieving Hopper 8/79]
+PlayCard 11 1 # CARD.CAPTURE_SPIRIT (41186075) || Hand: [Demesne, Soul, Spur, Defend, Strike, Capture Spirit+, Defend] Enemies: [Thieving Hopper 3/79]
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # SpecialCardReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Debilitate
+MoveToMapCoord 2
+ChooseEventOption 1 # COLOSSAL_FLOWER.pages.INITIAL.options.REACH_DEEPER_1
+ChooseEventOption 1 # COLOSSAL_FLOWER.pages.REACH_DEEPER_1.options.REACH_DEEPER_2
+ChooseEventOption 1 # COLOSSAL_FLOWER.pages.REACH_DEEPER_2.options.POLLINOUS_CORE
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+OpenShop
+BuyCardRemoval
+SelectGridCard 0
+BuyCard Bone Shards
+MoveToMapCoord 2
+OpenFakeShop
+BuyRelic Orichalcum???
+MoveToMapCoord 1
+PlayCard 0 # CARD.NECRO_MASTERY (6905671) || Hand: [Necro Mastery, Death March, Defend, Bone Shards, Strike] Enemies: [Bowlbug (Rock) 47/47, Bowlbug (Egg) 21/21]
+PlayCard 3 # CARD.BONE_SHARDS (1069497) || Hand: [Death March, Defend, Bone Shards, Strike] Enemies: [Bowlbug (Rock) 47/47, Bowlbug (Egg) 21/21]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 6 1 # CARD.MAKE_IT_SO (41465890) || Hand: [Debilitate, Make It So+, Strike, Fetch, Defend] Enemies: [Bowlbug (Rock) 26/47]
+PlayCard 8 1 # CARD.FETCH (3293902) || Hand: [Debilitate, Strike, Fetch, Defend] Enemies: [Bowlbug (Rock) 15/47]
+PlayCard 5 1 # CARD.DEBILITATE (19520402) || Hand: [Debilitate, Strike, Defend, Capture Spirit+] Enemies: [Bowlbug (Rock) 12/47]
+PlayCard 10 1 # CARD.CAPTURE_SPIRIT (65479535) || Hand: [Strike, Defend, Capture Spirit+] Enemies: [Bowlbug (Rock) 2/47]
+ClaimReward 0 # GoldReward: 14
+ClaimReward 0 # PotionReward
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 2
+ChooseRestSiteOption SMITH
+SelectGridCard 14
+MoveToMapCoord 2
+UsePotion 1 # POTION.LIQUID_BRONZE || Hand: [Fetch, Strike, Spur, Death March, Bone Shards+] Enemies: [Entomancer 145/145]
+PlayCard 0 1 # CARD.FETCH (22030448) || Hand: [Fetch, Strike, Spur, Death March, Bone Shards+] Enemies: [Entomancer 145/145]
+PlayCard 5 # CARD.NECRO_MASTERY (37743042) || Hand: [Strike, Spur, Death March, Bone Shards+, Necro Mastery] Enemies: [Entomancer 142/145]
+PlayCard 4 # CARD.BONE_SHARDS (56389454) || Hand: [Strike, Spur, Death March, Bone Shards+] Enemies: [Entomancer 142/145]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 1 # CARD.CAPTURE_SPIRIT (43550) || Hand: [Spur, Defend, Defend, Dazed, Capture Spirit+, Make It So+, Bodyguard, Death March+] Enemies: [Entomancer 97/145]
+PlayCard 10 # CARD.BODYGUARD (3527572) || Hand: [Spur, Defend, Defend, Dazed, Make It So+, Bodyguard, Death March+] Enemies: [Entomancer 93/145]
+PlayCard 6 # CARD.DEFEND_NECROBINDER (4143060) || Hand: [Spur, Defend, Defend, Dazed, Make It So+, Death March+] Enemies: [Entomancer 93/145]
+PlayCard 7 # CARD.DEFEND_NECROBINDER (37287541) || Hand: [Spur, Defend, Dazed, Make It So+, Death March+] Enemies: [Entomancer 93/145]
+PlayCard 9 1 # CARD.MAKE_IT_SO (391952) || Hand: [Spur, Dazed, Make It So+, Death March+] Enemies: [Entomancer 93/145]
+PlayCard 2 # CARD.SPUR (39635877) || Hand: [Spur, Dazed, Death March+] Enemies: [Entomancer 82/145]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 20 # CARD.SOUL (12044333) || Hand: [Dazed, Demesne, Soul, Soul, Unleash, Soul] Enemies: [Entomancer 71/145]
+PlayCard 21 # CARD.SOUL (41290136) || Hand: [Dazed, Demesne, Soul, Unleash, Soul, Defend, Soul] Enemies: [Entomancer 71/145]
+PlayCard 22 # CARD.SOUL (36066905) || Hand: [Dazed, Demesne, Unleash, Soul, Defend, Soul, Debilitate, Defend] Enemies: [Entomancer 71/145]
+PlayCard 9 1 # CARD.MAKE_IT_SO (391952) || Hand: [Dazed, Demesne, Unleash, Soul, Defend, Debilitate, Defend, Strike, Dazed, Make It So+] Enemies: [Entomancer 71/145]
+PlayCard 23 # CARD.SOUL (56166689) || Hand: [Dazed, Demesne, Unleash, Soul, Defend, Debilitate, Defend, Strike, Dazed] Enemies: [Entomancer 60/145]
+PlayCard 12 # CARD.DEMESNE (17297952) || Hand: [Dazed, Demesne, Unleash, Defend, Debilitate, Defend, Strike, Dazed, Dazed, Defend] Enemies: [Entomancer 60/145]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 8 1 # CARD.CAPTURE_SPIRIT (43550) || Hand: [Bone Shards+, Spur, Death March, Defend, Fetch, Capture Spirit+, Bodyguard] Enemies: [Entomancer 60/145]
+PlayCard 0 1 # CARD.FETCH (22030448) || Hand: [Bone Shards+, Spur, Death March, Defend, Fetch, Bodyguard] Enemies: [Entomancer 56/145]
+PlayCard 11 1 # CARD.DEATH_MARCH (31748156) || Hand: [Bone Shards+, Spur, Death March, Defend, Bodyguard, Death March+] Enemies: [Entomancer 53/145]
+PlayCard 3 1 # CARD.DEATH_MARCH (21178575) || Hand: [Bone Shards+, Spur, Death March, Defend, Bodyguard] Enemies: [Entomancer 38/145]
+PlayCard 4 # CARD.BONE_SHARDS (56389454) || Hand: [Bone Shards+, Spur, Defend, Bodyguard] Enemies: [Entomancer 26/145]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+ClaimReward 0 # GoldReward: 36
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 1
+OpenChest
+TakeChestRelic # Bag of Preparation
+NetPickRelicAction for player 1 index 0 || Hand: [Spur] Enemies: [Entomancer 8/145]
+MoveToMapCoord 2
+UsePotion 2 # POTION.ATTACK_POTION || Hand: [Unleash, Defend, Defend, Strike, Demesne, Death March+, Defend] Enemies: [Decimillipede 46/46, Decimillipede 40/40, Decimillipede 44/44]
+SelectCardFromScreen 2
+PlayCard 18 3 # CARD.BURY (55640748) || Hand: [Unleash, Defend, Defend, Strike, Demesne, Death March+, Defend, Bury] Enemies: [Decimillipede 46/46, Decimillipede 40/40, Decimillipede 44/44]
+PlayCard 4 # CARD.DEMESNE (65548735) || Hand: [Unleash, Defend, Defend, Strike, Demesne, Death March+, Defend] Enemies: [Decimillipede 46/46, Decimillipede 40/40, Decimillipede 0/44]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 13 # CARD.NECRO_MASTERY (42468400) || Hand: [Debilitate, Capture Spirit+, Spur, Bone Shards+, Bodyguard, Fetch+, Necro Mastery, Death March] Enemies: [Decimillipede 46/46, Decimillipede 40/40, Decimillipede 0/44]
+PlayCard 8 1 # CARD.CAPTURE_SPIRIT (31652091) || Hand: [Debilitate, Capture Spirit+, Spur, Bone Shards+, Bodyguard, Fetch+, Death March] Enemies: [Decimillipede 46/46, Decimillipede 40/40, Decimillipede 0/44]
+PlayCard 12 1 # CARD.FETCH (34544872) || Hand: [Debilitate, Spur, Bone Shards+, Bodyguard, Fetch+, Death March] Enemies: [Decimillipede 42/46, Decimillipede 40/40, Decimillipede 0/44]
+PlayCard 22 # CARD.SOUL (52999430) || Hand: [Debilitate, Spur, Bone Shards+, Bodyguard, Death March, Soul] Enemies: [Decimillipede 36/46, Decimillipede 40/40, Decimillipede 0/44]
+PlayCard 10 # CARD.BONE_SHARDS (13682551) || Hand: [Debilitate, Spur, Bone Shards+, Bodyguard, Death March, Defend, Strike+] Enemies: [Decimillipede 36/46, Decimillipede 40/40, Decimillipede 0/44]
+PlayCard 14 1 # CARD.DEATH_MARCH (46671286) || Hand: [Debilitate, Spur, Bodyguard, Death March, Defend, Strike+] Enemies: [Decimillipede 17/46, Decimillipede 21/40, Decimillipede 0/44]
+PlayCard 11 # CARD.BODYGUARD (56034102) || Hand: [Debilitate, Spur, Bodyguard, Defend, Strike+] Enemies: [Decimillipede 0/46, Decimillipede 21/40, Decimillipede 0/44]
+PlayCard 17 2 # CARD.MAKE_IT_SO (66282767) || Hand: [Debilitate, Spur, Defend, Strike+, Make It So+] Enemies: [Decimillipede 0/46, Decimillipede 21/40, Decimillipede 0/44]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 12 3 # CARD.FETCH (34544872) || Hand: [Spur, Soul, Soul, Soul, Strike, Unleash, Fetch+] Enemies: [Decimillipede 0/46, Decimillipede 10/40, Decimillipede 25/44]
+PlayCard 19 # CARD.SOUL (46653065) || Hand: [Spur, Soul, Soul, Soul, Strike, Unleash, Bodyguard] Enemies: [Decimillipede 0/46, Decimillipede 10/40, Decimillipede 19/44]
+PlayCard 8 2 # CARD.CAPTURE_SPIRIT (31652091) || Hand: [Spur, Soul, Soul, Strike, Unleash, Bodyguard, Bone Shards+, Capture Spirit+] Enemies: [Decimillipede 0/46, Decimillipede 10/40, Decimillipede 19/44]
+PlayCard 21 # CARD.SOUL (20801906) || Hand: [Spur, Soul, Soul, Strike, Unleash, Bodyguard, Bone Shards+] Enemies: [Decimillipede 0/46, Decimillipede 6/40, Decimillipede 19/44]
+PlayCard 17 3 # CARD.MAKE_IT_SO (66282767) || Hand: [Spur, Soul, Strike, Unleash, Bodyguard, Bone Shards+, Make It So+, Soul, Death March+] Enemies: [Decimillipede 0/46, Decimillipede 6/40, Decimillipede 19/44]
+PlayCard 25 # CARD.SOUL (21556765) || Hand: [Spur, Soul, Strike, Unleash, Bodyguard, Bone Shards+, Soul, Death March+] Enemies: [Decimillipede 0/46, Decimillipede 6/40, Decimillipede 8/44]
+PlayCard 5 3 # CARD.DEATH_MARCH (53067706) || Hand: [Spur, Soul, Strike, Unleash, Bodyguard, Bone Shards+, Death March+, Defend, Strike+] Enemies: [Decimillipede 0/46, Decimillipede 6/40, Decimillipede 8/44]
+PlayCard 16 2 # CARD.STRIKE_NECROBINDER (22277832) || Hand: [Spur, Soul, Strike, Unleash, Bodyguard, Bone Shards+, Defend, Strike+] Enemies: [Decimillipede 0/46, Decimillipede 6/40, Decimillipede 0/44]
+ClaimReward 0 # GoldReward: 36
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Enfeebling Touch+
+MoveToMapCoord 3
+ChooseRestSiteOption HEAL
+MoveToMapCoord 3
+PlayCard 0 # CARD.NECRO_MASTERY (16231868) || Hand: [Necro Mastery, Spur, Defend, Death March, Debilitate, Capture Spirit+, Demesne] Enemies: [Exoskeleton 28/28, Exoskeleton 25/25, Exoskeleton 27/27, Exoskeleton 26/26]
+PlayCard 5 1 # CARD.CAPTURE_SPIRIT (26826899) || Hand: [Spur, Defend, Death March, Debilitate, Capture Spirit+, Demesne] Enemies: [Exoskeleton 28/28, Exoskeleton 25/25, Exoskeleton 27/27, Exoskeleton 26/26]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 21 # CARD.SOUL (17449489) || Hand: [Spur, Soul, Fetch+, Soul, Defend, Soul] Enemies: [Exoskeleton 14/28, Exoskeleton 15/25, Exoskeleton 17/27, Exoskeleton 16/26]
+PlayCard 22 # CARD.SOUL (22827675) || Hand: [Spur, Soul, Fetch+, Defend, Soul, Death March+, Strike+] Enemies: [Exoskeleton 14/28, Exoskeleton 15/25, Exoskeleton 17/27, Exoskeleton 16/26]
+PlayCard 20 # CARD.SOUL (46678074) || Hand: [Spur, Soul, Fetch+, Defend, Death March+, Strike+, Unleash, Defend] Enemies: [Exoskeleton 14/28, Exoskeleton 15/25, Exoskeleton 17/27, Exoskeleton 16/26]
+PlayCard 18 4 # CARD.MAKE_IT_SO (15384580) || Hand: [Spur, Fetch+, Defend, Death March+, Strike+, Unleash, Defend, Bodyguard, Enfeebling Touch+, Make It So+] Enemies: [Exoskeleton 14/28, Exoskeleton 15/25, Exoskeleton 17/27, Exoskeleton 16/26]
+PlayCard 7 1 # CARD.FETCH (25495193) || Hand: [Spur, Fetch+, Defend, Death March+, Strike+, Unleash, Defend, Bodyguard, Enfeebling Touch+] Enemies: [Exoskeleton 14/28, Exoskeleton 15/25, Exoskeleton 17/27, Exoskeleton 7/26]
+PlayCard 9 1 # CARD.DEATH_MARCH (51844789) || Hand: [Spur, Defend, Death March+, Strike+, Unleash, Defend, Bodyguard, Enfeebling Touch+, Strike] Enemies: [Exoskeleton 8/28, Exoskeleton 15/25, Exoskeleton 17/27, Exoskeleton 7/26]
+PlayCard 1 # CARD.SPUR (11869091) || Hand: [Spur, Defend, Strike+, Unleash, Defend, Bodyguard, Enfeebling Touch+, Strike] Enemies: [Exoskeleton 15/25, Exoskeleton 17/27, Exoskeleton 7/26]
+PlayCard 11 2 # CARD.UNLEASH (38678348) || Hand: [Defend, Strike+, Unleash, Defend, Bodyguard, Enfeebling Touch+, Strike] Enemies: [Exoskeleton 15/25, Exoskeleton 17/27, Exoskeleton 7/26]
+PlayCard 13 # CARD.BODYGUARD (45938504) || Hand: [Defend, Strike+, Defend, Bodyguard, Enfeebling Touch+, Strike] Enemies: [Exoskeleton 6/25, Exoskeleton 17/27, Exoskeleton 7/26]
+PlayCard 14 3 # CARD.ENFEEBLING_TOUCH (10793360) || Hand: [Defend, Strike+, Defend, Enfeebling Touch+, Strike] Enemies: [Exoskeleton 6/25, Exoskeleton 17/27, Exoskeleton 7/26]
+PlayCard 18 2 # CARD.MAKE_IT_SO (15384580) || Hand: [Defend, Strike+, Defend, Strike, Make It So+] Enemies: [Exoskeleton 6/25, Exoskeleton 17/27, Exoskeleton 7/26]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 16 # CARD.BONE_SHARDS (1846942) || Hand: [Bone Shards+, Defend, Soul, Defend, Death March+, Fetch+, Capture Spirit+] Enemies: [Exoskeleton 17/27, Exoskeleton 7/26]
+ClaimReward 0 # GoldReward: 14
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+PlayCard 4 1 # CARD.MAKE_IT_SO (66505820) || Hand: [Debilitate, Bone Shards+, Death March, Defend, Make It So+, Defend, Unleash] Enemies: [Infested Prism 161/161]
+PlayCard 0 1 # CARD.DEBILITATE (57238317) || Hand: [Debilitate, Bone Shards+, Death March, Defend, Defend, Unleash] Enemies: [Infested Prism 150/161]
+PlayCard 6 1 # CARD.UNLEASH (18262310) || Hand: [Bone Shards+, Death March, Defend, Defend, Unleash] Enemies: [Infested Prism 140/161]
+PlayCard 2 1 # CARD.DEATH_MARCH (5792086) || Hand: [Bone Shards+, Death March, Defend, Defend] Enemies: [Infested Prism 127/161]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 10 # CARD.NECRO_MASTERY (29695528) || Hand: [Defend, Defend, Spur, Necro Mastery, Enfeebling Touch+] Enemies: [Infested Prism 119/161]
+PlayCard 11 1 # CARD.ENFEEBLING_TOUCH (65933160) || Hand: [Defend, Defend, Spur, Enfeebling Touch+] Enemies: [Infested Prism 119/161]
+PlayCard 9 # CARD.SPUR (25669124) || Hand: [Defend, Defend, Spur] Enemies: [Infested Prism 119/161]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 12 1 # CARD.CAPTURE_SPIRIT (56527535) || Hand: [Capture Spirit+, Bodyguard, Death March+, Demesne, Strike] Enemies: [Infested Prism 119/161]
+PlayCard 14 1 # CARD.DEATH_MARCH (15327643) || Hand: [Bodyguard, Death March+, Demesne, Strike] Enemies: [Infested Prism 115/161]
+PlayCard 16 1 # CARD.STRIKE_NECROBINDER (33579604) || Hand: [Bodyguard, Demesne, Strike] Enemies: [Infested Prism 115/161]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 17 1 # CARD.FETCH (33780985) || Hand: [Soul, Fetch+, Soul, Strike+, Soul, Soul, Strike] Enemies: [Infested Prism 99/161]
+PlayCard 19 # CARD.SOUL (54969508) || Hand: [Soul, Soul, Strike+, Soul, Soul, Strike, Death March+] Enemies: [Infested Prism 93/161]
+PlayCard 22 # CARD.SOUL (8779753) || Hand: [Soul, Soul, Strike+, Soul, Strike, Death March+, Enfeebling Touch+, Spur] Enemies: [Infested Prism 93/161]
+PlayCard 20 # CARD.SOUL (24963526) || Hand: [Soul, Strike+, Soul, Strike, Death March+, Enfeebling Touch+, Spur, Bodyguard, Defend] Enemies: [Infested Prism 93/161]
+PlayCard 4 1 # CARD.MAKE_IT_SO (66505820) || Hand: [Strike+, Soul, Strike, Death March+, Enfeebling Touch+, Spur, Bodyguard, Defend, Unleash, Make It So+] Enemies: [Infested Prism 93/161]
+PlayCard 21 # CARD.SOUL (23345149) || Hand: [Strike+, Soul, Strike, Death March+, Enfeebling Touch+, Spur, Bodyguard, Defend, Unleash] Enemies: [Infested Prism 82/161]
+PlayCard 12 1 # CARD.CAPTURE_SPIRIT (56527535) || Hand: [Strike+, Strike, Death March+, Enfeebling Touch+, Spur, Bodyguard, Defend, Unleash, Debilitate, Capture Spirit+] Enemies: [Infested Prism 82/161]
+PlayCard 14 1 # CARD.DEATH_MARCH (15327643) || Hand: [Strike+, Strike, Death March+, Enfeebling Touch+, Spur, Bodyguard, Defend, Unleash, Debilitate] Enemies: [Infested Prism 78/161]
+PlayCard 6 1 # CARD.UNLEASH (18262310) || Hand: [Strike+, Strike, Enfeebling Touch+, Spur, Bodyguard, Defend, Unleash, Debilitate] Enemies: [Infested Prism 15/161]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+ClaimReward 0 # GoldReward: 41
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Haunt+
+MoveToMapCoord 3
+PlayCard 3 # CARD.NECRO_MASTERY (38687233) || Hand: [Death March+, Death March, Unleash, Necro Mastery, Bodyguard, Make It So+, Demesne] Enemies: [Louse Progenitor 134/134]
+PlayCard 5 1 # CARD.MAKE_IT_SO (46658174) || Hand: [Death March+, Death March, Unleash, Bodyguard, Make It So+, Demesne] Enemies: [Louse Progenitor 134/134]
+PlayCard 4 # CARD.BODYGUARD (12640782) || Hand: [Death March+, Death March, Unleash, Bodyguard, Demesne] Enemies: [Louse Progenitor 123/134]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 10 # CARD.HAUNT (31256426) || Hand: [Defend, Strike+, Defend, Haunt+, Debilitate+] Enemies: [Louse Progenitor 123/134]
+PlayCard 11 1 # CARD.DEBILITATE (12872385)
+PlayCard 8 1 # CARD.STRIKE_NECROBINDER (56724187) || Hand: [Defend, Strike+, Defend] Enemies: [Louse Progenitor 111/134]
+PlayCard 9 # CARD.DEFEND_NECROBINDER (40755638) || Hand: [Defend, Defend] Enemies: [Louse Progenitor 102/134]
+PlayCard 7 # CARD.DEFEND_NECROBINDER (21215768) || Hand: [Defend] Enemies: [Louse Progenitor 102/134]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 13 1 # CARD.FETCH (36030240) || Hand: [Capture Spirit+, Fetch+, Defend+, Enfeebling Touch+, Spur] Enemies: [Louse Progenitor 102/134]
+PlayCard 15 1 # CARD.ENFEEBLING_TOUCH (32768316) || Hand: [Capture Spirit+, Defend+, Enfeebling Touch+, Spur, Bone Shards+] Enemies: [Louse Progenitor 102/134]
+PlayCard 12 1 # CARD.CAPTURE_SPIRIT (48742602) || Hand: [Capture Spirit+, Defend+, Spur, Bone Shards+] Enemies: [Louse Progenitor 102/134]
+PlayCard 16 # CARD.SPUR (26479388) || Hand: [Defend+, Spur, Bone Shards+] Enemies: [Louse Progenitor 98/134]
+PlayCard 5 1 # CARD.MAKE_IT_SO (46658174) || Hand: [Defend+, Bone Shards+, Make It So+] Enemies: [Louse Progenitor 98/134]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 23 # CARD.SOUL (37395400) || Hand: [Soul, Soul, Strike, Soul, Defend, Soul, Unleash] Enemies: [Louse Progenitor 95/134]
+PlayCard 12 1 # CARD.CAPTURE_SPIRIT (48742602) || Hand: [Soul, Soul, Strike, Soul, Defend, Unleash, Capture Spirit+, Make It So+] Enemies: [Louse Progenitor 87/134]
+PlayCard 5 1 # CARD.MAKE_IT_SO (46658174) || Hand: [Soul, Soul, Strike, Soul, Defend, Unleash, Make It So+] Enemies: [Louse Progenitor 83/134]
+PlayCard 22 # CARD.SOUL (41437746) || Hand: [Soul, Soul, Strike, Soul, Defend, Unleash] Enemies: [Louse Progenitor 72/134]
+PlayCard 5 1 # CARD.MAKE_IT_SO (46658174) || Hand: [Soul, Soul, Strike, Defend, Unleash, Death March+, Defend+, Make It So+] Enemies: [Louse Progenitor 64/134]
+PlayCard 21 # CARD.SOUL (56799977) || Hand: [Soul, Soul, Strike, Defend, Unleash, Death March+, Defend+] Enemies: [Louse Progenitor 53/134]
+PlayCard 4 # CARD.BODYGUARD (12640782) || Hand: [Soul, Strike, Defend, Unleash, Death March+, Defend+, Bodyguard, Defend, Strike+] Enemies: [Louse Progenitor 45/134]
+PlayCard 20 # CARD.SOUL (43593810) || Hand: [Soul, Strike, Defend, Unleash, Death March+, Defend+, Defend, Strike+] Enemies: [Louse Progenitor 45/134]
+PlayCard 5 1 # CARD.MAKE_IT_SO (46658174) || Hand: [Strike, Defend, Unleash, Death March+, Defend+, Defend, Strike+, Debilitate+, Defend, Make It So+] Enemies: [Louse Progenitor 37/134]
+PlayCard 0 1 # CARD.DEATH_MARCH (63571746) || Hand: [Strike, Defend, Unleash, Death March+, Defend+, Defend, Strike+, Debilitate+, Defend] Enemies: [Louse Progenitor 26/134]
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+DiscardPotion 0
+ClaimReward 0 # PotionReward
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 10
+MoveToMapCoord 3
+PlayCard 3 # CARD.DEMESNE (39084800) || Hand: [Necro Mastery, Unleash, Haunt+, Demesne, Bone Shards+, Enfeebling Touch+, Fetch+] Enemies: [The Insatiable 321/321]
+UsePotion 1 # POTION.ENERGY_POTION || Hand: [Necro Mastery, Unleash, Haunt+, Bone Shards+, Enfeebling Touch+, Fetch+] Enemies: [The Insatiable 321/321]
+PlayCard 0 # CARD.NECRO_MASTERY (8338659) || Hand: [Necro Mastery, Unleash, Haunt+, Bone Shards+, Enfeebling Touch+, Fetch+] Enemies: [The Insatiable 321/321]
+PlayCard 6 1 # CARD.FETCH (38661229) || Hand: [Unleash, Haunt+, Bone Shards+, Enfeebling Touch+, Fetch+] Enemies: [The Insatiable 321/321]
+UsePotion 0 # POTION.ENERGY_POTION || Hand: [Unleash, Haunt+, Bone Shards+, Enfeebling Touch+, Capture Spirit+] Enemies: [The Insatiable 315/321]
+PlayCard 7 1 # CARD.CAPTURE_SPIRIT (12406749) || Hand: [Unleash, Haunt+, Bone Shards+, Enfeebling Touch+, Capture Spirit+] Enemies: [The Insatiable 315/321]
+PlayCard 2 # CARD.HAUNT (4342755) || Hand: [Unleash, Haunt+, Bone Shards+, Enfeebling Touch+] Enemies: [The Insatiable 311/321]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 20 # CARD.SOUL (55098193) || Hand: [Debilitate, Frantic Escape, Death March+, Soul, Soul, Defend] Enemies: [The Insatiable 311/321]
+PlayCard 22 # CARD.SOUL (33768624) || Hand: [Debilitate, Frantic Escape, Death March+, Soul, Defend, Frantic Escape, Death March+] Enemies: [The Insatiable 303/321]
+PlayCard 12 1 # CARD.MAKE_IT_SO (45780845) || Hand: [Debilitate, Frantic Escape, Death March+, Defend, Frantic Escape, Death March+, Soul, Make It So+] Enemies: [The Insatiable 295/321]
+PlayCard 23 # CARD.SOUL (35482163) || Hand: [Debilitate, Frantic Escape, Death March+, Defend, Frantic Escape, Death March+, Soul] Enemies: [The Insatiable 284/321]
+UsePotion 2 1 # POTION.VULNERABLE_POTION || Hand: [Debilitate, Frantic Escape, Death March+, Defend, Frantic Escape, Death March+, Defend, Defend, Make It So+, Spur+] Enemies: [The Insatiable 276/321]
+PlayCard 12 1 # CARD.MAKE_IT_SO (45780845) || Hand: [Debilitate, Frantic Escape, Death March+, Defend, Frantic Escape, Death March+, Defend, Defend, Make It So+, Spur+] Enemies: [The Insatiable 276/321]
+PlayCard 8 1 # CARD.DEBILITATE (44551879) || Hand: [Debilitate, Frantic Escape, Death March+, Defend, Frantic Escape, Death March+, Defend, Defend, Spur+] Enemies: [The Insatiable 260/321]
+PlayCard 11 1 # CARD.DEATH_MARCH (64739084) || Hand: [Frantic Escape, Death March+, Defend, Frantic Escape, Death March+, Defend, Defend, Spur+] Enemies: [The Insatiable 245/321]
+PlayCard 9 1 # CARD.DEATH_MARCH (65422598) || Hand: [Frantic Escape, Death March+, Defend, Frantic Escape, Defend, Defend, Spur+] Enemies: [The Insatiable 143/321]
+PlayCard 15 # CARD.SPUR (21130700) || Hand: [Frantic Escape, Defend, Frantic Escape, Defend, Defend, Spur+] Enemies: [The Insatiable 41/321]
+PlayCard 14 # CARD.DEFEND_NECROBINDER (17260936) || Hand: [Frantic Escape, Defend, Frantic Escape, Defend, Defend] Enemies: [The Insatiable 41/321]
+PlayCard 13 # CARD.DEFEND_NECROBINDER (9374422) || Hand: [Frantic Escape, Defend, Frantic Escape, Defend] Enemies: [The Insatiable 41/321]
+PlayCard 12 1 # CARD.MAKE_IT_SO (45780845) || Hand: [Frantic Escape, Defend, Frantic Escape, Make It So+] Enemies: [The Insatiable 41/321]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 21 # CARD.SOUL (26121690) || Hand: [Strike, Defend+, Strike+, Soul, Bodyguard, Frantic Escape] Enemies: [The Insatiable 13/321]
+PlayCard 9 1 # CARD.DEATH_MARCH (65422598) || Hand: [Strike, Defend+, Strike+, Bodyguard, Frantic Escape, Capture Spirit+, Death March+] Enemies: [The Insatiable 5/321]
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Strike, Defend+, Strike+, Bodyguard, Frantic Escape, Capture Spirit+] Enemies: []
+MoveToMapCoord 3
+ChooseEventOption 1 # NONUPEIPE.pages.INITIAL.options.DELICATE_FROND
+ChooseEventOption -1 # PROCEED
+DiscardPotion 0
+MoveToMapCoord 4
+UsePotion 1 1 # POTION.POTION_OF_DOOM || Hand: [Bone Shards+, Death March+, Debilitate, Enfeebling Touch+, Make It So+, Strike+, Defend, Unleash, Defend] Enemies: [Devoted Sculptor 162/162]
+UsePotion 2 1 # POTION.FIRE_POTION || Hand: [Bone Shards+, Death March+, Debilitate, Enfeebling Touch+, Make It So+, Strike+, Defend, Unleash, Defend] Enemies: [Devoted Sculptor 162/162]
+UsePotion 0 1 # POTION.FIRE_POTION || Hand: [Bone Shards+, Death March+, Debilitate, Enfeebling Touch+, Make It So+, Strike+, Defend, Unleash, Defend] Enemies: [Devoted Sculptor 142/162]
+PlayCard 4 1 # CARD.MAKE_IT_SO (27277042) || Hand: [Bone Shards+, Death March+, Debilitate, Enfeebling Touch+, Make It So+, Strike+, Defend, Unleash, Defend] Enemies: [Devoted Sculptor 122/162]
+PlayCard 7 1 # CARD.UNLEASH (20740479) || Hand: [Bone Shards+, Death March+, Debilitate, Enfeebling Touch+, Strike+, Defend, Unleash, Defend] Enemies: [Devoted Sculptor 111/162]
+PlayCard 3 1 # CARD.ENFEEBLING_TOUCH (32856944) || Hand: [Bone Shards+, Death March+, Debilitate, Enfeebling Touch+, Strike+, Defend, Defend] Enemies: [Devoted Sculptor 98/162]
+PlayCard 1 1 # CARD.DEATH_MARCH (17804235) || Hand: [Bone Shards+, Death March+, Debilitate, Strike+, Defend, Defend] Enemies: [Devoted Sculptor 98/162]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 13 1 # CARD.CAPTURE_SPIRIT (45600027) || Hand: [Spur, Death March+, Necro Mastery+, Strike, Capture Spirit+] Enemies: [Devoted Sculptor 89/162]
+PlayCard 11 # CARD.NECRO_MASTERY (48616223) || Hand: [Spur, Death March+, Necro Mastery+, Strike] Enemies: [Devoted Sculptor 85/162]
+PlayCard 10 1 # CARD.DEATH_MARCH (20314883) || Hand: [Spur, Death March+, Strike] Enemies: [Devoted Sculptor 85/162]
+PlayCard 12 1 # CARD.STRIKE_NECROBINDER (34892831) || Hand: [Spur, Strike] Enemies: [Devoted Sculptor 76/162]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 18 # CARD.HAUNT (27049702) || Hand: [Spur, Demesne+, Bodyguard, Defend, Defend, Haunt+] Enemies: [Devoted Sculptor 67/162]
+PlayCard 15 # CARD.BODYGUARD (2614674) || Hand: [Spur, Demesne+, Bodyguard, Defend, Defend] Enemies: [Devoted Sculptor 67/162]
+PlayCard 9 # CARD.SPUR (2257209) || Hand: [Spur, Demesne+, Defend, Defend] Enemies: [Devoted Sculptor 67/162]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 19 1 # CARD.FETCH (42120727) || Hand: [Soul, Soul, Soul, Soul, Fetch+] Enemies: [Devoted Sculptor 55/162]
+PlayCard 21 # CARD.SOUL (62047052) || Hand: [Soul, Soul, Soul, Soul, Unleash] Enemies: [Devoted Sculptor 49/162]
+PlayCard 23 # CARD.SOUL (59755276) || Hand: [Soul, Soul, Soul, Unleash, Bone Shards+, Spur] Enemies: [Devoted Sculptor 41/162]
+PlayCard 22 # CARD.SOUL (21552556) || Hand: [Soul, Soul, Unleash, Bone Shards+, Spur, Strike+, Defend] Enemies: [Devoted Sculptor 33/162]
+PlayCard 4 1 # CARD.MAKE_IT_SO (27277042) || Hand: [Soul, Unleash, Bone Shards+, Spur, Strike+, Defend, Death March+, Debilitate, Make It So+, Strike] Enemies: [Devoted Sculptor 25/162]
+PlayCard 7 1 # CARD.UNLEASH (20740479) || Hand: [Soul, Unleash, Bone Shards+, Spur, Strike+, Defend, Death March+, Debilitate, Strike] Enemies: [Devoted Sculptor 14/162]
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 5
+UsePotion 0 # POTION.POWER_POTION || Hand: [Haunt+, Defend, Defend, Death March+, Unleash, Debilitate, Spur, Strike+, Defend] Enemies: [Scroll of Biting 36/36, Scroll of Biting 33/33, Scroll of Biting 30/30]
+SelectCardFromScreen 2
+PlayCard 20 # CARD.LETHALITY (41791372) || Hand: [Haunt+, Defend, Defend, Death March+, Unleash, Debilitate, Spur, Strike+, Defend, Lethality] Enemies: [Scroll of Biting 36/36, Scroll of Biting 33/33, Scroll of Biting 30/30]
+UsePotion 1 # POTION.POWER_POTION || Hand: [Haunt+, Defend, Defend, Death March+, Unleash, Debilitate, Spur, Strike+, Defend] Enemies: [Scroll of Biting 36/36, Scroll of Biting 33/33, Scroll of Biting 30/30]
+SelectCardFromScreen 0
+PlayCard 21 # CARD.HAUNT (64794996) || Hand: [Haunt+, Defend, Defend, Death March+, Unleash, Debilitate, Spur, Strike+, Defend, Haunt] Enemies: [Scroll of Biting 36/36, Scroll of Biting 33/33, Scroll of Biting 30/30]
+PlayCard 0 # CARD.HAUNT (8723751) || Hand: [Haunt+, Defend, Defend, Death March+, Unleash, Debilitate, Spur, Strike+, Defend] Enemies: [Scroll of Biting 36/36, Scroll of Biting 33/33, Scroll of Biting 30/30]
+UsePotion 2 # POTION.FYSH_OIL || Hand: [Defend, Defend, Death March+, Unleash, Debilitate, Spur, Strike+, Defend] Enemies: [Scroll of Biting 36/36, Scroll of Biting 33/33, Scroll of Biting 30/30]
+PlayCard 1 # CARD.DEFEND_NECROBINDER (11404899) || Hand: [Defend, Defend, Death March+, Unleash, Debilitate, Spur, Strike+, Defend] Enemies: [Scroll of Biting 36/36, Scroll of Biting 33/33, Scroll of Biting 30/30]
+PlayCard 2 # CARD.DEFEND_NECROBINDER (35535230) || Hand: [Defend, Death March+, Unleash, Debilitate, Spur, Strike+, Defend] Enemies: [Scroll of Biting 36/36, Scroll of Biting 33/33, Scroll of Biting 30/30]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 11 1 # CARD.FETCH (43090807) || Hand: [Spur, Enfeebling Touch+, Capture Spirit+, Fetch+, Defend, Strike+] Enemies: [Scroll of Biting 36/36, Scroll of Biting 33/33, Scroll of Biting 30/30]
+PlayCard 9 2 # CARD.ENFEEBLING_TOUCH (36986183) || Hand: [Spur, Enfeebling Touch+, Capture Spirit+, Defend, Strike+, Death March+] Enemies: [Scroll of Biting 27/36, Scroll of Biting 33/33, Scroll of Biting 30/30]
+PlayCard 14 3 # CARD.DEATH_MARCH (6250066) || Hand: [Spur, Capture Spirit+, Defend, Strike+, Death March+] Enemies: [Scroll of Biting 27/36, Scroll of Biting 33/33, Scroll of Biting 30/30]
+PlayCard 10 3 # CARD.CAPTURE_SPIRIT (64440191) || Hand: [Spur, Capture Spirit+, Defend, Strike+] Enemies: [Scroll of Biting 27/36, Scroll of Biting 33/33, Scroll of Biting 14/30]
+PlayCard 6 # CARD.SPUR (10453069) || Hand: [Spur, Defend, Strike+] Enemies: [Scroll of Biting 27/36, Scroll of Biting 33/33, Scroll of Biting 10/30]
+PlayCard 19 3 # CARD.MAKE_IT_SO (28523588) || Hand: [Defend, Strike+, Make It So+] Enemies: [Scroll of Biting 27/36, Scroll of Biting 33/33, Scroll of Biting 10/30]
+PlayCard 13 2 # CARD.STRIKE_NECROBINDER (694451) || Hand: [Defend, Strike+] Enemies: [Scroll of Biting 27/36, Scroll of Biting 33/33]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 22 # CARD.SOUL (51211663) || Hand: [Soul, Soul, Bone Shards+, Bodyguard, Demesne] Enemies: [Scroll of Biting 27/36, Scroll of Biting 23/33]
+PlayCard 24 # CARD.SOUL (54504009) || Hand: [Soul, Bone Shards+, Bodyguard, Demesne, Necro Mastery+, Soul] Enemies: [Scroll of Biting 13/36, Scroll of Biting 23/33]
+PlayCard 9 2 # CARD.ENFEEBLING_TOUCH (36986183) || Hand: [Bone Shards+, Bodyguard, Demesne, Necro Mastery+, Soul, Soul, Enfeebling Touch+] Enemies: [Scroll of Biting 23/33]
+PlayCard 19 2 # CARD.MAKE_IT_SO (28523588) || Hand: [Bone Shards+, Bodyguard, Demesne, Necro Mastery+, Soul, Soul, Make It So+] Enemies: [Scroll of Biting 23/33]
+PlayCard 25 # CARD.SOUL (20774035) || Hand: [Bone Shards+, Bodyguard, Demesne, Necro Mastery+, Soul, Soul] Enemies: [Scroll of Biting 5/33]
+ClaimReward 0 # GoldReward: 14
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Fetch+
+MoveToMapCoord 4
+PlayCard 4 1 # CARD.ENFEEBLING_TOUCH (46912638) || Hand: [Demesne+, Make It So+, Bone Shards+, Fetch+, Enfeebling Touch+, Defend, Unleash] Enemies: [Axebot 77/77]
+PlayCard 0 # CARD.DEMESNE (50873234) || Hand: [Demesne+, Make It So+, Bone Shards+, Fetch+, Defend, Unleash] Enemies: [Axebot 77/77]
+PlayCard 1 1 # CARD.MAKE_IT_SO (55205928) || Hand: [Make It So+, Bone Shards+, Fetch+, Defend, Unleash] Enemies: [Axebot 77/77]
+PlayCard 3 1 # CARD.FETCH (42495217) || Hand: [Bone Shards+, Fetch+, Defend, Unleash] Enemies: [Axebot 66/77]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 14 1 # CARD.FETCH (64561555) || Hand: [Death March+, Debilitate, Haunt+, Defend, Necro Mastery, Bodyguard, Fetch+, Defend] Enemies: [Axebot 60/77]
+PlayCard 12 # CARD.NECRO_MASTERY (4939578) || Hand: [Death March+, Debilitate, Haunt+, Defend, Necro Mastery, Bodyguard, Defend, Spur] Enemies: [Axebot 54/77]
+PlayCard 10 # CARD.HAUNT (20773594) || Hand: [Death March+, Debilitate, Haunt+, Defend, Bodyguard, Defend, Spur] Enemies: [Axebot 54/77]
+PlayCard 13 # CARD.BODYGUARD (44456208) || Hand: [Death March+, Debilitate, Defend, Bodyguard, Defend, Spur] Enemies: [Axebot 54/77]
+PlayCard 8 1 # CARD.DEATH_MARCH (32568139) || Hand: [Death March+, Debilitate, Defend, Defend, Spur] Enemies: [Axebot 54/77]
+UsePotion 0 1 # POTION.POWDERED_DEMISE || Hand: [Debilitate, Defend, Defend, Spur] Enemies: [Axebot 43/77]
+UsePotion 1 # POTION.EXPLOSIVE_AMPOULE || Hand: [Debilitate, Defend, Defend, Spur] Enemies: [Axebot 43/77]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 18 1 # CARD.CAPTURE_SPIRIT (64322381) || Hand: [Spur, Strike+, Capture Spirit+, Death March+, Defend, Bone Shards+, Strike+] Enemies: [Axebot 15/77]
+PlayCard 7 1 # CARD.STRIKE_NECROBINDER (40901384) || Hand: [Spur, Strike+, Death March+, Defend, Bone Shards+, Strike+] Enemies: [Axebot 11/77]
+PlayCard 17 1 # CARD.STRIKE_NECROBINDER (22060012) || Hand: [Spur, Strike+, Death March+, Defend, Bone Shards+] Enemies: [Axebot 5/77]
+PlayCard 19 3 # CARD.DEATH_MARCH (42030520) || Hand: [Spur, Death March+, Defend, Bone Shards+] Enemies: [Axebot 72/72]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 14 3 # CARD.FETCH (64561555) || Hand: [Spur, Enfeebling Touch+, Soul, Fetch+, Soul, Bodyguard, Defend] Enemies: [Axebot 66/72]
+PlayCard 21 # CARD.SOUL (37824044) || Hand: [Spur, Enfeebling Touch+, Soul, Soul, Bodyguard, Defend, Soul] Enemies: [Axebot 66/72]
+PlayCard 22 # CARD.SOUL (4872083) || Hand: [Spur, Enfeebling Touch+, Soul, Bodyguard, Defend, Soul, Defend, Unleash] Enemies: [Axebot 58/72]
+PlayCard 1 3 # CARD.MAKE_IT_SO (55205928) || Hand: [Spur, Enfeebling Touch+, Soul, Bodyguard, Defend, Defend, Unleash, Fetch+, Make It So+] Enemies: [Axebot 50/72]
+PlayCard 24 # CARD.SOUL (59094475) || Hand: [Spur, Enfeebling Touch+, Soul, Bodyguard, Defend, Defend, Unleash, Fetch+] Enemies: [Axebot 43/72]
+PlayCard 1 3 # CARD.MAKE_IT_SO (55205928) || Hand: [Spur, Enfeebling Touch+, Bodyguard, Defend, Defend, Unleash, Fetch+, Defend, Debilitate, Make It So+] Enemies: [Axebot 35/72]
+PlayCard 3 3 # CARD.FETCH (42495217) || Hand: [Spur, Enfeebling Touch+, Bodyguard, Defend, Defend, Unleash, Fetch+, Defend, Debilitate] Enemies: [Axebot 24/72]
+PlayCard 4 3 # CARD.ENFEEBLING_TOUCH (46912638) || Hand: [Spur, Enfeebling Touch+, Bodyguard, Defend, Defend, Unleash, Defend, Debilitate, Soul] Enemies: [Axebot 18/72]
+PlayCard 23 # CARD.SOUL (43848755) || Hand: [Spur, Bodyguard, Defend, Defend, Unleash, Defend, Debilitate, Soul] Enemies: [Axebot 18/72]
+PlayCard 8 3 # CARD.DEATH_MARCH (32568139) || Hand: [Spur, Bodyguard, Defend, Defend, Unleash, Defend, Debilitate, Death March+, Bone Shards+] Enemies: [Axebot 10/72]
+PlayCard 13 # CARD.BODYGUARD (44456208) || Hand: [Spur, Bodyguard, Defend, Defend, Unleash, Defend, Debilitate, Bone Shards+] Enemies: [Axebot 73/73]
+PlayCard 1 4 # CARD.MAKE_IT_SO (55205928) || Hand: [Spur, Defend, Defend, Unleash, Defend, Debilitate, Bone Shards+, Make It So+] Enemies: [Axebot 73/73]
+PlayCard 6 4 # CARD.UNLEASH (41827300) || Hand: [Spur, Defend, Defend, Unleash, Defend, Debilitate, Bone Shards+] Enemies: [Axebot 62/73]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 18 4 # CARD.CAPTURE_SPIRIT (64322381) || Hand: [Spur, Strike+, Capture Spirit+, Enfeebling Touch+, Defend, Fetch+, Fetch+] Enemies: [Axebot 37/73]
+PlayCard 14 4 # CARD.FETCH (64561555) || Hand: [Spur, Strike+, Enfeebling Touch+, Defend, Fetch+, Fetch+] Enemies: [Axebot 33/73]
+PlayCard 3 4 # CARD.FETCH (42495217) || Hand: [Spur, Strike+, Enfeebling Touch+, Defend, Fetch+, Soul] Enemies: [Axebot 33/73]
+PlayCard 27 # CARD.SOUL (46124864) || Hand: [Spur, Strike+, Enfeebling Touch+, Defend, Soul, Strike+] Enemies: [Axebot 31/73]
+PlayCard 26 # CARD.SOUL (5124984) || Hand: [Spur, Strike+, Enfeebling Touch+, Defend, Strike+, Soul, Soul] Enemies: [Axebot 23/73]
+PlayCard 1 4 # CARD.MAKE_IT_SO (55205928) || Hand: [Spur, Strike+, Enfeebling Touch+, Defend, Strike+, Soul, Soul, Death March+, Make It So+] Enemies: [Axebot 15/73]
+PlayCard 17 4 # CARD.STRIKE_NECROBINDER (22060012) || Hand: [Spur, Strike+, Enfeebling Touch+, Defend, Strike+, Soul, Soul, Death March+] Enemies: [Axebot 4/73]
+ClaimReward 0 # GoldReward: 16
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+OpenShop
+BuyCardRemoval
+SelectGridCard 2
+BuyRelic Potion Belt
+BuyRelic Dolly's Mirror
+SelectGridCard 11
+MoveToMapCoord 4
+PlayCard 5 1 # CARD.FETCH (50954728) || Hand: [Defend+, Defend, Strike, Spur, Fetch+, Fetch+, Demesne+, Death March+, Bone Shards+] Enemies: [The Lost 93/93, The Forgotten 106/106]
+PlayCard 4 1 # CARD.FETCH (57857419) || Hand: [Defend+, Defend, Strike, Spur, Fetch+, Demesne+, Death March+, Bone Shards+, Defend] Enemies: [The Lost 87/93, The Forgotten 106/106]
+PlayCard 10 1 # CARD.MAKE_IT_SO (66963039) || Hand: [Defend+, Defend, Strike, Spur, Demesne+, Death March+, Bone Shards+, Defend, Make It So+] Enemies: [The Lost 81/93, The Forgotten 106/106]
+PlayCard 6 # CARD.DEMESNE (55939373) || Hand: [Defend+, Defend, Strike, Spur, Demesne+, Death March+, Bone Shards+, Defend] Enemies: [The Lost 70/93, The Forgotten 106/106]
+PlayCard 2 1 # CARD.STRIKE_NECROBINDER (22255405) || Hand: [Defend+, Defend, Strike, Spur, Death March+, Bone Shards+, Defend] Enemies: [The Lost 70/93, The Forgotten 106/106]
+UsePotion 0 # POTION.POWER_POTION || Hand: [Defend+, Defend, Spur, Death March+, Bone Shards+, Defend] Enemies: [The Lost 64/93, The Forgotten 106/106]
+SelectCardFromScreen 2
+PlayCard 21 # CARD.SPIRIT_OF_ASH (14564079) || Hand: [Defend+, Defend, Spur, Death March+, Bone Shards+, Defend, Spirit of Ash] Enemies: [The Lost 64/93, The Forgotten 106/106]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 14 # CARD.NECRO_MASTERY (49879043) || Hand: [Spur, Debilitate, Capture Spirit+, Death March+, Necro Mastery, Strike+, Bodyguard] Enemies: [The Lost 64/93, The Forgotten 106/106]
+PlayCard 12 1 # CARD.CAPTURE_SPIRIT (55297087) || Hand: [Spur, Debilitate, Capture Spirit+, Death March+, Strike+, Bodyguard] Enemies: [The Lost 64/93, The Forgotten 106/106]
+PlayCard 16 # CARD.BODYGUARD (13670676) || Hand: [Spur, Debilitate, Death March+, Strike+, Bodyguard] Enemies: [The Lost 60/93, The Forgotten 106/106]
+PlayCard 3 # CARD.SPUR (66080925) || Hand: [Spur, Debilitate, Death March+, Strike+] Enemies: [The Lost 60/93, The Forgotten 106/106]
+PlayCard 10 1 # CARD.MAKE_IT_SO (66963039) || Hand: [Debilitate, Death March+, Strike+, Make It So+] Enemies: [The Lost 60/93, The Forgotten 106/106]
+PlayCard 13 1 # CARD.DEATH_MARCH (27911737) || Hand: [Debilitate, Death March+, Strike+] Enemies: [The Lost 51/93, The Forgotten 106/106]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 17 1 # CARD.CAPTURE_SPIRIT (55927220) || Hand: [Soul, Capture Spirit+, Haunt+, Soul, Unleash, Enfeebling Touch+] Enemies: [The Lost 26/93, The Forgotten 88/106]
+PlayCard 18 # CARD.HAUNT (33582937) || Hand: [Soul, Haunt+, Soul, Unleash, Enfeebling Touch+] Enemies: [The Lost 22/93, The Forgotten 88/106]
+PlayCard 24 # CARD.SOUL (6498940) || Hand: [Soul, Soul, Unleash, Enfeebling Touch+] Enemies: [The Lost 22/93, The Forgotten 88/106]
+PlayCard 28 # CARD.SOUL (38109829) || Hand: [Soul, Unleash, Enfeebling Touch+, Soul, Soul] Enemies: [The Lost 14/93, The Forgotten 88/106]
+PlayCard 10 2 # CARD.MAKE_IT_SO (66963039) || Hand: [Soul, Unleash, Enfeebling Touch+, Soul, Soul, Soul, Make It So+, Soul] Enemies: [The Lost 6/93, The Forgotten 88/106]
+PlayCard 27 # CARD.SOUL (19147506) || Hand: [Soul, Unleash, Enfeebling Touch+, Soul, Soul, Soul, Soul] Enemies: [The Lost 6/93, The Forgotten 79/106]
+PlayCard 4 1 # CARD.FETCH (57857419) || Hand: [Soul, Unleash, Enfeebling Touch+, Soul, Soul, Soul, Soul, Fetch+] Enemies: [The Lost 6/93, The Forgotten 71/106]
+PlayCard 25 # CARD.SOUL (58490460) || Hand: [Soul, Unleash, Enfeebling Touch+, Soul, Soul, Soul, Soul, Defend] Enemies: [The Forgotten 71/106]
+PlayCard 22 # CARD.SOUL (64703584) || Hand: [Soul, Unleash, Enfeebling Touch+, Soul, Soul, Soul, Defend, Defend+, Defend] Enemies: [The Forgotten 63/106]
+PlayCard 12 2 # CARD.CAPTURE_SPIRIT (55297087) || Hand: [Soul, Unleash, Enfeebling Touch+, Soul, Soul, Defend, Defend+, Defend, Capture Spirit+, Bone Shards+] Enemies: [The Forgotten 55/106]
+PlayCard 26 # CARD.SOUL (17040581) || Hand: [Soul, Unleash, Enfeebling Touch+, Soul, Soul, Defend, Defend+, Defend, Bone Shards+] Enemies: [The Forgotten 51/106]
+PlayCard 5 2 # CARD.FETCH (50954728) || Hand: [Soul, Unleash, Enfeebling Touch+, Soul, Defend, Defend+, Defend, Bone Shards+, Spur, Fetch+] Enemies: [The Forgotten 43/106]
+PlayCard 20 2 # CARD.ENFEEBLING_TOUCH (35863354) || Hand: [Soul, Unleash, Enfeebling Touch+, Soul, Defend, Defend+, Defend, Bone Shards+, Spur, Soul] Enemies: [The Forgotten 37/106]
+PlayCard 10 2 # CARD.MAKE_IT_SO (66963039) || Hand: [Soul, Unleash, Soul, Defend, Defend+, Defend, Bone Shards+, Spur, Soul, Make It So+] Enemies: [The Forgotten 37/106]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 31 # CARD.SOUL (9152551) || Hand: [Spur, Strike, Death March+, Debilitate, Death March+, Bodyguard, Soul] Enemies: [The Forgotten 26/106]
+PlayCard 30 # CARD.SOUL (38299652) || Hand: [Spur, Strike, Death March+, Debilitate, Death March+, Bodyguard, Soul, Soul, Strike+] Enemies: [The Forgotten 18/106]
+PlayCard 7 2 # CARD.DEATH_MARCH (33692316) || Hand: [Spur, Strike, Death March+, Debilitate, Death March+, Bodyguard, Soul, Strike+, Capture Spirit+, Bone Shards+] Enemies: [The Forgotten 10/106]
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # CardReward
+DiscardPotion 4
+DiscardPotion 3
+TakeCard 2 # Capture Spirit
+MoveToMapCoord 3
+PlayCard 6 1 # CARD.CAPTURE_SPIRIT (33001656) || Hand: [Bodyguard, Defend, Strike+, Capture Spirit+, Defend, Defend+, Capture Spirit+, Bone Shards+, Unleash] Enemies: [Soul Nexus 234/234]
+PlayCard 3 1 # CARD.CAPTURE_SPIRIT (38064420) || Hand: [Bodyguard, Defend, Strike+, Capture Spirit+, Defend, Defend+, Bone Shards+, Unleash] Enemies: [Soul Nexus 230/234]
+PlayCard 0 # CARD.BODYGUARD (61177435) || Hand: [Bodyguard, Defend, Strike+, Defend, Defend+, Bone Shards+, Unleash] Enemies: [Soul Nexus 226/234]
+PlayCard 17 1 # CARD.MAKE_IT_SO (6810828) || Hand: [Defend, Strike+, Defend, Defend+, Bone Shards+, Unleash, Make It So+] Enemies: [Soul Nexus 226/234]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 1 # CARD.FETCH (33234619) || Hand: [Fetch+, Necro Mastery, Soul, Demesne+, Strike] Enemies: [Soul Nexus 215/234]
+PlayCard 13 # CARD.HAUNT (15640338) || Hand: [Necro Mastery, Soul, Demesne+, Strike, Haunt+] Enemies: [Soul Nexus 209/234]
+PlayCard 29 # CARD.SOUL (28122830) || Hand: [Necro Mastery, Soul, Demesne+, Strike] Enemies: [Soul Nexus 209/234]
+UsePotion 2 # POTION.GAMBLERS_BREW || Hand: [Necro Mastery, Demesne+, Strike, Capture Spirit, Debilitate] Enemies: [Soul Nexus 201/234]
+SelectHandCards 0 1 2 3 4
+PlayCard 27 # CARD.SOUL (57514005) || Hand: [Death March+, Soul, Soul, Soul, Spur] Enemies: [Soul Nexus 201/234]
+PlayCard 26 # CARD.SOUL (13846985) || Hand: [Death March+, Soul, Soul, Spur, Enfeebling Touch+, Soul] Enemies: [Soul Nexus 193/234]
+PlayCard 20 1 # CARD.FETCH (66146735) || Hand: [Death March+, Soul, Soul, Spur, Enfeebling Touch+, Soul, Fetch+, Make It So+] Enemies: [Soul Nexus 185/234]
+PlayCard 17 1 # CARD.MAKE_IT_SO (6810828) || Hand: [Death March+, Soul, Soul, Spur, Enfeebling Touch+, Soul, Make It So+, Soul] Enemies: [Soul Nexus 179/234]
+PlayCard 22 # CARD.SOUL (21016648) || Hand: [Death March+, Soul, Soul, Spur, Enfeebling Touch+, Soul, Soul] Enemies: [Soul Nexus 168/234]
+PlayCard 20 1 # CARD.FETCH (66146735) || Hand: [Death March+, Soul, Soul, Spur, Enfeebling Touch+, Soul, Death March+, Soul, Fetch+] Enemies: [Soul Nexus 160/234]
+PlayCard 24 # CARD.SOUL (24626934) || Hand: [Death March+, Soul, Soul, Spur, Enfeebling Touch+, Soul, Death March+, Soul] Enemies: [Soul Nexus 154/234]
+PlayCard 6 1 # CARD.CAPTURE_SPIRIT (33001656) || Hand: [Death March+, Soul, Soul, Spur, Enfeebling Touch+, Death March+, Soul, Capture Spirit+, Defend] Enemies: [Soul Nexus 146/234]
+PlayCard 17 1 # CARD.MAKE_IT_SO (6810828) || Hand: [Death March+, Soul, Soul, Spur, Enfeebling Touch+, Death March+, Soul, Defend, Make It So+] Enemies: [Soul Nexus 142/234]
+PlayCard 16 1 # CARD.DEATH_MARCH (60409082) || Hand: [Death March+, Soul, Soul, Spur, Enfeebling Touch+, Death March+, Soul, Defend] Enemies: [Soul Nexus 131/234]
+PlayCard 21 1 # CARD.DEATH_MARCH (58449703) || Hand: [Soul, Soul, Spur, Enfeebling Touch+, Death March+, Soul, Defend] Enemies: [Soul Nexus 14/234]
+ClaimReward 0 # GoldReward: 35
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+OpenChest
+TakeChestRelic # Vexing Puzzlebox
+NetPickRelicAction for player 1 index 0 || Hand: [Soul, Soul, Spur, Enfeebling Touch+, Soul, Defend] Enemies: []
+MoveToMapCoord 2
+ChooseRestSiteOption SMITH
+SelectGridCard 10
+MoveToMapCoord 2
+OpenShop
+BuyCardRemoval
+SelectGridCard 2
+BuyCard Haunt+
+MoveToMapCoord 2
+ChooseRestSiteOption SMITH
+SelectGridCard 7
+DiscardPotion 3
+DiscardPotion 4
+MoveToMapCoord 2
+PlayCard 22 # CARD.LETHALITY (65144678) || Hand: [Fetch+, Death March+, Necro Mastery, Death March+, Capture Spirit+, Strike+, Defend, Lethality] Enemies: [Mecha Knight 300/300]
+PlayCard 0 1 # CARD.FETCH (23476905) || Hand: [Fetch+, Death March+, Necro Mastery, Death March+, Capture Spirit+, Strike+, Defend] Enemies: [Mecha Knight 300/300]
+PlayCard 4 1 # CARD.CAPTURE_SPIRIT (17131862) || Hand: [Death March+, Necro Mastery, Death March+, Capture Spirit+, Strike+, Defend, Spur] Enemies: [Mecha Knight 291/300]
+PlayCard 2 # CARD.NECRO_MASTERY (22581125) || Hand: [Death March+, Necro Mastery, Death March+, Strike+, Defend, Spur] Enemies: [Mecha Knight 287/300]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 1 # CARD.FETCH (20360621) || Hand: [Spur, Defend+, Fetch+, Unleash+, Enfeebling Touch+, Haunt+] Enemies: [Mecha Knight 275/300]
+PlayCard 13 1 # CARD.MAKE_IT_SO (39395341) || Hand: [Spur, Defend+, Unleash+, Enfeebling Touch+, Haunt+, Make It So+] Enemies: [Mecha Knight 266/300]
+PlayCard 12 # CARD.HAUNT (11833800) || Hand: [Spur, Defend+, Unleash+, Enfeebling Touch+, Haunt+] Enemies: [Mecha Knight 255/300]
+PlayCard 7 # CARD.SPUR (6879401) || Hand: [Spur, Defend+, Unleash+, Enfeebling Touch+] Enemies: [Mecha Knight 255/300]
+PlayCard 11 1 # CARD.ENFEEBLING_TOUCH (38597568) || Hand: [Defend+, Unleash+, Enfeebling Touch+] Enemies: [Mecha Knight 255/300]
+PlayCard 10 1 # CARD.UNLEASH (49027861) || Hand: [Defend+, Unleash+] Enemies: [Mecha Knight 255/300]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 14 # CARD.DEMESNE (19013752) || Hand: [Burn, Burn, Burn, Burn, Demesne+, Capture Spirit+, Soul, Capture Spirit+, Bodyguard, Soul] Enemies: [Mecha Knight 241/300]
+PlayCard 15 1 # CARD.CAPTURE_SPIRIT (36906042) || Hand: [Burn, Burn, Burn, Burn, Capture Spirit+, Soul, Capture Spirit+, Bodyguard, Soul] Enemies: [Mecha Knight 241/300]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 32 # CARD.SOUL (27553745) || Hand: [Debilitate, Soul, Soul, Soul, Soul, Strike] Enemies: [Mecha Knight 237/300]
+PlayCard 26 # CARD.SOUL (59630711) || Hand: [Debilitate, Soul, Soul, Soul, Strike, Bone Shards+, Soul] Enemies: [Mecha Knight 229/300]
+PlayCard 21 # CARD.HAUNT (13198355) || Hand: [Debilitate, Soul, Soul, Soul, Strike, Bone Shards+, Soul, Haunt+] Enemies: [Mecha Knight 221/300]
+PlayCard 33 # CARD.SOUL (46657118) || Hand: [Debilitate, Soul, Soul, Soul, Strike, Bone Shards+, Soul] Enemies: [Mecha Knight 221/300]
+PlayCard 13 1 # CARD.MAKE_IT_SO (39395341) || Hand: [Debilitate, Soul, Soul, Strike, Bone Shards+, Soul, Bodyguard, Capture Spirit+, Make It So+] Enemies: [Mecha Knight 205/300]
+PlayCard 15 1 # CARD.CAPTURE_SPIRIT (36906042) || Hand: [Debilitate, Soul, Soul, Strike, Bone Shards+, Soul, Bodyguard, Capture Spirit+] Enemies: [Mecha Knight 204/300]
+PlayCard 31 # CARD.SOUL (40344229) || Hand: [Debilitate, Soul, Soul, Strike, Bone Shards+, Soul, Bodyguard] Enemies: [Mecha Knight 200/300]
+PlayCard 0 1 # CARD.FETCH (23476905) || Hand: [Debilitate, Soul, Soul, Strike, Bone Shards+, Bodyguard, Fetch+, Burn, Soul] Enemies: [Mecha Knight 184/300]
+PlayCard 34 # CARD.SOUL (17260886) || Hand: [Debilitate, Soul, Soul, Strike, Bone Shards+, Bodyguard, Burn, Soul, Capture Spirit+] Enemies: [Mecha Knight 178/300]
+PlayCard 35 # CARD.SOUL (45752477) || Hand: [Debilitate, Soul, Strike, Bone Shards+, Bodyguard, Burn, Soul, Capture Spirit+, Soul, Defend+] Enemies: [Mecha Knight 162/300]
+PlayCard 25 # CARD.SOUL (66277958) || Hand: [Debilitate, Soul, Strike, Bone Shards+, Bodyguard, Burn, Capture Spirit+, Soul, Defend+, Unleash+] Enemies: [Mecha Knight 146/300]
+PlayCard 38 # CARD.SOUL (450964) || Hand: [Debilitate, Strike, Bone Shards+, Bodyguard, Burn, Capture Spirit+, Soul, Defend+, Unleash+, Soul] Enemies: [Mecha Knight 130/300]
+PlayCard 3 1 # CARD.DEATH_MARCH (1903540) || Hand: [Debilitate, Strike, Bone Shards+, Bodyguard, Burn, Capture Spirit+, Soul, Defend+, Unleash+, Death March+] Enemies: [Mecha Knight 114/300]
+PlayCard 37 # CARD.SOUL (14963188) || Hand: [Debilitate, Strike, Bone Shards+, Bodyguard, Burn, Capture Spirit+, Soul, Defend+, Unleash+] Enemies: [Mecha Knight 15/300]
+ClaimReward 0 # GoldReward: 39
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 2
+PlayCard 22 1 # CARD.SOUL_STORM (18206581) || Hand: [Debilitate+, Defend, Necro Mastery, Capture Spirit+, Strike+, Bodyguard, Spur, Soul Storm] Enemies: [Fabricator 150/150]
+PlayCard 2 # CARD.NECRO_MASTERY (51631277) || Hand: [Debilitate+, Defend, Necro Mastery, Capture Spirit+, Strike+, Bodyguard, Spur] Enemies: [Fabricator 137/150]
+PlayCard 3 1 # CARD.CAPTURE_SPIRIT (62028311) || Hand: [Debilitate+, Defend, Capture Spirit+, Strike+, Bodyguard, Spur] Enemies: [Fabricator 137/150]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 # CARD.HAUNT (43934771) || Hand: [Spur, Soul, Fetch+, Demesne+, Haunt+, Bone Shards+] Enemies: [Zapbot 22/22, Fabricator 124/150]
+PlayCard 25 # CARD.SOUL (13721652) || Hand: [Spur, Soul, Fetch+, Demesne+, Bone Shards+] Enemies: [Zapbot 22/22, Fabricator 124/150]
+PlayCard 13 3 # CARD.MAKE_IT_SO (23462278) || Hand: [Spur, Fetch+, Demesne+, Bone Shards+, Death March+, Fetch+, Make It So+] Enemies: [Zapbot 22/22, Fabricator 116/150]
+PlayCard 12 3 # CARD.FETCH (17520000) || Hand: [Spur, Fetch+, Demesne+, Bone Shards+, Death March+, Fetch+] Enemies: [Zapbot 11/22, Fabricator 116/150]
+PlayCard 23 # CARD.SOUL (50708177) || Hand: [Spur, Fetch+, Demesne+, Bone Shards+, Death March+, Soul] Enemies: [Zapbot 5/22, Fabricator 116/150]
+PlayCard 14 # CARD.HAUNT (9833918) || Hand: [Spur, Fetch+, Demesne+, Bone Shards+, Death March+, Haunt+, Soul] Enemies: [Fabricator 116/150]
+PlayCard 7 1 # CARD.FETCH (19598007) || Hand: [Spur, Fetch+, Demesne+, Bone Shards+, Death March+, Soul] Enemies: [Fabricator 116/150]
+PlayCard 26 # CARD.SOUL (56386005) || Hand: [Spur, Demesne+, Bone Shards+, Death March+, Soul, Unleash] Enemies: [Fabricator 110/150]
+PlayCard 13 1 # CARD.MAKE_IT_SO (23462278) || Hand: [Spur, Demesne+, Bone Shards+, Death March+, Unleash, Enfeebling Touch+, Strike+, Make It So+] Enemies: [Fabricator 94/150]
+PlayCard 8 # CARD.DEMESNE (42164343) || Hand: [Spur, Demesne+, Bone Shards+, Death March+, Unleash, Enfeebling Touch+, Strike+] Enemies: [Fabricator 83/150]
+PlayCard 16 1 # CARD.ENFEEBLING_TOUCH (58349868) || Hand: [Spur, Bone Shards+, Death March+, Unleash, Enfeebling Touch+, Strike+] Enemies: [Fabricator 83/150]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 6 # CARD.SPUR (54373339) || Hand: [Spur, Defend, Capture Spirit+, Soul, Death March+, Capture Spirit+, Debilitate+, Capture Spirit+, Defend] Enemies: [Stabbot 20/20, Fabricator 83/150]
+PlayCard 19 4 # CARD.CAPTURE_SPIRIT (57142918) || Hand: [Defend, Capture Spirit+, Soul, Death March+, Capture Spirit+, Debilitate+, Capture Spirit+, Defend] Enemies: [Stabbot 20/20, Fabricator 83/150]
+PlayCard 3 4 # CARD.CAPTURE_SPIRIT (62028311) || Hand: [Defend, Soul, Death March+, Capture Spirit+, Debilitate+, Capture Spirit+, Defend] Enemies: [Stabbot 16/20, Fabricator 83/150]
+PlayCard 13 4 # CARD.MAKE_IT_SO (23462278) || Hand: [Defend, Soul, Death March+, Capture Spirit+, Debilitate+, Defend, Make It So+] Enemies: [Stabbot 12/20, Fabricator 83/150]
+PlayCard 21 1 # CARD.CAPTURE_SPIRIT (65173636) || Hand: [Defend, Soul, Death March+, Capture Spirit+, Debilitate+, Defend] Enemies: [Stabbot 1/20, Fabricator 83/150]
+PlayCard 24 # CARD.SOUL (53720411) || Hand: [Defend, Soul, Death March+, Debilitate+, Defend] Enemies: [Stabbot 1/20, Fabricator 79/150]
+PlayCard 38 # CARD.SOUL (55287288) || Hand: [Defend, Death March+, Debilitate+, Defend, Strike+, Soul] Enemies: [Fabricator 79/150]
+PlayCard 13 1 # CARD.MAKE_IT_SO (23462278) || Hand: [Defend, Death March+, Debilitate+, Defend, Strike+, Strike+, Soul, Make It So+] Enemies: [Fabricator 63/150]
+PlayCard 36 # CARD.SOUL (12281622) || Hand: [Defend, Death March+, Debilitate+, Defend, Strike+, Strike+, Soul] Enemies: [Fabricator 52/150]
+PlayCard 34 # CARD.SOUL (25675242) || Hand: [Defend, Death March+, Debilitate+, Defend, Strike+, Strike+, Death March+, Enfeebling Touch+, Soul] Enemies: [Fabricator 36/150]
+PlayCard 37 # CARD.SOUL (43425734) || Hand: [Defend, Death March+, Debilitate+, Defend, Strike+, Strike+, Death March+, Enfeebling Touch+, Unleash, Soul] Enemies: [Fabricator 20/150]
+UsePotion 3 1 # POTION.FIRE_POTION || Hand: [Defend, Death March+, Debilitate+, Defend, Strike+, Strike+, Death March+, Enfeebling Touch+, Unleash, Soul Storm] Enemies: [Fabricator 4/150]
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+DiscardPotion 4
+DiscardPotion 3
+DiscardPotion 2
+MoveToMapCoord 2
+ChooseRestSiteOption HEAL
+MoveToMapCoord 3
+PlayCard 2 1 # CARD.FETCH (65723549) || Hand: [Death March+, Death March+, Fetch+, Strike, Bodyguard+, Strike+, Bone Shards+, Bone Shards] Enemies: [Torch Head Amalgam 199/199, Queen 400/400]
+UsePotion 3 # POTION.STRENGTH_POTION || Hand: [Death March+, Death March+, Strike, Bodyguard+, Strike+, Bone Shards+, Bone Shards, Defend] Enemies: [Torch Head Amalgam 190/199, Queen 400/400]
+UsePotion 4 # POTION.SKILL_POTION || Hand: [Death March+, Death March+, Strike, Bodyguard+, Strike+, Bone Shards+, Bone Shards, Defend] Enemies: [Torch Head Amalgam 190/199, Queen 400/400]
+SelectCardFromScreen 2
+PlayCard 23 # CARD.CLEANSE (9513022) || Hand: [Death March+, Death March+, Strike, Bodyguard+, Strike+, Bone Shards+, Bone Shards, Defend, Cleanse] Enemies: [Torch Head Amalgam 190/199, Queen 400/400]
+SelectGridCard 8
+PlayCard 4 # CARD.BODYGUARD (22007228) || Hand: [Death March+, Death March+, Strike, Bodyguard+, Strike+, Bone Shards+, Bone Shards, Defend] Enemies: [Torch Head Amalgam 190/199, Queen 400/400]
+PlayCard 0 1 # CARD.DEATH_MARCH (42236626) || Hand: [Death March+, Death March+, Strike, Strike+, Bone Shards+, Bone Shards, Defend] Enemies: [Torch Head Amalgam 190/199, Queen 400/400]
+PlayCard 1 1 # CARD.DEATH_MARCH (44585318) || Hand: [Death March+, Strike, Strike+, Bone Shards+, Bone Shards, Defend] Enemies: [Torch Head Amalgam 165/199, Queen 400/400]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 12 # CARD.HAUNT (28259109) || Hand: [Capture Spirit+, Capture Spirit+, Enfeebling Touch+, Capture Spirit+, Haunt+] Enemies: [Torch Head Amalgam 140/199, Queen 400/400]
+PlayCard 11 1 # CARD.CAPTURE_SPIRIT (40422603) || Hand: [Capture Spirit+, Capture Spirit+, Enfeebling Touch+, Capture Spirit+] Enemies: [Torch Head Amalgam 140/199, Queen 400/400]
+UsePotion 1 # POTION.SWIFT_POTION || Hand: [Capture Spirit+, Capture Spirit+, Enfeebling Touch+] Enemies: [Torch Head Amalgam 136/199, Queen 400/400]
+PlayCard 9 1 # CARD.CAPTURE_SPIRIT (8784089) || Hand: [Capture Spirit+, Capture Spirit+, Enfeebling Touch+, Debilitate, Unleash, Soul] Enemies: [Torch Head Amalgam 136/199, Queen 400/400]
+PlayCard 25 # CARD.SOUL (55743824) || Hand: [Capture Spirit+, Enfeebling Touch+, Debilitate, Unleash, Soul] Enemies: [Torch Head Amalgam 132/199, Queen 400/400]
+PlayCard 17 1 # CARD.FETCH (10281300) || Hand: [Capture Spirit+, Enfeebling Touch+, Debilitate, Unleash, Haunt+, Fetch+, Make It So+] Enemies: [Torch Head Amalgam 132/199, Queen 392/400]
+PlayCard 18 1 # CARD.MAKE_IT_SO (25422836) || Hand: [Capture Spirit+, Enfeebling Touch+, Debilitate, Unleash, Haunt+, Make It So+, Soul] Enemies: [Torch Head Amalgam 126/199, Queen 392/400]
+PlayCard 15 # CARD.HAUNT (65578784) || Hand: [Capture Spirit+, Enfeebling Touch+, Debilitate, Unleash, Haunt+, Soul] Enemies: [Torch Head Amalgam 113/199, Queen 392/400]
+PlayCard 27 # CARD.SOUL (18955915) || Hand: [Capture Spirit+, Enfeebling Touch+, Debilitate, Unleash, Soul] Enemies: [Torch Head Amalgam 113/199, Queen 392/400]
+PlayCard 24 # CARD.SOUL (50933000) || Hand: [Capture Spirit+, Enfeebling Touch+, Debilitate, Unleash, Soul, Necro Mastery+, Spur] Enemies: [Torch Head Amalgam 97/199, Queen 392/400]
+PlayCard 30 # CARD.SOUL (22105716) || Hand: [Capture Spirit+, Enfeebling Touch+, Debilitate, Unleash, Necro Mastery+, Spur, Soul, Soul] Enemies: [Torch Head Amalgam 81/199, Queen 392/400]
+PlayCard 18 1 # CARD.MAKE_IT_SO (25422836) || Hand: [Capture Spirit+, Enfeebling Touch+, Debilitate, Unleash, Necro Mastery+, Spur, Soul, Soul, Soul, Make It So+] Enemies: [Torch Head Amalgam 65/199, Queen 392/400]
+PlayCard 26 # CARD.SOUL (31932374) || Hand: [Capture Spirit+, Enfeebling Touch+, Debilitate, Unleash, Necro Mastery+, Spur, Soul, Soul, Soul] Enemies: [Torch Head Amalgam 52/199, Queen 392/400]
+PlayCard 31 # CARD.SOUL (64733720) || Hand: [Capture Spirit+, Enfeebling Touch+, Debilitate, Unleash, Necro Mastery+, Spur, Soul, Soul, Demesne+, Soul] Enemies: [Torch Head Amalgam 52/199, Queen 376/400]
+PlayCard 28 # CARD.SOUL (4415432) || Hand: [Capture Spirit+, Enfeebling Touch+, Debilitate, Unleash, Necro Mastery+, Spur, Soul, Demesne+, Soul, Defend] Enemies: [Torch Head Amalgam 36/199, Queen 376/400]
+PlayCard 20 # CARD.SPUR (45983831) || Hand: [Capture Spirit+, Enfeebling Touch+, Debilitate, Unleash, Necro Mastery+, Spur, Soul, Demesne+, Defend, Bone Shards+] Enemies: [Torch Head Amalgam 20/199, Queen 376/400]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 11 1 # CARD.CAPTURE_SPIRIT (40422603) || Hand: [Cleanse, Fetch+, Capture Spirit+, Capture Spirit+, Strike+] Enemies: [Torch Head Amalgam 20/199, Queen 376/400]
+PlayCard 2 1 # CARD.FETCH (65723549) || Hand: [Cleanse, Fetch+, Capture Spirit+, Strike+] Enemies: [Torch Head Amalgam 16/199, Queen 376/400]
+PlayCard 5 1 # CARD.STRIKE_NECROBINDER (63847327) || Hand: [Cleanse, Capture Spirit+, Strike+, Death March+] Enemies: [Torch Head Amalgam 10/199, Queen 376/400]
+PlayCard 0 1 # CARD.DEATH_MARCH (42236626) || Hand: [Cleanse, Capture Spirit+, Death March+] Enemies: [Torch Head Amalgam 2/199, Queen 376/400]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 33 # CARD.SOUL (6041880) || Hand: [Fetch+, Soul, Bodyguard+, Bone Shards, Soul, Soul, Strike] Enemies: [Queen 376/400]
+PlayCard 35 # CARD.SOUL (19630304) || Hand: [Fetch+, Soul, Bodyguard+, Bone Shards, Soul, Strike, Soul, Death March+] Enemies: [Queen 360/400]
+PlayCard 34 # CARD.SOUL (54376928) || Hand: [Fetch+, Soul, Bodyguard+, Bone Shards, Strike, Soul, Death March+, Bone Shards+, Death March+] Enemies: [Queen 344/400]
+PlayCard 2 2 # CARD.FETCH (65723549) || Hand: [Fetch+, Bodyguard+, Bone Shards, Strike, Soul, Death March+, Bone Shards+, Death March+, Defend, Fetch+] Enemies: [Queen 328/400]
+PlayCard 9 2 # CARD.CAPTURE_SPIRIT (8784089) || Hand: [Fetch+, Bodyguard+, Bone Shards, Strike, Soul, Death March+, Bone Shards+, Death March+, Defend, Capture Spirit+] Enemies: [Queen 322/400]
+PlayCard 32 # CARD.SOUL (30497481) || Hand: [Fetch+, Bodyguard+, Bone Shards, Strike, Soul, Death March+, Bone Shards+, Death March+, Defend] Enemies: [Queen 318/400]
+PlayCard 37 # CARD.SOUL (4858623) || Hand: [Fetch+, Bodyguard+, Bone Shards, Strike, Death March+, Bone Shards+, Death March+, Defend, Soul, Debilitate] Enemies: [Queen 302/400]
+PlayCard 0 2 # CARD.DEATH_MARCH (42236626) || Hand: [Fetch+, Bodyguard+, Bone Shards, Strike, Death March+, Bone Shards+, Death March+, Defend, Debilitate, Cleanse] Enemies: [Queen 286/400]
+PlayCard 1 2 # CARD.DEATH_MARCH (44585318) || Hand: [Fetch+, Bodyguard+, Bone Shards, Strike, Death March+, Bone Shards+, Defend, Debilitate, Cleanse] Enemies: [Queen 233/400]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 38 # CARD.SOUL (43727610) || Hand: [Strike+, Capture Spirit+, Soul, Soul, Necro Mastery+] Enemies: [Queen 180/400]
+PlayCard 8 2 # CARD.CAPTURE_SPIRIT (38258712) || Hand: [Strike+, Capture Spirit+, Soul, Necro Mastery+, Soul, Capture Spirit+] Enemies: [Queen 164/400]
+PlayCard 39 # CARD.SOUL (58004177) || Hand: [Strike+, Capture Spirit+, Soul, Necro Mastery+, Soul] Enemies: [Queen 160/400]
+PlayCard 18 2 # CARD.MAKE_IT_SO (25422836) || Hand: [Strike+, Capture Spirit+, Soul, Necro Mastery+, Spur, Unleash, Make It So+] Enemies: [Queen 144/400]
+PlayCard 36 # CARD.SOUL (52735630) || Hand: [Strike+, Capture Spirit+, Soul, Necro Mastery+, Spur, Unleash] Enemies: [Queen 135/400]
+PlayCard 29 # CARD.SOUL (39738892) || Hand: [Strike+, Capture Spirit+, Necro Mastery+, Spur, Unleash, Soul, Soul, Soul] Enemies: [Queen 119/400]
+PlayCard 43 # CARD.SOUL (32252911) || Hand: [Strike+, Capture Spirit+, Necro Mastery+, Spur, Unleash, Soul, Soul, Soul, Soul] Enemies: [Queen 103/400]
+PlayCard 40 # CARD.SOUL (57579276) || Hand: [Strike+, Capture Spirit+, Necro Mastery+, Spur, Unleash, Soul, Soul, Soul, Capture Spirit+, Bone Shards] Enemies: [Queen 87/400]
+PlayCard 42 # CARD.SOUL (33409818) || Hand: [Strike+, Capture Spirit+, Necro Mastery+, Spur, Unleash, Soul, Soul, Capture Spirit+, Bone Shards, Defend] Enemies: [Queen 71/400]
+PlayCard 8 2 # CARD.CAPTURE_SPIRIT (38258712) || Hand: [Strike+, Capture Spirit+, Necro Mastery+, Spur, Unleash, Soul, Capture Spirit+, Bone Shards, Defend, Capture Spirit+] Enemies: [Queen 55/400]
+PlayCard 18 2 # CARD.MAKE_IT_SO (25422836) || Hand: [Strike+, Capture Spirit+, Necro Mastery+, Spur, Unleash, Soul, Capture Spirit+, Bone Shards, Defend, Make It So+] Enemies: [Queen 51/400]
+PlayCard 41 # CARD.SOUL (48451444) || Hand: [Strike+, Capture Spirit+, Necro Mastery+, Spur, Unleash, Soul, Capture Spirit+, Bone Shards, Defend] Enemies: [Queen 42/400]
+PlayCard 45 # CARD.SOUL (20365283) || Hand: [Strike+, Capture Spirit+, Necro Mastery+, Spur, Unleash, Capture Spirit+, Bone Shards, Defend, Soul, Soul] Enemies: [Queen 26/400]
+PlayCard 47 # CARD.SOUL (38975222) || Hand: [Strike+, Capture Spirit+, Necro Mastery+, Spur, Unleash, Capture Spirit+, Bone Shards, Defend, Soul, Cleanse] Enemies: [Queen 10/400]
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Strike+, Capture Spirit+, Necro Mastery+, Spur, Unleash, Capture Spirit+, Bone Shards, Defend, Cleanse, Death March+] Enemies: []
+ChooseEventOption 0 # THE_ARCHITECT.dialogue.0
+ChooseEventOption 0 # PROCEED
+ProceedToNextAct
