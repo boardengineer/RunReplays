@@ -5,7 +5,12 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <DefineConstants>RUNREPLAYS_MIGRATION;RUNREPLAYS_AUTOPLAY;RUNREPLAYS_VERBOSE;RUNREPLAYS_DISPATCHER</DefineConstants>
+        <!-- Behavior flags — all configurations. -->
+        <DefineConstants>$(DefineConstants);RUNREPLAYS_AUTOPLAY</DefineConstants>
+        <!-- Mod-generated dev-console logging — compiled out of Release builds.
+             RUNREPLAYS_DEVCONSOLE gates the console sink itself; the category
+             flags gate the individual logging helpers. -->
+        <DefineConstants Condition="'$(Configuration)' != 'Release'">$(DefineConstants);RUNREPLAYS_MIGRATION;RUNREPLAYS_VERBOSE;RUNREPLAYS_DISPATCHER;RUNREPLAYS_DEVCONSOLE</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>

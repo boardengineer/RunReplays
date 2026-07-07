@@ -400,10 +400,13 @@ public static class PlayerActionBuffer
     }
 
     /// <summary>
-    /// Unconditional variant used by DiagnosticLog so important diagnostic
-    /// lines surface in the in-game console even when RUNREPLAYS_VERBOSE is
-    /// off. Keep call sites sparse — this fires on every message.
+    /// Variant used by DiagnosticLog so important diagnostic lines surface in
+    /// the in-game console even when RUNREPLAYS_VERBOSE is off. Keep call
+    /// sites sparse — this fires on every message. Like all dev-console
+    /// output, compiled out entirely unless RUNREPLAYS_DEVCONSOLE is defined
+    /// (dev builds only; the file-based DiagnosticLog still writes).
     /// </summary>
+    [System.Diagnostics.Conditional("RUNREPLAYS_DEVCONSOLE")]
     internal static void ForceLogToDevConsole(string entry)
     {
         WriteToDevConsole(entry);
@@ -421,6 +424,11 @@ public static class PlayerActionBuffer
         WriteToDevConsole(entry);
     }
 
+    // Single sink for every in-game dev console write. The Conditional gate
+    // here backstops the per-category flags above: without RUNREPLAYS_DEVCONSOLE
+    // no call site survives compilation, so release builds never touch the
+    // console regardless of which logging categories are defined.
+    [System.Diagnostics.Conditional("RUNREPLAYS_DEVCONSOLE")]
     private static void WriteToDevConsole(string entry)
     {
         // Check the backing field directly to avoid the InvalidOperationException
