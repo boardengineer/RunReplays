@@ -1,0 +1,469 @@
+# Character: IRONCLAD
+# Seed: 89U21BV1TZ
+# Ascension: 1
+# Acts: ACT.OVERGROWTH, ACT.HIVE, ACT.GLORY
+# Game: v0.107.1
+# Mod: 0.1.0
+ChooseEventOption 1 # NEOW.pages.INITIAL.options.WINGED_BOOTS
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+PlayCard 0 # CARD.DEFEND_IRONCLAD (65198830) || Hand: [Defend, Strike, Defend, Defend, Strike] Enemies: [Fuzzy Wurm Crawler 57/57]
+PlayCard 1 1 # CARD.STRIKE_IRONCLAD (49918561) || Hand: [Strike, Defend, Defend, Strike] Enemies: [Fuzzy Wurm Crawler 57/57]
+PlayCard 4 1 # CARD.STRIKE_IRONCLAD (17627377) || Hand: [Defend, Defend, Strike] Enemies: [Fuzzy Wurm Crawler 51/57]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 7 1 # CARD.BASH (32564992) || Hand: [Strike, Strike, Bash, Defend, Strike] Enemies: [Fuzzy Wurm Crawler 45/57]
+PlayCard 9 1 # CARD.STRIKE_IRONCLAD (20518710) || Hand: [Strike, Strike, Defend, Strike] Enemies: [Fuzzy Wurm Crawler 37/57]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 2 # CARD.DEFEND_IRONCLAD (46613873) || Hand: [Strike, Strike, Strike, Strike, Defend] Enemies: [Fuzzy Wurm Crawler 28/57]
+PlayCard 4 1 # CARD.STRIKE_IRONCLAD (17627377) || Hand: [Strike, Strike, Strike, Strike] Enemies: [Fuzzy Wurm Crawler 28/57]
+PlayCard 9 1 # CARD.STRIKE_IRONCLAD (20518710) || Hand: [Strike, Strike, Strike] Enemies: [Fuzzy Wurm Crawler 19/57]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 7 1 # CARD.BASH (32564992) || Hand: [Defend, Defend, Bash, Strike, Defend] Enemies: [Fuzzy Wurm Crawler 10/57]
+PlayCard 6 1 # CARD.STRIKE_IRONCLAD (18531413) || Hand: [Defend, Defend, Strike, Defend] Enemies: [Fuzzy Wurm Crawler 2/57]
+ClaimReward 0 # GoldReward: 20
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Bludgeon
+MoveToMapCoord 1
+ChooseEventOption 0 # TABLET_OF_TRUTH.pages.INITIAL.options.DECIPHER_1
+ChooseEventOption 0 # TABLET_OF_TRUTH.pages.DECIPHER_1.options.DECIPHER
+ChooseEventOption 1 # TABLET_OF_TRUTH.pages.DECIPHER.options.GIVE_UP
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+PlayCard 2 1 # CARD.STRIKE_IRONCLAD (58368941) || Hand: [Strike, Strike, Strike, Defend, Bludgeon] Enemies: [Twig Slime (S) 8/8, Twig Slime (M) 26/26, Leaf Slime (S) 11/11]
+PlayCard 1 1 # CARD.STRIKE_IRONCLAD (58681221) || Hand: [Strike, Strike, Defend, Bludgeon] Enemies: [Twig Slime (S) 2/8, Twig Slime (M) 26/26, Leaf Slime (S) 11/11]
+PlayCard 0 3 # CARD.STRIKE_IRONCLAD (21433216) || Hand: [Strike, Defend, Bludgeon] Enemies: [Twig Slime (M) 26/26, Leaf Slime (S) 11/11]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 3 # CARD.STRIKE_IRONCLAD (52768000) || Hand: [Strike, Bash+, Defend, Strike, Defend] Enemies: [Twig Slime (M) 26/26, Leaf Slime (S) 5/11]
+PlayCard 9 # CARD.DEFEND_IRONCLAD (5149953) || Hand: [Strike, Bash+, Defend, Defend] Enemies: [Twig Slime (M) 26/26]
+PlayCard 7 # CARD.DEFEND_IRONCLAD (50602353) || Hand: [Strike, Bash+, Defend] Enemies: [Twig Slime (M) 26/26]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 0 2 # CARD.STRIKE_IRONCLAD (21433216) || Hand: [Defend+, Defend, Slimed, Strike, Strike] Enemies: [Twig Slime (M) 26/26]
+PlayCard 2 2 # CARD.STRIKE_IRONCLAD (58368941) || Hand: [Defend+, Defend, Slimed, Strike] Enemies: [Twig Slime (M) 20/26]
+PlayCard 11 # CARD.SLIMED (24193336) || Hand: [Defend+, Defend, Slimed] Enemies: [Twig Slime (M) 14/26]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 6 2 # CARD.BASH (35448645) || Hand: [Defend, Bash+, Defend, Strike, Slimed] Enemies: [Twig Slime (M) 14/26]
+PlayCard 8 2 # CARD.STRIKE_IRONCLAD (52768000) || Hand: [Defend, Defend, Strike, Slimed] Enemies: [Twig Slime (M) 4/26]
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # CardReward
+TakeCard 1 # Unrelenting
+MoveToMapCoord 1
+PlayCard 0 1 # CARD.BLUDGEON (50909753) || Hand: [Bludgeon, Defend+, Strike, Defend, Defend] Enemies: [Shrinker Beetle 39/39]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 5 1 # CARD.UNRELENTING (28492877) || Hand: [Unrelenting, Strike, Bash+, Strike, Defend] Enemies: [Shrinker Beetle 7/39]
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # CardReward
+TakeCard 0 # Headbutt
+MoveToMapCoord 2
+PlayCard 4 2 # CARD.UNRELENTING (62656895) || Hand: [Bash+, Bludgeon, Strike, Defend, Unrelenting] Enemies: [Brute Raider 30/30, Assassin Raider 20/20, Tracker Raider 25/25]
+PlayCard 1 1 # CARD.BLUDGEON (36356034) || Hand: [Bash+, Bludgeon, Strike, Defend] Enemies: [Brute Raider 30/30, Assassin Raider 6/20, Tracker Raider 25/25]
+PlayCard 2 2 # CARD.STRIKE_IRONCLAD (58768856) || Hand: [Bash+, Strike, Defend] Enemies: [Assassin Raider 6/20, Tracker Raider 25/25]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 # CARD.DEFEND_IRONCLAD (50098670) || Hand: [Strike, Defend, Strike, Defend+, Strike] Enemies: [Tracker Raider 25/25]
+PlayCard 6 # CARD.DEFEND_IRONCLAD (42043726) || Hand: [Strike, Defend, Strike, Strike] Enemies: [Tracker Raider 25/25]
+PlayCard 7 3 # CARD.STRIKE_IRONCLAD (42849221) || Hand: [Strike, Strike, Strike] Enemies: [Tracker Raider 25/25]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 6 # CARD.DEFEND_IRONCLAD (42043726) || Hand: [Defend, Strike, Headbutt, Defend, Strike] Enemies: [Tracker Raider 19/25]
+PlayCard 12 3 # CARD.HEADBUTT (65271488) || Hand: [Defend, Strike, Headbutt, Strike] Enemies: [Tracker Raider 19/25]
+PlayCard 10 # CARD.DEFEND_IRONCLAD (31460487) || Hand: [Defend, Strike, Strike] Enemies: [Tracker Raider 10/25]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 5 3 # CARD.STRIKE_IRONCLAD (27041146) || Hand: [Defend, Defend, Strike, Strike, Defend+] Enemies: [Tracker Raider 10/25]
+PlayCard 9 3 # CARD.STRIKE_IRONCLAD (48234852) || Hand: [Defend, Defend, Strike, Defend+] Enemies: [Tracker Raider 4/25]
+ClaimReward 0 # GoldReward: 16
+ClaimReward 0 # CardReward
+TakeCard 0 # Stone Armor
+MoveToMapCoord 2
+ChooseRestSiteOption SMITH
+SelectGridCard 11
+MoveToMapCoord 3
+PlayCard 4 1 # CARD.UNRELENTING (4830270) || Hand: [Bludgeon, Defend, Stone Armor+, Strike, Unrelenting] Enemies: [Byrdonis 84/84]
+PlayCard 0 1 # CARD.BLUDGEON (7007224) || Hand: [Bludgeon, Defend, Stone Armor+, Strike] Enemies: [Byrdonis 70/84]
+PlayCard 2 # CARD.STONE_ARMOR (30714299) || Hand: [Defend, Stone Armor+, Strike] Enemies: [Byrdonis 38/84]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 # CARD.DEFEND_IRONCLAD (9949649) || Hand: [Bash+, Strike, Defend, Strike, Defend+] Enemies: [Byrdonis 38/84]
+PlayCard 7 # CARD.DEFEND_IRONCLAD (31606005) || Hand: [Bash+, Strike, Defend, Strike] Enemies: [Byrdonis 38/84]
+PlayCard 8 1 # CARD.STRIKE_IRONCLAD (16018597) || Hand: [Bash+, Strike, Strike] Enemies: [Byrdonis 38/84]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 0 1 # CARD.BLUDGEON (7007224) || Hand: [Strike, Strike, Defend, Headbutt, Bludgeon] Enemies: [Byrdonis 32/84]
+ClaimReward 0 # GoldReward: 40
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Taunt
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 11
+MoveToMapCoord 3
+OpenChest
+TakeChestRelic # Bag of Preparation
+NetPickRelicAction for player 1 index 0 || Hand: [Strike, Strike, Defend, Headbutt] Enemies: []
+MoveToMapCoord 4
+PlayCard 1 # CARD.STONE_ARMOR (22800051) || Hand: [Defend, Stone Armor+, Strike, Defend, Taunt+, Headbutt, Strike] Enemies: [Bygone Effigy 127/127]
+PlayCard 4 1 # CARD.TAUNT (45348205) || Hand: [Defend, Strike, Defend, Taunt+, Headbutt, Strike] Enemies: [Bygone Effigy 127/127]
+PlayCard 5 1 # CARD.HEADBUTT (5480663) || Hand: [Defend, Strike, Defend, Headbutt, Strike] Enemies: [Bygone Effigy 127/127]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 1 # CARD.UNRELENTING (55390381) || Hand: [Taunt+, Bludgeon, Defend+, Unrelenting, Strike] Enemies: [Bygone Effigy 111/127]
+PlayCard 7 1 # CARD.BLUDGEON (41280552) || Hand: [Taunt+, Bludgeon, Defend+, Strike] Enemies: [Bygone Effigy 90/127]
+PlayCard 10 1 # CARD.STRIKE_IRONCLAD (28751382) || Hand: [Taunt+, Defend+, Strike] Enemies: [Bygone Effigy 38/127]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 8 # CARD.DEFEND_IRONCLAD (35980648) || Hand: [Strike, Bash+, Defend, Strike, Defend+] Enemies: [Bygone Effigy 28/127]
+PlayCard 13 # CARD.DEFEND_IRONCLAD (21792629) || Hand: [Strike, Bash+, Defend, Strike] Enemies: [Bygone Effigy 28/127]
+PlayCard 14 1 # CARD.STRIKE_IRONCLAD (61915933) || Hand: [Strike, Bash+, Strike] Enemies: [Bygone Effigy 28/127]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 4 1 # CARD.TAUNT (45348205) || Hand: [Taunt+, Strike, Defend, Defend, Headbutt] Enemies: [Bygone Effigy 21/127]
+PlayCard 3 # CARD.DEFEND_IRONCLAD (34864851) || Hand: [Strike, Defend, Defend, Headbutt] Enemies: [Bygone Effigy 21/127]
+PlayCard 0 # CARD.DEFEND_IRONCLAD (17446419) || Hand: [Strike, Defend, Headbutt] Enemies: [Bygone Effigy 21/127]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 9 1 # CARD.UNRELENTING (55390381) || Hand: [Unrelenting, Strike, Bludgeon, Strike, Headbutt] Enemies: [Bygone Effigy 21/127]
+ClaimReward 0 # GoldReward: 44
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Vicious
+MoveToMapCoord 4
+OpenShop
+BuyCard Conflagration
+BuyCardRemoval
+SelectGridCard 0
+MoveToMapCoord 5
+PlayCard 2 # CARD.STONE_ARMOR (8739460) || Hand: [Strike, Strike, Stone Armor+, Conflagration, Defend, Bludgeon, Strike] Enemies: [Twig Slime (M) 27/27, Flyconid 47/47]
+PlayCard 4 # CARD.DEFEND_IRONCLAD (36807663) || Hand: [Strike, Strike, Conflagration, Defend, Bludgeon, Strike] Enemies: [Twig Slime (M) 27/27, Flyconid 47/47]
+PlayCard 3 # CARD.CONFLAGRATION (11546280) || Hand: [Strike, Strike, Conflagration, Bludgeon, Strike] Enemies: [Twig Slime (M) 27/27, Flyconid 47/47]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 7 1 # CARD.UNRELENTING (56349729) || Hand: [Unrelenting, Defend+, Strike, Bash+, Vicious] Enemies: [Twig Slime (M) 19/27, Flyconid 39/47]
+PlayCard 10 1 # CARD.BASH (8327754) || Hand: [Defend+, Strike, Bash+, Vicious] Enemies: [Twig Slime (M) 5/27, Flyconid 39/47]
+PlayCard 8 # CARD.DEFEND_IRONCLAD (37385514) || Hand: [Defend+, Strike, Vicious] Enemies: [Flyconid 39/47]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 12 2 # CARD.TAUNT (3459446) || Hand: [Taunt+, Headbutt, Defend, Defend, Strike] Enemies: [Flyconid 39/47]
+PlayCard 9 2 # CARD.STRIKE_IRONCLAD (925306) || Hand: [Headbutt, Defend, Defend, Strike] Enemies: [Flyconid 39/47]
+PlayCard 14 # CARD.DEFEND_IRONCLAD (11779735) || Hand: [Headbutt, Defend, Defend] Enemies: [Flyconid 30/47]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 10 2 # CARD.BASH (8327754) || Hand: [Strike, Defend, Bash+, Strike, Strike] Enemies: [Flyconid 30/47]
+PlayCard 6 2 # CARD.STRIKE_IRONCLAD (28630702) || Hand: [Strike, Defend, Strike, Strike] Enemies: [Flyconid 15/47]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 7 2 # CARD.UNRELENTING (56349729) || Hand: [Defend+, Unrelenting, Bludgeon, Vicious, Conflagration] Enemies: [Flyconid 6/47]
+ClaimReward 0 # GoldReward: 17
+ClaimReward 0 # PotionReward
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 6
+OpenShop
+BuyCard Thrash
+MoveToMapCoord 6
+PlayCard 0 # CARD.STONE_ARMOR (1879456) || Hand: [Stone Armor+, Strike, Vicious, Defend+, Conflagration, Defend, Headbutt] Enemies: [Phrog Parasite 63/63]
+PlayCard 2 # CARD.VICIOUS (18018208) || Hand: [Strike, Vicious, Defend+, Conflagration, Defend, Headbutt] Enemies: [Phrog Parasite 63/63]
+PlayCard 6 1 # CARD.HEADBUTT (38754221) || Hand: [Strike, Defend+, Conflagration, Defend, Headbutt] Enemies: [Phrog Parasite 63/63]
+UsePotion 2 # POTION.SKILL_POTION || Hand: [Strike, Defend+, Conflagration, Defend] Enemies: [Phrog Parasite 54/63]
+SelectCardFromScreen 1
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 7 1 # CARD.TAUNT (13243677) || Hand: [Taunt+, Strike, Defend, Defend, Thrash] Enemies: [Phrog Parasite 54/63]
+PlayCard 11 1 # CARD.THRASH (52899612) || Hand: [Strike, Defend, Defend, Thrash, Strike] Enemies: [Phrog Parasite 54/63]
+PlayCard 9 # CARD.DEFEND_IRONCLAD (66104936) || Hand: [Strike, Defend, Defend] Enemies: [Phrog Parasite 42/63]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 15 1 # CARD.UNRELENTING (54418908) || Hand: [Bludgeon, Bash+, Unrelenting, Strike, Strike] Enemies: [Phrog Parasite 42/63]
+PlayCard 13 1 # CARD.BLUDGEON (57010143) || Hand: [Bludgeon, Bash+, Strike, Strike] Enemies: [Phrog Parasite 21/63]
+PlayCard 8 3 # CARD.STRIKE_IRONCLAD (52084235) || Hand: [Bash+, Strike, Strike] Enemies: [Wriggler 17/17, Wriggler 20/20, Wriggler 18/18, Wriggler 19/19]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 4 # CARD.CONFLAGRATION (50188716) || Hand: [Strike, Conflagration, Defend, Infection, Headbutt] Enemies: [Wriggler 17/17, Wriggler 14/20, Wriggler 18/18, Wriggler 19/19]
+PlayCard 6 2 # CARD.HEADBUTT (38754221) || Hand: [Strike, Defend, Infection, Headbutt] Enemies: [Wriggler 9/17, Wriggler 6/20, Wriggler 10/18, Wriggler 11/19]
+SelectGridCard 5
+PlayCard 1 3 # CARD.STRIKE_IRONCLAD (16915104) || Hand: [Strike, Defend, Infection] Enemies: [Wriggler 6/20, Wriggler 10/18, Wriggler 11/19]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 4 # CARD.CONFLAGRATION (50188716) || Hand: [Conflagration, Defend, Stoke, Defend, Thrash] Enemies: [Wriggler 10/18, Wriggler 11/19]
+PlayCard 11 5 # CARD.THRASH (52899612) || Hand: [Defend, Stoke, Defend, Thrash] Enemies: [Wriggler 2/18, Wriggler 3/19]
+PlayCard 17 # CARD.STOKE (1715660) || Hand: [Defend, Stoke, Defend] Enemies: [Wriggler 2/18]
+PlayCard 22 4 # CARD.SPITE (60381147) || Hand: [Spite, Uppercut] Enemies: [Wriggler 2/18]
+ClaimReward 0 # GoldReward: 42
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Offering
+MoveToMapCoord 6
+ChooseRestSiteOption SMITH
+SelectGridCard 13
+MoveToMapCoord 3
+PlayCard 4 # CARD.STONE_ARMOR (4360751) || Hand: [Defend, Unrelenting, Strike, Vicious, Stone Armor+, Defend+, Thrash, Second Wind] Enemies: [Vantom 173/173]
+PlayCard 3 # CARD.VICIOUS (7941068) || Hand: [Defend, Unrelenting, Strike, Vicious, Defend+, Thrash, Second Wind] Enemies: [Vantom 173/173]
+PlayCard 18 # CARD.SECOND_WIND (24832402) || Hand: [Defend, Unrelenting, Strike, Defend+, Thrash, Second Wind] Enemies: [Vantom 173/173]
+PlayCard 6 1 # CARD.THRASH (17676565) || Hand: [Unrelenting, Strike, Thrash] Enemies: [Vantom 173/173]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 # CARD.OFFERING (22515667) || Hand: [Defend, Offering+, Bash+, Strike, Headbutt] Enemies: [Vantom 171/173]
+PlayCard 12 # CARD.CONFLAGRATION (18687994) || Hand: [Defend, Bash+, Strike, Headbutt, Conflagration, Defend, Strike, Strike, Taunt+] Enemies: [Vantom 171/173]
+PlayCard 16 1 # CARD.TAUNT (4036066) || Hand: [Defend, Bash+, Strike, Headbutt, Defend, Strike, Strike, Taunt+] Enemies: [Vantom 167/173]
+PlayCard 11 1 # CARD.HEADBUTT (39359146) || Hand: [Defend, Bash+, Strike, Headbutt, Defend, Strike, Strike, Bludgeon] Enemies: [Vantom 167/173]
+SelectGridCard 3
+PlayCard 9 1 # CARD.BASH (1314419) || Hand: [Defend, Bash+, Strike, Defend, Strike, Strike, Bludgeon] Enemies: [Vantom 166/173]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 16 1 # CARD.TAUNT (4036066) || Hand: [Taunt+, Defend, Strike, Headbutt, Strike] Enemies: [Vantom 165/173]
+PlayCard 1 1 # CARD.UNRELENTING (17496632) || Hand: [Defend, Strike, Headbutt, Strike, Unrelenting] Enemies: [Vantom 165/173]
+PlayCard 11 1 # CARD.HEADBUTT (39359146) || Hand: [Defend, Strike, Headbutt, Strike] Enemies: [Vantom 144/173]
+SelectGridCard 0
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 16 1 # CARD.TAUNT (4036066) || Hand: [Taunt+, Strike, Thrash, Defend, Bash+] Enemies: [Vantom 131/173]
+PlayCard 6 1 # CARD.THRASH (17676565) || Hand: [Strike, Thrash, Defend, Bash+, Second Wind] Enemies: [Vantom 131/173]
+PlayCard 18 # CARD.SECOND_WIND (24832402) || Hand: [Strike, Defend, Second Wind] Enemies: [Vantom 101/173]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 1 1 # CARD.UNRELENTING (17496632) || Hand: [Bludgeon, Conflagration, Unrelenting, Taunt+, Strike] Enemies: [Vantom 101/173]
+PlayCard 17 1 # CARD.BLUDGEON (36324599) || Hand: [Bludgeon, Conflagration, Taunt+, Strike] Enemies: [Vantom 80/173]
+PlayCard 12 # CARD.CONFLAGRATION (18687994) || Hand: [Conflagration, Taunt+, Strike] Enemies: [Vantom 32/173]
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+PlayCard 18 # CARD.SECOND_WIND (24832402) || Hand: [Strike, Wound, Second Wind, Defend, Wound] Enemies: [Vantom 20/173]
+PlayCard 15 1 # CARD.STRIKE_IRONCLAD (448451) || Hand: [Strike] Enemies: [Vantom 20/173]
+EndTurn # EndPlayerTurnAction for player 1 turn 6
+PlayCard 6 1 # CARD.THRASH (17676565) || Hand: [Headbutt, Strike, Wound, Thrash, Taunt+] Enemies: [Vantom 11/173]
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # CardReward
+TakeCard 1 # Feed
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Headbutt, Strike, Wound, Taunt+] Enemies: []
+MoveToMapCoord 3
+ChooseEventOption 1 # DARV.pages.INITIAL.options.PANDORAS_BOX
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 0
+PlayCard 19 # CARD.CONFLAGRATION (18374115) || Hand: [Feed, Bash+, Unrelenting, Demon Form, Stone Armor+, Headbutt, Uppercut, Conflagration] Enemies: [Bowlbug (Rock) 45/45, Bowlbug (Nectar) 36/36]
+PlayCard 2 2 # CARD.UNRELENTING (17133307) || Hand: [Feed, Bash+, Unrelenting, Demon Form, Stone Armor+, Headbutt, Uppercut] Enemies: [Bowlbug (Rock) 37/45, Bowlbug (Nectar) 28/36]
+PlayCard 1 2 # CARD.BASH (24273322) || Hand: [Feed, Bash+, Demon Form, Stone Armor+, Headbutt, Uppercut] Enemies: [Bowlbug (Rock) 37/45, Bowlbug (Nectar) 14/36]
+PlayCard 0 2 # CARD.FEED (32523197) || Hand: [Feed, Demon Form, Stone Armor+, Headbutt, Uppercut] Enemies: [Bowlbug (Rock) 37/45, Bowlbug (Nectar) 4/36]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 # CARD.OFFERING (11662042) || Hand: [True Grit, Offering+, Vicious, Bludgeon, Breakthrough] Enemies: [Bowlbug (Rock) 37/45]
+PlayCard 10 1 # CARD.BLUDGEON (5101322) || Hand: [True Grit, Vicious, Bludgeon, Breakthrough, Impervious, Thrash, Taunt+, Pommel Strike, Conflagration] Enemies: [Bowlbug (Rock) 37/45]
+PlayCard 13 1 # CARD.THRASH (27876663) || Hand: [True Grit, Vicious, Breakthrough, Impervious, Thrash, Taunt+, Pommel Strike, Conflagration] Enemies: [Bowlbug (Rock) 5/45]
+ClaimReward 0 # GoldReward: 11
+ClaimReward 0 # CardReward
+TakeCard 1 # Tremble+
+MoveToMapCoord 0
+OpenShop
+BuyCardRemoval
+SelectGridCard 14
+MoveToMapCoord 0
+PlayCard 1 # CARD.CONFLAGRATION (12576707) || Hand: [Feed, Conflagration, Feel No Pain, True Grit, Thrash, Taunt+, Stone Armor+, Inferno] Enemies: [Exoskeleton 27/27, Exoskeleton 26/26, Exoskeleton 25/25]
+PlayCard 6 # CARD.STONE_ARMOR (15290115) || Hand: [Feed, Feel No Pain, True Grit, Thrash, Taunt+, Stone Armor+, Inferno] Enemies: [Exoskeleton 19/27, Exoskeleton 18/26, Exoskeleton 17/25]
+PlayCard 19 # CARD.INFERNO (5958176) || Hand: [Feed, Feel No Pain, True Grit, Thrash, Taunt+, Inferno] Enemies: [Exoskeleton 19/27, Exoskeleton 18/26, Exoskeleton 17/25]
+PlayCard 2 # CARD.FEEL_NO_PAIN (46081500) || Hand: [Feed, Feel No Pain, True Grit, Thrash, Taunt+] Enemies: [Exoskeleton 19/27, Exoskeleton 18/26, Exoskeleton 17/25]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 # CARD.VICIOUS (6422742) || Hand: [Impervious, Offering+, Vicious, Breakthrough, Uppercut] Enemies: [Exoskeleton 13/27, Exoskeleton 12/26, Exoskeleton 11/25]
+PlayCard 7 # CARD.IMPERVIOUS (3393311) || Hand: [Impervious, Offering+, Breakthrough, Uppercut] Enemies: [Exoskeleton 13/27, Exoskeleton 12/26, Exoskeleton 11/25]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 12 1 # CARD.TREMBLE (51667850) || Hand: [Tremble+, Bash+, Headbutt, Bludgeon, Dominate] Enemies: [Exoskeleton 7/27, Exoskeleton 6/26, Exoskeleton 5/25]
+PlayCard 16 1 # CARD.DOMINATE (25892926) || Hand: [Bash+, Headbutt, Bludgeon, Dominate, Unrelenting] Enemies: [Exoskeleton 7/27, Exoskeleton 6/26, Exoskeleton 5/25]
+PlayCard 18 2 # CARD.POMMEL_STRIKE (16952261) || Hand: [Bash+, Headbutt, Bludgeon, Unrelenting, Pommel Strike] Enemies: [Exoskeleton 7/27, Exoskeleton 6/26, Exoskeleton 5/25]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 0 1 # CARD.FEED (23767033) || Hand: [Taunt+, Uppercut, Feed, Conflagration, Thrash] Enemies: [Exoskeleton 1/27]
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 0
+PlayCard 1 1 # CARD.TREMBLE (6563836) || Hand: [Unrelenting, Tremble+, Offering+, Stone Armor+, Vicious, Thrash, Taunt+, Armaments] Enemies: [Spiny Toad 118/118]
+PlayCard 6 1 # CARD.TAUNT (34319683) || Hand: [Unrelenting, Offering+, Stone Armor+, Vicious, Thrash, Taunt+, Armaments] Enemies: [Spiny Toad 118/118]
+PlayCard 4 # CARD.VICIOUS (20307807) || Hand: [Unrelenting, Offering+, Stone Armor+, Vicious, Thrash, Armaments] Enemies: [Spiny Toad 118/118]
+PlayCard 2 # CARD.OFFERING (59074532) || Hand: [Unrelenting, Offering+, Stone Armor+, Thrash, Armaments] Enemies: [Spiny Toad 118/118]
+PlayCard 9 1 # CARD.DOMINATE (54551534) || Hand: [Unrelenting, Stone Armor+, Thrash, Armaments, True Grit, Headbutt, Dominate, Breakthrough, Impervious] Enemies: [Spiny Toad 118/118]
+PlayCard 3 # CARD.STONE_ARMOR (61908746) || Hand: [Unrelenting, Stone Armor+, Thrash, Armaments, True Grit, Headbutt, Breakthrough, Impervious, Feed] Enemies: [Spiny Toad 118/118]
+PlayCard 19 # CARD.ARMAMENTS (45858972) || Hand: [Unrelenting, Thrash, Armaments, True Grit, Headbutt, Breakthrough, Impervious, Feed] Enemies: [Spiny Toad 118/118]
+SelectHandCards 6
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 17 1 # CARD.POMMEL_STRIKE (44927400) || Hand: [Feel No Pain, Conflagration, Bash+, Bludgeon, Pommel Strike] Enemies: [Spiny Toad 118/118]
+PlayCard 14 # CARD.CONFLAGRATION (55203205) || Hand: [Feel No Pain, Conflagration, Bash+, Bludgeon, Uppercut] Enemies: [Spiny Toad 94/118]
+PlayCard 13 # CARD.FEEL_NO_PAIN (21046770) || Hand: [Feel No Pain, Bash+, Bludgeon, Uppercut] Enemies: [Spiny Toad 42/118]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 18 1 # CARD.UPPERCUT (1693417) || Hand: [Armaments, Unrelenting, True Grit, Uppercut, Conflagration] Enemies: [Spiny Toad 42/118]
+PlayCard 14 # CARD.CONFLAGRATION (55203205) || Hand: [Armaments, Unrelenting, True Grit, Conflagration, Headbutt] Enemies: [Spiny Toad 12/118]
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 0
+PlayCard 1 # CARD.FEEL_NO_PAIN (54029499) || Hand: [Dominate, Feel No Pain, Impervious, Offering+, Pommel Strike, Conflagration, True Grit, Evil Eye] Enemies: [Ovicopter 128/128]
+PlayCard 19 # CARD.EVIL_EYE (44764061) || Hand: [Dominate, Impervious, Offering+, Pommel Strike, Conflagration, True Grit, Evil Eye] Enemies: [Ovicopter 128/128]
+PlayCard 3 # CARD.OFFERING (14313280) || Hand: [Dominate, Impervious, Offering+, Pommel Strike, Conflagration, True Grit] Enemies: [Ovicopter 128/128]
+PlayCard 10 1 # CARD.BASH (10992307) || Hand: [Dominate, Impervious, Pommel Strike, Conflagration, True Grit, Bludgeon, Breakthrough, Thrash, Bash+, Uppercut] Enemies: [Ovicopter 128/128]
+PlayCard 0 1 # CARD.DOMINATE (65655601) || Hand: [Dominate, Impervious, Pommel Strike, Conflagration, True Grit, Bludgeon, Breakthrough, Thrash, Uppercut] Enemies: [Ovicopter 118/128]
+PlayCard 9 1 # CARD.THRASH (8677907) || Hand: [Impervious, Pommel Strike, Conflagration, True Grit, Bludgeon, Breakthrough, Thrash, Uppercut] Enemies: [Ovicopter 118/128]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 15 # CARD.STONE_ARMOR (7805395) || Hand: [Unrelenting, Tremble+, Taunt+, Stone Armor+, Feed] Enemies: [Tough Egg 18/18, Tough Egg 16/16, Tough Egg 17/17, Ovicopter 94/128]
+PlayCard 14 1 # CARD.TAUNT (45606508) || Hand: [Unrelenting, Tremble+, Taunt+, Feed] Enemies: [Tough Egg 18/18, Tough Egg 16/16, Tough Egg 17/17, Ovicopter 94/128]
+PlayCard 13 1 # CARD.TREMBLE (27437011) || Hand: [Unrelenting, Tremble+, Feed] Enemies: [Tough Egg 18/18, Tough Egg 16/16, Tough Egg 17/17, Ovicopter 94/128]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 12 1 # CARD.UNRELENTING (17961637) || Hand: [Vicious, Headbutt, Unrelenting, Bludgeon, Evil Eye] Enemies: [Hatchling 19/19, Hatchling 19/19, Hatchling 21/21, Ovicopter 94/128]
+PlayCard 7 1 # CARD.BLUDGEON (24133764) || Hand: [Vicious, Headbutt, Bludgeon, Evil Eye] Enemies: [Hatchling 19/19, Hatchling 19/19, Hatchling 21/21, Ovicopter 67/128]
+PlayCard 18 1 # CARD.HEADBUTT (52988824) || Hand: [Vicious, Headbutt, Evil Eye] Enemies: [Hatchling 19/19, Hatchling 19/19, Hatchling 21/21, Ovicopter 13/128]
+ClaimReward 0 # GoldReward: 13
+ClaimReward 0 # PotionReward
+ClaimReward 1 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 1
+ChooseRestSiteOption SMITH
+SelectGridCard 0
+MoveToMapCoord 2
+PlayCard 1 1 # CARD.UNRELENTING (20922307) || Hand: [Bludgeon+, Unrelenting, Vicious, Offering+, Conflagration, Stone Armor+, Uppercut, Howl from Beyond] Enemies: [Entomancer 145/145]
+PlayCard 0 1 # CARD.BLUDGEON (24694322) || Hand: [Bludgeon+, Vicious, Offering+, Conflagration, Stone Armor+, Uppercut, Howl from Beyond] Enemies: [Entomancer 131/145]
+PlayCard 19 # CARD.HOWL_FROM_BEYOND (14930898) || Hand: [Vicious, Offering+, Conflagration, Stone Armor+, Uppercut, Howl from Beyond] Enemies: [Entomancer 89/145]
+PlayCard 3 # CARD.OFFERING (16985289) || Hand: [Vicious, Offering+, Conflagration, Stone Armor+, Uppercut] Enemies: [Entomancer 73/145]
+PlayCard 9 1 # CARD.TREMBLE (391800) || Hand: [Vicious, Conflagration, Stone Armor+, Uppercut, Dominate, Bash+, Dazed, Tremble+, Dazed] Enemies: [Entomancer 73/145]
+PlayCard 5 # CARD.STONE_ARMOR (33631205) || Hand: [Vicious, Conflagration, Stone Armor+, Uppercut, Dominate, Bash+, Dazed, Dazed] Enemies: [Entomancer 73/145]
+PlayCard 7 1 # CARD.DOMINATE (39773052) || Hand: [Vicious, Conflagration, Uppercut, Dominate, Bash+, Dazed, Dazed] Enemies: [Entomancer 73/145]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 11 1 # CARD.TAUNT (31735873) || Hand: [Impervious, Taunt+, Headbutt, Pommel Strike, Feed] Enemies: [Entomancer 73/145]
+PlayCard 10 # CARD.IMPERVIOUS (3526208) || Hand: [Impervious, Headbutt, Pommel Strike, Feed] Enemies: [Entomancer 73/145]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 15 # CARD.FEEL_NO_PAIN (47370328) || Hand: [Dazed, Feel No Pain, True Grit, Thrash, Breakthrough] Enemies: [Entomancer 73/145]
+PlayCard 17 1 # CARD.THRASH (11791350) || Hand: [Dazed, True Grit, Thrash, Breakthrough] Enemies: [Entomancer 73/145]
+PlayCard 16 # CARD.TRUE_GRIT (23679771) || Hand: [Dazed, True Grit] Enemies: [Entomancer 47/145]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 1 1 # CARD.UNRELENTING (20922307) || Hand: [Dazed, Dazed, Unrelenting, Howl from Beyond, Thrash] Enemies: [Entomancer 47/145]
+PlayCard 17 1 # CARD.THRASH (11791350) || Hand: [Dazed, Dazed, Howl from Beyond, Thrash] Enemies: [Entomancer 19/145]
+ClaimReward 0 # GoldReward: 35
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 2 # Stone Armor+
+MoveToMapCoord 3
+OpenChest
+TakeChestRelic # Red Mask
+NetPickRelicAction for player 1 index 0 || Hand: [Dazed, Dazed, Howl from Beyond] Enemies: []
+MoveToMapCoord 3
+PlayCard 4 2 # CARD.TAUNT (10607416) || Hand: [Bludgeon+, Headbutt, True Grit, Impervious, Taunt+, Vicious, Thrash, Evil Eye] Enemies: [Decimillipede 42/42, Decimillipede 40/40, Decimillipede 46/46]
+PlayCard 6 2 # CARD.THRASH (53894373) || Hand: [Bludgeon+, Headbutt, True Grit, Impervious, Vicious, Thrash, Evil Eye] Enemies: [Decimillipede 42/42, Decimillipede 40/40, Decimillipede 46/46]
+PlayCard 20 # CARD.EVIL_EYE (24454181) || Hand: [Headbutt, True Grit, Impervious, Vicious, Evil Eye] Enemies: [Decimillipede 42/42, Decimillipede 28/40, Decimillipede 46/46]
+PlayCard 5 # CARD.VICIOUS (28357885) || Hand: [Headbutt, True Grit, Impervious, Vicious] Enemies: [Decimillipede 42/42, Decimillipede 28/40, Decimillipede 46/46]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 11 # CARD.STONE_ARMOR (39434089) || Hand: [Uppercut, Stone Armor+, Feed, Feel No Pain, Stone Armor+] Enemies: [Decimillipede 42/42, Decimillipede 28/40, Decimillipede 46/46]
+PlayCard 10 # CARD.FEEL_NO_PAIN (4381565)
+PlayCard 8 # CARD.STONE_ARMOR (3368111) || Hand: [Uppercut, Stone Armor+, Feed, Feel No Pain] Enemies: [Decimillipede 42/42, Decimillipede 28/40, Decimillipede 46/46]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+UsePotion 1 # POTION.TOUCH_OF_INSANITY || Hand: [Bash+, Breakthrough, Dominate, Pommel Strike, Conflagration] Enemies: [Decimillipede 42/42, Decimillipede 28/40, Decimillipede 46/46]
+SelectHandCards 0
+PlayCard 12 1 # CARD.BASH (19362488) || Hand: [Bash+, Breakthrough, Dominate, Pommel Strike, Conflagration] Enemies: [Decimillipede 42/42, Decimillipede 28/40, Decimillipede 46/46]
+PlayCard 17 1 # CARD.TREMBLE (1849131) || Hand: [Breakthrough, Dominate, Pommel Strike, Conflagration, Tremble+] Enemies: [Decimillipede 35/42, Decimillipede 28/40, Decimillipede 46/46]
+PlayCard 14 1 # CARD.DOMINATE (24857671) || Hand: [Breakthrough, Dominate, Pommel Strike, Conflagration, Offering+] Enemies: [Decimillipede 35/42, Decimillipede 28/40, Decimillipede 46/46]
+PlayCard 18 # CARD.OFFERING (16642179) || Hand: [Breakthrough, Pommel Strike, Conflagration, Offering+, Unrelenting] Enemies: [Decimillipede 35/42, Decimillipede 28/40, Decimillipede 46/46]
+PlayCard 4 1 # CARD.TAUNT (10607416) || Hand: [Breakthrough, Pommel Strike, Conflagration, Unrelenting, True Grit, Feed, Taunt+, Evil Eye, Bash+] Enemies: [Decimillipede 35/42, Decimillipede 28/40, Decimillipede 46/46]
+PlayCard 16 # CARD.CONFLAGRATION (205459) || Hand: [Breakthrough, Pommel Strike, Conflagration, Unrelenting, True Grit, Feed, Evil Eye, Bash+, Thrash] Enemies: [Decimillipede 35/42, Decimillipede 28/40, Decimillipede 46/46]
+PlayCard 12 3 # CARD.BASH (19362488) || Hand: [Breakthrough, Pommel Strike, Unrelenting, True Grit, Feed, Evil Eye, Bash+, Thrash] Enemies: [Decimillipede 0/42, Decimillipede 0/40, Decimillipede 18/46]
+PlayCard 9 3 # CARD.FEED (30313002) || Hand: [Breakthrough, Pommel Strike, Unrelenting, True Grit, Feed, Evil Eye, Thrash, Headbutt] Enemies: [Decimillipede 0/42, Decimillipede 0/40, Decimillipede 5/46]
+ClaimReward 0 # GoldReward: 41
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 4
+PlayCard 20 1 # CARD.MANGLE (23908520) || Hand: [Headbutt, Stone Armor+, Impervious, True Grit, Feel No Pain, Bludgeon+, Feed, Mangle] Enemies: [Bowlbug (Rock) 45/45, Bowlbug (Egg) 22/22, Bowlbug (Silk) 41/41]
+PlayCard 5 2 # CARD.BLUDGEON (9005315) || Hand: [Headbutt, Stone Armor+, Impervious, True Grit, Feel No Pain, Bludgeon+, Feed] Enemies: [Bowlbug (Rock) 30/45, Bowlbug (Egg) 22/22, Bowlbug (Silk) 41/41]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 7 1 # CARD.TREMBLE (58341884) || Hand: [Tremble+, Stone Armor+, Offering+, Taunt+, Thrash] Enemies: [Bowlbug (Rock) 30/45, Bowlbug (Silk) 41/41]
+PlayCard 8 # CARD.STONE_ARMOR (55314908) || Hand: [Stone Armor+, Offering+, Taunt+, Thrash] Enemies: [Bowlbug (Rock) 30/45, Bowlbug (Silk) 41/41]
+PlayCard 10 1 # CARD.TAUNT (51322536) || Hand: [Offering+, Taunt+, Thrash] Enemies: [Bowlbug (Rock) 30/45, Bowlbug (Silk) 41/41]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 14 1 # CARD.DOMINATE (41993351) || Hand: [Breakthrough, Vicious, Dominate, Pommel Strike, Bash+] Enemies: [Bowlbug (Rock) 30/45, Bowlbug (Silk) 41/41]
+PlayCard 15 1 # CARD.POMMEL_STRIKE (42395844) || Hand: [Breakthrough, Vicious, Pommel Strike, Bash+] Enemies: [Bowlbug (Rock) 30/45, Bowlbug (Silk) 41/41]
+PlayCard 12 # CARD.BREAKTHROUGH (63484777) || Hand: [Breakthrough, Vicious, Bash+, Unrelenting] Enemies: [Bowlbug (Rock) 8/45, Bowlbug (Silk) 41/41]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 10 3 # CARD.TAUNT (51322536) || Hand: [Conflagration, Uppercut, Headbutt, Breakthrough, Taunt+] Enemies: [Bowlbug (Silk) 26/41]
+PlayCard 19 3 # CARD.UPPERCUT (60004283) || Hand: [Conflagration, Uppercut, Headbutt, Breakthrough] Enemies: [Bowlbug (Silk) 26/41]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 13 # CARD.VICIOUS (34492089) || Hand: [Bludgeon+, Mangle, Thrash, Impervious, Vicious] Enemies: [Bowlbug (Silk) 5/41]
+PlayCard 2 # CARD.IMPERVIOUS (380577) || Hand: [Bludgeon+, Mangle, Thrash, Impervious] Enemies: [Bowlbug (Silk) 5/41]
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+PlayCard 1 # CARD.STONE_ARMOR (7498826) || Hand: [Unrelenting, True Grit, Pommel Strike, Feel No Pain, Stone Armor+] Enemies: [Bowlbug (Silk) 5/41]
+PlayCard 4 # CARD.FEEL_NO_PAIN (30826752) || Hand: [Unrelenting, True Grit, Pommel Strike, Feel No Pain] Enemies: [Bowlbug (Silk) 5/41]
+EndTurn # EndPlayerTurnAction for player 1 turn 6
+PlayCard 6 3 # CARD.FEED (13938972) || Hand: [Offering+, Feed, Bash+, Taunt+, Conflagration] Enemies: [Bowlbug (Silk) 5/41]
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Forgotten Ritual
+MoveToMapCoord 4
+ChooseRestSiteOption SMITH
+SelectGridCard 2
+MoveToMapCoord 4
+PlayCard 5 1 # CARD.UNRELENTING (5718534) || Hand: [Feel No Pain, Breakthrough, Bash+, Thrash, Uppercut, Unrelenting, Dominate, Tear Asunder] Enemies: [Infested Prism 161/161]
+PlayCard 4 1 # CARD.UPPERCUT (8091933) || Hand: [Feel No Pain, Breakthrough, Bash+, Thrash, Uppercut, Dominate, Tear Asunder] Enemies: [Infested Prism 147/161]
+PlayCard 3 1 # CARD.THRASH (60551427) || Hand: [Feel No Pain, Breakthrough, Bash+, Thrash, Dominate, Tear Asunder] Enemies: [Infested Prism 134/161]
+PlayCard 21 1 # CARD.TEAR_ASUNDER (15139936) || Hand: [Feel No Pain, Bash+, Dominate, Tear Asunder] Enemies: [Infested Prism 122/161]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 # CARD.VICIOUS (8061821) || Hand: [True Grit, Vicious+, Feed, Headbutt, Conflagration] Enemies: [Infested Prism 115/161]
+UsePotion 1 # POTION.SPEED_POTION || Hand: [True Grit, Feed, Headbutt, Conflagration] Enemies: [Infested Prism 115/161]
+PlayCard 7 # CARD.TRUE_GRIT (60548081) || Hand: [True Grit, Feed, Headbutt, Conflagration] Enemies: [Infested Prism 115/161]
+PlayCard 10 1 # CARD.HEADBUTT (49027801) || Hand: [Feed, Headbutt] Enemies: [Infested Prism 115/161]
+SelectGridCard 0
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 5 1 # CARD.UNRELENTING (5718534) || Hand: [Unrelenting, Tremble+, Taunt+, Bludgeon+, Impervious] Enemies: [Infested Prism 106/161]
+PlayCard 14 1 # CARD.BLUDGEON (18617836) || Hand: [Tremble+, Taunt+, Bludgeon+, Impervious] Enemies: [Infested Prism 103/161]
+PlayCard 13 1 # CARD.TAUNT (39351350) || Hand: [Tremble+, Taunt+, Impervious] Enemies: [Infested Prism 61/161]
+PlayCard 17 # CARD.OFFERING (16412578) || Hand: [Tremble+, Impervious, Stone Armor+, Offering+] Enemies: [Infested Prism 61/161]
+PlayCard 18 # CARD.FORGOTTEN_RITUAL (13495474) || Hand: [Tremble+, Impervious, Stone Armor+, Forgotten Ritual, Stone Armor+, Pommel Strike, Feel No Pain, Thrash] Enemies: [Infested Prism 61/161]
+PlayCard 3 1 # CARD.THRASH (60551427) || Hand: [Tremble+, Impervious, Stone Armor+, Stone Armor+, Pommel Strike, Feel No Pain, Thrash] Enemies: [Infested Prism 61/161]
+PlayCard 15 # CARD.IMPERVIOUS (33342804) || Hand: [Tremble+, Impervious, Stone Armor+, Stone Armor+, Feel No Pain] Enemies: [Infested Prism 23/161]
+PlayCard 19 # CARD.STONE_ARMOR (54350408) || Hand: [Tremble+, Stone Armor+, Stone Armor+, Feel No Pain] Enemies: [Infested Prism 23/161]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 21 1 # CARD.TEAR_ASUNDER (15139936) || Hand: [Bash+, Taunt+, True Grit, Headbutt, Tear Asunder] Enemies: [Infested Prism 23/161]
+PlayCard 10 1 # CARD.HEADBUTT (49027801) || Hand: [Bash+, Taunt+, True Grit, Headbutt] Enemies: [Infested Prism 2/161]
+ClaimReward 0 # GoldReward: 44
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Forgotten Ritual
+MoveToMapCoord 6
+PlayCard 0 # CARD.VICIOUS (7982823) || Hand: [Vicious+, Bludgeon+, Offering+, True Grit, Stone Armor+, Pommel Strike, Headbutt, Blood Wall] Enemies: [Entomancer 145/145]
+PlayCard 4 # CARD.STONE_ARMOR (30389333) || Hand: [Bludgeon+, Offering+, True Grit, Stone Armor+, Pommel Strike, Headbutt, Blood Wall] Enemies: [Entomancer 145/145]
+PlayCard 2 # CARD.OFFERING (42628906) || Hand: [Bludgeon+, Offering+, True Grit, Pommel Strike, Headbutt, Blood Wall] Enemies: [Entomancer 145/145]
+PlayCard 8 # CARD.FORGOTTEN_RITUAL (3982469) || Hand: [Bludgeon+, True Grit, Pommel Strike, Headbutt, Blood Wall, Impervious, Forgotten Ritual, Forgotten Ritual, Conflagration, Tremble+] Enemies: [Entomancer 145/145]
+PlayCard 9 # CARD.FORGOTTEN_RITUAL (35842228) || Hand: [Bludgeon+, True Grit, Pommel Strike, Headbutt, Blood Wall, Impervious, Forgotten Ritual, Conflagration, Tremble+] Enemies: [Entomancer 145/145]
+PlayCard 11 1 # CARD.TREMBLE (17539376) || Hand: [Bludgeon+, True Grit, Pommel Strike, Headbutt, Blood Wall, Impervious, Conflagration, Tremble+] Enemies: [Entomancer 145/145]
+PlayCard 12 1 # CARD.UPPERCUT (23636664) || Hand: [Bludgeon+, True Grit, Pommel Strike, Headbutt, Blood Wall, Impervious, Conflagration, Uppercut, Feed] Enemies: [Entomancer 145/145]
+PlayCard 15 # CARD.STONE_ARMOR (51258998) || Hand: [Bludgeon+, True Grit, Pommel Strike, Headbutt, Blood Wall, Impervious, Conflagration, Feed, Breakthrough, Stone Armor+] Enemies: [Entomancer 126/145]
+PlayCard 1 1 # CARD.BLUDGEON (4736545) || Hand: [Bludgeon+, True Grit, Pommel Strike, Headbutt, Blood Wall, Impervious, Conflagration, Feed, Breakthrough] Enemies: [Entomancer 126/145]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 17 1 # CARD.UNRELENTING (58338192) || Hand: [Taunt+, Unrelenting, Bash+, Dazed, Dazed] Enemies: [Entomancer 63/145]
+PlayCard 18 1 # CARD.BASH (55281683) || Hand: [Taunt+, Bash+, Dazed, Dazed] Enemies: [Entomancer 42/145]
+PlayCard 19 # CARD.FEEL_NO_PAIN (27773102) || Hand: [Taunt+, Dazed, Dazed, Dazed, Feel No Pain] Enemies: [Entomancer 27/145]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 21 1 # CARD.DOMINATE (35028793) || Hand: [Thrash, Dazed, Dominate, Feed, Breakthrough] Enemies: [Entomancer 27/145]
+PlayCard 14 # CARD.BREAKTHROUGH (35521606) || Hand: [Thrash, Dazed, Feed, Breakthrough, Blood Wall, Bludgeon+] Enemies: [Entomancer 27/145]
+PlayCard 13 1 # CARD.FEED (11403385) || Hand: [Thrash, Dazed, Feed, Blood Wall, Bludgeon+] Enemies: [Entomancer 3/145]
+ClaimReward 0 # GoldReward: 36
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Pact's End
+MoveToMapCoord 6
+ChooseRestSiteOption HEAL
+MoveToMapCoord 3
+UsePotion 1 # POTION.STABLE_SERUM || Hand: [Conflagration, Pommel Strike, Headbutt, Feel No Pain, Thrash, True Grit, Breakthrough, Bully] Enemies: [Knowledge Demon 379/379]
+PlayCard 1 1 # CARD.POMMEL_STRIKE (32839451) || Hand: [Conflagration, Pommel Strike, Headbutt, Feel No Pain, Thrash, True Grit, Breakthrough, Bully] Enemies: [Knowledge Demon 379/379]
+PlayCard 4 1 # CARD.THRASH (49204868) || Hand: [Conflagration, Headbutt, Feel No Pain, Thrash, True Grit, Breakthrough, Bully, Pact's End] Enemies: [Knowledge Demon 370/379]
+PlayCard 3 # CARD.FEEL_NO_PAIN (42749909) || Hand: [Conflagration, Feel No Pain, True Grit, Breakthrough, Bully, Pact's End] Enemies: [Knowledge Demon 362/379]
+PlayCard 7 # CARD.PACTS_END (34215739) || Hand: [Conflagration, True Grit, Breakthrough, Bully, Pact's End] Enemies: [Knowledge Demon 362/379]
+PlayCard 23 1 # CARD.BULLY (1764463) || Hand: [Conflagration, True Grit, Breakthrough, Bully] Enemies: [Knowledge Demon 362/379]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+SelectCardFromScreen 0
+PlayCard 10 # CARD.IMPERVIOUS (45885290) || Hand: [Conflagration, True Grit, Breakthrough, Uppercut, Forgotten Ritual, Impervious, Forgotten Ritual, Dominate] Enemies: [Knowledge Demon 358/379]
+PlayCard 11 # CARD.FORGOTTEN_RITUAL (10314434) || Hand: [Conflagration, True Grit, Breakthrough, Uppercut, Forgotten Ritual, Forgotten Ritual, Dominate] Enemies: [Knowledge Demon 358/379]
+PlayCard 9 # CARD.FORGOTTEN_RITUAL (20011446) || Hand: [Conflagration, True Grit, Breakthrough, Uppercut, Forgotten Ritual, Dominate] Enemies: [Knowledge Demon 358/379]
+PlayCard 8 1 # CARD.UPPERCUT (39506196) || Hand: [Conflagration, True Grit, Breakthrough, Uppercut, Dominate] Enemies: [Knowledge Demon 358/379]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 14 # CARD.VICIOUS (3029949) || Hand: [Conflagration, True Grit, Breakthrough, Dominate, Taunt+, Vicious+, Offering+, Tremble+, Unrelenting] Enemies: [Knowledge Demon 345/379]
+PlayCard 16 1 # CARD.TREMBLE (44099337) || Hand: [Conflagration, True Grit, Breakthrough, Dominate, Taunt+, Offering+, Tremble+, Unrelenting] Enemies: [Knowledge Demon 345/379]
+PlayCard 13 1 # CARD.TAUNT (30162822) || Hand: [Conflagration, True Grit, Breakthrough, Dominate, Taunt+, Offering+, Unrelenting, Stone Armor+, Bludgeon+] Enemies: [Knowledge Demon 345/379]
+PlayCard 15 # CARD.OFFERING (27269547) || Hand: [Conflagration, True Grit, Breakthrough, Dominate, Offering+, Unrelenting, Stone Armor+, Bludgeon+, Feed, Stone Armor+] Enemies: [Knowledge Demon 345/379]
+PlayCard 12 1 # CARD.DOMINATE (25721046) || Hand: [Conflagration, True Grit, Breakthrough, Dominate, Unrelenting, Stone Armor+, Bludgeon+, Feed, Stone Armor+, Bash+] Enemies: [Knowledge Demon 345/379]
+PlayCard 7 # CARD.PACTS_END (34215739) || Hand: [Conflagration, True Grit, Breakthrough, Unrelenting, Stone Armor+, Bludgeon+, Feed, Stone Armor+, Bash+, Pact's End] Enemies: [Knowledge Demon 345/379]
+PlayCard 0 # CARD.CONFLAGRATION (48388070) || Hand: [Conflagration, True Grit, Breakthrough, Unrelenting, Stone Armor+, Bludgeon+, Feed, Stone Armor+, Bash+] Enemies: [Knowledge Demon 309/379]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 23 1 # CARD.BULLY (1764463) || Hand: [Bully, Pommel Strike, Taunt+, Thrash, Uppercut] Enemies: [Knowledge Demon 257/379]
+PlayCard 4 1 # CARD.THRASH (49204868) || Hand: [Pommel Strike, Taunt+, Thrash, Uppercut] Enemies: [Knowledge Demon 223/379]
+PlayCard 13 1 # CARD.TAUNT (30162822) || Hand: [Taunt+, Uppercut] Enemies: [Knowledge Demon 163/379]
+PlayCard 23 1 # CARD.BULLY (1764463) || Hand: [Uppercut, Bully, Stone Armor+] Enemies: [Knowledge Demon 163/379]
+PlayCard 18 # CARD.STONE_ARMOR (15276578) || Hand: [Uppercut, Stone Armor+] Enemies: [Knowledge Demon 123/379]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 17 1 # CARD.UNRELENTING (61349721) || Hand: [Stone Armor+, Bludgeon+, Bash+, Unrelenting, Feed] Enemies: [Knowledge Demon 153/379]
+PlayCard 19 1 # CARD.BLUDGEON (3271479) || Hand: [Stone Armor+, Bludgeon+, Bash+, Feed] Enemies: [Knowledge Demon 122/379]
+PlayCard 21 # CARD.STONE_ARMOR (63663213) || Hand: [Stone Armor+, Bash+, Feed] Enemies: [Knowledge Demon 49/379]
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+SelectCardFromScreen 0
+PlayCard 7 # CARD.PACTS_END (34215739) || Hand: [Thrash, Breakthrough, True Grit, Pact's End, Conflagration, Bash+, Uppercut, Bludgeon+] Enemies: [Knowledge Demon 49/379]
+PlayCard 4 1 # CARD.THRASH (49204868) || Hand: [Thrash, Breakthrough, True Grit, Conflagration, Bash+, Uppercut, Bludgeon+] Enemies: [Knowledge Demon 13/379]
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Breakthrough, True Grit, Conflagration, Bash+, Uppercut, Bludgeon+] Enemies: []
+MoveToMapCoord 3
