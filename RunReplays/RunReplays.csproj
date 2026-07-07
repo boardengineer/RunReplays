@@ -36,6 +36,12 @@
       <EmbeddedResource Include="Resources\89U21BV1TZ\floor_18\run.save" />
       <EmbeddedResource Include="Resources\89U21BV1TZ\floor_34\actions.sts2replay" />
       <EmbeddedResource Include="Resources\89U21BV1TZ\floor_34\run.save" />
+      <EmbeddedResource Include="Resources\DJDCSAQZNR\floor_49\actions.sts2replay" />
+      <EmbeddedResource Include="Resources\DJDCSAQZNR\floor_49\run.save" />
+      <EmbeddedResource Include="Resources\DJDCSAQZNR\floor_18\actions.sts2replay" />
+      <EmbeddedResource Include="Resources\DJDCSAQZNR\floor_18\run.save" />
+      <EmbeddedResource Include="Resources\DJDCSAQZNR\floor_34\actions.sts2replay" />
+      <EmbeddedResource Include="Resources\DJDCSAQZNR\floor_34\run.save" />
     </ItemGroup>
 
 

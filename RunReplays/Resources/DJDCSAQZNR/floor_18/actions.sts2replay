@@ -1,0 +1,167 @@
+# Character: REGENT
+# Seed: DJDCSAQZNR
+# Ascension: 0
+# Acts: ACT.UNDERDOCKS, ACT.HIVE, ACT.GLORY
+# Game: v0.107.1
+# Mod: 0.1.0
+ChooseEventOption 0 # NEOW.pages.INITIAL.options.LEAD_PAPERWEIGHT
+SelectCardFromScreen 0
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 4
+PlayCard 0 1 # CARD.FALLING_STAR (49276373) || Hand: [Falling Star, Defend, Strike, Defend, Defend] Enemies: [Corpse Slug 25/25, Corpse Slug 27/27]
+PlayCard 2 1 # CARD.STRIKE_REGENT (31963286) || Hand: [Defend, Strike, Defend, Defend] Enemies: [Corpse Slug 17/25, Corpse Slug 27/27]
+PlayCard 4 # CARD.DEFEND_REGENT (38889375) || Hand: [Defend, Defend, Defend] Enemies: [Corpse Slug 8/25, Corpse Slug 27/27]
+PlayCard 3 # CARD.DEFEND_REGENT (19234122) || Hand: [Defend, Defend] Enemies: [Corpse Slug 8/25, Corpse Slug 27/27]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 7 2 # CARD.ULTIMATE_STRIKE (30414440) || Hand: [Strike, Defend, Ultimate Strike, Strike, Venerate] Enemies: [Corpse Slug 8/25, Corpse Slug 27/27]
+PlayCard 6 # CARD.DEFEND_REGENT (63031705) || Hand: [Strike, Defend, Strike, Venerate] Enemies: [Corpse Slug 8/25, Corpse Slug 13/27]
+PlayCard 9 # CARD.VENERATE (47650574) || Hand: [Strike, Strike, Venerate] Enemies: [Corpse Slug 8/25, Corpse Slug 13/27]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 7 2 # CARD.ULTIMATE_STRIKE (30414440) || Hand: [Strike, Defend, Ultimate Strike, Falling Star, Defend] Enemies: [Corpse Slug 8/25, Corpse Slug 13/27]
+PlayCard 0 1 # CARD.FALLING_STAR (49276373) || Hand: [Strike, Defend, Falling Star, Defend] Enemies: [Corpse Slug 8/25]
+ClaimReward 0 # GoldReward: 16
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 1 # Solar Strike
+MoveToMapCoord 4
+ChooseEventOption 0 # THE_LEGENDS_WERE_TRUE.pages.INITIAL.options.NAB_THE_MAP
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 3
+ChooseEventOption 0 # TRASH_HEAP.pages.INITIAL.options.DIVE_IN
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 2
+PlayCard 3 1 # CARD.ULTIMATE_STRIKE (59569403) || Hand: [Strike, Strike, Strike, Ultimate Strike, Defend] Enemies: [Seapunk 46/46]
+PlayCard 4 # CARD.DEFEND_REGENT (66362587) || Hand: [Strike, Strike, Strike, Defend] Enemies: [Seapunk 32/46]
+PlayCard 2 1 # CARD.STRIKE_REGENT (6618822) || Hand: [Strike, Strike, Strike] Enemies: [Seapunk 32/46]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 5 1 # CARD.SOLAR_STRIKE (60392373) || Hand: [Solar Strike, Defend, Spoils Map, Venerate, Defend] Enemies: [Seapunk 26/46]
+PlayCard 9 # CARD.DEFEND_REGENT (23631643) || Hand: [Defend, Spoils Map, Venerate, Defend] Enemies: [Seapunk 17/46]
+PlayCard 6 # CARD.DEFEND_REGENT (6660452) || Hand: [Defend, Spoils Map, Venerate] Enemies: [Seapunk 17/46]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 12 1 # CARD.FALLING_STAR (47598666) || Hand: [Strike, Defend, Falling Star, Strike, Strike] Enemies: [Seapunk 17/46]
+PlayCard 1 1 # CARD.STRIKE_REGENT (30561586) || Hand: [Strike, Defend, Strike, Strike] Enemies: [Seapunk 9/46]
+ClaimReward 0 # GoldReward: 20
+ClaimReward 0 # CardReward
+TakeCard 0 # Devastate
+MoveToMapCoord 2
+PlayCard 3 1 # CARD.ULTIMATE_STRIKE (41394824) || Hand: [Defend, Spoils Map, Defend, Ultimate Strike, Strike] Enemies: [Sludge Spinner 38/38]
+PlayCard 2 # CARD.DEFEND_REGENT (41882127) || Hand: [Defend, Spoils Map, Defend, Strike] Enemies: [Sludge Spinner 24/38]
+PlayCard 0 # CARD.DEFEND_REGENT (32000234) || Hand: [Defend, Spoils Map, Strike] Enemies: [Sludge Spinner 24/38]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 6 # CARD.VENERATE (44947479) || Hand: [Devastate, Venerate, Defend, Defend, Strike] Enemies: [Sludge Spinner 24/38]
+PlayCard 5 1 # CARD.DEVASTATE (64646487) || Hand: [Devastate, Defend, Defend, Strike] Enemies: [Sludge Spinner 24/38]
+PlayCard 9 1 # CARD.STRIKE_REGENT (17586583) || Hand: [Defend, Defend, Strike] Enemies: [Sludge Spinner 2/38]
+ClaimReward 0 # GoldReward: 14
+ClaimReward 0 # CardReward
+TakeCard skip # skip
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 11
+MoveToMapCoord 2
+OpenChest
+TakeChestRelic # Lasting Candy
+NetPickRelicAction for player 1 index 0 || Hand: [Defend, Defend] Enemies: []
+MoveToMapCoord 3
+ChooseRestSiteOption SMITH
+SelectGridCard 10
+MoveToMapCoord 4
+OpenChest
+TakeChestRelic # Blood Vial
+NetPickRelicAction for player 1 index 0
+MoveToMapCoord 4
+UsePotion 0 # POTION.SKILL_POTION || Hand: [Defend, Strike, Strike, Spoils Map, Devastate] Enemies: [Phantasmal Gardener 31/31, Phantasmal Gardener 29/29, Phantasmal Gardener 30/30, Phantasmal Gardener 26/26]
+SelectCardFromScreen 1
+PlayCard 14 # CARD.GATHER_LIGHT (18326001) || Hand: [Defend, Strike, Strike, Spoils Map, Devastate, Gather Light] Enemies: [Phantasmal Gardener 31/31, Phantasmal Gardener 29/29, Phantasmal Gardener 30/30, Phantasmal Gardener 26/26]
+PlayCard 4 4 # CARD.DEVASTATE (28334099) || Hand: [Defend, Strike, Strike, Spoils Map, Devastate] Enemies: [Phantasmal Gardener 31/31, Phantasmal Gardener 29/29, Phantasmal Gardener 30/30, Phantasmal Gardener 26/26]
+PlayCard 2 3 # CARD.STRIKE_REGENT (32661478) || Hand: [Defend, Strike, Strike, Spoils Map] Enemies: [Phantasmal Gardener 31/31, Phantasmal Gardener 29/29, Phantasmal Gardener 30/30]
+PlayCard 1 1 # CARD.STRIKE_REGENT (40911755) || Hand: [Defend, Strike, Spoils Map] Enemies: [Phantasmal Gardener 31/31, Phantasmal Gardener 29/29, Phantasmal Gardener 24/30]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 6 2 # CARD.SOLAR_STRIKE (13360672) || Hand: [Venerate, Solar Strike+, Defend, Defend, Falling Star] Enemies: [Phantasmal Gardener 25/31, Phantasmal Gardener 29/29, Phantasmal Gardener 24/30]
+PlayCard 9 3 # CARD.FALLING_STAR (9144803) || Hand: [Venerate, Defend, Defend, Falling Star] Enemies: [Phantasmal Gardener 25/31, Phantasmal Gardener 19/29, Phantasmal Gardener 24/30]
+PlayCard 5 # CARD.VENERATE (53680302) || Hand: [Venerate, Defend, Defend] Enemies: [Phantasmal Gardener 25/31, Phantasmal Gardener 19/29, Phantasmal Gardener 16/30]
+PlayCard 7 # CARD.DEFEND_REGENT (53137186) || Hand: [Defend, Defend] Enemies: [Phantasmal Gardener 25/31, Phantasmal Gardener 19/29, Phantasmal Gardener 16/30]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 12 2 # CARD.ULTIMATE_STRIKE (22783897) || Hand: [Strike, Strike, Ultimate Strike+, Defend, Solar Strike+] Enemies: [Phantasmal Gardener 25/31, Phantasmal Gardener 19/29, Phantasmal Gardener 16/30]
+PlayCard 6 3 # CARD.SOLAR_STRIKE (13360672) || Hand: [Strike, Strike, Defend, Solar Strike+] Enemies: [Phantasmal Gardener 25/31, Phantasmal Gardener 16/30]
+PlayCard 13 # CARD.DEFEND_REGENT (3728489) || Hand: [Strike, Strike, Defend] Enemies: [Phantasmal Gardener 25/31, Phantasmal Gardener 6/30]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 14 # CARD.GATHER_LIGHT (18326001) || Hand: [Defend, Gather Light, Venerate, Defend, Strike] Enemies: [Phantasmal Gardener 25/31, Phantasmal Gardener 6/30]
+PlayCard 7 # CARD.DEFEND_REGENT (53137186) || Hand: [Defend, Venerate, Defend, Strike] Enemies: [Phantasmal Gardener 25/31, Phantasmal Gardener 6/30]
+PlayCard 8 # CARD.DEFEND_REGENT (8472629) || Hand: [Venerate, Defend, Strike] Enemies: [Phantasmal Gardener 25/31, Phantasmal Gardener 6/30]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 4 1 # CARD.DEVASTATE (28334099) || Hand: [Spoils Map, Devastate, Defend, Strike, Falling Star] Enemies: [Phantasmal Gardener 25/31, Phantasmal Gardener 6/30]
+PlayCard 1 3 # CARD.STRIKE_REGENT (40911755) || Hand: [Spoils Map, Defend, Strike, Falling Star] Enemies: [Phantasmal Gardener 6/30]
+ClaimReward 0 # GoldReward: 41
+ClaimReward 0 # PotionReward
+ClaimReward 0 # RelicReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Black Hole
+MoveToMapCoord 4
+PlayCard 3 1 # CARD.STRIKE_REGENT (11057244) || Hand: [Defend, Defend, Defend, Strike, Defend] Enemies: [Calcified Cultist 41/41, Seapunk 44/44]
+PlayCard 4 # CARD.DEFEND_REGENT (32406333) || Hand: [Defend, Defend, Defend, Defend] Enemies: [Calcified Cultist 35/41, Seapunk 44/44]
+PlayCard 2 # CARD.DEFEND_REGENT (38511284) || Hand: [Defend, Defend, Defend] Enemies: [Calcified Cultist 35/41, Seapunk 44/44]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 6 # CARD.BLACK_HOLE (7667322) || Hand: [Strike, Black Hole, Falling Star, Solar Strike+, Strike] Enemies: [Calcified Cultist 35/41, Seapunk 44/44]
+PlayCard 7 1 # CARD.FALLING_STAR (1897040) || Hand: [Strike, Falling Star, Solar Strike+, Strike] Enemies: [Calcified Cultist 35/41, Seapunk 44/44]
+PlayCard 8 1 # CARD.SOLAR_STRIKE (17073364) || Hand: [Strike, Solar Strike+, Strike] Enemies: [Calcified Cultist 24/41, Seapunk 41/44]
+PlayCard 9 1 # CARD.STRIKE_REGENT (19442551) || Hand: [Strike, Strike] Enemies: [Calcified Cultist 6/41, Seapunk 38/44]
+UsePotion 0 # POTION.BLOCK_POTION || Hand: [Strike] Enemies: [Seapunk 38/44]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 12 # CARD.VENERATE (13649661) || Hand: [Devastate, Spoils Map, Venerate, Ultimate Strike+, Strike] Enemies: [Seapunk 38/44]
+PlayCard 13 2 # CARD.ULTIMATE_STRIKE (55738086) || Hand: [Devastate, Spoils Map, Ultimate Strike+, Strike] Enemies: [Seapunk 35/44]
+PlayCard 10 2 # CARD.DEVASTATE (40765234) || Hand: [Devastate, Spoils Map, Strike] Enemies: [Seapunk 15/44]
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard 0 # Solar Strike
+MoveToMapCoord 5
+ChooseRestSiteOption SMITH
+SelectGridCard 12
+MoveToMapCoord 6
+OpenShop
+BuyRelic Miniature Tent
+BuyCardRemoval
+SelectGridCard 0
+MoveToMapCoord 6
+ChooseEventOption 1 # SLIPPERY_BRIDGE.pages.INITIAL.options.HOLD_ON_0
+ChooseEventOption 1 # SLIPPERY_BRIDGE.pages.HOLD_ON_0.options.HOLD_ON_1
+ChooseEventOption 1 # SLIPPERY_BRIDGE.pages.HOLD_ON_1.options.HOLD_ON_2
+ChooseEventOption 0 # SLIPPERY_BRIDGE.pages.INITIAL.options.OVERCOME
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 6
+ChooseRestSiteOption HEAL
+ChooseRestSiteOption SMITH
+SelectGridCard 9
+MoveToMapCoord 3
+PlayCard 3 1 # CARD.SOLAR_STRIKE (47934586) || Hand: [Venerate, Defend, Strike, Solar Strike+, Ultimate Strike+] Enemies: [Soul Fysh 211/211]
+PlayCard 0 # CARD.VENERATE (1170426) || Hand: [Venerate, Defend, Strike, Ultimate Strike+] Enemies: [Soul Fysh 201/211]
+PlayCard 4 1 # CARD.ULTIMATE_STRIKE (28758090) || Hand: [Defend, Strike, Ultimate Strike+] Enemies: [Soul Fysh 201/211]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 # CARD.BLACK_HOLE (38817437) || Hand: [Strike, Beckon, Defend, Defend, Black Hole+] Enemies: [Soul Fysh 181/211]
+PlayCard 14 # CARD.BECKON (23932029) || Hand: [Strike, Beckon, Defend, Defend] Enemies: [Soul Fysh 181/211]
+PlayCard 6 # CARD.DEFEND_REGENT (47703983) || Hand: [Strike, Defend, Defend] Enemies: [Soul Fysh 181/211]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 11 1 # CARD.FALLING_STAR (45079955) || Hand: [Spoils Map, Strike, Falling Star, Devastate, Solar Strike+] Enemies: [Soul Fysh 181/211]
+PlayCard 12 1 # CARD.DEVASTATE (3066417) || Hand: [Spoils Map, Strike, Devastate, Solar Strike+] Enemies: [Soul Fysh 169/211]
+PlayCard 13 1 # CARD.SOLAR_STRIKE (27597757) || Hand: [Spoils Map, Strike, Solar Strike+] Enemies: [Soul Fysh 120/211]
+PlayCard 10 1 # CARD.STRIKE_REGENT (57204667) || Hand: [Spoils Map, Strike] Enemies: [Soul Fysh 101/211]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 4 1 # CARD.ULTIMATE_STRIKE (28758090) || Hand: [Beckon, Defend, Strike, Beckon, Ultimate Strike+] Enemies: [Soul Fysh 92/211]
+PlayCard 15 # CARD.BECKON (51041437) || Hand: [Beckon, Defend, Strike, Beckon] Enemies: [Soul Fysh 72/211]
+PlayCard 10 1 # CARD.STRIKE_REGENT (57204667) || Hand: [Beckon, Defend, Strike] Enemies: [Soul Fysh 72/211]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 3 1 # CARD.SOLAR_STRIKE (47934586) || Hand: [Falling Star, Solar Strike+, Beckon, Venerate, Spoils Map] Enemies: [Soul Fysh 66/211]
+PlayCard 0 # CARD.VENERATE (1170426) || Hand: [Falling Star, Beckon, Venerate, Spoils Map] Enemies: [Soul Fysh 60/211]
+PlayCard 16 # CARD.BECKON (53808021) || Hand: [Falling Star, Beckon, Spoils Map] Enemies: [Soul Fysh 59/211]
+PlayCard 11 1 # CARD.FALLING_STAR (45079955) || Hand: [Falling Star, Spoils Map] Enemies: [Soul Fysh 59/211]
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+PlayCard 12 1 # CARD.DEVASTATE (3066417) || Hand: [Defend, Devastate, Strike, Solar Strike+, Defend] Enemies: [Soul Fysh 53/211]
+PlayCard 13 1 # CARD.SOLAR_STRIKE (27597757) || Hand: [Defend, Strike, Solar Strike+, Defend] Enemies: [Soul Fysh 19/211]
+PlayCard 2 1 # CARD.STRIKE_REGENT (27695686) || Hand: [Defend, Strike, Defend] Enemies: [Soul Fysh 5/211]
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # GoldReward: 15
+ClaimReward 0 # CardReward
+TakeCard 0 # Dying Star
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [Defend, Defend] Enemies: []
+MoveToMapCoord 3

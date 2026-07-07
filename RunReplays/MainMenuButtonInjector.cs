@@ -230,6 +230,12 @@ public static class MainMenuButtonInjector
         ("89U21BV1TZ", "floor_49", new[] { "actions.sts2replay", "run.save" }),
         ("89U21BV1TZ", "floor_18", new[] { "actions.sts2replay", "run.save" }),
         ("89U21BV1TZ", "floor_34", new[] { "actions.sts2replay", "run.save" }),
+
+        // Regent, Ascension 0, complete 3-act win (recorded 2026-07-06).
+        // Same layout: full run + starts of act 2 / act 3.
+        ("DJDCSAQZNR", "floor_49", new[] { "actions.sts2replay", "run.save" }),
+        ("DJDCSAQZNR", "floor_18", new[] { "actions.sts2replay", "run.save" }),
+        ("DJDCSAQZNR", "floor_34", new[] { "actions.sts2replay", "run.save" }),
     };
 
     private static void ExtractBundledReplay()
