@@ -1,0 +1,262 @@
+# Character: DEFECT
+# Seed: TZEKRYTSNT
+# Ascension: 1
+# Acts: ACT.UNDERDOCKS, ACT.HIVE, ACT.GLORY
+# Game: v0.107.1
+# Mod: 0.1.0
+ChooseEventOption 2 # NEOW.pages.INITIAL.options.SILKEN_TRESS
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 5
+PlayCard 2 # CARD.DEFEND_DEFECT (13169489) || Hand: [Defend, Strike, Defend, Strike, Dualcast] Enemies: [Seapunk 46/46]
+PlayCard 0 # CARD.DEFEND_DEFECT (9276135) || Hand: [Defend, Strike, Strike, Dualcast] Enemies: [Seapunk 46/46]
+PlayCard 3 1 # CARD.STRIKE_DEFECT (51416540) || Hand: [Strike, Strike, Dualcast] Enemies: [Seapunk 46/46]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 # CARD.ZAP (23177417) || Hand: [Defend, Strike, Strike, Zap, Defend] Enemies: [Seapunk 37/46]
+PlayCard 9 # CARD.DEFEND_DEFECT (7270164) || Hand: [Defend, Strike, Strike, Defend] Enemies: [Seapunk 37/46]
+PlayCard 5 # CARD.DEFEND_DEFECT (3990203) || Hand: [Defend, Strike, Strike] Enemies: [Seapunk 37/46]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 4 # CARD.DUALCAST (60095679) || Hand: [Strike, Strike, Dualcast, Defend, Strike] Enemies: [Seapunk 31/46]
+PlayCard 7 1 # CARD.STRIKE_DEFECT (54771051) || Hand: [Strike, Strike, Defend, Strike] Enemies: [Seapunk 15/46]
+PlayCard 3 1 # CARD.STRIKE_DEFECT (51416540) || Hand: [Strike, Strike, Defend] Enemies: [Seapunk 9/46]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+ClaimReward 0 # GoldReward: 13
+ClaimReward 0 # CardReward
+TakeCard 1 # Skim
+MoveToMapCoord 5
+PlayCard 3 # CARD.DEFEND_DEFECT (19822004) || Hand: [Defend, Strike, Defend, Defend, Dualcast] Enemies: [Corpse Slug 27/27, Corpse Slug 25/25]
+PlayCard 2 # CARD.DEFEND_DEFECT (54398228) || Hand: [Defend, Strike, Defend, Dualcast] Enemies: [Corpse Slug 27/27, Corpse Slug 25/25]
+PlayCard 1 1 # CARD.STRIKE_DEFECT (58240030) || Hand: [Defend, Strike, Dualcast] Enemies: [Corpse Slug 27/27, Corpse Slug 25/25]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 7 # CARD.ZAP (62302481) || Hand: [Strike, Strike, Zap, Strike, Defend] Enemies: [Corpse Slug 21/27, Corpse Slug 22/25]
+PlayCard 9 # CARD.DEFEND_DEFECT (13336233) || Hand: [Strike, Strike, Strike, Defend] Enemies: [Corpse Slug 21/27, Corpse Slug 22/25]
+PlayCard 8 1 # CARD.STRIKE_DEFECT (23851425) || Hand: [Strike, Strike, Strike] Enemies: [Corpse Slug 21/27, Corpse Slug 22/25]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 6 1 # CARD.STRIKE_DEFECT (21835578) || Hand: [Skim, Strike, Strike, Strike, Defend] Enemies: [Corpse Slug 9/27, Corpse Slug 22/25]
+PlayCard 8 1 # CARD.STRIKE_DEFECT (23851425) || Hand: [Skim, Strike, Strike, Defend] Enemies: [Corpse Slug 3/27, Corpse Slug 22/25]
+PlayCard 1 2 # CARD.STRIKE_DEFECT (58240030) || Hand: [Skim, Strike, Defend] Enemies: [Corpse Slug 22/25]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 4 # CARD.DUALCAST (44180313) || Hand: [Defend, Zap, Dualcast, Strike, Defend] Enemies: [Corpse Slug 10/25]
+ClaimReward 0 # GoldReward: 18
+ClaimReward 0 # CardReward
+TakeCard 2 # Coolheaded
+MoveToMapCoord 5
+ChooseEventOption 1 # ABYSSAL_BATHS.pages.INITIAL.options.ABSTAIN
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 5
+PlayCard 4 # CARD.COOLHEADED (48517637) || Hand: [Skim, Defend, Strike, Strike, Coolheaded] Enemies: [Toadpole 24/24, Toadpole 22/22]
+PlayCard 1 # CARD.DEFEND_DEFECT (33390845) || Hand: [Skim, Defend, Strike, Strike, Dualcast] Enemies: [Toadpole 24/24, Toadpole 22/22]
+PlayCard 2 1 # CARD.STRIKE_DEFECT (32082153) || Hand: [Skim, Strike, Strike, Dualcast] Enemies: [Toadpole 24/24, Toadpole 22/22]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 10 # CARD.DEFEND_DEFECT (29394017) || Hand: [Strike, Defend, Zap, Strike, Defend] Enemies: [Toadpole 18/24, Toadpole 19/22]
+PlayCard 7 # CARD.DEFEND_DEFECT (2986114) || Hand: [Strike, Defend, Zap, Strike] Enemies: [Toadpole 18/24, Toadpole 19/22]
+PlayCard 8 # CARD.ZAP (26875032) || Hand: [Strike, Zap, Strike] Enemies: [Toadpole 18/24, Toadpole 19/22]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 5 # CARD.DUALCAST (34005549) || Hand: [Defend, Strike, Skim, Dualcast, Defend] Enemies: [Toadpole 12/24, Toadpole 19/22]
+PlayCard 9 1 # CARD.STRIKE_DEFECT (40548704) || Hand: [Defend, Strike, Skim, Defend] Enemies: [Toadpole 4/24, Toadpole 11/22]
+PlayCard 10 # CARD.DEFEND_DEFECT (29394017) || Hand: [Defend, Skim, Defend] Enemies: [Toadpole 11/22]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 8 # CARD.ZAP (26875032) || Hand: [Defend, Strike, Zap, Strike, Strike] Enemies: [Toadpole 8/22]
+PlayCard 6 2 # CARD.STRIKE_DEFECT (37614492) || Hand: [Defend, Strike, Strike, Strike] Enemies: [Toadpole 8/22]
+PlayCard 2 2 # CARD.STRIKE_DEFECT (32082153) || Hand: [Defend, Strike, Strike] Enemies: [Toadpole 2/22]
+ClaimReward 0 # GoldReward: 17
+ClaimReward 0 # CardReward
+TakeCard 0 # Cold Snap
+MoveToMapCoord 4
+OpenChest
+TakeChestRelic # Regal Pillow
+NetPickRelicAction for player 1 index 0 || Hand: [Defend, Strike] Enemies: []
+MoveToMapCoord 3
+PlayCard 4 # CARD.ZAP (65157049) || Hand: [Defend, Strike, Cold Snap, Defend, Zap] Enemies: [Corpse Slug 27/27, Corpse Slug 25/25, Corpse Slug 26/26]
+PlayCard 0 # CARD.DEFEND_DEFECT (51193097) || Hand: [Defend, Strike, Cold Snap, Defend] Enemies: [Corpse Slug 27/27, Corpse Slug 25/25, Corpse Slug 26/26]
+PlayCard 3 # CARD.DEFEND_DEFECT (7239672) || Hand: [Strike, Cold Snap, Defend] Enemies: [Corpse Slug 27/27, Corpse Slug 25/25, Corpse Slug 26/26]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 # CARD.COOLHEADED (40321139) || Hand: [Defend, Strike, Dualcast, Defend, Coolheaded] Enemies: [Corpse Slug 24/27, Corpse Slug 25/25, Corpse Slug 23/26]
+PlayCard 8 # CARD.DEFEND_DEFECT (11936667) || Hand: [Defend, Strike, Dualcast, Defend, Skim] Enemies: [Corpse Slug 24/27, Corpse Slug 25/25, Corpse Slug 23/26]
+PlayCard 5 # CARD.DEFEND_DEFECT (49542531) || Hand: [Defend, Strike, Dualcast, Skim] Enemies: [Corpse Slug 24/27, Corpse Slug 25/25, Corpse Slug 23/26]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 7 # CARD.DUALCAST (53522079) || Hand: [Strike, Strike, Defend, Defend, Dualcast] Enemies: [Corpse Slug 24/27, Corpse Slug 19/25, Corpse Slug 23/26]
+PlayCard 12 1 # CARD.STRIKE_DEFECT (428526) || Hand: [Strike, Strike, Defend, Defend] Enemies: [Corpse Slug 8/27, Corpse Slug 19/25, Corpse Slug 23/26]
+PlayCard 11 1 # CARD.STRIKE_DEFECT (44786856) || Hand: [Strike, Defend, Defend] Enemies: [Corpse Slug 2/27, Corpse Slug 19/25, Corpse Slug 23/26]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 4 # CARD.ZAP (65157049) || Hand: [Strike, Defend, Strike, Zap, Coolheaded] Enemies: [Corpse Slug 19/25, Corpse Slug 20/26]
+PlayCard 9 # CARD.COOLHEADED (40321139) || Hand: [Strike, Defend, Strike, Coolheaded] Enemies: [Corpse Slug 19/25, Corpse Slug 20/26]
+PlayCard 3 # CARD.DEFEND_DEFECT (7239672) || Hand: [Strike, Defend, Strike, Skim] Enemies: [Corpse Slug 19/25, Corpse Slug 12/26]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 2 2 # CARD.COLD_SNAP (53000191) || Hand: [Cold Snap, Defend, Skim, Defend, Strike] Enemies: [Corpse Slug 19/25, Corpse Slug 9/26]
+PlayCard 11 2 # CARD.STRIKE_DEFECT (44786856) || Hand: [Defend, Skim, Defend, Strike] Enemies: [Corpse Slug 13/25, Corpse Slug 9/26]
+PlayCard 3 # CARD.DEFEND_DEFECT (7239672) || Hand: [Defend, Skim, Defend] Enemies: [Corpse Slug 7/25, Corpse Slug 9/26]
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+PlayCard 1 2 # CARD.STRIKE_DEFECT (58084693) || Hand: [Coolheaded, Strike, Zap, Strike, Strike] Enemies: [Corpse Slug 4/25, Corpse Slug 9/26]
+PlayCard 12 3 # CARD.STRIKE_DEFECT (428526) || Hand: [Coolheaded, Strike, Zap, Strike] Enemies: [Corpse Slug 9/26]
+PlayCard 6 3 # CARD.STRIKE_DEFECT (43229599) || Hand: [Coolheaded, Strike, Zap] Enemies: [Corpse Slug 3/26]
+ClaimReward 0 # GoldReward: 16
+ClaimReward 0 # CardReward
+TakeCard 0 # Capacitor
+MoveToMapCoord 3
+PlayCard 1 # CARD.COOLHEADED (66880143) || Hand: [Cold Snap, Coolheaded, Capacitor, Strike, Zap] Enemies: [Punch Construct 55/55]
+PlayCard 0 1 # CARD.COLD_SNAP (29800748) || Hand: [Cold Snap, Capacitor, Strike, Zap, Strike] Enemies: [Punch Construct 55/55]
+PlayCard 4 # CARD.ZAP (34589576) || Hand: [Capacitor, Strike, Zap, Strike] Enemies: [Punch Construct 49/55]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 10 # CARD.DEFEND_DEFECT (60550042) || Hand: [Strike, Skim, Defend, Strike, Defend] Enemies: [Punch Construct 38/55]
+PlayCard 8 # CARD.DEFEND_DEFECT (47143783) || Hand: [Strike, Skim, Defend, Strike] Enemies: [Punch Construct 38/55]
+PlayCard 9 1 # CARD.STRIKE_DEFECT (21640863) || Hand: [Strike, Skim, Strike] Enemies: [Punch Construct 38/55]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 8 # CARD.DEFEND_DEFECT (47143783) || Hand: [Defend, Defend, Dualcast, Strike, Defend] Enemies: [Punch Construct 38/55]
+PlayCard 12 # CARD.DEFEND_DEFECT (5606407) || Hand: [Defend, Defend, Dualcast, Strike] Enemies: [Punch Construct 38/55]
+PlayCard 5 1 # CARD.STRIKE_DEFECT (42870734) || Hand: [Defend, Dualcast, Strike] Enemies: [Punch Construct 38/55]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 2 # CARD.CAPACITOR (65050382) || Hand: [Skim, Coolheaded, Cold Snap, Capacitor, Strike] Enemies: [Punch Construct 29/55]
+PlayCard 1 # CARD.COOLHEADED (66880143) || Hand: [Skim, Coolheaded, Cold Snap, Strike] Enemies: [Punch Construct 29/55]
+PlayCard 0 1 # CARD.COLD_SNAP (29800748) || Hand: [Skim, Cold Snap, Strike, Strike] Enemies: [Punch Construct 29/55]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 0 1 # CARD.COLD_SNAP (29800748) || Hand: [Zap, Defend, Strike, Defend, Cold Snap] Enemies: [Punch Construct 20/55]
+PlayCard 3 1 # CARD.STRIKE_DEFECT (48582528) || Hand: [Zap, Defend, Strike, Defend] Enemies: [Punch Construct 20/55]
+PlayCard 4 # CARD.ZAP (34589576) || Hand: [Zap, Defend, Defend] Enemies: [Punch Construct 18/55]
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+PlayCard 13 # CARD.DUALCAST (50457666) || Hand: [Strike, Coolheaded, Skim, Defend, Dualcast] Enemies: [Punch Construct 12/55]
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Flak Cannon
+MoveToMapCoord 3
+PlayCard 4 # CARD.CAPACITOR (63705597) || Hand: [Skim, Defend, Zap, Defend, Capacitor] Enemies: [Living Fog 80/80]
+PlayCard 2 # CARD.ZAP (48839749) || Hand: [Skim, Defend, Zap, Defend] Enemies: [Living Fog 80/80]
+PlayCard 1 # CARD.DEFEND_DEFECT (35252800) || Hand: [Skim, Defend, Defend] Enemies: [Living Fog 80/80]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 9 1 # CARD.COLD_SNAP (31573463) || Hand: [Defend, Strike, Strike, Dualcast, Cold Snap] Enemies: [Living Fog 74/80]
+PlayCard 5 # CARD.DEFEND_DEFECT (36479466) || Hand: [Defend, Strike, Strike, Dualcast] Enemies: [Living Fog 68/80]
+PlayCard 6 1 # CARD.STRIKE_DEFECT (59879746) || Hand: [Strike, Strike, Dualcast] Enemies: [Living Fog 68/80]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 14 2 # CARD.STRIKE_DEFECT (30079857) || Hand: [Defend, Strike, Flak Cannon, Coolheaded, Strike] Enemies: [Gas Bomb 7/7, Living Fog 56/80]
+PlayCard 11 2 # CARD.STRIKE_DEFECT (7313690) || Hand: [Defend, Strike, Flak Cannon, Coolheaded] Enemies: [Gas Bomb 1/7, Living Fog 56/80]
+PlayCard 10 # CARD.DEFEND_DEFECT (15725713) || Hand: [Defend, Flak Cannon, Coolheaded] Enemies: [Living Fog 56/80]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 2 # CARD.ZAP (48839749) || Hand: [Zap, Coolheaded, Defend, Strike, Defend] Enemies: [Living Fog 50/80]
+PlayCard 6 1 # CARD.STRIKE_DEFECT (59879746) || Hand: [Coolheaded, Defend, Strike, Defend] Enemies: [Living Fog 50/80]
+UsePotion 0 1 # POTION.WEAK_POTION || Hand: [Coolheaded, Defend, Defend] Enemies: [Living Fog 44/80]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 11 3 # CARD.STRIKE_DEFECT (7313690) || Hand: [Strike, Defend, Skim, Defend, Strike] Enemies: [Gas Bomb 7/7, Living Fog 35/80]
+PlayCard 14 3 # CARD.STRIKE_DEFECT (30079857) || Hand: [Strike, Defend, Skim, Defend] Enemies: [Gas Bomb 1/7, Living Fog 35/80]
+PlayCard 3 # CARD.DEFEND_DEFECT (36904561) || Hand: [Defend, Skim, Defend] Enemies: [Living Fog 35/80]
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+PlayCard 9 1 # CARD.COLD_SNAP (31573463) || Hand: [Cold Snap, Dualcast, Flak Cannon, Strike, Strike] Enemies: [Living Fog 26/80]
+PlayCard 8 # CARD.DUALCAST (18421243) || Hand: [Dualcast, Flak Cannon, Strike, Strike] Enemies: [Living Fog 20/80]
+PlayCard 6 1 # CARD.STRIKE_DEFECT (59879746) || Hand: [Flak Cannon, Strike, Strike] Enemies: [Living Fog 4/80]
+ClaimReward 0 # GoldReward: 10
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Chaos
+MoveToMapCoord 2
+OpenChest
+TakeChestRelic # Happy Flower
+NetPickRelicAction for player 1 index 0 || Hand: [Flak Cannon, Strike] Enemies: []
+MoveToMapCoord 1
+ChooseRestSiteOption SMITH
+SelectGridCard 15
+MoveToMapCoord 2
+PlayCard 0 # CARD.SKIM (6085054) || Hand: [Skim, Capacitor, Flak Cannon, Dualcast, Strike] Enemies: [Sewer Clam 56/56]
+PlayCard 5 # CARD.DEFEND_DEFECT (15550341) || Hand: [Capacitor, Flak Cannon, Dualcast, Strike, Defend, Strike, Defend, Defend, Strike, Strike] Enemies: [Sewer Clam 56/56]
+PlayCard 7 # CARD.DEFEND_DEFECT (51618079) || Hand: [Capacitor, Flak Cannon, Dualcast, Strike, Strike, Defend, Defend, Strike, Strike] Enemies: [Sewer Clam 56/56]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 13 # CARD.CHAOS (7552792) || Hand: [Cold Snap, Coolheaded, Chaos+, Zap, Defend] Enemies: [Sewer Clam 56/56]
+PlayCard 11 1 # CARD.COLD_SNAP (34890433) || Hand: [Cold Snap, Coolheaded, Zap, Defend] Enemies: [Sewer Clam 56/56]
+PlayCard 12 # CARD.COOLHEADED (45578441) || Hand: [Coolheaded, Zap, Defend] Enemies: [Sewer Clam 50/56]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 1 # CARD.CAPACITOR (54765494) || Hand: [Strike, Capacitor, Dualcast, Strike, Flak Cannon] Enemies: [Sewer Clam 38/56]
+UsePotion 0 # POTION.SWIFT_POTION || Hand: [Strike, Dualcast, Strike, Flak Cannon] Enemies: [Sewer Clam 38/56]
+PlayCard 8 # CARD.DEFEND_DEFECT (61909529) || Hand: [Strike, Dualcast, Strike, Flak Cannon, Defend, Strike, Cold Snap] Enemies: [Sewer Clam 38/56]
+PlayCard 11 1 # CARD.COLD_SNAP (34890433) || Hand: [Strike, Dualcast, Strike, Flak Cannon, Strike, Cold Snap] Enemies: [Sewer Clam 38/56]
+PlayCard 3 # CARD.DUALCAST (6820015) || Hand: [Strike, Dualcast, Strike, Flak Cannon, Strike] Enemies: [Sewer Clam 38/56]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 13 # CARD.CHAOS (7552792) || Hand: [Skim, Defend, Chaos+, Defend, Coolheaded] Enemies: [Sewer Clam 27/56]
+PlayCard 12 # CARD.COOLHEADED (45578441) || Hand: [Skim, Defend, Defend, Coolheaded] Enemies: [Sewer Clam 27/56]
+PlayCard 14 # CARD.ZAP (866270) || Hand: [Skim, Defend, Defend, Zap] Enemies: [Sewer Clam 27/56]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 15 # CARD.DEFEND_DEFECT (7796436) || Hand: [Defend, Strike, Defend, Strike, Flak Cannon] Enemies: [Sewer Clam 26/56]
+PlayCard 8 # CARD.DEFEND_DEFECT (61909529) || Hand: [Defend, Strike, Strike, Flak Cannon] Enemies: [Sewer Clam 26/56]
+PlayCard 10 1 # CARD.STRIKE_DEFECT (48615957) || Hand: [Strike, Strike, Flak Cannon] Enemies: [Sewer Clam 26/56]
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+PlayCard 11 1 # CARD.COLD_SNAP (34890433) || Hand: [Dualcast, Strike, Cold Snap, Strike, Strike] Enemies: [Sewer Clam 19/56]
+PlayCard 3 # CARD.DUALCAST (6820015) || Hand: [Dualcast, Strike, Strike, Strike] Enemies: [Sewer Clam 17/56]
+PlayCard 10 1 # CARD.STRIKE_DEFECT (48615957) || Hand: [Strike, Strike, Strike] Enemies: [Sewer Clam 9/56]
+PlayCard 6 1 # CARD.STRIKE_DEFECT (5735342) || Hand: [Strike, Strike] Enemies: [Sewer Clam 3/56]
+ClaimReward 0 # GoldReward: 19
+ClaimReward 0 # PotionReward
+ClaimReward 0 # CardReward
+TakeCard 0 # Compile Driver
+MoveToMapCoord 1
+OpenShop
+BuyRelic Ghost Seed
+MoveToMapCoord 0
+OpenChest
+TakeChestRelic # Vambrace
+NetPickRelicAction for player 1 index 0 || Hand: [Strike] Enemies: []
+MoveToMapCoord 1
+ChooseEventOption 1 # DOORS_OF_LIGHT_AND_DARK.pages.INITIAL.options.DARK
+SelectGridCard 5
+ChooseEventOption -1 # PROCEED
+MoveToMapCoord 1
+ChooseRestSiteOption HEAL
+MoveToMapCoord 3
+PlayCard 1 # CARD.CHAOS (50879357) || Hand: [Compile Driver, Chaos+, Capacitor, Strike, Dualcast] Enemies: [Waterfall Giant 240/240]
+PlayCard 2 # CARD.CAPACITOR (55261037) || Hand: [Compile Driver, Capacitor, Strike, Dualcast] Enemies: [Waterfall Giant 240/240]
+PlayCard 3 1 # CARD.STRIKE_DEFECT (27587290) || Hand: [Compile Driver, Strike, Dualcast] Enemies: [Waterfall Giant 240/240]
+EndTurn # EndPlayerTurnAction for player 1 turn 1
+PlayCard 8 1 # CARD.COLD_SNAP (1343810) || Hand: [Skim, Strike, Defend, Cold Snap, Strike] Enemies: [Waterfall Giant 228/240]
+PlayCard 7 # CARD.DEFEND_DEFECT (7605852) || Hand: [Skim, Strike, Defend, Strike] Enemies: [Waterfall Giant 222/240]
+PlayCard 5 # CARD.SKIM (19978007) || Hand: [Skim, Strike, Strike] Enemies: [Waterfall Giant 222/240]
+EndTurn # EndPlayerTurnAction for player 1 turn 2
+PlayCard 1 # CARD.CHAOS (50879357) || Hand: [Chaos+, Zap, Flak Cannon, Coolheaded, Dualcast] Enemies: [Waterfall Giant 216/240]
+PlayCard 13 # CARD.ZAP (27963247) || Hand: [Zap, Flak Cannon, Coolheaded, Dualcast] Enemies: [Waterfall Giant 208/240]
+PlayCard 11 # CARD.COOLHEADED (40113440) || Hand: [Flak Cannon, Coolheaded, Dualcast] Enemies: [Waterfall Giant 208/240]
+PlayCard 4 # CARD.DUALCAST (46959021) || Hand: [Flak Cannon, Dualcast, Defend] Enemies: [Waterfall Giant 200/240]
+EndTurn # EndPlayerTurnAction for player 1 turn 3
+PlayCard 13 # CARD.ZAP (27963247) || Hand: [Strike, Compile Driver, Skim, Cold Snap, Zap] Enemies: [Waterfall Giant 197/240]
+PlayCard 8 1 # CARD.COLD_SNAP (1343810) || Hand: [Strike, Compile Driver, Skim, Cold Snap] Enemies: [Waterfall Giant 197/240]
+PlayCard 0 1 # CARD.COMPILE_DRIVER (13109802) || Hand: [Strike, Compile Driver, Skim] Enemies: [Waterfall Giant 191/240]
+EndTurn # EndPlayerTurnAction for player 1 turn 4
+PlayCard 1 # CARD.CHAOS (50879357) || Hand: [Chaos+, Dualcast, Flak Cannon, Coolheaded, Skim] Enemies: [Waterfall Giant 188/240]
+PlayCard 15 # CARD.FLAK_CANNON (50430567) || Hand: [Dualcast, Flak Cannon, Coolheaded, Skim] Enemies: [Waterfall Giant 180/240]
+EndTurn # EndPlayerTurnAction for player 1 turn 5
+PlayCard 0 1 # CARD.COMPILE_DRIVER (13109802) || Hand: [Zap, Cold Snap, Compile Driver, Dualcast, Skim] Enemies: [Waterfall Giant 173/240]
+PlayCard 1 # CARD.CHAOS (50879357) || Hand: [Zap, Cold Snap, Dualcast, Skim, Chaos+, Flak Cannon, Coolheaded] Enemies: [Waterfall Giant 166/240]
+PlayCard 11 # CARD.COOLHEADED (40113440) || Hand: [Zap, Cold Snap, Dualcast, Skim, Flak Cannon, Coolheaded] Enemies: [Waterfall Giant 158/240]
+PlayCard 13 # CARD.ZAP (27963247) || Hand: [Zap, Cold Snap, Dualcast, Skim, Flak Cannon, Compile Driver] Enemies: [Waterfall Giant 158/240]
+PlayCard 8 1 # CARD.COLD_SNAP (1343810) || Hand: [Cold Snap, Dualcast, Skim, Flak Cannon, Compile Driver] Enemies: [Waterfall Giant 152/240]
+PlayCard 0 1 # CARD.COMPILE_DRIVER (13109802) || Hand: [Dualcast, Skim, Flak Cannon, Compile Driver] Enemies: [Waterfall Giant 146/240]
+PlayCard 1 # CARD.CHAOS (50879357) || Hand: [Dualcast, Skim, Flak Cannon, Chaos+, Zap, Cold Snap] Enemies: [Waterfall Giant 139/240]
+PlayCard 13 # CARD.ZAP (27963247) || Hand: [Dualcast, Skim, Flak Cannon, Zap, Cold Snap] Enemies: [Waterfall Giant 131/240]
+PlayCard 4 # CARD.DUALCAST (46959021) || Hand: [Dualcast, Skim, Flak Cannon, Cold Snap] Enemies: [Waterfall Giant 131/240]
+EndTurn # EndPlayerTurnAction for player 1 turn 6
+PlayCard 11 # CARD.COOLHEADED (40113440) || Hand: [Coolheaded, Cold Snap, Flak Cannon, Zap, Compile Driver] Enemies: [Waterfall Giant 106/240]
+PlayCard 4 # CARD.DUALCAST (46959021) || Hand: [Cold Snap, Flak Cannon, Zap, Compile Driver, Dualcast] Enemies: [Waterfall Giant 106/240]
+PlayCard 0 1 # CARD.COMPILE_DRIVER (13109802) || Hand: [Cold Snap, Flak Cannon, Zap, Compile Driver] Enemies: [Waterfall Giant 106/240]
+EndTurn # EndPlayerTurnAction for player 1 turn 7
+PlayCard 5 # CARD.SKIM (19978007) || Hand: [Dualcast, Compile Driver, Cold Snap, Coolheaded, Skim] Enemies: [Waterfall Giant 90/240]
+PlayCard 1 # CARD.CHAOS (50879357) || Hand: [Dualcast, Compile Driver, Cold Snap, Coolheaded, Zap, Chaos+, Flak Cannon] Enemies: [Waterfall Giant 90/240]
+PlayCard 11 # CARD.COOLHEADED (40113440) || Hand: [Dualcast, Compile Driver, Cold Snap, Coolheaded, Zap, Flak Cannon] Enemies: [Waterfall Giant 82/240]
+EndTurn # EndPlayerTurnAction for player 1 turn 8
+PlayCard 1 # CARD.CHAOS (50879357) || Hand: [Skim, Cold Snap, Flak Cannon, Zap, Chaos+] Enemies: [Waterfall Giant 71/240]
+PlayCard 8 1 # CARD.COLD_SNAP (1343810) || Hand: [Skim, Cold Snap, Flak Cannon, Zap] Enemies: [Waterfall Giant 63/240]
+PlayCard 13 # CARD.ZAP (27963247) || Hand: [Skim, Flak Cannon, Zap] Enemies: [Waterfall Giant 57/240]
+PlayCard 5 # CARD.SKIM (19978007) || Hand: [Skim, Flak Cannon] Enemies: [Waterfall Giant 57/240]
+EndTurn # EndPlayerTurnAction for player 1 turn 9
+PlayCard 1 # CARD.CHAOS (50879357) || Hand: [Cold Snap, Dualcast, Skim, Compile Driver, Chaos+] Enemies: [Waterfall Giant 58/240]
+PlayCard 8 1 # CARD.COLD_SNAP (1343810) || Hand: [Cold Snap, Dualcast, Skim, Compile Driver] Enemies: [Waterfall Giant 50/240]
+PlayCard 4 # CARD.DUALCAST (46959021) || Hand: [Dualcast, Skim, Compile Driver] Enemies: [Waterfall Giant 36/240]
+EndTurn # EndPlayerTurnAction for player 1 turn 10
+PlayCard 1 # CARD.CHAOS (50879357) || Hand: [Coolheaded, Flak Cannon, Zap, Chaos+, Skim] Enemies: [Waterfall Giant 26/240]
+PlayCard 13 # CARD.ZAP (27963247) || Hand: [Coolheaded, Flak Cannon, Zap, Skim] Enemies: [Waterfall Giant 18/240]
+PlayCard 11 # CARD.COOLHEADED (40113440) || Hand: [Coolheaded, Flak Cannon, Skim] Enemies: [Waterfall Giant 12/240]
+EndTurn # EndPlayerTurnAction for player 1 turn 11
+PlayCard 11 # CARD.COOLHEADED (40113440) || Hand: [Compile Driver, Cold Snap, Coolheaded, Chaos+, Flak Cannon] Enemies: [Waterfall Giant 999999996/999999999]
+PlayCard 1 # CARD.CHAOS (50879357) || Hand: [Compile Driver, Cold Snap, Chaos+, Flak Cannon, Zap] Enemies: [Waterfall Giant 999999996/999999999]
+PlayCard 8 1 # CARD.COLD_SNAP (1343810) || Hand: [Compile Driver, Cold Snap, Flak Cannon, Zap] Enemies: [Waterfall Giant 999999982/999999999]
+PlayCard 13 # CARD.ZAP (27963247) || Hand: [Compile Driver, Flak Cannon, Zap] Enemies: [Waterfall Giant 999999968/999999999]
+EndTurn # EndPlayerTurnAction for player 1 turn 12
+ClaimReward 0 # GoldReward: 100
+ClaimReward 0 # CardReward
+TakeCard 0 # Creative AI
+ProceedToNextAct
+VoteForMapCoordAction 1 || Hand: [] Enemies: [Waterfall Giant 999999962/999999999]
+MoveToMapCoord 3

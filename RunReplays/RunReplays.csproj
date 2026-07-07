@@ -48,6 +48,12 @@
       <EmbeddedResource Include="Resources\QRWCVDPZN5\floor_18\run.save" />
       <EmbeddedResource Include="Resources\QRWCVDPZN5\floor_34\actions.sts2replay" />
       <EmbeddedResource Include="Resources\QRWCVDPZN5\floor_34\run.save" />
+      <EmbeddedResource Include="Resources\TZEKRYTSNT\floor_49\actions.sts2replay" />
+      <EmbeddedResource Include="Resources\TZEKRYTSNT\floor_49\run.save" />
+      <EmbeddedResource Include="Resources\TZEKRYTSNT\floor_18\actions.sts2replay" />
+      <EmbeddedResource Include="Resources\TZEKRYTSNT\floor_18\run.save" />
+      <EmbeddedResource Include="Resources\TZEKRYTSNT\floor_34\actions.sts2replay" />
+      <EmbeddedResource Include="Resources\TZEKRYTSNT\floor_34\run.save" />
     </ItemGroup>
 
 

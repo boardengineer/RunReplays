@@ -242,6 +242,12 @@ public static class MainMenuButtonInjector
         ("QRWCVDPZN5", "floor_49", new[] { "actions.sts2replay", "run.save" }),
         ("QRWCVDPZN5", "floor_18", new[] { "actions.sts2replay", "run.save" }),
         ("QRWCVDPZN5", "floor_34", new[] { "actions.sts2replay", "run.save" }),
+
+        // Defect, Ascension 1, complete 3-act win (recorded 2026-07-07).
+        // Same layout: full run + starts of act 2 / act 3.
+        ("TZEKRYTSNT", "floor_49", new[] { "actions.sts2replay", "run.save" }),
+        ("TZEKRYTSNT", "floor_18", new[] { "actions.sts2replay", "run.save" }),
+        ("TZEKRYTSNT", "floor_34", new[] { "actions.sts2replay", "run.save" }),
     };
 
     private static void ExtractBundledReplay()
