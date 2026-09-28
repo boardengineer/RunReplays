@@ -9,6 +9,7 @@ public class RunReplaysConfig : SimpleModConfig
 {
     public static bool ShowRunReplaysButton { get; set; } = true;
     public static bool ShowReplayOverlay { get; set; } = false;
+    public static bool ExportLiveFight { get; set; } = true;
 
     public override void SetupConfigUI(Control optionContainer)
     {
@@ -27,6 +28,7 @@ public class RunReplaysConfig : SimpleModConfig
             {
                 nameof(ShowReplayOverlay)    => "Show Replay Overlay",
                 nameof(ShowRunReplaysButton) => "Show Main Menu Button (takes effect after restarting the game)",
+                nameof(ExportLiveFight)      => "Export live fight snapshot (RunReplays/live_fight.json, for the sts-sim planner)",
                 _ => null
             };
 

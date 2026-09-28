@@ -13,12 +13,18 @@
         <DefineConstants Condition="'$(Configuration)' != 'Release'">$(DefineConstants);RUNREPLAYS_MIGRATION;RUNREPLAYS_VERBOSE;RUNREPLAYS_DISPATCHER;RUNREPLAYS_DEVCONSOLE</DefineConstants>
     </PropertyGroup>
 
+    <!-- BaseLib: the installed mod, else the NuGet cache copy (alchyr.sts2.baselib), else pass -p:BaseLibDll=<path> -->
+    <PropertyGroup>
+        <BaseLibDll Condition="'$(BaseLibDll)' == ''">..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\BaseLib.dll</BaseLibDll>
+        <BaseLibDll Condition="!Exists('$(BaseLibDll)') And Exists('$(NuGetPackageRoot)alchyr.sts2.baselib\3.1.0\lib\net9.0\BaseLib.dll')">$(NuGetPackageRoot)alchyr.sts2.baselib\3.1.0\lib\net9.0\BaseLib.dll</BaseLibDll>
+    </PropertyGroup>
+
     <ItemGroup>
       <Reference Include="sts2">
         <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\data_sts2_windows_x86_64\sts2.dll</HintPath>
       </Reference>
       <Reference Include="BaseLib">
-        <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\BaseLib.dll</HintPath>
+        <HintPath>$(BaseLibDll)</HintPath>
         <Private>false</Private>
       </Reference>
     </ItemGroup>
@@ -62,7 +68,8 @@
     </ItemGroup>
 
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <!-- dotnet build -p:SkipModCopy=true builds without copying the DLL into the game's mods folder -->
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(SkipModCopy)' != 'true'">
       <Exec Command=":: For Windows&#xA;xcopy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\&quot; /Y&#xA;xcopy &quot;$(ProjectDir)RunReplays.json&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\&quot; /Y" />
     </Target>
 

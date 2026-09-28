@@ -23,7 +23,7 @@ public static class UpFrontRngTracker
     {
         if (!Active || TrackedRng == null) return;
         var stackTrace = new System.Diagnostics.StackTrace(2, true);
-        var msg = $"[RngTracker] UpFront.{method} (counter={TrackedRng.Counter})\n{stackTrace}";
+        var msg = $"[RngTracker] UpFront.{method} (counter={TrackedRng.Counter()})\n{stackTrace}";
         RngLog.Write(msg);
     }
 }
@@ -88,7 +88,7 @@ public static class GetRandomListTracker
     {
         RngLog.EnsureInitialized();
         bool isAll = ReferenceEquals(unlockState, UnlockState.all);
-        var msg = $"[EncounterTracker] GetRandomList called — rng.Seed={rng.Seed}, rng.Counter={rng.Counter}, isMultiplayer={isMultiplayer}, unlockState.isAll={isAll}, epochCount={unlockState.EpochUnlockCount()}";
+        var msg = $"[EncounterTracker] GetRandomList called — rng.Seed={rng.Seed()}, rng.Counter={rng.Counter()}, isMultiplayer={isMultiplayer}, unlockState.isAll={isAll}, epochCount={unlockState.EpochUnlockCount()}";
         RngLog.Write(msg);
         DiagnosticLog.Write("Rng", msg);
     }
@@ -221,7 +221,7 @@ public static class CreateForNewRunTracker
         UpFrontRngTracker.Active = true;
         var msg = $"[RngTracker] CreateForNewRun done [{mode}] — stringSeed='{seed}' " +
                   $"gameMode={gameMode} ascension={ascensionLevel} " +
-                  $"UpFront.seed={__result.Rng.UpFront.Seed} UpFront.counter={__result.Rng.UpFront.Counter}";
+                  $"UpFront.seed={__result.Rng.UpFront.Seed()} UpFront.counter={__result.Rng.UpFront.Counter()}";
         RngLog.Write(msg);
         DiagnosticLog.Write("RunStart", msg);
     }
@@ -238,7 +238,7 @@ public static class GenerateRoomsTracker
     public static void Prefix(ActModel __instance, Rng rng, UnlockState unlockState, bool isMultiplayer)
     {
         string mode = ReplayEngine.IsActive ? "REPLAY" : "RECORD";
-        var msg = $"[EncounterTracker] GenerateRooms called [{mode}] — RNG seed={rng.Seed}, counter={rng.Counter}, multiplayer={isMultiplayer}";
+        var msg = $"[EncounterTracker] GenerateRooms called [{mode}] — RNG seed={rng.Seed()}, counter={rng.Counter()}, multiplayer={isMultiplayer}";
         RngLog.Write(msg);
 
         // Stop pre-GenerateRooms tracking to avoid noise from the generation itself
@@ -321,7 +321,7 @@ public static class CreateMapTracker
     public static void Prefix(ActModel __instance, RunState runState)
     {
         var rng = runState.Rng.UpFront;
-        var msg = $"[EncounterTracker] CreateMap called — UpFront counter={rng.Counter}";
+        var msg = $"[EncounterTracker] CreateMap called — UpFront counter={rng.Counter()}";
         RngLog.Write(msg);
     }
 }

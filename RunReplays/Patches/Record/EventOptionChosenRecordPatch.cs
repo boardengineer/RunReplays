@@ -36,7 +36,7 @@ public static class EventOptionChosenRecordPatch
                 eventModel = prop?.GetValue(__instance);
             }
             if (eventModel is MegaCrit.Sts2.Core.Models.EventModel em && em.Rng != null)
-                eventRngInfo = $" eventRng.Counter={em.Rng.Counter}";
+                eventRngInfo = $" eventRng.Counter={em.Rng.Counter()}";
         }
         catch { /* ignore */ }
 

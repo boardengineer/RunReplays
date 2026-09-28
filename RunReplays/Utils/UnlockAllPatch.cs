@@ -36,7 +36,7 @@ public static class GetRandomListUnlockPatch
     public static void Prefix(Rng rng, ref UnlockState unlockState, bool isMultiplayer)
     {
         DiagnosticLog.Write("Rng",
-            $"GetRandomList prefix — rng.Seed={rng.Seed} rng.Counter={rng.Counter} " +
+            $"GetRandomList prefix — rng.Seed={rng.Seed()} rng.Counter={rng.Counter()} " +
             $"isMultiplayer={isMultiplayer} unlockState.isAll={ReferenceEquals(unlockState, UnlockState.all)} " +
             $"activeSeed='{ReplayEngine.ActiveSeed}' forcedSeedEnabled={ForcedSeedPatch.Enabled}");
 

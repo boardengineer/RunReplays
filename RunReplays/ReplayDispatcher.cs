@@ -545,6 +545,7 @@ public static class ReplayDispatcher
             Callable.From(() =>
             {
                 PlayerActionBuffer.LogMigrationWarning("signal fire");
+                LiveFightExporter.TryExport();
                 var state = new GameStateSnapshot(GetDispatchableTypes());
                 var json = System.Text.Json.JsonSerializer.Serialize(state,
                     new System.Text.Json.JsonSerializerOptions
@@ -584,6 +585,9 @@ public static class ReplayDispatcher
 
     private static void DispatchPollTick()
     {
+        // The input signal only fires when the set of dispatchable command types changes; card plays inside a
+        // turn don't change it, so the live fight export also checks on every poll tick (it only writes on change).
+        LiveFightExporter.TryExport();
         LogDispatchableChanges();
         ScheduleDispatchPollTick();
     }
