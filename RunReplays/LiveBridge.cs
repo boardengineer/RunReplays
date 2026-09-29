@@ -32,7 +32,13 @@ namespace RunReplays;
 /// <summary>
 /// Live command bridge for an external bot (C:\sts-sim\tools\real_game_bot.py).
 ///
-/// Enabled only when the game is started with the environment variable RUNREPLAYS_LIVE=1; otherwise inert.
+/// Two modes:
+///   * bot mode: the game is started with the environment variable RUNREPLAYS_LIVE=1 (tools\real_game_bot.py): the bridge
+///     polls live_cmd.txt and exports live_state.json all the time and a bot can start/drive whole runs (StartRun ...).
+///   * fight autopilot (<see cref="Autopilot"/>, RunReplaysConfig.EnableAutopilot, default on): completely passive
+///     (no file is read or written, recording/replays unaffected) until the player presses the autopilot hotkey in a
+///     fight; then, for that fight only, it exports the state and executes the commands of
+///     C:\sts-sim\tools\fight_autopilot.py, like in bot mode.
 ///
 ///   bot  -> game : %APPDATA%\SlayTheSpire2\RunReplays\live_cmd.txt   lines "seq&lt;TAB&gt;command[ # comment]" (append-only)
 ///   game -> bot  : live_ack.txt    "ackSeq&lt;TAB&gt;status&lt;TAB&gt;detail" of the last consumed/rejected command
@@ -47,16 +53,24 @@ namespace RunReplays;
 /// </summary>
 public static class LiveBridge
 {
+    /// <summary>Bot mode (environment variable RUNREPLAYS_LIVE=1).</summary>
     public static readonly bool Enabled = System.Environment.GetEnvironmentVariable("RUNREPLAYS_LIVE") == "1";
 
-    /// <summary>True from StartRun until the game returns to the main menu.</summary>
+    /// <summary>True from StartRun until the game returns to the main menu (bot mode; "Detach" clears it).</summary>
     public static bool InRun { get; private set; }
+
+    /// <summary>
+    /// The replay dispatcher executes externally fed commands: a bot-mode run or an active autopilot session. While
+    /// true, ReplayEngine.IsActive is true (the game's own action recording is replaced by recording the executed
+    /// commands, exactly like in a live bot run).
+    /// </summary>
+    public static bool Driving => InRun || Autopilot.Driving;
 
     private static readonly PropertyInfo? RunStateProp =
         typeof(RunManager).GetProperty("State", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
     private static string? _dir;
-    private static string Dir
+    internal static string Dir
     {
         get
         {
@@ -94,7 +108,8 @@ public static class LiveBridge
 
     public static void OnMainMenu()
     {
-        if (!Enabled) return;
+        Autopilot.OnMainMenu();
+        if (!Enabled && !Autopilot.ConfigEnabled) return;
         if (InRun) Log("back at the main menu");
         InRun = false;
         StartPoll();
@@ -104,7 +119,7 @@ public static class LiveBridge
     {
         if (_polling) return;
         _polling = true;
-        Log($"live bridge started (dir={Dir})");
+        if (Enabled) Log($"live bridge started (bot mode, dir={Dir})");
         Schedule();
     }
 
@@ -118,12 +133,39 @@ public static class LiveBridge
     private static void Tick()
     {
         _tick++;
-        try { ReadInbox(); } catch (Exception e) { Log("inbox error: " + e); }
+        // Autopilot mode: nothing is read or written unless a session is active (the hotkey was pressed in a fight).
+        if (Enabled || Autopilot.SessionActive)
+            try { ReadInbox(); } catch (Exception e) { Log("inbox error: " + e); }
         // A queued command whose type was not dispatchable when it arrived waits for the next dispatch trigger; nudge.
-        if (InRun && ReplayEngine._pending.Count > 0 && _tick % 5 == 0)
+        if (Driving && ReplayEngine._pending.Count > 0 && _tick % 5 == 0)
             try { ReplayDispatcher.TryDispatch(); } catch (Exception e) { Log("dispatch nudge error: " + e.Message); }
-        try { ExportState(); } catch (Exception e) { Log("export error: " + e); }
+        if (Enabled || Autopilot.Driving)
+            try { ExportState(); } catch (Exception e) { Log("export error: " + e); }
+        try { Autopilot.Tick(); } catch (Exception e) { Log("autopilot error: " + e); }
         Schedule();
+    }
+
+    /// <summary>Autopilot session start: a fresh command channel (seq numbers restart at 1).</summary>
+    internal static void ResetChannel()
+    {
+        try { File.WriteAllText(CmdPath, ""); } catch (Exception e) { Log("cannot truncate live_cmd.txt: " + e.Message); }
+        try { File.Delete(AckPath); } catch { }
+        _cmdFilePos = 0;
+        _partial = "";
+        _lastSeq = 0;
+        _ackSeq = 0;
+        _seqOf.Clear();
+        _lastKey = null;
+        _snapStateId = -1;
+        _snapJson = null;
+    }
+
+    /// <summary>Autopilot session end: the queued (not yet executed) commands were dropped; reject them.</summary>
+    internal static void DropQueuedCommands()
+    {
+        foreach (var kv in _seqOf.ToList())
+            Ack(kv.Value, "error", "autopilot session ended");
+        _seqOf.Clear();
     }
 
     internal static void Log(string msg)
@@ -168,7 +210,31 @@ public static class LiveBridge
         if (ci >= 0) { comment = raw[(ci + 3)..]; raw = raw[..ci]; }
         Log($"recv {seq}: {raw}" + (comment != null ? $" # {comment}" : ""));
 
+        bool special = raw.StartsWith("StartRun ") || raw.StartsWith("Replay ") || raw == "Quit" || raw == "Attach" || raw == "Detach";
+        if (special && !Enabled) { Ack(seq, "error", "only in bot mode (RUNREPLAYS_LIVE=1)"); return; }
         if (raw.StartsWith("StartRun ")) { StartRun(seq, raw); return; }
+        if (raw == "Detach")
+        {
+            // Bot mode (tests): hand the running run over to normal play (as if the player had started it), e.g. to
+            // exercise the autopilot hotkey. "Attach" takes it back.
+            if (!InRun) { Ack(seq, "error", "not attached"); return; }
+            if (ReplayEngine._pending.Count > 0) { Ack(seq, "error", "commands still queued"); return; }
+            InRun = false;
+            ReplayDispatcher.DelayBetweenCommands = 1.0f;
+            Ack(seq, "ok", "detached");
+            return;
+        }
+        if (raw == "Attach")
+        {
+            if (InRun) { Ack(seq, "error", "already attached"); return; }
+            if (Autopilot.Driving) { Ack(seq, "error", "autopilot session active"); return; }
+            if (RunManager.Instance?.IsInProgress != true) { Ack(seq, "error", "no run in progress"); return; }
+            CardPlayReplayPatch.PrepareExternalControl();
+            InRun = true;
+            ReplayDispatcher.DelayBetweenCommands = 0.3f;
+            Ack(seq, "ok", "attached");
+            return;
+        }
         if (raw.StartsWith("Replay "))
         {
             // Watch-back check: replay a recorded run (RunReplays logs, "SEED" or "SEED:floor_N") like the menu does.
@@ -183,7 +249,7 @@ public static class LiveBridge
             NGame.Instance?.GetTree()?.Quit();
             return;
         }
-        if (!InRun) { Ack(seq, "error", "no live run in progress"); return; }
+        if (!InRun && !Autopilot.SessionActive) { Ack(seq, "error", "no live run / autopilot session in progress"); return; }
 
         ReplayCommand? cmd = ReplayCommandParser.TryParse(raw);
         if (cmd == null) { Ack(seq, "error", "unparseable: " + raw); return; }
@@ -270,7 +336,7 @@ public static class LiveBridge
 
     internal static void CaptureSelection(Selection s)
     {
-        if (!Enabled) return;
+        if (!Enabled && !Autopilot.ConfigEnabled) return;
         s.Tick = _tick;
         CurrentSelection = s;
     }
@@ -287,7 +353,7 @@ public static class LiveBridge
         List<string> available = new();
         List<string> types = new();
         bool blocked = false;
-        if (InRun && inProgress)
+        if (Driving && inProgress)
         {
             try { available = ReplayDispatcher.GetAvailableCommands().Select(c => c.ToString() ?? "").ToList(); } catch { }
             try { types = ReplayDispatcher.GetDispatchableTypesInternal(out blocked).Select(t => t.Name).OrderBy(x => x).ToList(); } catch { }
@@ -301,8 +367,8 @@ public static class LiveBridge
 
         int pending = ReplayEngine._pending.Count;
         bool ready = screen == "main_menu"
-            ? !InRun && _stableTicks >= 3
-            : InRun && pending == 0 && _stableTicks >= StableTicks && (available.Count > 0 || screen == "game_over")
+            ? !Driving && _stableTicks >= 3
+            : Driving && pending == 0 && _stableTicks >= StableTicks && (available.Count > 0 || screen == "game_over")
               && (!blocked || screen == "hand_select" || screen == "grid_select" || screen == "choose_card")   // selections open mid-action
               && (screen != "combat" || inputPoint);
 
@@ -325,10 +391,16 @@ public static class LiveBridge
             w.WriteNumber("ack", _ackSeq);
             w.WriteNumber("lastSeq", _lastSeq);
             w.WriteNumber("pending", pending);
-            w.WriteBoolean("replayActive", ReplayEngine.IsActive && !InRun);
+            w.WriteBoolean("replayActive", ReplayEngine.IsActive && !Driving);
             w.WriteNumber("replayLoaded", ReplayEngine._loadedCommands.Count);
             w.WriteBoolean("ready", ready);
             w.WriteBoolean("inRun", InRun);
+            w.WritePropertyName("autopilot");
+            w.WriteStartObject();
+            w.WriteNumber("session", Autopilot.SessionId);
+            w.WriteBoolean("active", Autopilot.SessionActive);
+            w.WriteBoolean("driving", Autopilot.Driving);
+            w.WriteEndObject();
             w.WriteString("screen", screen);
             w.WriteBoolean("blocked", blocked);
             w.WriteBoolean("inputPoint", inputPoint);
@@ -351,7 +423,7 @@ public static class LiveBridge
 
     private static string DetectScreen(IRunState? state, Player? player, bool inProgress)
     {
-        if (!inProgress || state == null || player == null) return InRun ? "loading" : "main_menu";
+        if (!inProgress || state == null || player == null) return Driving ? "loading" : "main_menu";
         try { if (RunManager.Instance.IsGameOver || player.Creature.IsDead) return "game_over"; } catch { }
         var hand = HandSelectionCapture.ActiveHand;
         if (hand != null && GodotObject.IsInstanceValid(hand) && hand.IsInsideTree() && hand.IsInCardSelection) return "hand_select";

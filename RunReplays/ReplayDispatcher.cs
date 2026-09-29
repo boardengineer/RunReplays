@@ -1069,7 +1069,8 @@ public static class ReplayDispatcher
         LogDispatchableChanges();
 
         // Re-apply speed in case the game reset Engine.TimeScale during a transition.
-        if (ReplayEngine.IsActive && Engine.TimeScale != _gameSpeed)
+        // (Not for the fight autopilot: the player's game keeps its normal speed.)
+        if (ReplayEngine.IsActive && !Autopilot.Driving && Engine.TimeScale != _gameSpeed)
             Engine.TimeScale = _gameSpeed;
 
         if (!ReplayEngine.IsActive)

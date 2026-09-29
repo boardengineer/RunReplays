@@ -334,7 +334,7 @@ internal static class RunOverlay
 
     private static void RefreshControls()
     {
-        bool isActive = ReplayEngine.IsActive;
+        bool isActive = ReplayEngine.IsActive && !Autopilot.Driving;   // autopilot: no replay controls
         bool isPaused = ReplayDispatcher.Paused;
 
         if (_pauseButton != null)
@@ -392,7 +392,7 @@ internal static class RunOverlay
         if (_canvas == null || !GodotObject.IsInstanceValid(_canvas))
             return;
 
-        if (ReplayEngine.IsActive)
+        if (ReplayEngine.IsActive && !Autopilot.Driving)   // autopilot sessions show the recorded actions
             RefreshReplay();
         else
             RefreshRecording();

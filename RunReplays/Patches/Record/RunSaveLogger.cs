@@ -30,7 +30,7 @@ public static class RunSaveLogger
     [HarmonyPostfix]
     public static void Postfix(SerializableRun __result)
     {
-        if (ReplayEngine.IsActive && !LiveBridge.InRun)
+        if (ReplayEngine.IsActive && !LiveBridge.Driving)
             return;
 
         try

@@ -477,6 +477,27 @@ public static class CardPlayReplayPatch
         ReplayDispatcher.NotifyEffectsSettled();
     }
     
+    /// <summary>
+    /// External control (autopilot session / bot "Attach") starts in the middle of a fight that was played by hand:
+    /// the turn signals were not tracked (ReplayEngine was inactive), so set the combat dispatch state from the live
+    /// combat instead of stale values.
+    /// </summary>
+    internal static void PrepareExternalControl()
+    {
+        try { _currentCombatState = CombatManager.Instance?.DebugOnlyGetState() ?? _currentCombatState; } catch { }
+        _dispatching = false;
+        _waitingForEffects = false;
+        _actionFiredThisFrame = false;
+        _quietFrameCount = 0;
+        _awaitingEndTurnCompletion = false;
+        _turnStartedSinceLastEndTurn = true;
+        _postEndTurn_turnEndedReceived = false;
+        _postEndTurn_turnStartedReceived = false;
+        _postEndTurn_savedTurnStartState = null;
+        ReplayState.CardPlayInFlight = false;
+        ReplayState.PotionInFlight = false;
+    }
+
     internal static bool TryEndTurn()
     {
         if (_waitingForEffects)

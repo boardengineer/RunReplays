@@ -58,6 +58,25 @@ Commands are executed by the normal replay dispatcher: a live run is a replay fe
 appended to the action buffer, so the usual per-floor logs (`logs/<seed>/floor_N/actions.sts2replay` + `run.save`) are
 written and the run can be watched with the Run Replays menu. Special commands: `StartRun CHARACTER SEED ASC` (main
 menu only; acts rolled like `StartRunLobby`: `ActModel.GetRandomList(Rng(hash(seed), "act_selection"))`),
-`Replay SEED[:floor_N]` (same as the menu's replay of that log), `Quit`.
+`Replay SEED[:floor_N]` (same as the menu's replay of that log), `Quit`, and for tests `Detach` / `Attach` (hand the
+running run over to normal play / take it back).
+
+### Fight autopilot (`Autopilot.cs`)
+
+The same bridge, without the environment variable, for the player's own runs: with the mod config option
+**Fight autopilot** on (default on this branch) the player presses the **hotkey** (config `AutopilotHotkey`, default
+`F8`) during a fight and the helper `C:\sts-sim\fight_autopilot.bat` (`tools\fight_autopilot.py`) plays the rest of
+that fight with the sts-sim MCTS; control returns at the fight's end (rewards screen / game over), when the hotkey is
+pressed again (cancel), or when the helper refuses (content the simulator cannot import) or does not answer.
+
+* Completely passive without a session: no file is read or written, recording and replays are unchanged.
+* Session: the hotkey writes `autopilot_request.json` (`session` id, `action` start/stop); during the session the
+  bridge exports `live_state.json` (with `autopilot.session/active/driving`) and executes `live_cmd.txt` commands
+  (channel reset to seq 1 at each session start) through the replay dispatcher, so they are recorded like the player's
+  actions. The helper reports in `autopilot_status.json` (`session`, `state` accepted/planning/playing/done/refused/
+  stopped/error, `text`, `heartbeat`), shown in an on-screen label.
+* While the autopilot drives, the player's mouse (full-screen input catcher) and keyboard input to the combat UI is
+  ignored (hotkey excepted); after a cancel the action in flight finishes first.
+* Test hook: `RUNREPLAYS_AUTOPILOT_TEST=1` makes the file `autopilot_hotkey.trigger` act as a hotkey press.
 
 The hard-coded `RUNREPLAYS_AUTOPLAY` target is disabled on this branch.

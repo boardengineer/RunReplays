@@ -10,6 +10,10 @@ public class RunReplaysConfig : SimpleModConfig
     public static bool ShowRunReplaysButton { get; set; } = true;
     public static bool ShowReplayOverlay { get; set; } = false;
     public static bool ExportLiveFight { get; set; } = true;
+    /// <summary>Fight autopilot (Autopilot.cs): the hotkey starts/stops the sts-sim fight_autopilot.py helper for the current fight.</summary>
+    public static bool EnableAutopilot { get; set; } = true;
+    /// <summary>Godot key name of the autopilot hotkey (e.g. F8, F9, Pause, KP 0).</summary>
+    public static string AutopilotHotkey { get; set; } = "F8";
 
     public override void SetupConfigUI(Control optionContainer)
     {
@@ -29,6 +33,8 @@ public class RunReplaysConfig : SimpleModConfig
                 nameof(ShowReplayOverlay)    => "Show Replay Overlay",
                 nameof(ShowRunReplaysButton) => "Show Main Menu Button (takes effect after restarting the game)",
                 nameof(ExportLiveFight)      => "Export live fight snapshot (RunReplays/live_fight.json, for the sts-sim planner)",
+                nameof(EnableAutopilot)      => "Fight autopilot: hotkey hands the current fight to the sts-sim MCTS (needs fight_autopilot.bat running)",
+                nameof(AutopilotHotkey)      => "Fight autopilot hotkey (Godot key name, e.g. F8)",
                 _ => null
             };
 
