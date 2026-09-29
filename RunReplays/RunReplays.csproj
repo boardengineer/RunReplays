@@ -6,7 +6,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <!-- Behavior flags — all configurations. -->
-        <DefineConstants>$(DefineConstants);RUNREPLAYS_AUTOPLAY</DefineConstants>
+        <!-- RUNREPLAYS_AUTOPLAY (auto-launch a hard-coded replay from the main menu) is disabled on this branch. -->
+        <!-- <DefineConstants>$(DefineConstants);RUNREPLAYS_AUTOPLAY</DefineConstants> -->
         <!-- Mod-generated dev-console logging — compiled out of Release builds.
              RUNREPLAYS_DEVCONSOLE gates the console sink itself; the category
              flags gate the individual logging helpers. -->

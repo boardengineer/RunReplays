@@ -56,6 +56,9 @@ public static class MainMenuButtonInjector
         // Start polling for dispatchable command changes (diagnostic).
         ReplayDispatcher.StartDispatchPoll();
 
+        // Live command bridge (only with RUNREPLAYS_LIVE=1).
+        LiveBridge.OnMainMenu();
+
         // Apply manual patches (isolated from PatchAll).
         // Deferred so the dev console is available for diagnostic logging.
         Callable.From(CrystalSphereManualPatcher.Apply).CallDeferred();

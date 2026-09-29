@@ -31,6 +31,19 @@ public static class ReplayEngine
     /// </summary>
     private static ReplayCommand SignalConsumed(ReplayCommand cmd, [CallerMemberName] string? caller = null)
     {
+        if (LiveBridge.InRun)
+        {
+            // Live mode: one externally fed command at a time; record it and acknowledge.
+            if (_recentConsumed.Count >= 2)
+                _recentConsumed.RemoveAt(0);
+            _recentConsumed.Add(cmd);
+            ContextChanged?.Invoke();
+            LiveBridge.OnConsumed(cmd);
+            ReplayDispatcher.NotifyConsumed();
+            ReplayDispatcher.TryDispatch();
+            return cmd;
+        }
+
         if (_recentConsumed.Count >= 2)
             _recentConsumed.RemoveAt(0);
         _recentConsumed.Add(cmd);
@@ -97,7 +110,7 @@ public static class ReplayEngine
 
     // ─────────────────────────────────────────────────────────────────────────
 
-    public static bool IsActive => _pending.Count > 0 || _replayActive;
+    public static bool IsActive => _pending.Count > 0 || _replayActive || LiveBridge.InRun;
 
     /// <summary>
     /// True for the entire lifetime of a run that was started as a replay

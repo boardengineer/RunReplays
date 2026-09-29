@@ -289,6 +289,19 @@ public static class PlayerActionBuffer
     }
 
     /// <summary>
+    /// Live bridge: records an executed live command (bypasses the replay-active check, since a live run is driven
+    /// through the replay dispatcher).
+    /// </summary>
+    internal static void RecordLive(string text)
+    {
+        string timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
+        _verboseEntries.Enqueue((timestamp, text));
+        _minimalEntries.Enqueue(text);
+        Utils.DiagnosticLog.Write("Record", "(live) " + text);
+        EntryRecorded?.Invoke(text);
+    }
+
+    /// <summary>
     /// Records only into the verbose log (e.g. decorative separators or
     /// per-option lines that the minimal log replaces with a summary).
     /// </summary>

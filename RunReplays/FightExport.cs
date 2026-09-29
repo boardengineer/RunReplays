@@ -193,6 +193,43 @@ namespace StsSim
             // HistoryCourse: the last non-dupe Attack whose play finished this turn
             w.Key("lastAttackFinishedThisTurn");
             WriteValue(w, finishedT.LastOrDefault(e => e.CardPlay.Card.Type == CardType.Attack && !e.CardPlay.Card.IsDupe)?.CardPlay.Card, 1);
+            // Defect (sim: cards_defect.cpp / orbs.cpp)
+            w.Key("lightningChanneledCombat").Num(entries.OfType<OrbChanneledEntry>().Count(e => e.Actor?.Player == player && e.Orb?.Id.Entry == "LIGHTNING_ORB"));
+            w.Key("energySpentThisTurn").Num(entries.OfType<EnergySpentEntry>().Where(e => e.HappenedThisTurn(cs) && e.Actor?.Player == player).Sum(e => e.Amount));
+            w.Key("firstPlaysStartedThisTurn").Num(startedT.Count(e => e.CardPlay.PlayIndex == 0));
+            w.Key("zeroEnergyAttackPlaysStartedThisTurn").Num(startedT.Count(e => e.CardPlay.Card.Type == CardType.Attack && e.CardPlay.Resources.EnergyValue == 0));
+            w.Key("statusDrawnThisTurn").Num(entries.OfType<CardDrawnEntry>().Count(e => e.HappenedThisTurn(cs) && e.Actor == player.Creature && e.Card?.Type == CardType.Status));
+            {
+                var ptn = typeof(MegaCrit.Sts2.Core.Combat.History.CombatHistoryEntry).GetField("_playerTurnNumbers", BindingFlags.Instance | BindingFlags.NonPublic);
+                int turn = player.PlayerCombatState?.TurnNumber ?? 0;
+                var nfb = entries.OfType<DamageReceivedEntry>().Where(e => e.Receiver == player.Creature && !e.Result.WasFullyBlocked)
+                    .Select(e => ptn?.GetValue(e) is IDictionary d && d.Contains(player.NetId) ? (int)d[player.NetId] : -1).ToList();
+                w.Key("notFullyBlockedLastPlayerTurn").Bool(nfb.Contains(turn - 1));
+                w.Key("notFullyBlockedThisPlayerTurn").Bool(nfb.Contains(turn));
+            }
+            // Regent (sim: cards_regent.cpp)
+            w.Key("starsGainedThisTurn").Num(entries.OfType<StarsModifiedEntry>().Where(e => e.HappenedThisTurn(cs) && e.Amount > 0 && e.Actor == player.Creature).Sum(e => e.Amount));
+            w.Key("cardsGeneratedByPlayerCombat").Num(entries.OfType<CardGeneratedEntry>().Count(e => e.Creator == player));
+            w.Key("playerAttackHitsThisTurn").Arr();   // [cid, hits]: DamageReceivedEntry from the player's powered attacks (Beat Into Shape)
+            foreach (var g in entries.OfType<DamageReceivedEntry>()
+                         .Where(e => e.HappenedThisTurn(cs) && e.Dealer == player.Creature && e.Receiver?.CombatId != null
+                                     && MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.IsPoweredAttack(e.Result.Props))
+                         .GroupBy(e => e.Receiver.CombatId.Value))
+            {
+                w.Arr(); w.Num(g.Key); w.Num(g.Count()); w.End();
+            }
+            w.End();
+            // Necrobinder (sim: cards_necrobinder.cpp / osty.cpp)
+            {
+                var osty = player.Osty;
+                w.Key("ostyAttacksThisTurn").Num(osty == null ? 0 : entries.OfType<CreatureAttackedEntry>().Count(e => e.HappenedThisTurn(cs) && e.Actor == osty));
+                w.Key("etherealPlaysFinishedCombat").Num(finished.Count(e => e.WasEthereal));
+                w.Key("nonHandDrawsThisTurn").Num(entries.OfType<CardDrawnEntry>().Count(e => e.HappenedThisTurn(cs) && e.Actor == player.Creature && !e.FromHandDraw));
+                w.Key("doomAppliedThisTurn").Bool(entries.OfType<PowerReceivedEntry>().Any(e => e.HappenedThisTurn(cs) && e.Power is MegaCrit.Sts2.Core.Models.Powers.DoomPower && e.Applier == player.Creature));
+                w.Key("finishedThisTurnRefs").Arr();   // refs of the cards whose play finished this turn (Fetch)
+                foreach (var e in finishedT) w.Num(_refs != null && _refs.TryGetValue(e.CardPlay.Card, out var rf) ? rf : 0);
+                w.End();
+            }
             w.Key("entries").Num(entries.Count);
             w.End();
         }
@@ -249,7 +286,11 @@ namespace StsSim
             {
                 w.Obj(); w.Key("capacity").Num(oq.Capacity); w.Key("orbs").Arr();
                 foreach (var o in oq.Orbs) w.Str(o.Id.Entry);
-                w.End(); w.End();
+                w.End();
+                w.Key("orbData").Arr();   // per orb: its fields (DarkOrb._evokeVal, GlassOrb._passiveVal)
+                foreach (var o in oq.Orbs) { w.Obj(); w.Key("id").Str(o.Id.Entry); WriteModelFields(w, o, typeof(OrbModel)); w.End(); }
+                w.End();
+                w.End();
             }
             else w.Null();
             w.End();
@@ -308,6 +349,20 @@ namespace StsSim
             w.Key("clone").Bool(c.IsClone);
             w.Key("dupe").Bool(c.IsDupe);
             w.Key("replays").Num(c.BaseReplayCount);
+            // star cost (Regent): CanonicalStarCost / HasStarCostX / BaseStarCost, LastStarsSpent, _temporaryStarCosts
+            w.Key("stars").Obj();
+            w.Key("canonical").Num(c.CanonicalStarCost);
+            w.Key("x").Bool(c.HasStarCostX);
+            w.Key("base").Num(SafeGet(() => c.BaseStarCost));
+            w.Key("last").Num(c.LastStarsSpent);
+            w.Key("temps").Arr();
+            if (GetField(c, "_temporaryStarCosts") is IEnumerable tsc)
+                foreach (var t in tsc.Cast<TemporaryCardCost>())
+                {
+                    w.Obj(); w.Key("cost").Num(t.Cost); w.Key("turn").Bool(t.ClearsWhenTurnEnds); w.Key("played").Bool(t.ClearsWhenCardIsPlayed); w.End();
+                }
+            w.End();
+            w.End();
             w.Key("deck").Bool(c.DeckVersion != null);
             w.Key("ench");
             if (c.Enchantment != null)

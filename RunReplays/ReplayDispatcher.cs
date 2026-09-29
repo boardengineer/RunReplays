@@ -390,6 +390,17 @@ public static class ReplayDispatcher
         return commands;
     }
 
+    /// <summary>Dispatchable command types + whether an in-flight operation blocks non-selection commands (live bridge).</summary>
+    internal static HashSet<Type> GetDispatchableTypesInternal(out bool blocked)
+    {
+        blocked = ReplayState.PotionInFlight
+                  || ReplayState.CardPlayInFlight
+                  || CardPlayReplayPatch.IsAwaitingEndTurnCompletion
+                  || MapMoveInFlight
+                  || ReplayState.ActionInFlight;
+        return GetDispatchableTypes();
+    }
+
     private static HashSet<Type> GetDispatchableTypes()
     {
         bool blocked = ReplayState.PotionInFlight
@@ -619,6 +630,12 @@ public static class ReplayDispatcher
         DispatchNow();
     }
     private static float _delayBetweenCommands = 1.0f;
+    /// <summary>Pause between consecutive commands (seconds, game time). The live bridge lowers it.</summary>
+    internal static float DelayBetweenCommands
+    {
+        get => _delayBetweenCommands;
+        set => _delayBetweenCommands = Math.Max(0f, value);
+    }
     /// <summary>
     /// True while a dispatched command is executing (between ExecuteNext and
     /// the command being consumed from the queue).  Prevents re-dispatch of
