@@ -14,6 +14,13 @@
         <DefineConstants Condition="'$(Configuration)' != 'Release'">$(DefineConstants);RUNREPLAYS_MIGRATION;RUNREPLAYS_VERBOSE;RUNREPLAYS_DISPATCHER;RUNREPLAYS_DEVCONSOLE</DefineConstants>
     </PropertyGroup>
 
+    <!-- Game assemblies to compile against (STS2 release branches differ in code): the live install by default, or a
+         snapshot of a specific Steam branch, e.g. -p:STS2GameData=C:\sts-sim\gamebuilds\public-beta-24724944\data_sts2_windows_x86_64
+         (see C:\sts-sim\GAME_BRANCHES.md). -->
+    <PropertyGroup>
+        <STS2GameData Condition="'$(STS2GameData)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\data_sts2_windows_x86_64</STS2GameData>
+    </PropertyGroup>
+
     <!-- BaseLib: the installed mod, else the NuGet cache copy (alchyr.sts2.baselib), else pass -p:BaseLibDll=<path> -->
     <PropertyGroup>
         <BaseLibDll Condition="'$(BaseLibDll)' == ''">..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\mods\BaseLib.dll</BaseLibDll>
@@ -22,7 +29,7 @@
 
     <ItemGroup>
       <Reference Include="sts2">
-        <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2\data_sts2_windows_x86_64\sts2.dll</HintPath>
+        <HintPath>$(STS2GameData)\sts2.dll</HintPath>
       </Reference>
       <Reference Include="BaseLib">
         <HintPath>$(BaseLibDll)</HintPath>
