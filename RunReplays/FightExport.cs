@@ -140,7 +140,9 @@ namespace StsSim
                 if (cm.PlayerActionsDisabled || cm.EndingPlayerTurnPhaseOne || cm.EndingPlayerTurnPhaseTwo) return false;
                 if (RunManager.Instance?.ActionExecutor?.IsRunning == true) return false;
                 if (player.Creature.IsDead) return false;
-                return cs.Enemies.Any(e => e.IsAlive && e.IsPrimaryEnemy);
+                // the fight goes on while no primary enemy is alive if something stops it from ending (Test Subject
+                // between phases: Hook.ShouldStopCombatFromEnding); CombatManager.IsEnding covers both cases
+                return !cm.IsOverOrEnding;
             }
             catch { return false; }
         }
