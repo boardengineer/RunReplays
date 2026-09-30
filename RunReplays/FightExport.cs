@@ -48,9 +48,81 @@ namespace StsSim
             var pcs0 = player.PlayerCombatState;
             foreach (var pile in new[] { pcs0.DrawPile, pcs0.Hand, pcs0.DiscardPile, pcs0.ExhaustPile, pcs0.PlayPile })
                 foreach (var c in pile.Cards) if (!_refs.ContainsKey(c)) _refs[c] = _refs.Count + 1;
-            try { WriteSnapshot(w, cs, player); }
+            string json;
+            try
+            {
+                WriteSnapshot(w, cs, player);
+                json = w.ToString();
+                if (IsPlayerInputPoint(player))   // the base of a later pending-choice export (ExportPending)
+                {
+                    _lastInputJson = json;
+                    _lastInputRefs = new Dictionary<CardModel, int>(_refs, ReferenceEqualityComparer.Instance);
+                }
+            }
             finally { _refs = null; }
-            return w.ToString();
+            return json;
+        }
+
+        // ------------------------------------------------------------------ pending card-selection prompt
+        // A card-selection prompt is open inside an action (the game waits on the player's choice; not an input point).
+        // The export is the snapshot of the last input point (the state the action started from) plus
+        //   "pending": {"action": {"token": "p3.1" | "u0" | "e" (optional, sim cmp syntax relative to that state),
+        //                          "kind": "card" | "potion" | "endTurn" | "other", "ref"/"id"/"up" (card), "slot" (potion),
+        //                          "target": cid | null},
+        //               "answered": [[picks..], ..]  (the prompts of this action answered so far, option indexes; [-1] = none),
+        //               "prompt": {"min", "max", "options": [{"id","up","ref"}]}}   (the open prompt)
+        // The simulator replays the action from the base state with the answered prompts to reach the same prompt
+        // (src/fight_import.cpp pendingPrefix; `mcts plan` answers it). answered == null: unknown (assumed none).
+        static string _lastInputJson;
+        static Dictionary<CardModel, int> _lastInputRefs;
+
+        public static string ExportPending(Player player, IEnumerable<CardModel> options, int minSelect, int maxSelect,
+                                           IEnumerable<int[]> answered, string actionToken = null)
+        {
+            if (_lastInputJson == null || player?.Creature?.CombatState == null) return null;
+            var w = new W();
+            w.Obj();
+            w.Key("action").Obj();
+            if (actionToken != null) w.Key("token").Str(actionToken);
+            var act = SafeGet(() => RunManager.Instance?.ActionExecutor?.CurrentlyRunningAction);
+            if (act is MegaCrit.Sts2.Core.GameActions.PlayCardAction pa)
+            {
+                var card = GetField(pa, "_card") as CardModel;
+                w.Key("kind").Str("card");
+                w.Key("id").Str(pa.CardModelId.Entry);
+                w.Key("up").Num(card?.CurrentUpgradeLevel ?? 0);
+                w.Key("ref").Num(card != null && _lastInputRefs.TryGetValue(card, out var rf) ? rf : 0);
+                w.Key("target"); if (pa.TargetId.HasValue) w.Num(pa.TargetId.Value); else w.Null();
+            }
+            else if (act is MegaCrit.Sts2.Core.GameActions.UsePotionAction ua)
+            {
+                w.Key("kind").Str("potion");
+                w.Key("slot").Num(ua.PotionIndex);
+                w.Key("target"); if (ua.TargetId.HasValue) w.Num(ua.TargetId.Value); else w.Null();
+            }
+            else w.Key("kind").Str(act == null ? "none" : act.GetType().Name);
+            w.End();
+            w.Key("answered");
+            if (answered == null) w.Null();
+            else
+            {
+                w.Arr();
+                foreach (var a in answered) { w.Arr(); foreach (var i in a) w.Num(i); w.End(); }
+                w.End();
+            }
+            w.Key("prompt").Obj();
+            w.Key("min").Num(minSelect);
+            w.Key("max").Num(maxSelect);
+            w.Key("options").Arr();
+            foreach (var c in options)
+            {
+                w.Obj(); w.Key("id").Str(c.Id.Entry); w.Key("up").Num(c.CurrentUpgradeLevel);
+                w.Key("ref").Num(_lastInputRefs.TryGetValue(c, out var r) ? r : 0); w.End();
+            }
+            w.End();
+            w.End();
+            w.End();
+            return _lastInputJson.Substring(0, _lastInputJson.Length - 1) + ",\"pending\":" + w + "}";
         }
 
         /// <summary>True while the player can act (combat in progress, player's side, Play phase, no action running).</summary>
@@ -231,6 +303,9 @@ namespace StsSim
                 foreach (var e in finishedT) w.Num(_refs != null && _refs.TryGetValue(e.CardPlay.Card, out var rf) ? rf : 0);
                 w.End();
             }
+            // Act 3 (sim: monsters_act3.cpp): Bound afflictions this turn (ChainsOfBindingPower's CardAfflictedEntry count)
+            w.Key("boundAfflictionsThisTurn").Num(entries.OfType<CardAfflictedEntry>().Count(e => e.HappenedThisTurn(cs) && e.Actor == player.Creature
+                && e.Affliction?.Id.Entry == "BOUND"));
             w.Key("entries").Num(entries.Count);
             w.End();
         }
