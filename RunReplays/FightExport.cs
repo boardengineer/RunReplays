@@ -177,6 +177,7 @@ namespace StsSim
             w.Key("powerPlaysFinishedThisTurn").Num(finishedT.Count(e => e.CardPlay.Card.Type == CardType.Power));
             w.Key("shivPlaysFinishedThisTurn").Num(finishedT.Count(e => e.CardPlay.Card.Tags.Contains(CardTag.Shiv)));
             w.Key("playsStartedCombat").Num(started.Count);
+            w.Key("playsFinishedCombat").Num(entries.OfType<CardPlayFinishedEntry>().Count());   // all players (Gold Axe)
             w.Key("attackPlaysStartedCombat").Num(started.Count(e => e.CardPlay.Card.Type == CardType.Attack));
             w.Key("skillPlaysStartedCombat").Num(started.Count(e => e.CardPlay.Card.Type == CardType.Skill));
             w.Key("exhaustedThisTurn").Num(entries.OfType<CardExhaustedEntry>().Count(e => e.HappenedThisTurn(cs) && e.Actor == player.Creature));
@@ -368,6 +369,7 @@ namespace StsSim
             if (c.Enchantment != null)
             {
                 w.Obj(); w.Key("id").Str(c.Enchantment.Id.Entry); w.Key("amt").Num(c.Enchantment.Amount);
+                w.Key("status").Str(c.Enchantment.Status.ToString());   // EnchantmentStatus (Sown / Swift / Vigorous / Glam used)
                 WriteModelFields(w, c.Enchantment, typeof(EnchantmentModel)); w.End();
             }
             else w.Null();
