@@ -210,8 +210,25 @@ public static class LiveBridge
         if (ci >= 0) { comment = raw[(ci + 3)..]; raw = raw[..ci]; }
         Log($"recv {seq}: {raw}" + (comment != null ? $" # {comment}" : ""));
 
-        bool special = raw.StartsWith("StartRun ") || raw.StartsWith("Replay ") || raw == "Quit" || raw == "Attach" || raw == "Detach";
+        bool special = raw.StartsWith("StartRun ") || raw.StartsWith("Replay ") || raw == "Quit" || raw == "Attach" || raw == "Detach"
+                       || raw.StartsWith("Console ");
         if (special && !Enabled) { Ack(seq, "error", "only in bot mode (RUNREPLAYS_LIVE=1)"); return; }
+        if (raw.StartsWith("Console "))
+        {
+            // Bot mode (tests): a dev-console command for the local player, e.g. "relic add GAMBLING_CHIP" or
+            // "fight TEST_SUBJECT_BOSS" (set up autopilot test situations). ProcessNetCommand: no console history write.
+            if (RunManager.Instance?.IsInProgress != true) { Ack(seq, "error", "no run in progress"); return; }
+            try
+            {
+                var me = MegaCrit.Sts2.Core.Context.LocalContext.GetMe(RunManager.Instance.DebugOnlyGetState());
+                var console = new MegaCrit.Sts2.Core.DevConsole.DevConsole(true);
+                var res = console.ProcessNetCommand(me, raw["Console ".Length..].Trim());
+                if (res.task != null) TaskHelper.RunSafely(res.task);
+                Ack(seq, res.success ? "ok" : "error", res.msg ?? "");
+            }
+            catch (Exception e) { Ack(seq, "error", "console: " + e.Message); }
+            return;
+        }
         if (raw.StartsWith("StartRun ")) { StartRun(seq, raw); return; }
         if (raw == "Detach")
         {
