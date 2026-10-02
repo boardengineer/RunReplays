@@ -211,8 +211,25 @@ public static class LiveBridge
         Log($"recv {seq}: {raw}" + (comment != null ? $" # {comment}" : ""));
 
         bool special = raw.StartsWith("StartRun ") || raw.StartsWith("Replay ") || raw == "Quit" || raw == "Attach" || raw == "Detach"
-                       || raw.StartsWith("Console ");
+                       || raw.StartsWith("Console ") || raw.StartsWith("LoadFloor ");
         if (special && !Enabled) { Ack(seq, "error", "only in bot mode (RUNREPLAYS_LIVE=1)"); return; }
+        if (raw.StartsWith("LoadFloor "))
+        {
+            // Bot mode: continue a recorded run from the start of one floor ("LoadFloor SEED:floor_N", its run.save) and
+            // attach, so the bot plays that floor (e.g. re-play a fight with the current sim / MCTS and record it).
+            if (InRun || RunManager.Instance.IsInProgress) { Ack(seq, "error", "a run is in progress"); return; }
+            string spec = raw["LoadFloor ".Length..].Trim();
+            int colon = spec.IndexOf(":floor_", StringComparison.OrdinalIgnoreCase);
+            if (colon <= 0 || !int.TryParse(spec[(colon + ":floor_".Length)..], out int floor))
+            { Ack(seq, "error", "usage: LoadFloor SEED:floor_N"); return; }
+            string? err = RunReplayMenu.LoadFloorSave(spec[..colon], floor);
+            if (err != null) { Ack(seq, "error", err); return; }
+            CardPlayReplayPatch.PrepareExternalControl();
+            InRun = true;
+            ReplayDispatcher.DelayBetweenCommands = 0.3f;
+            Ack(seq, "ok", $"loading {spec}");
+            return;
+        }
         if (raw.StartsWith("Console "))
         {
             // Bot mode (tests): a dev-console command for the local player, e.g. "relic add GAMBLING_CHIP" or

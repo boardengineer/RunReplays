@@ -38,6 +38,25 @@ public static class RunReplayMenu
         string? SavePath,
         bool IsSample = false);
 
+    // ── Load a floor's save (live bridge, bot mode) ───────────────────────────────
+
+    /// <summary>
+    /// Continues a recorded run from the start of one floor (its saved run.save, as "load save directly" in the
+    /// replay menu) without replaying any command, so an external bot can play that floor. Returns an error message or
+    /// null when the load was started.
+    /// </summary>
+    internal static string? LoadFloorSave(string seed, int floor)
+    {
+        var entry = LoadEntries().FirstOrDefault(e =>
+            string.Equals(e.Seed, seed, StringComparison.OrdinalIgnoreCase) && e.Floor == floor && !e.IsSample);
+        if (entry == null) return $"no recorded floor_{floor} for seed {seed}";
+        if (entry.SavePath == null) return $"floor_{floor} of {seed} has no run.save";
+        ReplayEngine.ActiveSeed = entry.Seed;
+        TaskHelper.RunSafely(LoadSaveAsync(entry));
+        ReplayEngine.IsReplayRun = false;   // played by the bot, not replayed
+        return null;
+    }
+
     // ── Auto-play ──────────────────────────────────────────────────────────────
 
     /// <summary>
