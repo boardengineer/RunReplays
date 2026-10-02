@@ -441,7 +441,15 @@ public static class LiveBridge
     private static string DetectScreen(IRunState? state, Player? player, bool inProgress)
     {
         if (!inProgress || state == null || player == null) return Driving ? "loading" : "main_menu";
-        try { if (RunManager.Instance.IsGameOver || player.Creature.IsDead) return "game_over"; } catch { }
+        // A dead player during combat is not (yet) a game over: a prevented death (Fairy in a Bottle, Lizard Tail-style
+        // revives) passes through HP 0 mid-combat. RunState.IsGameOver is just "every player is dead"; a real loss ends the
+        // combat (CombatManager.ProcessPendingLoss: IsInProgress = false), so require that too.
+        try
+        {
+            if ((RunManager.Instance.IsGameOver || player.Creature.IsDead) && CombatManager.Instance?.IsInProgress != true)
+                return "game_over";
+        }
+        catch { }
         var hand = HandSelectionCapture.ActiveHand;
         if (hand != null && GodotObject.IsInstanceValid(hand) && hand.IsInsideTree() && hand.IsInCardSelection) return "hand_select";
         var grid = CardGridScreenCapture.ActiveScreen;
