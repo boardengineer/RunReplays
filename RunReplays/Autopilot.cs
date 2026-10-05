@@ -127,7 +127,10 @@ public static class Autopilot
     private static string? WhyNotStart()
     {
         if (LiveBridge.InRun) return "a bot controls this run";
-        if (ReplayEngine._replayActive || ReplayEngine._pending.Count > 0 || ReplayEngine.IsReplayRun)
+        // Only while recorded commands are queued / executing: a run started from the Run Replays menu (IsReplayRun) is
+        // free to play once nothing is left to replay - a plain save load queues nothing, a replay from a floor hands
+        // control back when its commands run out.
+        if (ReplayEngine._replayActive || ReplayEngine._pending.Count > 0)
             return "not available while a replay is running";
         if (RunManager.Instance?.IsInProgress != true || CombatManager.Instance?.IsInProgress != true)
             return $"only available during a fight ({HotkeyName})";
