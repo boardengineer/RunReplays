@@ -129,11 +129,37 @@ public static class Autopilot
         if (LiveBridge.InRun) return "a bot controls this run";
         // Only while recorded commands are queued / executing: a run started from the Run Replays menu (IsReplayRun) is
         // free to play once nothing is left to replay - a plain save load queues nothing, a replay from a floor hands
-        // control back when its commands run out.
-        if (ReplayEngine._replayActive || ReplayEngine._pending.Count > 0)
+        // control back when its commands run out. The replay flag alone does not block: TwitchVoteController keeps it set
+        // for its whole run with nothing queued.
+        if (ReplayEngine._pending.Count > 0)
             return "not available while a replay is running";
         if (RunManager.Instance?.IsInProgress != true || CombatManager.Instance?.IsInProgress != true)
             return $"only available during a fight ({HotkeyName})";
+        return null;
+    }
+
+    // ------------------------------------------------------------------ API for other mods
+
+    /// <summary>
+    /// How the last session ended: the helper's final state ("done", "refused", "error", "stopped") or "hotkey",
+    /// "no-helper", "helper-silent", "run-ended", "fight-over", "main-menu". Empty before the first session.
+    /// </summary>
+    public static string LastEndReason { get; private set; } = "";
+
+    /// <summary>
+    /// Opens an autopilot session for the current fight, like the hotkey (TwitchVoteController hands its runs' fights to
+    /// the autopilot). Unlike the hotkey it accepts runs whose replay flag the caller keeps set as long as no recorded
+    /// commands are queued. Returns null when the session started, else why not.
+    /// </summary>
+    public static string? StartFor(string source)
+    {
+        if (!ConfigEnabled) return "the autopilot is off in the RunReplays settings";   // no command polling without it
+        if (SessionActive || Draining) return "an autopilot session is active";
+        if (LiveBridge.InRun) return "a bot controls this run";
+        if (ReplayEngine._pending.Count > 0) return "replay commands are queued";
+        if (RunManager.Instance?.IsInProgress != true || CombatManager.Instance?.IsInProgress != true)
+            return "not in a fight";
+        Start(source);
         return null;
     }
 
@@ -161,13 +187,14 @@ public static class Autopilot
     private static void Cancel()
     {
         WriteRequest("stop", "hotkey");
-        EndSession($"stopped ({HotkeyName})", Cream);
+        EndSession($"stopped ({HotkeyName})", Cream, "hotkey");
     }
 
-    private static void EndSession(string text, Color color)
+    private static void EndSession(string text, Color color, string reason)
     {
         if (!SessionActive) return;
         SessionActive = false;
+        LastEndReason = reason;
         // Only autopilot commands can be queued during a session (replays / bot runs refuse to start one).
         ReplayEngine._pending.Clear();
         LiveBridge.DropQueuedCommands();
@@ -189,7 +216,7 @@ public static class Autopilot
 
     internal static void OnMainMenu()
     {
-        if (SessionActive) EndSession("the run ended", Cream);
+        if (SessionActive) EndSession("the run ended", Cream, "main-menu");
         if (Draining) FinishDrain("main menu");
     }
 
@@ -227,17 +254,17 @@ public static class Autopilot
                 if (!_helperSeen && now - _sessionStartMs > HelperStartTimeoutMs)
                 {
                     WriteRequest("stop", "no-helper");
-                    EndSession(@"the helper is not running - start C:\sts-sim\fight_autopilot.bat", Red);
+                    EndSession(@"the helper is not running - start C:\sts-sim\fight_autopilot.bat", Red, "no-helper");
                 }
                 else if (_helperSeen && now - _helperHeartbeatMs > HelperSilenceTimeoutMs)
                 {
                     WriteRequest("stop", "helper-silent");
-                    EndSession("the helper stopped responding", Red);
+                    EndSession("the helper stopped responding", Red, "helper-silent");
                 }
                 else if (RunManager.Instance?.IsInProgress != true)
                 {
                     WriteRequest("stop", "run-ended");
-                    EndSession("the run ended", Cream);
+                    EndSession("the run ended", Cream, "run-ended");
                 }
                 else if (CombatManager.Instance?.IsInProgress != true && ReplayEngine._pending.Count == 0)
                 {
@@ -245,7 +272,7 @@ public static class Autopilot
                     else if (now - _noCombatSinceMs > NoCombatTimeoutMs)
                     {
                         WriteRequest("stop", "fight-over");
-                        EndSession("fight over", Cream);
+                        EndSession("fight over", Cream, "fight-over");
                     }
                 }
                 else _noCombatSinceMs = 0;
@@ -289,10 +316,10 @@ public static class Autopilot
         _helperHeartbeatMs = Math.Max(heartbeat, NowMs - 1000);
         switch (state)
         {
-            case "done": EndSession(text, Green); break;
-            case "refused": EndSession(text, Red); break;
-            case "error": EndSession(text, Red); break;
-            case "stopped": EndSession(text, Cream); break;
+            case "done": EndSession(text, Green, state); break;
+            case "refused": EndSession(text, Red, state); break;
+            case "error": EndSession(text, Red, state); break;
+            case "stopped": EndSession(text, Cream, state); break;
             default: Show($"AUTOPILOT: {text}   ({HotkeyName} to stop)", Gold, 0); break;
         }
     }
