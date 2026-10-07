@@ -173,7 +173,12 @@ public static class ReplayDispatcher
                     var currentCoord = state?.CurrentMapCoord;
                     if (currentCoord.HasValue && dict.TryGetValue(currentCoord.Value, out var currentPoint))
                     {
-                        foreach (var child in currentPoint.Point.Children)
+                        // the game's own rule: the connected children, or the whole next row while free travel is on
+                        // (Winged Boots with charges left, the Flight modifier)
+                        var reachable = state != null
+                            ? MegaCrit.Sts2.Core.Map.MapTravel.GetTravelablePointsFrom(state, currentPoint.Point)
+                            : currentPoint.Point.Children;
+                        foreach (var child in reachable)
                             commands.Add(new MapMoveCommand(child.coord.col));
                     }
                     else
