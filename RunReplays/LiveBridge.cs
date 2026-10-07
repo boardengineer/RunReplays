@@ -211,7 +211,7 @@ public static class LiveBridge
         if (ci >= 0) { comment = raw[(ci + 3)..]; raw = raw[..ci]; }
         Log($"recv {seq}: {raw}" + (comment != null ? $" # {comment}" : ""));
 
-        bool special = raw.StartsWith("StartRun ") || raw.StartsWith("Replay ") || raw == "Quit" || raw == "Attach" || raw == "Detach"
+        bool special = raw.StartsWith("StartRun ") || raw.StartsWith("Replay ") || raw == "Quit" || raw == "Attach" || raw == "Detach" || raw == "MainMenu"
                        || raw.StartsWith("Console ") || raw.StartsWith("LoadFloor ");
         if (special && !Enabled) { Ack(seq, "error", "only in bot mode (RUNREPLAYS_LIVE=1)"); return; }
         if (raw.StartsWith("LoadFloor "))
@@ -240,8 +240,15 @@ public static class LiveBridge
             {
                 var me = MegaCrit.Sts2.Core.Context.LocalContext.GetMe(RunManager.Instance.DebugOnlyGetState());
                 var console = new MegaCrit.Sts2.Core.DevConsole.DevConsole(true);
-                var res = console.ProcessNetCommand(me, raw["Console ".Length..].Trim());
+                string text = raw["Console ".Length..].Trim();
+                var res = console.ProcessNetCommand(me, text);
                 if (res.task != null) TaskHelper.RunSafely(res.task);
+                // A jump into a room (event / ancient / room / fight) from the map leaves the map screen open on top of it.
+                if (res.success && (text.StartsWith("event ") || text.StartsWith("ancient ") || text.StartsWith("room ") || text.StartsWith("fight ")))
+                {
+                    var map = NMapScreen.Instance;
+                    if (map != null && GodotObject.IsInstanceValid(map) && map.IsOpen) map.Close(false);
+                }
                 Ack(seq, res.success ? "ok" : "error", res.msg ?? "");
             }
             catch (Exception e) { Ack(seq, "error", "console: " + e.Message); }
@@ -276,6 +283,16 @@ public static class LiveBridge
             if (InRun || RunManager.Instance.IsInProgress) { Ack(seq, "error", "a run is in progress"); return; }
             Ack(seq, "ok", raw);
             RunReplayMenu.AutoPlay(raw["Replay ".Length..].Trim());
+            return;
+        }
+        if (raw == "MainMenu")
+        {
+            // Bot mode: back to the main menu from anywhere in a run (the game over screen included); ends the attachment.
+            if (NGame.Instance == null) { Ack(seq, "error", "no game"); return; }
+            ReplayEngine._pending.Clear();
+            InRun = false;
+            Ack(seq, "ok", "main menu");
+            TaskHelper.RunSafely(NGame.Instance.ReturnToMainMenu());
             return;
         }
         if (raw == "Quit")
