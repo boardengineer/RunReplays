@@ -63,8 +63,9 @@ public static class VoteApi
         }
     }
 
+    /// <summary>The grid's selectable cards in the order SelectGridCard indices refer to.</summary>
     public static IReadOnlyList<CardModel>? CardGridCards(NCardGridSelectionScreen screen)
-        => CardGridScreenCapture.CardsField?.GetValue(screen) as IReadOnlyList<CardModel>;
+        => CardGridScreenCapture.GetSelectableCards(screen);
 
     public static Node? ChooseACard
     {
