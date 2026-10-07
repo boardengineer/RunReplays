@@ -142,6 +142,7 @@ public static class LiveBridge
         if (Enabled || Autopilot.Driving)
             try { ExportState(); } catch (Exception e) { Log("export error: " + e); }
         try { Autopilot.Tick(); } catch (Exception e) { Log("autopilot error: " + e); }
+        try { VoteScreenCapture.Tick(); } catch (Exception e) { Log("vote capture error: " + e.Message); }
         Schedule();
     }
 
@@ -455,7 +456,7 @@ public static class LiveBridge
         WriteAtomic(StatePath, Encoding.UTF8.GetString(ms.ToArray()));
     }
 
-    private static string DetectScreen(IRunState? state, Player? player, bool inProgress)
+    internal static string DetectScreen(IRunState? state, Player? player, bool inProgress)
     {
         if (!inProgress || state == null || player == null) return Driving ? "loading" : "main_menu";
         // A dead player during combat is not (yet) a game over: a prevented death (Fairy in a Bottle, Lizard Tail-style
@@ -511,7 +512,7 @@ public static class LiveBridge
         w.WriteEndObject();
     }
 
-    private static void WriteRun(Utf8JsonWriter w, IRunState state, Player player)
+    internal static void WriteRun(Utf8JsonWriter w, IRunState state, Player player)
     {
         w.WritePropertyName("run");
         w.WriteStartObject();
@@ -543,7 +544,7 @@ public static class LiveBridge
         w.WriteEndObject();
     }
 
-    private static void WriteDetails(Utf8JsonWriter w, IRunState state, Player player, string screen)
+    internal static void WriteDetails(Utf8JsonWriter w, IRunState state, Player player, string screen)
     {
         // combat hand with NetCombatCardDb ids (PlayCard arguments), in hand order
         var pcs = player.PlayerCombatState;
