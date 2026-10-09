@@ -57,6 +57,10 @@ public class SelectGridCardCommand : ReplayCommand
 
     public static SelectGridCardCommand? TryParse(string raw)
     {
+        // "SelectGridCard" alone = pick no card (an "up to N" prompt, Neow's Fury); the live bridge trims the line, so
+        // the prefix's trailing space never arrives (as SelectHandCards already handles)
+        if (raw == "SelectGridCard")
+            return new SelectGridCardCommand(System.Array.Empty<int>());
         if (!raw.StartsWith(Prefix))
             return null;
 
