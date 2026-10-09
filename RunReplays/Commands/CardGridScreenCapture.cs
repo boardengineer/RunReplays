@@ -82,11 +82,38 @@ public static class CardGridScreenCapture
         OnCardClickedMethod?.Invoke(screen, new object[] { card });
     }
 
+    private static readonly FieldInfo? PileSelectedField =
+        typeof(NCombatPileCardSelectScreen).GetField(
+            "_selectedCards", BindingFlags.NonPublic | BindingFlags.Instance);
+
+    private static readonly MethodInfo? PileCompleteMethod =
+        typeof(NCombatPileCardSelectScreen).GetMethod(
+            "CompleteSelection", BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
+
     internal static void ConfirmSelection(NCardGridSelectionScreen screen, IEnumerable<CardModel> cards)
     {
         var tcs = CompletionSourceField?.GetValue(screen)
             as System.Threading.Tasks.TaskCompletionSource<IEnumerable<CardModel>>;
-        tcs?.TrySetResult(cards);
+        if (tcs == null || tcs.Task.IsCompleted) return;
+        // A combat pile screen (Seeker Strike etc.) must finish through its own CompleteSelection: that unsubscribes it
+        // from the pile and closes it. Setting the result directly left it listening; when the fight ended the game
+        // cleared the piles, the screen completed again (TaskCompletionSource.SetResult on a finished task) and the
+        // exception aborted the end of combat - no rewards, the combat screen stuck (stream, 2026-10-09).
+        if (screen is NCombatPileCardSelectScreen && PileSelectedField != null && PileCompleteMethod != null)
+        {
+            try
+            {
+                PileSelectedField.SetValue(screen, new HashSet<CardModel>(cards));
+                PileCompleteMethod.Invoke(screen, null);
+                return;
+            }
+            catch (Exception e)
+            {
+                PlayerActionBuffer.LogToDevConsole($"[CardGridCapture] pile screen completion failed: {e.Message}");
+                if (tcs.Task.IsCompleted) return;
+            }
+        }
+        tcs.TrySetResult(cards);
     }
 
     internal static Godot.Node? FindCardHolderByIndex(Godot.Node screen, int index)
