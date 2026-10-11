@@ -493,6 +493,24 @@ namespace StsSim
             w.Key("nextMustPerformOnce").Bool(next?.MustPerformOnceBeforeTransitioning ?? false);
             w.Key("nextFollowUp").Str(next == null ? null : (next.FollowUpState?.Id ?? next.FollowUpStateId));
             w.Key("nextRegistered").Bool(sm != null && next != null && sm.States.TryGetValue(next.Id, out var reg) && reg == next);
+            // The intents as the game shows them over the enemy (display only; nothing imports them): type, and for an
+            // attack the per-hit damage after the game's own modifiers (AttackIntent.GetSingleDamage: Strength, Weak,
+            // Vulnerable, relics...) and the hit count.
+            w.Key("intents").Arr();
+            if (next?.Intents != null)
+                foreach (var it in next.Intents)
+                {
+                    w.Obj();
+                    w.Key("type").Str(it.IntentType.ToString());
+                    if (it is MegaCrit.Sts2.Core.MonsterMoves.Intents.AttackIntent a)
+                    {
+                        var targets = (IEnumerable<Creature>)(SafeGet(() => e.CombatState?.PlayerCreatures) ?? new List<Creature>());
+                        w.Key("damage").Num(SafeGet(() => a.GetSingleDamage(targets, e)));
+                        w.Key("hits").Num(Math.Max(1, SafeGet(() => a.Repeats)));
+                    }
+                    w.End();
+                }
+            w.End();
             if (sm != null)
             {
                 var cur = GetField(sm, "_currentState") as MonsterState;
