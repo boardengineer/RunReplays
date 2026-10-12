@@ -132,7 +132,7 @@ public class TakeCardCommand : ReplayCommand
 
         if (skipIndex >= 0)
         {
-            TaskHelper.RunSafely(extras![skipIndex].OnSelect());
+            // the game runs the alternative's OnSelect itself (see ExecuteSacrifice)
             OnAlternateRewardSelectedMethod?.Invoke(screen, new object[] { skipIndex });
         }
         else
@@ -176,7 +176,8 @@ public class TakeCardCommand : ReplayCommand
             if (extras[i] == sacrifice) { sacrificeIndex = i; break; }
         }
 
-        TaskHelper.RunSafely(sacrifice.OnSelect());
+        // Only what the button does: CardReward.OnSelect runs the alternative's OnSelect once the screen returns it.
+        // Calling OnSelect here as well sacrificed twice (Pael's Wing counted 2 per sacrifice).
         OnAlternateRewardSelectedMethod?.Invoke(screen, new object[] { sacrificeIndex });
 
         ReplayState.CardRewardSelectionScreen = null;
