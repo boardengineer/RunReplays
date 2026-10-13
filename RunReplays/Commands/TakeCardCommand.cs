@@ -65,7 +65,7 @@ public class TakeCardCommand : ReplayCommand
 
     public override ExecuteResult Execute()
     {
-        var screen = ReplayState.CardRewardSelectionScreen;
+        var screen = ReplayState.LiveCardRewardScreen();
         if (screen == null)
             return ExecuteResult.Retry(200);
 

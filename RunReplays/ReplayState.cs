@@ -31,6 +31,16 @@ public static class ReplayState
     /// </summary>
     public static NCardRewardSelectionScreen? CardRewardSelectionScreen { get; set; }
 
+    /// <summary>The card reward screen if it is still open: one the game freed without a TakeCard (so never cleared)
+    /// is dropped here instead of throwing ObjectDisposedException at whoever touches it next.</summary>
+    public static NCardRewardSelectionScreen? LiveCardRewardScreen()
+    {
+        var s = CardRewardSelectionScreen;
+        if (s == null) return null;
+        if (!Godot.GodotObject.IsInstanceValid(s)) { CardRewardSelectionScreen = null; return null; }
+        return s.IsInsideTree() ? s : null;
+    }
+
     /// <summary>
     /// The active event synchronizer, set by EventOptionReplayPatch postfix.
     /// </summary>

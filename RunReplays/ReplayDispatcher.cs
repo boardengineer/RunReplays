@@ -68,6 +68,25 @@ public static class ReplayDispatcher
 
         foreach (var type in types)
         {
+            // one stale screen (a freed node the game closed without us noticing) must not empty the whole list:
+            // the vote controller then saw no commands on the rewards screen and stalled (13 Oct, five times)
+            try { AddCommands(type, commands, state, player); }
+            catch (Exception e) { LogExpandFailure(type, e); }
+        }
+
+        return commands;
+    }
+
+    static readonly HashSet<Type> _expandFailuresLogged = new();
+
+    static void LogExpandFailure(Type type, Exception e)
+    {
+        if (_expandFailuresLogged.Add(type))
+            PlayerActionBuffer.LogMigrationWarning($"[Dispatcher] listing {type.Name} failed ({e.GetType().Name}: {e.Message}); skipped");
+    }
+
+    private static void AddCommands(Type type, List<ReplayCommand> commands, IRunState? state, MegaCrit.Sts2.Core.Entities.Players.Player? player)
+    {
             // -- parameterless commands --
             if (type == typeof(EndTurnCommand))
                 commands.Add(new EndTurnCommand());
@@ -227,13 +246,13 @@ public static class ReplayDispatcher
             }
             else if (type == typeof(TakeCardCommand))
             {
-                var screen = ReplayState.CardRewardSelectionScreen;
+                var screen = ReplayState.LiveCardRewardScreen();
                 if (screen != null)
                 {
                     var cardRow = typeof(NCardRewardSelectionScreen)
                         .GetField("_cardRow", BindingFlags.NonPublic | BindingFlags.Instance)
                         ?.GetValue(screen) as Godot.Node;
-                    if (cardRow != null)
+                    if (cardRow != null && GodotObject.IsInstanceValid(cardRow))
                     {
                         int count = 0;
                         foreach (Godot.Node child in cardRow.GetChildren())
@@ -390,9 +409,6 @@ public static class ReplayDispatcher
                     }
                 }
             }
-        }
-
-        return commands;
     }
 
     /// <summary>Dispatchable command types + whether an in-flight operation blocks non-selection commands (live bridge).</summary>
