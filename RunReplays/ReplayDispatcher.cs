@@ -193,12 +193,14 @@ public static class ReplayDispatcher
                     if (currentCoord.HasValue && dict.TryGetValue(currentCoord.Value, out var currentPoint))
                     {
                         // the game's own rule: the connected children, or the whole next row while free travel is on
-                        // (Winged Boots with charges left, the Flight modifier)
-                        var reachable = state != null
+                        // (Winged Boots with charges left, the Flight modifier). The boss is no row's point, so with free
+                        // travel the row past the last floor is empty: the children (the boss) always count too (17 Oct:
+                        // floor 16 with Winged Boots offered no move and the run stalled before the boss).
+                        var reachable = (state != null
                             ? MegaCrit.Sts2.Core.Map.MapTravel.GetTravelablePointsFrom(state, currentPoint.Point)
-                            : currentPoint.Point.Children;
-                        foreach (var child in reachable)
-                            commands.Add(new MapMoveCommand(child.coord.col));
+                            : currentPoint.Point.Children).Concat(currentPoint.Point.Children);
+                        foreach (var col in reachable.Select(c => c.coord.col).Distinct())
+                            commands.Add(new MapMoveCommand(col));
                     }
                     else
                     {
