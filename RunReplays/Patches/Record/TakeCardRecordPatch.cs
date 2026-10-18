@@ -50,7 +50,7 @@ public static class TakeCardRecordPatch
         var holders = new List<(Control node, CardModel card)>();
         foreach (Node child in cardRow.GetChildren())
         {
-            if (child is not Control ctrl) continue;
+            if (child is not Control ctrl || ctrl.IsQueuedForDeletion()) continue;   // a reroll's old row
             var childCard = child.GetType()
                 .GetProperty("CardModel", BindingFlags.Public | BindingFlags.Instance)
                 ?.GetValue(child) as CardModel;
@@ -86,7 +86,13 @@ public static class TakeCardRecordPatch
 
         var afterSelected = extraOptions[index].AfterSelected;
 
-        if (afterSelected == PostAlternateCardRewardAction.EndSelectionAndCompleteReward)
+        if (TakeCardCommand.IsRerollOption(extraOptions[index]))
+        {
+            var cmd = TakeCardCommand.Reroll();
+            cmd.Comment = "reroll";
+            PlayerActionBuffer.Record(cmd.ToLogString());
+        }
+        else if (afterSelected == PostAlternateCardRewardAction.EndSelectionAndCompleteReward)
         {
             var cmd = TakeCardCommand.Sacrifice();
             cmd.Comment = "sacrifice";

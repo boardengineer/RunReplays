@@ -259,6 +259,7 @@ public static class ReplayDispatcher
                         int count = 0;
                         foreach (Godot.Node child in cardRow.GetChildren())
                         {
+                            if (child.IsQueuedForDeletion()) continue;   // a reroll's old row
                             var prop = child.GetType().GetProperty(
                                 "CardModel", BindingFlags.Public | BindingFlags.Instance);
                             if (prop?.GetValue(child) is MegaCrit.Sts2.Core.Models.CardModel)
@@ -280,6 +281,9 @@ public static class ReplayDispatcher
                                 commands.Add(TakeCardCommand.Sacrifice());
                                 break;
                             }
+                    // Driftwood: once per reward, the screen's own list drops it after the reroll
+                    if (extras != null && extras.Any(TakeCardCommand.IsRerollOption))
+                        commands.Add(TakeCardCommand.Reroll());
                 }
             }
 

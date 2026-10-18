@@ -20,6 +20,7 @@ public class TakeCardCommand : ReplayCommand
     private const string Prefix = "TakeCard ";
     private const string SacrificeKeyword = "sacrifice";
     private const string SkipKeyword = "skip";
+    private const string RerollKeyword = "reroll";
 
     private static readonly FieldInfo? CardRowField =
         typeof(NCardRewardSelectionScreen).GetField(
@@ -37,30 +38,40 @@ public class TakeCardCommand : ReplayCommand
     public int CardIndex { get; }
     public bool IsSacrifice { get; }
     public bool IsSkip { get; }
+    /// <summary>Driftwood: new cards for this reward, once; the screen stays open with them.</summary>
+    public bool IsReroll { get; }
 
     public TakeCardCommand(int cardIndex) : base("")
     {
         CardIndex = cardIndex;
     }
 
-    private TakeCardCommand(bool sacrifice, bool skip) : base("")
+    private TakeCardCommand(bool sacrifice, bool skip, bool reroll = false) : base("")
     {
         CardIndex = -1;
         IsSacrifice = sacrifice;
         IsSkip = skip;
+        IsReroll = reroll;
     }
 
     public static TakeCardCommand Sacrifice() => new(sacrifice: true, skip: false);
     public static TakeCardCommand Skip() => new(sacrifice: false, skip: true);
+    public static TakeCardCommand Reroll() => new(sacrifice: false, skip: false, reroll: true);
+
+    /// <summary>The game's Reroll alternative (CardRewardAlternative.Generate, OptionId "REROLL").</summary>
+    public static bool IsRerollOption(CardRewardAlternative alt)
+        => alt.OptionId.Equals(RerollKeyword, System.StringComparison.OrdinalIgnoreCase);
 
     public override string ToString()
         => IsSacrifice ? $"{Prefix}{SacrificeKeyword}"
          : IsSkip ? $"{Prefix}{SkipKeyword}"
+         : IsReroll ? $"{Prefix}{RerollKeyword}"
          : $"{Prefix}{CardIndex}";
 
     public override string Describe()
         => IsSacrifice ? "sacrifice card reward"
          : IsSkip ? "skip card reward"
+         : IsReroll ? "reroll card reward"
          : $"take card [{CardIndex}]" + (Comment != null ? $" ({Comment})" : "");
 
     public override ExecuteResult Execute()
@@ -75,7 +86,32 @@ public class TakeCardCommand : ReplayCommand
         if (IsSkip)
             return ExecuteSkip(screen);
 
+        if (IsReroll)
+            return ExecuteReroll(screen);
+
         return ExecuteSelectCard(screen);
+    }
+
+    private ExecuteResult ExecuteReroll(NCardRewardSelectionScreen screen)
+    {
+        var extras = ExtraOptionsField?.GetValue(screen)
+            as IReadOnlyList<CardRewardAlternative>;
+        int index = -1;
+        if (extras != null)
+            for (int i = 0; i < extras.Count; i++)
+                if (IsRerollOption(extras[i])) { index = i; break; }
+
+        if (index < 0)
+        {
+            PlayerActionBuffer.LogMigrationWarning("[TakeCard] No reroll option on the selection screen — retrying.");
+            return ExecuteResult.Retry(200);
+        }
+
+        // The game rerolls (CardReward.Reroll) and refreshes this same screen with the new cards, so it stays the live
+        // card reward screen: the next TakeCard picks from the new row.
+        OnAlternateRewardSelectedMethod?.Invoke(screen, new object[] { index });
+        PlayerActionBuffer.LogDispatcher("[TakeCard] Rerolled the card reward.");
+        return ExecuteResult.Ok();
     }
 
     private ExecuteResult ExecuteSelectCard(NCardRewardSelectionScreen screen)
@@ -88,7 +124,7 @@ public class TakeCardCommand : ReplayCommand
         var holders = new List<Godot.Control>();
         foreach (Godot.Node child in cardRow.GetChildren())
         {
-            if (child is not Godot.Control ctrl) continue;
+            if (child is not Godot.Control ctrl || ctrl.IsQueuedForDeletion()) continue;   // a reroll's old row
             var prop = child.GetType().GetProperty(
                 "CardModel", BindingFlags.Public | BindingFlags.Instance);
             if (prop?.GetValue(child) is MegaCrit.Sts2.Core.Models.CardModel)
@@ -197,6 +233,9 @@ public class TakeCardCommand : ReplayCommand
 
         if (rest.Equals(SkipKeyword, System.StringComparison.OrdinalIgnoreCase))
             return TakeCardCommand.Skip();
+
+        if (rest.Equals(RerollKeyword, System.StringComparison.OrdinalIgnoreCase))
+            return TakeCardCommand.Reroll();
 
         if (int.TryParse(rest, out int index))
             return new TakeCardCommand(index);
