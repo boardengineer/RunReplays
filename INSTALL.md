@@ -14,10 +14,12 @@ finish updating. (The release won't load on the regular branch: the game says it
 RunReplays needs BaseLib. Subscribe to **BaseLib** on the Steam Workshop (Slay the Spire 2 → Workshop → search
 "BaseLib" → Subscribe). Steam installs and updates it for you.
 
-## 3. Remove the Workshop RunReplays, if you have it
+## 3. The Workshop RunReplays, if you have it
 
-If you're subscribed to RunReplays on the Workshop, **unsubscribe** first. Two copies of the same mod is an error
-("There are two or more mods with the same id RunReplays").
+You can stay subscribed: when a mod is both on the Workshop and in the `mods` folder, the game loads the **higher
+version** and switches the other off. This release (0.3.0) is newer than the Workshop one, so it wins. Unsubscribing
+is still the tidy choice: if the Workshop version is ever updated past this one, the game would switch to it, and it
+may not support the beta branch.
 
 ## 4. Put RunReplays in the game's mods folder
 
@@ -59,7 +61,10 @@ Main menu → **Run Replays** → **Play a stream fight** → copy the fight's c
 * **"Mod RunReplays declares min game version 0.111.0 higher than current game version"**: you're not on the
   public-beta branch (step 1).
 * **"Mod RunReplays is missing 1 dependencies: BaseLib"**: subscribe to BaseLib (step 2) and restart.
-* **"two or more mods with the same id"**: unsubscribe the Workshop RunReplays (step 3).
+* **"two or more mods with the same id"**: there are two RunReplays copies inside the `mods` folder (e.g. an old
+  `RunReplays.dll` loose in `mods\` plus `mods\RunReplays\`); keep only one.
+* **The menu has no "Play a stream fight" tab**: the Workshop RunReplays was loaded instead (it's newer than this
+  release, or this one failed to load); unsubscribe it and restart.
 * **No Run Replays button**: check the files sit in `mods\RunReplays\` as shown, and that you pressed **Load Mods**
   and restarted.
 * **"This fight was played on game version …"**: the fight is from a different game version than yours; it can only
