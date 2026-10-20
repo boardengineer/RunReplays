@@ -121,8 +121,10 @@ public class RunReplaySubmenu : NSubmenu
 
         var myReplaysBtn = new Button { Text = "My Replays" };
         var samplesBtn   = new Button { Text = "Sample Runs" };
+        var fightBtn     = new Button { Text = "Play a stream fight" };
         tabs.AddChild(myReplaysBtn);
         tabs.AddChild(samplesBtn);
+        tabs.AddChild(fightBtn);
 
         // ── Tab button styling — mirrors NModListButton from BaseLib ────────────
         // Colors match BaseLib exactly.
@@ -155,12 +157,14 @@ public class RunReplaySubmenu : NSubmenu
 
         var myBox  = MakeTabBox(bgNormal);
         var samBox = MakeTabBox(bgNormal);
+        var figBox = MakeTabBox(bgNormal);
 
         string[] states = { "normal", "hover", "pressed", "focus" };
         foreach (var st in states) { myReplaysBtn.AddThemeStyleboxOverride(st, myBox); }
         foreach (var st in states) { samplesBtn.AddThemeStyleboxOverride(st, samBox); }
+        foreach (var st in states) { fightBtn.AddThemeStyleboxOverride(st, figBox); }
 
-        foreach (var btn in new[] { myReplaysBtn, samplesBtn })
+        foreach (var btn in new[] { myReplaysBtn, samplesBtn, fightBtn })
         {
             if (kreonFont != null) btn.AddThemeFontOverride("font", kreonFont);
             btn.AddThemeFontSizeOverride("font_size", 24);
@@ -192,44 +196,39 @@ public class RunReplaySubmenu : NSubmenu
 
         RunReplayMenu.PopulateSeparateDeferred(userList, samplesList, closeMenu);
 
+        var fightPanel = BuildStreamFightPanel(kreonFont);
+        hbox.AddChild(fightPanel);
+
         // Tab switching: swap bg + animate border width in over 200 ms (matching BaseLib).
-        void SelectTab(bool showUser, bool animate = true)
+        var tabBtns  = new[] { myReplaysBtn, samplesBtn, fightBtn };
+        var tabBoxes = new[] { myBox, samBox, figBox };
+        var tabViews = new Control[] { userScroll, samplesScroll, fightPanel };
+        void SelectTab(int sel, bool animate = true)
         {
-            userScroll.Visible    =  showUser;
-            samplesScroll.Visible = !showUser;
-
-            var selBox   = showUser ? myBox  : samBox;
-            var deselBox = showUser ? samBox : myBox;
-
-            // Deselect instantly
-            deselBox.BgColor = bgNormal;
-            deselBox.BorderWidthLeft = 0;
-
-            // Select: background immediately, border animates in
-            selBox.BgColor = bgSelected;
-            if (animate)
+            for (int i = 0; i < tabBtns.Length; i++)
             {
-                selBox.BorderWidthLeft = 0;
-                var tween = CreateTween();
-                tween.TweenProperty(selBox, "border_width_left", Variant.From(4), 0.2);
+                bool on = i == sel;
+                tabViews[i].Visible = on;
+                var box = tabBoxes[i];
+                box.BgColor = on ? bgSelected : bgNormal;
+                if (!on) box.BorderWidthLeft = 0;
+                else if (animate)
+                {
+                    box.BorderWidthLeft = 0;
+                    var tween = CreateTween();
+                    tween.TweenProperty(box, "border_width_left", Variant.From(4), 0.2);
+                }
+                else box.BorderWidthLeft = 4;
+                tabBtns[i].AddThemeColorOverride("font_color",         on ? colorSelected : colorNormal);
+                tabBtns[i].AddThemeColorOverride("font_hover_color",   on ? colorSelected : Colors.White);
+                tabBtns[i].AddThemeColorOverride("font_pressed_color", on ? colorSelected : Colors.White);
             }
-            else
-            {
-                selBox.BorderWidthLeft = 4;
-            }
-
-            // Font colors per state
-            myReplaysBtn.AddThemeColorOverride("font_color",          showUser  ? colorSelected : colorNormal);
-            myReplaysBtn.AddThemeColorOverride("font_hover_color",    showUser  ? colorSelected : Colors.White);
-            myReplaysBtn.AddThemeColorOverride("font_pressed_color",  showUser  ? colorSelected : Colors.White);
-            samplesBtn.AddThemeColorOverride("font_color",           !showUser ? colorSelected : colorNormal);
-            samplesBtn.AddThemeColorOverride("font_hover_color",     !showUser ? colorSelected : Colors.White);
-            samplesBtn.AddThemeColorOverride("font_pressed_color",   !showUser ? colorSelected : Colors.White);
         }
 
-        myReplaysBtn.Pressed += () => SelectTab(true);
-        samplesBtn.Pressed   += () => SelectTab(false);
-        SelectTab(true, animate: false);
+        myReplaysBtn.Pressed += () => SelectTab(0);
+        samplesBtn.Pressed   += () => SelectTab(1);
+        fightBtn.Pressed     += () => SelectTab(2);
+        SelectTab(0, animate: false);
 
         // Fallback back button if no NBackButton was cloned
         if (backButton == null)
@@ -239,5 +238,90 @@ public class RunReplaySubmenu : NSubmenu
             _fallbackBackBtn.Pressed += closeMenu;
             outer.AddChild(_fallbackBackBtn);
         }
+    }
+
+    /// <summary>The "Play a stream fight" tab (<see cref="StreamFight"/>): a code / link box with a Paste button (the
+    /// clipboard, so a controller needs no keyboard), Load, and Restore for the player's own run.</summary>
+    private Control BuildStreamFightPanel(Font? font)
+    {
+        var box = new VBoxContainer();
+        box.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+        box.SizeFlagsVertical   = Control.SizeFlags.ExpandFill;
+        box.AddThemeConstantOverride("separation", 12);
+
+        Label Text(string s, int size = 20)
+        {
+            var l = new Label { Text = s, AutowrapMode = TextServer.AutowrapMode.WordSmart };
+            if (font != null) l.AddThemeFontOverride("font", font);
+            l.AddThemeFontSizeOverride("font_size", size);
+            return l;
+        }
+        Button Btn(string s)
+        {
+            var b = new Button { Text = s, CustomMinimumSize = new Vector2(160, 48) };
+            if (font != null) b.AddThemeFontOverride("font", font);
+            b.AddThemeFontSizeOverride("font_size", 22);
+            return b;
+        }
+
+        var margin = new MarginContainer();
+        foreach (var side in new[] { "left", "right", "top" }) margin.AddThemeConstantOverride("margin_" + side, 24);
+        margin.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+        margin.AddChild(box);
+
+        box.AddChild(Text("Play a fight from the stream in your own game. Copy its code or link from the stream's site, " +
+                          "then Paste and Load. Your own saved run is backed up first."));
+        var input = new LineEdit { PlaceholderText = "code or link, e.g. K7Q2XM", CustomMinimumSize = new Vector2(0, 48) };
+        if (font != null) input.AddThemeFontOverride("font", font);
+        input.AddThemeFontSizeOverride("font_size", 24);
+        box.AddChild(input);
+
+        var row = new HBoxContainer();
+        row.AddThemeConstantOverride("separation", 12);
+        var paste = Btn("Paste");
+        var load  = Btn("Load");
+        row.AddChild(paste);
+        row.AddChild(load);
+        box.AddChild(row);
+
+        var status = Text("", 20);
+        box.AddChild(status);
+
+        box.AddChild(new HSeparator());
+        var restoreRow = new HBoxContainer();
+        restoreRow.AddThemeConstantOverride("separation", 12);
+        var restore = Btn("Restore my run");
+        var backupInfo = Text("", 18);
+        backupInfo.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+        restoreRow.AddChild(restore);
+        restoreRow.AddChild(backupInfo);
+        box.AddChild(restoreRow);
+
+        void ShowBackup()
+        {
+            string? b = StreamFight.LatestBackup();
+            backupInfo.Text = b == null ? "No backup yet." : "Backup: " + System.IO.Path.GetFileNameWithoutExtension(b).Replace("current_run.", "");
+            restore.Disabled = b == null;
+        }
+        ShowBackup();
+
+        paste.Pressed += () =>
+        {
+            input.Text = (DisplayServer.ClipboardGet() ?? "").Trim();
+            status.Text = StreamFight.ParseCode(input.Text) is string c ? $"Code {c}. Press Load." : "The clipboard has no fight code in it.";
+        };
+        load.Pressed += async () =>
+        {
+            load.Disabled = true;
+            status.Text = "Loading the fight…";
+            string? err = await StreamFight.LoadAsync(input.Text);
+            if (!GodotObject.IsInstanceValid(load)) return;
+            load.Disabled = false;
+            status.Text = err ?? "Loading…";
+            ShowBackup();
+        };
+        restore.Pressed += () => { status.Text = StreamFight.RestoreLatest(); ShowBackup(); };
+
+        return margin;
     }
 }

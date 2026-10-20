@@ -564,6 +564,10 @@ public static class RunReplayMenu
 
     // ── Save load ─────────────────────────────────────────────────────────────
 
+    /// <summary>Loads a floor save written to samples/ (a stream fight, <see cref="StreamFight"/>), as the menu's Load Save does.</summary>
+    internal static void LoadSampleSave(string seed, string characterId, int floor, int ascension, string actionsPath, string savePath)
+        => LoadSave(new ReplayEntry(seed, characterId, floor, ascension, DateTime.Now, actionsPath, savePath, true));
+
     private static void LoadSave(ReplayEntry entry)
     {
         ReplayEngine.ActiveSeed = entry.Seed;
