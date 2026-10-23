@@ -1,8 +1,11 @@
-# Installing RunReplays from GitHub (the beta build)
+# Installing RunReplays (the beta build)
 
-The stable RunReplays is on the Steam Workshop. The GitHub release is the build for the game's **public-beta**
-branch (v0.111.0), which is what "Play a stream fight" needs. Installing it means dropping a folder in by hand; it
-takes a few minutes.
+"Play a stream fight" needs the game's **public-beta** branch (v0.111.0). Since 0.3.1 the Steam Workshop RunReplays
+serves that build to players on public-beta (players on the regular branch keep 0.1.2), so the short way is:
+switch to public-beta (step 1), then subscribe to **RunReplays** and **BaseLib** on the Workshop, start the game and
+press **Load Mods**.
+
+The rest of this page installs the GitHub release by hand instead, which takes a few minutes.
 
 ## 1. Switch Slay the Spire 2 to the public-beta branch
 
@@ -17,9 +20,8 @@ RunReplays needs BaseLib. Subscribe to **BaseLib** on the Steam Workshop (Slay t
 ## 3. The Workshop RunReplays, if you have it
 
 You can stay subscribed: when a mod is both on the Workshop and in the `mods` folder, the game loads the **higher
-version** and switches the other off. This release (0.3.0) is newer than the Workshop one, so it wins. Unsubscribing
-is still the tidy choice: if the Workshop version is ever updated past this one, the game would switch to it, and it
-may not support the beta branch.
+version** and switches the other off. On public-beta the Workshop copy is the same build (0.3.1), so a hand install
+is only needed for a release newer than the Workshop's.
 
 ## 4. Put RunReplays in the game's mods folder
 
@@ -63,8 +65,8 @@ Main menu → **Run Replays** → **Play a stream fight** → copy the fight's c
 * **"Mod RunReplays is missing 1 dependencies: BaseLib"**: subscribe to BaseLib (step 2) and restart.
 * **"two or more mods with the same id"**: there are two RunReplays copies inside the `mods` folder (e.g. an old
   `RunReplays.dll` loose in `mods\` plus `mods\RunReplays\`); keep only one.
-* **The menu has no "Play a stream fight" tab**: the Workshop RunReplays was loaded instead (it's newer than this
-  release, or this one failed to load); unsubscribe it and restart.
+* **The menu has no "Play a stream fight" tab**: that's 0.1.2, which the Workshop gives the regular branch. Switch to
+  public-beta (step 1) and let Steam update the mod too.
 * **No Run Replays button**: check the files sit in `mods\RunReplays\` as shown, and that you pressed **Load Mods**
   and restarted.
 * **"This fight was played on game version …"**: the fight is from a different game version than yours; it can only
